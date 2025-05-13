@@ -1,0 +1,50 @@
+# SPDX-FileCopyrightText: © 2025 Evotis S.A.S.
+# SPDX-License-Identifier: Elastic-2.0
+# "Pipelex" is a trademark of Evotis S.A.S.
+
+domain = "expense_report"
+
+[concept]
+InvoiceList = "A list of invoices"
+InvoiceText = "The text of the invoice"
+Invoice = "Invoice information extracted from text"
+InvoiceDetails = "The category of the invoice"
+
+[concept.InvoiceImage]
+Concept = "The image of the invoice"
+structure = "ImageContent"
+refines = ["native.Image"]
+
+[pipe]
+
+[pipe.analyze_invoice]
+PipeLLM = "Analyze the invoice"
+input = "InvoiceText"
+output = "InvoiceDetails"
+prompt_template = """
+Analyze this invoice:
+
+@invoice_text
+"""
+
+[pipe.extract_invoice]
+PipeLLM = "Extract invoice information from an invoice text transcript"
+input = "InvoiceText"
+output = "Invoice"
+llm = "llm_to_extract_invoice"
+prompt_template = """
+Extract invoice information from this invoice:
+
+The category of this invoice is: $invoice_details.category.
+
+@invoice_text
+"""
+
+[pipe.process_invoice]
+PipeSequence = "Process relevant information from an invoice"
+input = "InvoiceText"
+output = "Invoice"
+steps = [
+    { pipe = "analyze_invoice", result = "invoice_details" },
+    { pipe = "extract_invoice", result = "invoice" },
+]

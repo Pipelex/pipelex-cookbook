@@ -1,0 +1,32 @@
+# SPDX-FileCopyrightText: © 2025 Evotis S.A.S.
+# SPDX-License-Identifier: Elastic-2.0
+# "Pipelex" is a trademark of Evotis S.A.S.
+
+domain = "expense_report"
+
+[pipe.calculate_vat]
+PipeLLM = "Calculate VAT for the expense"
+input = "Expense"
+output = "VAT"
+system_prompt = """
+You are an expert in French VAT rules for business expenses.
+Remember that VAT is also known as TVA in France.
+"""
+prompt_template = """
+Calculate VAT (aka TVA) for this expense:
+
+@expense
+
+Apply these rates:
+- Restaurant meals: 10% TVA
+- Takeaway/supermarket: 5.5% TVA
+- Alcoholic beverages: 20% TVA
+- Other expenses: Standard rate
+
+Rules:
+1. For amounts < 150€: Ticket de caisse is sufficient if it shows HT, TVA, and TTC
+2. For amounts > 150€: Must have a proper invoice addressed to the company
+3. Multiple TVA rates must be clearly separated on the invoice
+
+Calculate TVA amount and specify rate used.
+"""

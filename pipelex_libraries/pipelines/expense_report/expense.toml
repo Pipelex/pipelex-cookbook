@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: © 2025 Evotis S.A.S.
+# SPDX-License-Identifier: Elastic-2.0
+# "Pipelex" is a trademark of Evotis S.A.S.
+
+domain = "expense_report"
+
+[concept]
+Expense = "A single expense line item/article"
+
+[pipe]
+[pipe.extract_expenses_from_expense_report]
+PipeLLM = "Extract the list of expenses from an expense report"
+input = "ExpenseReportText"
+output = "Expense"
+multiple_output = true
+system_prompt = """You are an expert at extracting business expenses from invoices and expense reports.
+You must split combined expenses into individual line items."""
+prompt_template = """
+Extract all expenses from this expense report:
+
+@expense_report_text
+
+Important:
+- Split combined expenses into individual line items
+- Each expense should represent a single article/item
+"""

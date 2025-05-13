@@ -1,0 +1,104 @@
+# SPDX-FileCopyrightText: © 2025 Evotis S.A.S.
+# SPDX-License-Identifier: Elastic-2.0
+# "Pipelex" is a trademark of Evotis S.A.S.
+
+domain = "image_analysis"
+definition = "Test library about image analysis"
+
+[concept]
+ImageClassification = "Analysis of an image"
+
+[concept.InvoiceScan]
+Concept = "A scan of an invoice"
+refines = ["native.Image"]
+structure = "ImageContent"
+
+[concept.AdBannerAnalysis]
+Concept = "Analysis of an ad banner"
+refines = ["images.SpecificImageAnalysis"]
+
+[concept.FashionPhotoAnalysis]
+Concept = "Analysis of a fashion photo"
+refines = ["images.SpecificImageAnalysis"]
+
+[concept.InvoiceTranscript]
+Concept = "A transcript of an invoice"
+refines = ["images.SpecificImageAnalysis"]
+
+[pipe]
+
+
+[pipe.classify_image]
+PipeLLM = "Analyze an image"
+input = "native.Image"
+output = "ImageClassification"
+llm_to_structure_direct = "llm_to_describe_img"
+system_prompt = "You are a very good observer."
+images = ["image"]
+prompt = """
+Let's analyze this image, but I just want a rough analysis for now:
+- give me a very short description without any details
+- select the appropriate category for the image
+- determine the theme of the image: what is it about?
+don't bother including detailed information
+"""
+
+
+[pipe.analyze_fashion_photo]
+PipeLLM = "Analyze a fashion photo"
+input = "images.Photo"
+output = "FashionPhotoAnalysis"
+llm = "llm_to_describe_img"
+images = ["image"]
+system_prompt = "You are a professional fashion critic and image analyst with expertise in style, design, and trends."
+prompt_template = """
+Analyze the provided fashion photo.
+Output a detailed analysis of the photo: target demographic, clothing, accessories, style, likely context of use, etc.
+Output using markdown, no intro, no outro, pure markdown.
+"""
+
+[pipe.analyze_ad_banner]
+PipeLLM = "Analyze an ad banner"
+input = "native.Image"
+output = "AdBannerAnalysis"
+llm = "llm_to_describe_img"
+images = ["image"]
+system_prompt = "You are a marketing expert."
+prompt_template = """
+Analyze the provided ad banner.
+Output a concise analysis of the ad banner: 3 sentences max.
+Output using markdown, no intro, no outro, pure markdown.
+"""
+
+[pipe.transcript_invoice_direct]
+PipeLLM = "Extract all details from an invoice"
+input = "InvoiceScan"
+output = "InvoiceTranscript"
+images = ["invoice_scan"]
+llm = "llm_to_extract_invoice_from_scan"
+prompt_template = """
+Extract all details from the provided invoice scan.
+Output as a table using markdown.
+"""
+
+[pipe.analyze_image_specific]
+PipeCondition = "Perform an image analysis using a specific method"
+input = "images.ImageClassification"
+output = "images.SpecificImageAnalysis"
+expression = "image_classification.category"
+add_alias_from_expression_to = "image"
+
+[pipe.analyze_image_specific.pipe_map]
+fashion_photo = "analyze_fashion_photo"
+ad_banner = "analyze_ad_banner"
+gantt_chart = "transcript_gantt_direct"
+invoice_scan = "transcript_invoice_direct"
+
+[pipe.analyze_image_in_steps]
+PipeSequence = "Analyze an image in several steps"
+input = "native.Image"
+output = "images.SpecificImageAnalysis"
+steps = [
+    { pipe = "classify_image", result = "image_classification" },
+    { pipe = "analyze_image_specific", result = "specific_analysis" },
+]

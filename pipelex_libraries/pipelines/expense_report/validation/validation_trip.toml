@@ -1,0 +1,112 @@
+# SPDX-FileCopyrightText: © 2025 Evotis S.A.S.
+# SPDX-License-Identifier: Elastic-2.0
+# "Pipelex" is a trademark of Evotis S.A.S.
+
+domain = "expense_report"
+
+[concept]
+TripCategory = "Category of the trip (domestic or international)"
+
+[pipe]
+[pipe.determine_trip_category]
+PipeLLM = "Determine if a trip is metropolitan or overseas"
+input = "Expense"
+output = "TripCategory"
+system_prompt = """
+You are an expert at determining if a trip is within metropolitan France or overseas territories.
+"""
+prompt_template = """
+Determine the trip category:
+
+@matched_expense
+"""
+
+[pipe.validate_expense_trip_urssaf_metropolitan]
+PipeLLM = "Validate metropolitan trip expenses according to URSSAF rules"
+input = "Expense"
+output = "ExpenseValidation"
+system_prompt = """
+You are an expert at validating French metropolitan trip expenses according to URSSAF rules.
+"""
+prompt_template = """
+Validate this metropolitan trip expense:
+
+@matched_expense
+
+URSSAF rules for 2025:
+- Metropolitan France: 56.10€ (accommodation) + 21.10€ (meals)
+"""
+
+[pipe.validate_expense_trip_urssaf_overseas]
+PipeLLM = "Validate overseas trip expenses according to URSSAF rules"
+input = "Expense"
+output = "ExpenseValidation"
+system_prompt = """
+You are an expert at validating French overseas trip expenses according to URSSAF rules.
+"""
+prompt_template = """
+Validate this overseas trip expense:
+
+@matched_expense
+
+URSSAF rules for 2025:
+- Overseas: 120€ (accommodation) + 20€ (meals)
+- 150€ for disabled employees
+"""
+
+[pipe.validate_expense_trip_custom]
+PipeLLM = "Validate trip expenses according to custom business rules"
+input = "Expense"
+output = "ExpenseValidation"
+system_prompt = """
+You are an expert at validating French trip expenses according to custom business rules.
+You have deep knowledge of company policies regarding employee roles and their associated travel allowances.
+"""
+prompt_template = """
+Validate this trip expense:
+
+@matched_expense
+
+@employee
+
+Custom business rules:
+1. For Junior employees:
+   - Maximum daily accommodation: 40€
+   - Maximum daily meals: 15€
+   - Must have manager approval for trips > 3 days
+   - Must book through company travel agency
+
+2. For Non-Junior employees:
+   - No specific daily limits
+   - Must have manager approval for trips > 5 days
+   - Can book through preferred travel agency
+"""
+
+[pipe.conditional_validation_trip]
+PipeCondition = "Choose the appropriate validation based on trip category"
+input = "TripCategory"
+output = "RulesToApply"
+expression = "trip_category.category"
+
+[pipe.conditional_validation_trip.pipe_map]
+metropolitan = "validate_expense_trip_urssaf_metropolitan"
+overseas = "validate_expense_trip_urssaf_overseas"
+
+[pipe.validate_expense_trip_urssaf]
+PipeSequence = "Process validations"
+input = "Expense"
+output = "ExpenseValidation"
+steps = [
+   { pipe = "determine_trip_category", result = "trip_category" },
+   { pipe = "conditional_validation_trip", result = "urssaf_validation" },
+]
+
+[pipe.validate_expense_trip]
+PipeParallel = "Validate trip expenses according to URSSAF and custom rules"
+input = "Expense"
+output = "ExpenseValidation"
+parallels = [
+   { pipe = "validate_expense_trip_urssaf", result = "urssaf_validation" },
+   { pipe = "validate_expense_trip_custom", result = "custom_validation" },
+]
+combined_output = "expense_report.ExpenseValidationCombo"

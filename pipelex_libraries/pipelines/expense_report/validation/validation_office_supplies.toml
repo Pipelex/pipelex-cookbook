@@ -1,0 +1,103 @@
+# SPDX-FileCopyrightText: © 2025 Evotis S.A.S.
+# SPDX-License-Identifier: Elastic-2.0
+# "Pipelex" is a trademark of Evotis S.A.S.
+
+domain = "expense_report"
+
+[pipe.validate_expense_office_supplies_urssaf]
+PipeLLM = "Validate office supplies expenses according to URSSAF rules"
+input = "Expense"
+output = "ExpenseValidation"
+system_prompt = """
+You are an expert at validating French office supplies expenses according to URSSAF rules.
+You have deep knowledge of equipment allowance limits and conditions for social security contribution exemptions.
+"""
+prompt_template = """
+Validate this office supplies expense according to URSSAF rules:
+
+@matched_expense
+
+Check against these specific URSSAF rules:
+
+1. Eligible Expense:
+   - Computer equipment (computers, printers, etc.)
+   - Consumables (paper, ink cartridges, etc.)
+   - Connection fees (phone, internet, etc.)
+
+2. Documentation Requirements:
+   - Must have proof of purchase
+   - Must be for professional use
+   - Must be for personal equipment used for work
+   - Must specify if it's a one-time purchase or recurring expense
+
+3. Reimbursement Methods:
+   - Actual expenses with receipts
+   - Flat-rate allowance when receipts are not available
+   - Must be clearly documented as professional use
+
+4. Special Cases:
+   - Mobile phone usage for work
+   - Home office equipment
+   - Professional software licenses
+
+Include specific issues in the issues list if any URSSAF rules are not met.
+"""
+
+[pipe.validate_expense_office_supplies_custom]
+PipeLLM = "Validate office supplies expenses according to custom business rules"
+input = "Expense"
+output = "ExpenseValidation"
+system_prompt = """
+You are an expert at validating French office supplies expenses according to custom business rules.
+You have deep knowledge of company policies regarding employee roles and their associated equipment allowances.
+"""
+prompt_template = """
+Validate this office supplies expense according to custom business rules:
+
+@matched_expense
+
+@employee
+
+Check against these specific role-based rules:
+
+1. Role-Based Equipment Limits:
+   - Executive/Management: 
+     * No limit on computer equipment
+     * Premium accessories allowed
+     * Full home office setup covered
+   - Technical Staff:
+     * High-end computer equipment allowed
+     * Specialized tools covered
+     * Maximum 500€ per quarter for accessories
+   - Sales Representative:
+     * Mobile equipment prioritized
+     * Maximum 300€ per quarter for accessories
+     * Travel-friendly equipment covered
+   - Administrative Staff:
+     * Standard equipment only
+     * Maximum 200€ per quarter for accessories
+     * Basic home office setup covered
+   - Intern/Trainee:
+     * Basic equipment only
+     * Maximum 100€ per quarter for accessories
+     * No home office setup
+
+2. Documentation Requirements:
+   - Must specify employee role
+   - Must include equipment purpose
+   - Must match role-appropriate equipment needs
+   - Must specify if it's for home office or office use
+
+Include specific issues in the issues list if any rules are not met, especially if the equipment type or cost exceeds the limit for the employee's role.
+"""
+
+[pipe]
+[pipe.validate_expense_office_supplies]
+PipeParallel = "Validate office supplies expenses according to URSSAF and custom rules"
+input = "Expense"
+output = "ExpenseValidation"
+parallels = [
+   { pipe = "validate_expense_office_supplies_urssaf", result = "urssaf_validation" },
+   { pipe = "validate_expense_office_supplies_custom", result = "custom_validation" },
+]
+combined_output = "expense_report.ExpenseValidationCombo"

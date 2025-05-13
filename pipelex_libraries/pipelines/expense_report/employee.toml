@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: © 2025 Evotis S.A.S.
+# SPDX-License-Identifier: Elastic-2.0
+# "Pipelex" is a trademark of Evotis S.A.S.
+
+domain = "expense_report"
+
+[concept]
+Employee = "Employee information for expense tracking"
+
+[pipe]
+[pipe.extract_employee_from_expense_report]
+PipeLLM = "Extract employee information from expense report"
+input = "ExpenseReportText"
+output = "Employee"
+system_prompt = """You are an expert at extracting employee information from expense reports."""
+prompt_template = """
+Extract employee information from this text:
+
+@expense_report_text
+"""

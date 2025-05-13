@@ -1,0 +1,76 @@
+# SPDX-FileCopyrightText: © 2025 Evotis S.A.S.
+# SPDX-License-Identifier: Elastic-2.0
+# "Pipelex" is a trademark of Evotis S.A.S.
+
+domain = "summarize"
+definition = "Example of summarizing text by topics."
+system_prompt = "You are an expert at summarizing text."
+
+[concept] ####### Concept definitions ############################
+Topic = "A topic a text deals with."
+Summary = "A concise rewriting of a dense text."
+
+[pipe] ####### Pipe definitions ##################################
+
+[pipe.summarize_by_topics]
+PipeSequence = "Summarize text from summarized topics."
+input = "Text"
+output = "Summary"
+steps = [
+    { pipe = "extract_topics", result = "topics" },
+    { pipe = "summarize_topic", batch_as = "topic", result = "summarized_topics" },
+    { pipe = "summarize_from_summaries", result = "summary" },
+]
+
+[pipe.extract_topics]
+PipeLLM = "Extract the topics from a dense text."
+input = "Text"
+output = "Topic"
+multiple_output = true
+prompt_template = """
+You are given a large text.
+Your task is to extract the main topics from the text.
+@text
+Please provide only the main topics, with no additional text or explanations.
+"""
+
+[pipe.summarize_with_structure]
+PipeLLM = "Summarize text."
+input = "Text"
+output = "StructuredSummary"
+prompt_template = """
+You are given a text.
+Your task is to summarize it accurately.
+
+@text
+
+Please provide only the summary, with no additional text or explanations.
+"""
+
+
+[pipe.summarize_topic]
+PipeLLM = "Summarize a dense text with of focus on a specific topic."
+input = "Topic"
+output = "Summary"
+prompt_template = """
+Your goal is to summarize everything related to $topic in the provided text:
+
+@text
+
+Please provide only the summary, with no additional text or explanations.
+Your summary should not be longer than 2 sentences.
+"""
+
+[pipe.summarize_from_summaries]
+PipeLLM = "Summarize text from summarized topics."
+input = "Summary"
+output = "Summary"
+prompt_template = """
+You are given a list of summaries that cover different topics from a large text.
+
+Your task is to generate an overall summary of the text based on the provided summaries, avoiding any repetitions.
+
+@summarized_topics
+
+Please provide only the summary, with no additional text or explanations.
+"""

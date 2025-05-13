@@ -1,0 +1,78 @@
+# SPDX-FileCopyrightText: © 2025 Evotis S.A.S.
+# SPDX-License-Identifier: Elastic-2.0
+# "Pipelex" is a trademark of Evotis S.A.S.
+
+domain = "expense_report"
+
+[concept]
+ExpenseValidation = "Validation result for an expense"
+ExpenseValidationCombo = "Combined validation result for an expense"
+
+[pipe.validate_expense_restauration_urssaf]
+PipeLLM = "Validate restaurant expenses according to URSSAF rules"
+input = "Expense"
+output = "ExpenseValidation"
+system_prompt = """
+You are an expert at validating French restaurant expenses according to URSSAF rules.
+You have deep knowledge of meal allowance limits and conditions for social security contribution exemptions.
+"""
+prompt_template = """
+Validate this restaurant expense according to URSSAF rules:
+
+@matched_expense
+
+Check against these specific URSSAF rules:
+
+1. Business Trip Meal Allowance (2025):
+   - Employee required to eat at restaurant: 21.10€
+   - Employee not required to eat at restaurant: 10.30€
+   - Employee required to eat at workplace: 7.40€
+
+2. Business Trip Conditions:
+   - Employee must be outside company premises
+   - Trip must prevent returning to residence or usual workplace for meals
+   - Must be a documented business trip
+
+3. Required Documentation:
+   - Must show date and time of meal
+   - Must indicate if part of a business trip
+   - Must specify if employee was required to eat at restaurant
+
+Include specific issues in the issues list if any URSSAF rules are not met, especially if the amount exceeds the applicable daily limit.
+"""
+
+[pipe.validate_expense_restauration_custom]
+PipeLLM = "Validate restaurant expenses according to custom business rules"
+input = "Expense"
+output = "ExpenseValidation"
+system_prompt = """
+You are an expert at validating French restaurant expenses according to custom business rules.
+You have deep knowledge of employee expense policies and limits.
+"""
+prompt_template = """
+Validate this restaurant expense according to custom business rules:
+
+@matched_expense
+
+@employee
+
+Check against these specific rules:
+
+1. Junior Employee Expense Limit:
+   - If employee is Junior, expense must be less than 50€
+   - For non-Junior employees, no specific amount limit applies
+
+Include specific issues in the issues list if any rules are not met, especially if the amount exceeds the limit for junior employees.
+"""
+
+[pipe]
+[pipe.validate_expense_restauration]
+PipeParallel = "Validate restaurant and food expenses according to French VAT and URSSAF rules"
+input = "Expense"
+output = "ExpenseValidation"
+parallels = [
+   { pipe = "validate_expense_restauration_urssaf", result = "urssaf_validation" },
+   { pipe = "validate_expense_restauration_custom", result = "custom_validation" },
+]
+add_each_output = true
+combined_output = "expense_report.ExpenseValidationCombo"

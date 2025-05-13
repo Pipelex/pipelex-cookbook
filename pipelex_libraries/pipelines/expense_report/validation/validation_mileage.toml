@@ -1,0 +1,108 @@
+# SPDX-FileCopyrightText: © 2025 Evotis S.A.S.
+# SPDX-License-Identifier: Elastic-2.0
+# "Pipelex" is a trademark of Evotis S.A.S.
+
+domain = "expense_report"
+
+
+[pipe.validate_expense_mileage_urssaf]
+PipeLLM = "Validate mileage expenses according to URSSAF rules"
+input = "Expense"
+output = "ExpenseValidation"
+system_prompt = """
+You are an expert at validating French mileage expenses according to URSSAF rules.
+You have deep knowledge of mileage allowance limits and conditions for social security contribution exemptions.
+"""
+prompt_template = """
+Validate this mileage expense according to URSSAF rules:
+
+@matched_expense
+
+Check against these specific URSSAF rules:
+
+1. Vehicle Type and Power:
+   - Must specify vehicle type (car, motorcycle, scooter <50cm3)
+   - Must specify vehicle power (fiscal horsepower)
+   - For electric vehicles: 20% increase in allowance
+
+2. Distance-Based Allowances (2024):
+   - 5-10 km: 3.00€
+   - 10-20 km: 6.10€
+   - 20-30 km: 9.10€
+   - 30-40 km: 12.10€
+   - 40-50 km: 15.20€
+   - 50-60 km: 18.20€
+   - 60-70 km: 21.20€
+   - 70-80 km: 24.20€
+   - 80-90 km: 27.30€
+   - 90-100 km: 30.30€
+   - 100-110 km: 33.30€
+   - 110-120 km: 36.40€
+   - 120-130 km: 39.40€
+   - 130-140 km: 42.40€
+   - 140-150 km: 45.50€
+   - 150-160 km: 48.50€
+   - 160-170 km: 51.50€
+   - 170-180 km: 54.50€
+   - 180-190 km: 57.60€
+   - 190-200 km: 60.60€
+
+3. Required Documentation:
+   - Must have proof of business trips
+   - Must specify number of kilometers traveled
+   - Must provide vehicle registration document
+   - Must be part of documented business trip
+
+4. Special Cases:
+   - Temporary work agencies
+   - Public works companies
+   - Construction companies
+   - Metalworking companies
+   - Industrial pipework companies
+   These companies have specific rules for regular external site visits.
+
+Include specific issues in the issues list if any URSSAF rules are not met, especially if the amount exceeds the applicable distance-based limit.
+"""
+
+[pipe.validate_expense_mileage_custom]
+PipeLLM = "Validate mileage expenses according to custom business rules"
+input = "Expense"
+output = "ExpenseValidation"
+system_prompt = """
+You are an expert at validating French mileage expenses according to custom business rules.
+You have deep knowledge of company policies regarding employee roles and their associated mileage limits.
+"""
+prompt_template = """
+Validate this mileage expense according to custom business rules:
+
+@matched_expense
+
+@employee
+
+Check against these specific role-based rules:
+
+1. Role-Based Mileage Limits:
+   - Executive/Management: No daily limit
+   - Sales Representative: Maximum 200km per day
+   - Technical Staff: Maximum 150km per day
+   - Administrative Staff: Maximum 100km per day
+   - Intern/Trainee: Maximum 50km per day
+
+2. Documentation Requirements:
+   - Must specify employee role
+   - Must include trip purpose
+   - Must match role-appropriate business activities
+
+Include specific issues in the issues list if any rules are not met, especially if the distance exceeds the limit for the employee's role.
+"""
+
+[pipe]
+[pipe.validate_expense_mileage]
+PipeParallel = "Validate mileage expenses according to URSSAF and custom rules"
+input = "Expense"
+output = "ExpenseValidation"
+parallels = [
+   { pipe = "validate_expense_mileage_urssaf", result = "urssaf_validation" },
+   { pipe = "validate_expense_mileage_custom", result = "custom_validation" },
+]
+combined_output = "expense_report.ExpenseValidationCombo"

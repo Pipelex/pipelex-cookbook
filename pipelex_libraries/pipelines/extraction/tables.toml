@@ -1,0 +1,61 @@
+# SPDX-FileCopyrightText: © 2025 Evotis S.A.S.
+# SPDX-License-Identifier: Elastic-2.0
+# "Pipelex" is a trademark of Evotis S.A.S.
+
+domain = "tables"
+definition = "Extracting tables from images"
+system_prompt = "You are an expert at data tables and html syntax and you have a strong attention to details."
+
+[concept]
+HtmlTable = "An HTML table"
+
+[concept.TableScreenshot]
+Concept = "A screenshot of a table (table in the sense of a data structure used to organize information in rows and columns)"
+structure = "ImageContent"
+refines = ["native.Image"]
+
+
+[pipe]
+[pipe.extract_html_table_from_image]
+PipeLLM = "Get an HTML table"
+input = "TableScreenshot"
+output = "HtmlTable"
+images = ["table_screenshot"]
+llm = "llm_to_extract_tables"
+llm_to_structure = "llm_to_extract_tables"
+prompt_template = """
+You are given a picture (screenshot) of a table, taken from a PDF document.
+Your goal is to extract the table from the image **in html**.
+
+Make sure you do not forget any text.
+Make sure you do not invent any text.
+Make sure your merge is consistent.
+Make sure you replicate the formatting (borders, text formatting, colors, text alignement...)
+"""
+
+[pipe.review_html_table]
+PipeLLM = "Review an HTML table"
+input = "HtmlTable"
+output = "HtmlTable"
+images = ["table_screenshot"]
+llm = "llm_to_extract_tables"
+llm_to_structure = "llm_to_extract_tables"
+prompt_template = """
+Your role is to correct an html_table to make sure that it matches the one in the provided image.
+
+@html_table
+
+Pay attention to the text and formatting (color, borders, ...).
+Rewrite the entire html table with your potential corrections.
+Make sure you do not forget any text.
+"""
+
+
+[pipe.extract_html_table_and_review]
+PipeSequence = "Get an HTML table and review it"
+input = "TableScreenshot"
+output = "HtmlTable"
+steps = [
+    { pipe = "extract_html_table_from_image", result = "html_table" },
+    { pipe = "review_html_table", result = "reviewed_html_table" },
+]

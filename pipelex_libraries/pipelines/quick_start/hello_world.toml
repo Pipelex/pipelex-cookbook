@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: © 2025 Evotis S.A.S.
+# SPDX-License-Identifier: Elastic-2.0
+# "Pipelex" is a trademark of Evotis S.A.S.
+
+domain = "quick_start"
+definition = "Discovering Pipelex"
+
+[pipe]
+[pipe.hello_world]
+PipeLLM = "Write text about Hello World."
+output = "Text"
+llm = { llm_handle = "gpt-4o-mini", temperature = 0.9, max_tokens = "auto" }
+prompt = """
+Write a haiku about Hello World.
+"""

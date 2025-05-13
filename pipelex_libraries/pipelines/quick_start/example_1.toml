@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: © 2025 Evotis S.A.S.
+# SPDX-License-Identifier: Elastic-2.0
+# "Pipelex" is a trademark of Evotis S.A.S.
+
+domain = "example_1"
+definition = "Summarize text using LLMs."
+system_prompt = "You are a helpful assistant that summarizes text."
+
+[concept]
+Explanation = "A text that explains something."
+
+[pipe]
+[pipe.summarize_text_difficulty_1]
+PipeLLM = "Summarize text."
+input = "example_1.Explanation"
+output = "native.Text"
+llm = { llm_handle = "gpt-4o-mini", temperature = 0.1, max_tokens = "auto" }
+prompt_template = """
+You are given a text.
+Your task is to summarize it accurately.
+Your answer should take 2 sentences maximum.
+
+@text
+
+Please provide only the summary, with no additional text or explanations.
+"""

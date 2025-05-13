@@ -1,0 +1,137 @@
+# SPDX-FileCopyrightText: © 2025 Evotis S.A.S.
+# SPDX-License-Identifier: Elastic-2.0
+# "Pipelex" is a trademark of Evotis S.A.S.
+
+domain = "gantt"
+definition = "The domain for gantt charts"
+system_prompt = "You are an expert in gantt charts, you know all the different tricks, forms, traps"
+
+[concept]
+GanttTimescaleDescription = "Description of the timescale used in a specific gantt chart"
+GanttTaskName = "Names of a task in a gantt chart"
+GanttTaskDetails = "Task in a gantt chart"
+GanttChart = "A gantt chart transcript fully detailing the contents of the chart"
+GanttTranscript = "A gantt chart transcript fully detailing the contents of the chart in markdown format"
+[concept.GanttChartImage]
+Concept = "A gantt chart detailing a project timeline"
+structure = "ImageContent"
+refines = ["native.Image"]
+
+[pipe]
+[pipe.extract_gantt_timescale]
+PipeLLM = "Describe the timescale of a gantt chart"
+input = "GanttChartImage"
+output = "GanttTimescaleDescription"
+images = ["gantt_chart_image"]
+llm = "llm_to_extract_diagram"
+llm_to_structure = "llm_to_extract_diagram"
+prompt_template = """
+I am sharing an image of a Gantt chart.
+Please analyze the timescale: what is the smallest unit detailed in the time scale?
+"""
+
+[pipe.extract_gantt_task_names]
+PipeLLM = "List all the tasks"
+input = "GanttChartImage"
+output = "GanttTaskName"
+images = ["gantt_chart_image"]
+llm = "llm_to_extract_diagram"
+llm_to_structure = "llm_to_extract_diagram"
+prompt_template = """
+I am sharing an image of a Gantt chart.
+Please analyse the image and list all the task names.
+"""
+multiple_output = true
+
+[pipe.extract_details_of_task]
+PipeLLM = "Extract the precise dates of the task, start_date and end_date"
+input = "GanttTaskName"
+output = "GanttTaskDetails"
+images = ["gantt_chart_image"]
+llm = "llm_to_extract_diagram"
+prompt_template = """
+I am sharing an image of a Gantt chart.
+Please analyse the image and for a given task name (and only this task), extract the precise dates of the task: start_date and end_date.
+
+Be careful, the time unit is this:
+{{ gantt_timescale|tag("timescale") }}
+
+If the task is a milestone, then only output the start_date.
+
+Here is the name of the task you have to extract the dates for:
+{{ gantt_task_name|tag("task_name") }}
+"""
+
+[pipe.gather_in_a_gantt_chart]
+PipeLLM = "Gather all the tasks in a gantt chart"
+input = "GanttTaskDetails"
+output = "GanttChart"
+prompt_template = """
+Now you will receive all the necessary information to build a gantt chart.
+
+Here are the task details:
+{{ details_of_all_tasks|tag("details_of_all_tasks") }}
+"""
+
+[pipe.extract_gantt_by_steps]
+PipeSequence = "Extract all details from a gantt chart"
+input = "GanttChartImage"
+output = "GanttChart"
+steps = [
+    { pipe = "extract_gantt_timescale", result = "gantt_timescale" },
+    { pipe = "extract_gantt_task_names", result = "gantt_task_names" },
+    { pipe = "extract_details_of_task", batch_as = "gantt_task_name", result = "details_of_all_tasks" },
+    { pipe = "gather_in_a_gantt_chart", result = "gantt_chart" },
+]
+
+
+########################################################
+# Transcript direct in one go
+########################################################
+
+[pipe.transcript_gantt_direct]
+PipeLLM = "Extract all details from a gantt chart"
+input = "GanttChartImage"
+output = "GanttTranscript"
+images = ["image"]
+llm = "llm_to_extract_diagram"
+prompt_template = """
+# **Task:** You are provided with an image depicting a planning or timeline.
+Your objective is to produce a clear, comprehensive, and detailed description of the planning or timeline, focusing on its structure, events, and key details.
+
+# **Requirements:**
+ 1. **Extract and list all dates** along with their corresponding events.
+ 2. **Highlight durations** and any additional relevant information included in the timeline.
+
+# **Guidelines:**
+ - Ensure there is no confusion between day dates and week numbers.
+ - Avoid inventing or assuming dates that are not clearly presented.
+ - Flag any dates or information that appear inaccurate, unclear, or challenging to extract.
+
+# **Output:**
+For each swimlane, extract the events and their corresponding dates from the Gantt chart image.
+Either it's a sequence of punctual events, in that case output them like this:
+- [swimlane title] (punctual): date1, date2, date3, ...
+
+Or if it's a time interval, output it like this:
+- [swimlane title] (interval): start_date to end_date
+
+Additional events, if any, can be added like this (adapt to bullet point to the kind of timing used for each additional event):
+- [additional label]: date
+
+Use basic markdown to present this information in a clear and readable manner, like this:
+```
+# Gantt chart transcript
+
+## Timescale
+[simple and clear summary of the timescale units used, start and end date...]
+
+## Swimlanes
+[the list of swimlanes detailed using the format described above]
+
+## Additional events
+[the additional events if any]
+```
+
+No intro phrase is needed, no conclusion, and don't include ticks ``` or <xml> tags either, just the pure markdown.
+"""

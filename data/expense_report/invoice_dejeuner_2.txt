@@ -1,0 +1,27 @@
+invoice_id: 2
+🧾 Reçu
+Bistro des Quinconces
+15 Allées de Tourny
+33000 Bordeaux, France
+SIRET : 823 456 789 00023
+TVA intracom : FR23 823456789
+📞 05 57 01 23 45
+
+Date : 05/09/2017
+Heure : 12:42
+N° Ticket : 108-17-0905
+
+Détail :
+1× Plat du jour ......................... 12,00 €
+
+1× Eau minérale ...................... 2,00 €
+
+1× Café ................................... 1,00 €
+
+Total TTC : 15,00 €
+TVA incluse (10%)
+Paiement : Carte bancaire (CB)
+Statut : Payé ✔️
+
+Merci de votre visite !
+Bistro des Quinconces

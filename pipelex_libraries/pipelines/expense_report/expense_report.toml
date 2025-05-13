@@ -1,0 +1,58 @@
+# SPDX-FileCopyrightText: © 2025 Evotis S.A.S.
+# SPDX-License-Identifier: Elastic-2.0
+# "Pipelex" is a trademark of Evotis S.A.S.
+
+domain = "expense_report"
+
+[concept] ############### Concept definitions ###############
+
+ExpenseReportText = "The text of the expense report"
+ExpenseReport = "The extracted information of the expense report"
+VAT = "Value Added Tax information for expenses"
+
+[concept.ExpenseReportImage]
+Concept = "The image of the expense report"
+structure = "ImageContent"
+refines = ["native.Image"]
+
+
+[pipe] ############### Pipeline definitions ###############
+[pipe.extract_expense_report]
+PipeParallel = "Extract useful information from an expense report"
+input = "ExpenseReportText"
+output = "Composite"
+parallels = [
+   { pipe = "extract_employee_from_expense_report", result = "employee" },
+   { pipe = "extract_expenses_from_expense_report", result = "expenses" },
+]
+
+
+[pipe.match_expense_with_invoice]
+PipeLLM = "Match an expense with the corresponding invoice"
+input = "Expense"
+output = "Expense"
+prompt_template = """
+Match the expense with its corresponding invoice:
+
+@expense
+
+@invoices
+"""
+
+[pipe.extract_invoices]
+PipeBatch = "Process invoices in batch"
+input = "Text"
+output = "Invoice"
+branch_pipe_code = "extract_invoice"
+input_list_name = "invoice_text_list"
+input_item_name = "invoice_text"
+
+[pipe.process_expense_report]
+PipeSequence = "Process an expense report by extracting employee info, expenses, and processing each expense"
+output = "ExpenseValidation"
+steps = [
+   { pipe = "extract_expense_report", result = "expense_report_composite" },
+   { pipe = "process_invoice", batch_over = "invoice_text_list", batch_as = "invoice_text", result = "invoices" },
+   { pipe = "match_expense_with_invoice", batch_over = "expenses", batch_as = "expense", result = "matched_expenses" },
+   { pipe = "arbitrate_expense", batch_over = "matched_expenses", batch_as = "matched_expense", result = "arbitrated_expenses" },
+]

@@ -1,0 +1,48 @@
+# SPDX-FileCopyrightText: © 2025 Evotis S.A.S.
+# SPDX-License-Identifier: Elastic-2.0
+# "Pipelex" is a trademark of Evotis S.A.S.
+
+domain = "expense_report"
+
+[concept]
+ExpenseCategory = "Type of expense (restauration, péage, billet d'avion, accessoires d'ordinateurs, affaires de bureau)"
+
+[pipe.classify_expense]
+PipeLLM = "Classify the type of expense"
+input = "Expense"
+output = "ExpenseCategory"
+system_prompt = """You are an expert in French business expense classification."""
+prompt_template = """
+Classify this expense:
+
+@matched_expense
+
+Classify as one of:
+1. restauration - Restaurant meals and food expenses
+2. peage - Highway tolls and transportation fees
+3. billet_d_avion - Airline tickets and travel expenses
+4. accessoires_d_ordinateurs - Computer accessories and equipment
+5. affaires_de_bureau - Office supplies and materials
+"""
+
+[pipe.expense_conditional_validation]
+PipeCondition = "Choose the rules to apply"
+input = "Expense"
+output = "RulesToApply"
+expression = "expense_category.category"
+
+[pipe.expense_conditional_validation.pipe_map]
+restauration = "validate_expense_restauration"
+mileage = "validate_expense_mileage"
+trip = "validate_expense_trip"
+office_supplies = "validate_expense_office_supplies"
+
+
+[pipe.arbitrate_expense]
+PipeSequence = "Arbitrate an expense"
+input = "Expense"
+output = "expense_report.ExpenseValidationCombo"
+steps = [
+    { pipe = "classify_expense", result = "expense_category" },
+    { pipe = "expense_conditional_validation", result = "expense_validation_combos" },
+]
