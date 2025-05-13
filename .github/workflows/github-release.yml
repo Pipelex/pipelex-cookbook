@@ -33,6 +33,7 @@ jobs:
           path: dist/
 
   github-release:
+    needs: [build]
     name: >-
       Sign the Python 🐍 distribution 📦 with Sigstore
       and upload them to GitHub Release
