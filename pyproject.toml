@@ -10,18 +10,22 @@ authors = ["Evotis S.A.S. <evotis@pipelex.com>"]
 maintainers = ["Pipelex staff <oss@pipelex.com>"]
 license = "Elastic License 2.0"
 readme = "README.md"
-homepage = "https://github.com/Pipelex/pipelex"
+repository = "https://github.com/Pipelex/pipelex"
+homepage = "https://pipelex.com"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Operating System :: OS Independent",
 ]
+[tool.poetry.urls]
+Documentation = "https://github.com/Pipelex/pipelex/blob/dev/doc/Documentation.md"
+Changelog = "https://github.com/Pipelex/pipelex/blob/dev/CHANGELOG.md"
 
 [[tool.poetry.packages]]
 include = "cookbook"
 
 [tool.poetry.dependencies]
-python = ">=3.11,<3.12"
+beautifulsoup4 = "^4.13.4"
 pipelex = { version = "0.1.14", extras = [
     "mistralai",
     "anthropic",
@@ -29,7 +33,7 @@ pipelex = { version = "0.1.14", extras = [
     "bedrock",
     "fal",
 ] }
-beautifulsoup4 = "^4.13.4"
+python = ">=3.11,<3.12"
 
 [tool.poetry.group.dev.dependencies]
 boto3-stubs = "^1.35.24"
