@@ -22,7 +22,7 @@ include = "cookbook"
 
 [tool.poetry.dependencies]
 python = ">=3.11,<3.12"
-pipelex = { version = "^0.1.14", extras = [
+pipelex = { path = "../pipelex", extras = [
     "mistralai",
     "anthropic",
     "google",

@@ -29,3 +29,6 @@ dist/
 
 # Results
 results/
+
+# temps
+temp/

@@ -1,0 +1,23 @@
+domain = "power_extractor"
+definition = "The domain for power extractor"
+
+
+[pipe.write_markdown_from_page_content]
+PipeLLM = "Write markdown from page content"
+input = "documents.PageContent"
+output = "TextContent"
+images = ["page_content.screenshot"]
+prompt_template = """
+You are an OCR model, output the markdown of the input image.
+To help you do so, a previous traditional OCR model has already extracted the text from the document.
+@page_content.text_and_images.text
+"""
+
+[pipe.update_page_content_with_markdown]
+PipeSequence = "Update page content with markdown"
+input = "documents.PageContent"
+output = "TextContent"
+steps = [
+    { pipe = "extract_page_contents_from_pdf", result = "page_content" },
+    { pipe = "write_markdown_from_page_content", batch_as = "page_content", result = "markdown" },
+]
