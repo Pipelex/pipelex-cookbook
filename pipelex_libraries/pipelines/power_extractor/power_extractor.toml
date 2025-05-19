@@ -7,13 +7,21 @@ PipeLLM = "Write markdown from page content"
 input = "documents.PageContent"
 output = "TextContent"
 images = ["page_content.screenshot"]
+system_prompt = """You are multimodal LLM, expert at converting images into perfect markdown."""
 prompt_template = """
-You are an OCR model, output the markdown of the input image.
-To help you do so, a previous traditional OCR model has already extracted the text from the document.
+You are given an image which is a screenshot of a page of a document.
+You are also given the text extracted from the page by an OCR model.
+Your task is to output the perfect markdown of the page.
+
+Here is the text extracted from the page:
 @page_content.text_and_images.text
+
+- Make sure you do not miss any information from the page.
+- Output only the markdown, nothing else. No need for "```markdown" or "```".
+- Make sure latex is rendered correctly.
 """
 
-[pipe.update_page_content_with_markdown]
+[pipe.power_markdown_extractor]
 PipeSequence = "Update page content with markdown"
 input = "documents.PageContent"
 output = "TextContent"
