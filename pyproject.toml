@@ -4,32 +4,36 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "pipelex-cookbook"
-version = "0.1.0"
-description = "Cookbook for Pipelex, open-source dev tool based on a simple declarative language that lets you define replicable, structured, composable LLM pipelines."
+version = "0.1.1"
+description = "Cookbook for Pipelex, the open-source declarative language that lets you define replicable, structured, composable LLM pipelines."
 authors = ["Evotis S.A.S. <evotis@pipelex.com>"]
 maintainers = ["Pipelex staff <oss@pipelex.com>"]
 license = "Elastic License 2.0"
 readme = "README.md"
-homepage = "https://github.com/Pipelex/pipelex"
+repository = "https://github.com/Pipelex/pipelex-cookbook"
+homepage = "https://pipelex.com"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Operating System :: OS Independent",
 ]
+[tool.poetry.urls]
+Documentation = "https://github.com/Pipelex/pipelex/blob/dev/doc/Documentation.md"
+Changelog = "https://github.com/Pipelex/pipelex/blob/dev/CHANGELOG.md"
 
 [[tool.poetry.packages]]
 include = "cookbook"
 
 [tool.poetry.dependencies]
-python = ">=3.11,<3.12"
-pipelex = { path = "../pipelex", extras = [
+beautifulsoup4 = "^4.13.4"
+pipelex = { version = "0.1.14", extras = [
     "mistralai",
     "anthropic",
     "google",
     "bedrock",
     "fal",
 ] }
-beautifulsoup4 = "^4.13.4"
+python = ">=3.11,<3.12"
 
 [tool.poetry.group.dev.dependencies]
 boto3-stubs = "^1.35.24"
