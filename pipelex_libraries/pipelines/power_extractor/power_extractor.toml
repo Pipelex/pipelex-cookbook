@@ -16,12 +16,12 @@ Your task is to output the perfect markdown of the page.
 Here is the text extracted from the page:
 @page_content.text_and_images.text
 
-- Make sure you do not miss any information from the page.
+- Make sure you do not miss any information from the page. The text extracted from the page is not always complete. Your task is to complete the text and add the missing information using the page screenshot.
 - Output only the markdown, nothing else. No need for "```markdown" or "```".
-- Make sure latex is rendered correctly.
+- In case of diagrams, charts, visualizations, etc. with text inside (the text may not appear in the input text - the OCR fails to extract it), make sure to include the text in the markdown. Feel free to chose the most appropriate markdown element to do so.
 """
 
-[pipe.power_markdown_extractor]
+[pipe.power_extractor]
 PipeSequence = "Update page content with markdown"
 input = "documents.PageContent"
 output = "TextContent"
