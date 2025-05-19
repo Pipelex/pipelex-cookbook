@@ -26,7 +26,14 @@ include = "cookbook"
 
 [tool.poetry.dependencies]
 beautifulsoup4 = "^4.13.4"
-pipelex = { version = "0.2.0", extras = [
+# pipelex = { version = "0.2.0", extras = [
+#     "mistralai",
+#     "anthropic",
+#     "google",
+#     "bedrock",
+#     "fal",
+# ] }
+pipelex = { path = "../pipelex", extras = [
     "mistralai",
     "anthropic",
     "google",

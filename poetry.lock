@@ -2224,46 +2224,44 @@ xmp = ["defusedxml"]
 
 [[package]]
 name = "pipelex"
-version = "0.2.0"
+version = "0.2.1"
 description = "Pipelex is an open-source dev tool based on a simple declarative language that lets you define replicable, structured, composable LLM pipelines."
 optional = false
-python-versions = "<3.12,>=3.11"
+python-versions = ">=3.11,<3.12"
 groups = ["main"]
-files = [
-    {file = "pipelex-0.2.0-py3-none-any.whl", hash = "sha256:11c4150affb6c86b3e95b2f6fcc3c4a8a48e3127ed127f2c50963969f5c3e9e5"},
-    {file = "pipelex-0.2.0.tar.gz", hash = "sha256:67648b7ce608bee0b74f5ae281c5df6c0565c207aff6b94c637b231cc380e24a"},
-]
+files = []
+develop = false
 
 [package.dependencies]
-aioboto3 = {version = ">=13.4.0,<14.0.0", optional = true, markers = "extra == \"bedrock\""}
+aioboto3 = {version = "^13.4.0", optional = true}
 aiofiles = "<24.0"
-anthropic = {version = ">=0.49.0,<0.50.0", optional = true, markers = "extra == \"anthropic\""}
-boto3 = {version = ">=1.34.131,<2.0.0", optional = true, markers = "extra == \"bedrock\""}
-fal-client = {version = ">=0.4.1,<0.5.0", optional = true, markers = "extra == \"fal\""}
-filetype = ">=1.2.0,<2.0.0"
-google-auth-oauthlib = {version = ">=1.2.1,<2.0.0", optional = true, markers = "extra == \"google\""}
-httpx = ">=0.27.0,<0.28.0"
+anthropic = {version = "^0.49.0", optional = true}
+boto3 = {version = "^1.34.131", optional = true}
+fal-client = {version = "^0.4.1", optional = true}
+filetype = "^1.2.0"
+google-auth-oauthlib = {version = "^1.2.1", optional = true}
+httpx = "^0.27.0"
 instructor = "1.7.2"
-jinja2 = ">=3.1.4,<4.0.0"
-json2html = ">=1.3.0,<2.0.0"
+jinja2 = "^3.1.4"
+json2html = "^1.3.0"
 kajson = "0.1.0"
-markdown = ">=3.6,<4.0"
-mistralai = {version = "1.5.2", optional = true, markers = "extra == \"mistralai\""}
-networkx = ">=3.4.2,<4.0.0"
-openai = ">=1.60.1,<2.0.0"
-openpyxl = ">=3.1.5,<4.0.0"
-pandas = ">=2.2.3,<3.0.0"
-pillow = ">=11.2.1,<12.0.0"
+markdown = "^3.6"
+mistralai = {version = "1.5.2", optional = true}
+networkx = "^3.4.2"
+openai = "^1.60.1"
+openpyxl = "^3.1.5"
+pandas = "^2.2.3"
+pillow = "^11.2.1"
 pydantic = "2.10.6"
-pypdfium2 = ">=4.30.1,<5.0.0"
-python-dotenv = ">=1.0.1,<2.0.0"
-PyYAML = ">=6.0.2,<7.0.0"
-rich = ">=13.8.1,<14.0.0"
-shortuuid = ">=1.0.13,<2.0.0"
-toml = ">=0.10.2,<0.11.0"
-typer = ">=0.12.5,<0.13.0"
-typing-extensions = ">=4.12.2,<5.0.0"
-yattag = ">=1.15.2,<2.0.0"
+pypdfium2 = "^4.30.1"
+python-dotenv = "^1.0.1"
+PyYAML = "^6.0.2"
+rich = "^13.8.1"
+shortuuid = "^1.0.13"
+toml = "^0.10.2"
+typer = "^0.12.5"
+typing-extensions = "^4.12.2"
+yattag = "^1.15.2"
 
 [package.extras]
 anthropic = ["anthropic (>=0.49.0,<0.50.0)"]
@@ -2271,6 +2269,10 @@ bedrock = ["aioboto3 (>=13.4.0,<14.0.0)", "boto3 (>=1.34.131,<2.0.0)"]
 fal = ["fal-client (>=0.4.1,<0.5.0)"]
 google = ["google-auth-oauthlib (>=1.2.1,<2.0.0)"]
 mistralai = ["mistralai (==1.5.2)"]
+
+[package.source]
+type = "directory"
+url = "../pipelex"
 
 [[package]]
 name = "pluggy"
@@ -4382,4 +4384,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.12"
-content-hash = "372c862f903980ae4d8e71758abf62c2ceb4face1b8f04c473c3a76c8d0f3bca"
+content-hash = "5d06b87f54298e1555acf478eee9fc16182d443a47c330e148e6452c0ce54dab"
