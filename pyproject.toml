@@ -5,12 +5,12 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry]
 name = "pipelex-cookbook"
 version = "0.1.1"
-description = "Cookbook for Pipelex, open-source dev tool based on a simple declarative language that lets you define replicable, structured, composable LLM pipelines."
+description = "Cookbook for Pipelex, the open-source declarative language that lets you define replicable, structured, composable LLM pipelines."
 authors = ["Evotis S.A.S. <evotis@pipelex.com>"]
 maintainers = ["Pipelex staff <oss@pipelex.com>"]
 license = "Elastic License 2.0"
 readme = "README.md"
-repository = "https://github.com/Pipelex/pipelex"
+repository = "https://github.com/Pipelex/pipelex-cookbook"
 homepage = "https://pipelex.com"
 classifiers = [
     "Programming Language :: Python :: 3",
