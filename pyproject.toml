@@ -33,7 +33,7 @@ beautifulsoup4 = "^4.13.4"
 #     "bedrock",
 #     "fal",
 # ] }
-pipelex = { path = "../pipelex", extras = [
+pipelex = { path = "../pipelex", develop = true, extras = [
     "mistralai",
     "anthropic",
     "google",
