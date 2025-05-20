@@ -20,7 +20,7 @@ async def summarize_by_mission(text: str):
     working_memory = WorkingMemoryFactory.make_from_text(text=text)
 
     # Run the pipe
-    pipe_output = await execute_mission(
+    pipe_output, mission_id = await execute_mission(
         pipe_code="summarize_by_steps",
         working_memory=working_memory,
     )
@@ -31,7 +31,7 @@ async def summarize_by_mission(text: str):
     pretty_print(summary_text, title="Summarized by steps")
 
     # Get the report (tokens used and cost)
-    get_report_delegate().general_report()
+    get_report_delegate(mission_id=mission_id).general_report()
     job_history.print_mermaid_flowchart_url()
 
 
