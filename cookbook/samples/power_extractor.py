@@ -10,56 +10,53 @@ from pipelex import pretty_print
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
 from pipelex.run import run_pipe_code
-from pipelex.tools.utils.file_utils import save_text_to_path
 
+from cookbook.utils.results_utils import output_result
 from pipelex_libraries.pipelines.power_extractor.power_extractor import merge_markdown_and_images
 
-SAMPLE_NAME = "extract_table"
+SAMPLE_NAME = "power_extractor"
 
 
 async def power_extractor(
-    pdf_url: str,
-    export_dir: Optional[str] = None,
+    pdf_path: str,
 ) -> None:
     working_memory = WorkingMemoryFactory.make_from_pdf(
-        pdf_url=pdf_url,
+        pdf_url=pdf_path,
         concept_code="documents.PDF",
         name="pdf",
     )
     pipe_output = await run_pipe_code(
         pipe_code="power_extractor",
         working_memory=working_memory,
-        params={"export_dir": export_dir} if export_dir else None,
     )
     working_memory = pipe_output.working_memory
     markdown_and_images = merge_markdown_and_images(working_memory)
     pretty_print(markdown_and_images)
 
-    # Save the markdown and images to a file
-    # TODO: Use ActivityHandlerForResultFiles for exporting results
-
-    if export_dir:
-        save_text_to_path(
-            text=markdown_and_images.text.rendered_markdown() if markdown_and_images.text else "",
-            path=os.path.join(export_dir, "markdown_with_ocr_then_vision.md"),
+    if markdown_and_images.text:
+        # Get the base filename without extension
+        base_filename = os.path.splitext(os.path.basename(pdf_path))[0]
+        output_result(
+            sample_name=SAMPLE_NAME,
+            title=f"Markdown with OCR and Vision for {base_filename}",
+            file_name=f"{base_filename}_markdown.md",
+            content=markdown_and_images.text.rendered_markdown(),
         )
 
 
 async def main():
     # 2 pages PDF with some illustrations
     # OCR method only would have been sufficient (see markdown_with_ocr_then_vision.md VS markdown_with_ocr.md)
-    PDF_URL_1 = "data/illustrated_train_article.pdf"
+    PDF_PATH_1 = "data/illustrated_train_article.pdf"
     await power_extractor(
-        pdf_url=PDF_URL_1,
-        export_dir="results/power_extractor/illustrated_train_article/",
+        pdf_path=PDF_PATH_1,
     )
 
     # A page with a diagram with text inside
     # OCR method would have been insufficient (see markdown_with_ocr_then_vision.md VS markdown_with_ocr.md)
-    PDF_URL_2 = "data/fintech_article_with_text_in_images.pdf"
+    PDF_PATH_2 = "data/fintech_article_with_text_in_images.pdf"
     await power_extractor(
-        pdf_url=PDF_URL_2,
-        export_dir="results/power_extractor/fintech_article_with_text_in_images/",
+        pdf_path=PDF_PATH_2,
     )
 
 
