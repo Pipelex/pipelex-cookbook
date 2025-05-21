@@ -8,7 +8,7 @@ from pipelex import pretty_print
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.hub import get_report_delegate
 from pipelex.mission.execute import execute_mission
-from pipelex.mission.mission_tracker import job_history
+from pipelex.mission.track.mission_tracker import job_history
 from pipelex.pipelex import Pipelex
 
 from pipelex_libraries.pipelines.quick_start.summarize import StructuredSummary
