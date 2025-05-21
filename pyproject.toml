@@ -26,14 +26,7 @@ include = "cookbook"
 
 [tool.poetry.dependencies]
 beautifulsoup4 = "^4.13.4"
-# pipelex = { git = "https://github.com/Pipelex/pipelex.git", branch = "fix/pipe-batch-required-stuffs", extras = [
-#     "mistralai",
-#     "anthropic",
-#     "google",
-#     "bedrock",
-#     "fal",
-# ] }
-pipelex = { path = "../pipelex", develop = true, extras = [
+pipelex = { git = "https://github.com/Pipelex/pipelex.git", branch = "feature/pipe-ocr-2", extras = [
     "mistralai",
     "anthropic",
     "google",

@@ -3,8 +3,6 @@
 # "Pipelex" is a trademark of Evotis S.A.S.
 
 import asyncio
-import os
-from typing import Optional
 
 from pipelex import pretty_print
 from pipelex.core.stuff_content import TextAndImagesContent
