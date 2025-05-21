@@ -30,9 +30,10 @@ async def simple_ocr(page_scan: str):
     )
     page_content_list = pipe_output.main_stuff_as_list(item_type=PageContent)
     pretty_print(page_content_list)
-    export_dir = get_results_dir_path(sample_name=SAMPLE_NAME)
-    for page_content in page_content_list.items:
-        page_content.save_to_directory(directory=export_dir)
+    output_dir = get_results_dir_path(sample_name=SAMPLE_NAME)
+    for page_index, page_content in enumerate(page_content_list.items):
+        directory_for_page = f"{output_dir}/page_{page_index}"
+        page_content.save_to_directory(directory=directory_for_page)
 
 
 async def main():
