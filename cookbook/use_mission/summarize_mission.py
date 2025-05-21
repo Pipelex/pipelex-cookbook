@@ -31,7 +31,8 @@ async def summarize_by_mission(text: str):
     pretty_print(summary_text, title=f"Summarized by steps — mission {mission_id}")
 
     # Get the report (tokens used and cost)
-    get_report_delegate().general_report()
+    get_report_delegate().generate_report(mission_id=mission_id)
+    get_report_delegate().generate_report()
     job_history.print_mermaid_flowchart_url()
 
 

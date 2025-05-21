@@ -31,7 +31,7 @@ async def summarize_by_steps(text: str):
     pretty_print(summary_text, title="Summarized by steps")
 
     # Get the report (tokens used and cost)
-    get_report_delegate().general_report()
+    get_report_delegate().generate_report()
     job_history.print_mermaid_flowchart_url()
 
 

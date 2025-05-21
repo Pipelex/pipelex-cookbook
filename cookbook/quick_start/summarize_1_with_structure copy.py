@@ -29,7 +29,7 @@ async def summarize_with_structure(text: str):
     pretty_print(summary, title="Structured summary")
 
     # Get the report (tokens used and cost)
-    get_report_delegate().general_report()
+    get_report_delegate().generate_report()
 
 
 with open("data/sample_text_1.txt", "r") as f:
