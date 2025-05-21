@@ -28,10 +28,10 @@ async def summarize_by_mission(text: str):
     summary_text = pipe_output.main_stuff_as_text
 
     # Print the output
-    pretty_print(summary_text, title="Summarized by steps")
+    pretty_print(summary_text, title=f"Summarized by steps — mission {mission_id}")
 
     # Get the report (tokens used and cost)
-    get_report_delegate(mission_id=mission_id).general_report()
+    get_report_delegate().general_report()
     job_history.print_mermaid_flowchart_url()
 
 
