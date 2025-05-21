@@ -2224,13 +2224,13 @@ xmp = ["defusedxml"]
 
 [[package]]
 name = "pipelex"
-version = "0.2.0"
+version = "0.2.1"
 description = "Pipelex is an open-source dev tool based on a simple declarative language that lets you define replicable, structured, composable LLM pipelines."
 optional = false
 python-versions = ">=3.11,<3.12"
 groups = ["main"]
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 aioboto3 = {version = "^13.4.0", optional = true}
@@ -2271,10 +2271,8 @@ google = ["google-auth-oauthlib (>=1.2.1,<2.0.0)"]
 mistralai = ["mistralai (==1.5.2)"]
 
 [package.source]
-type = "git"
-url = "https://github.com/Pipelex/pipelex.git"
-reference = "fix/pipe-batch-required-stuffs"
-resolved_reference = "a5bc64a2457a9b322770f982c6012bd1f6498620"
+type = "directory"
+url = "../pipelex"
 
 [[package]]
 name = "pluggy"
@@ -4386,4 +4384,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.12"
-content-hash = "8fe05f8277609f28f829e07235b5f582ff1957cceae7f9d16d2cf4b0d02d7ea0"
+content-hash = "6f952ed1b2b2c354f1d32bd7ae74cf0d16b0653e65d8b9eb4a098ffd4525a56b"

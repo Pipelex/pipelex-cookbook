@@ -21,9 +21,9 @@ class TextAndImages(BaseModel):
 # TODO: wrap this in a PipeFunc
 def merge_markdown_and_images(working_memory: WorkingMemory) -> TextAndImagesContent:
     # Pages extracted from the PDF by PipeOCR
-    page_contents_list = working_memory.get_stuff_as_list(item_type=PageContent, name="page_content")
+    page_contents_list = working_memory.get_stuff_as_list(item_type=PageContent, name="page_contents")
     # Markdown text extracted from the Pages by PipeLLM
-    page_markdown_list = working_memory.main_stuff_as_list(item_type=TextContent)
+    page_markdown_list = working_memory.get_stuff_as_list(item_type=TextContent, name="markdown")
 
     # Check if the number of markdown and text_and_images are the same
     if len(page_markdown_list.items) != len(page_contents_list.items):

@@ -26,6 +26,6 @@ PipeSequence = "Update page content with markdown"
 input = "documents.PageContent"
 output = "TextContent"
 steps = [
-    { pipe = "extract_page_contents_from_pdf", result = "page_content" },
+    { pipe = "extract_page_contents_from_pdf", result = "page_contents" },
     { pipe = "write_markdown_from_page_content", batch_as = "page_content", result = "markdown" },
 ]
