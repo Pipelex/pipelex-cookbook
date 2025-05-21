@@ -16,7 +16,6 @@ PDF = "A PDF document"
 PipeOcr = "Extract page contents from a PDF document"
 input = "native.PDF"
 output = "documents.PageContent"
-add_screenshots = true
-include_images = true
 pdf = "pdf"
-
+page_images = true
+screenshots = false

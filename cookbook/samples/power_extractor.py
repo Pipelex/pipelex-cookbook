@@ -10,7 +10,7 @@ from pipelex import pretty_print
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
 from pipelex.run import run_pipe_code
-from pipelex.tools.utils.file_utils import save_to_path
+from pipelex.tools.utils.file_utils import save_text_to_path
 
 from pipelex_libraries.pipelines.power_extractor.power_extractor import merge_markdown_and_images
 
@@ -39,8 +39,8 @@ async def power_extractor(
     # TODO: Use ActivityHandlerForResultFiles for exporting results
 
     if export_dir:
-        save_to_path(
-            text_to_save=markdown_and_images.text.rendered_markdown() if markdown_and_images.text else "",
+        save_text_to_path(
+            text=markdown_and_images.text.rendered_markdown() if markdown_and_images.text else "",
             path=os.path.join(export_dir, "markdown_with_ocr_then_vision.md"),
         )
 
