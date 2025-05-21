@@ -11,11 +11,14 @@ from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
 from pipelex.run import run_pipe_code
 
+from cookbook.utils.results_utils import get_results_dir_path, output_result
+
 PDF_URL = "data/illustrated_train_article.pdf"
-OUTPUT_DIR = "results/ocr/illustrated_train_article/"
+
+SAMPLE_NAME = "simple_ocr"
 
 
-async def simple_ocr(page_scan: str, export_dir: Optional[str] = None):
+async def simple_ocr(page_scan: str):
     working_memory = WorkingMemoryFactory.make_from_pdf(
         pdf_url=page_scan,
         concept_code="documents.PDF",
@@ -27,17 +30,14 @@ async def simple_ocr(page_scan: str, export_dir: Optional[str] = None):
     )
     page_content_list = pipe_output.main_stuff_as_list(item_type=PageContent)
     pretty_print(page_content_list)
-    if export_dir:
-        for page_content in page_content_list.items:
-            page_content.save_to_directory(directory=export_dir)
+    export_dir = get_results_dir_path(sample_name=SAMPLE_NAME)
+    for page_content in page_content_list.items:
+        page_content.save_to_directory(directory=export_dir)
 
 
 async def main():
     Pipelex.make()
-    await simple_ocr(
-        page_scan=PDF_URL,
-        export_dir=OUTPUT_DIR,
-    )
+    await simple_ocr(page_scan=PDF_URL)
 
 
 if __name__ == "__main__":
