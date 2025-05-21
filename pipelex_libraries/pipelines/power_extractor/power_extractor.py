@@ -23,12 +23,12 @@ def merge_markdown_and_images(working_memory: WorkingMemory) -> TextAndImagesCon
     # Pages extracted from the PDF by PipeOCR
     page_contents_list = working_memory.get_stuff_as_list(item_type=PageContent, name="page_contents")
     # Markdown text extracted from the Pages by PipeLLM
-    page_markdown_list = working_memory.get_stuff_as_list(item_type=TextContent, name="markdown")
+    page_markdown_list = working_memory.get_stuff_as_list(item_type=TextContent, name="markdowns")
 
     # Check if the number of markdown and text_and_images are the same
     if len(page_markdown_list.items) != len(page_contents_list.items):
         raise PageContentAndMarkdownMatchError(
-            f"The number of markdown and text_and_images are not the same: {len(page_markdown_list.items)} != {len(page_contents_list.items)}"
+            f"The number of markdown and page_contents items are not the same: {len(page_markdown_list.items)} != {len(page_contents_list.items)}"
         )
 
     # Concatenate the markdown text
