@@ -13,7 +13,7 @@ from pipelex.run import run_pipe_code
 from cookbook.utils.results_utils import get_results_dir_path
 from pipelex_libraries.pipelines.power_extractor.power_extractor import merge_markdown_and_images
 
-SAMPLE_NAME = "power_extractor"
+SAMPLE_NAME = "pdf_2_power_extractor"
 
 
 async def power_extractor(

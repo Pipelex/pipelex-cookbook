@@ -2229,7 +2229,7 @@ optional = false
 python-versions = ">=3.11,<3.12"
 groups = ["main"]
 files = []
-develop = true
+develop = false
 
 [package.dependencies]
 aioboto3 = {version = "^13.4.0", optional = true}
@@ -2270,8 +2270,10 @@ google = ["google-auth-oauthlib (>=1.2.1,<2.0.0)"]
 mistralai = ["mistralai (==1.5.2)"]
 
 [package.source]
-type = "directory"
-url = "../pipelex"
+type = "git"
+url = "https://github.com/Pipelex/pipelex.git"
+reference = "feature/Mission-tracker"
+resolved_reference = "e6ff748c3768804cdbdb7a7ed829bf7204f942f5"
 
 [[package]]
 name = "pluggy"
@@ -4383,4 +4385,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.12"
-content-hash = "6f952ed1b2b2c354f1d32bd7ae74cf0d16b0653e65d8b9eb4a098ffd4525a56b"
+content-hash = "65f6bcee0adf63022fd5e7a63e22c993ed5e42768c1e5116ea93e91c1564315b"

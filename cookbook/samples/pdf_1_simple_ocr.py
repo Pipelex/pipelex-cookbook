@@ -14,7 +14,7 @@ from cookbook.utils.results_utils import get_results_dir_path
 
 PDF_URL = "data/illustrated_train_article.pdf"
 
-SAMPLE_NAME = "simple_ocr"
+SAMPLE_NAME = "pdf_1_simple_ocr"
 
 
 async def simple_ocr(page_scan: str):
