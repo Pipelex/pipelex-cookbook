@@ -6,8 +6,7 @@ import asyncio
 
 from pipelex import pretty_print
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
-from pipelex.hub import get_report_delegate
-from pipelex.mission.track.mission_tracker import job_history
+from pipelex.hub import get_mission_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.run import run_pipe_code
 
@@ -15,7 +14,6 @@ from pipelex_libraries.pipelines.quick_start.summarize import StructuredSummary
 
 
 async def summarize_by_steps(text: str):
-    job_history.activate()
     # Load the working memory with the text
     working_memory = WorkingMemoryFactory.make_from_text(text=text)
 
@@ -32,7 +30,7 @@ async def summarize_by_steps(text: str):
 
     # Get the report (tokens used and cost)
     get_report_delegate().generate_report()
-    job_history.print_mermaid_flowchart_url()
+    get_mission_tracker().output_flowchart()
 
 
 with open("data/sample_text_1.txt", "r") as f:
