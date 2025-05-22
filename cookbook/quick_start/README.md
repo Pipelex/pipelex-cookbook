@@ -1,4 +1,4 @@
-# Quick Start Examples
+# Quick Start Examples to get started with Pipelex
 
 This folder contains small scripts that demonstrate the basics of running Pipelex.
 Run them from the repository root after installing the dependencies and setting up
