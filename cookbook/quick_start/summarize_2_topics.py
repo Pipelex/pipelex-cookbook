@@ -10,7 +10,6 @@ from pipelex.hub import get_mission_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.run import run_pipe_code
 
-from pipelex_libraries.pipelines.quick_start.summarize import StructuredSummary
 
 
 async def summarize_by_steps(text: str):

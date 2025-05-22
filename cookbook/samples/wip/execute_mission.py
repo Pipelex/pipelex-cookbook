@@ -10,8 +10,6 @@ from pipelex.hub import get_mission_tracker, get_report_delegate
 from pipelex.mission.execute import execute_mission
 from pipelex.pipelex import Pipelex
 
-from pipelex_libraries.pipelines.quick_start.summarize import StructuredSummary
-
 
 async def summarize_by_mission(text: str):
     # Load the working memory with the text
