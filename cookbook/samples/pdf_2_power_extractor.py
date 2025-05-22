@@ -16,11 +16,9 @@ from pipelex_libraries.pipelines.power_extractor.power_extractor import merge_ma
 SAMPLE_NAME = "pdf_2_power_extractor"
 
 
-async def power_extractor(
-    pdf_path: str,
-) -> None:
+async def power_extractor(pdf_url: str) -> None:
     working_memory = WorkingMemoryFactory.make_from_pdf(
-        pdf_url=pdf_path,
+        pdf_url=pdf_url,
         concept_code="documents.PDF",
         name="pdf",
     )
@@ -40,7 +38,7 @@ async def main():
     # simple OCR method would have been insufficient
     PDF_PATH_2 = "data/fintech_article_with_text_in_images.pdf"
     await power_extractor(
-        pdf_path=PDF_PATH_2,
+        pdf_url=PDF_PATH_2,
     )
 
 

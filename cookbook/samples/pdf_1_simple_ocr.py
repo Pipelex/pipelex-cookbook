@@ -17,9 +17,9 @@ PDF_URL = "data/illustrated_train_article.pdf"
 SAMPLE_NAME = "pdf_1_simple_ocr"
 
 
-async def simple_ocr(page_scan: str):
+async def simple_ocr(pdf_url: str):
     working_memory = WorkingMemoryFactory.make_from_pdf(
-        pdf_url=page_scan,
+        pdf_url=pdf_url,
         concept_code="documents.PDF",
         name="pdf",
     )
@@ -37,7 +37,7 @@ async def simple_ocr(page_scan: str):
 
 async def main():
     Pipelex.make()
-    await simple_ocr(page_scan=PDF_URL)
+    await simple_ocr(pdf_url=PDF_URL)
 
 
 if __name__ == "__main__":
