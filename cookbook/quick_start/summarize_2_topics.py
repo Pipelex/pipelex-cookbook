@@ -11,7 +11,6 @@ from pipelex.pipelex import Pipelex
 from pipelex.run import run_pipe_code
 
 
-
 async def summarize_by_steps(text: str):
     # Load the working memory with the text
     working_memory = WorkingMemoryFactory.make_from_text(text=text)

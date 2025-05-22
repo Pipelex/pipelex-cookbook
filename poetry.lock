@@ -2272,8 +2272,8 @@ mistralai = ["mistralai (==1.5.2)"]
 [package.source]
 type = "git"
 url = "https://github.com/Pipelex/pipelex.git"
-reference = "feature/Mission-tracker"
-resolved_reference = "e6ff748c3768804cdbdb7a7ed829bf7204f942f5"
+reference = "dev"
+resolved_reference = "457c38cc505767b599acd161dcc9b4b321a8a63a"
 
 [[package]]
 name = "pluggy"
@@ -4385,4 +4385,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.12"
-content-hash = "65f6bcee0adf63022fd5e7a63e22c993ed5e42768c1e5116ea93e91c1564315b"
+content-hash = "198c6593fc6fd1bff415546931d2b8c01d66455dbdda1a2f7026c1bb8f5d0852"
