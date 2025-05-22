@@ -5,7 +5,7 @@
 import os
 
 from pipelex import pretty_print
-from pipelex.tools.utils.file_utils import save_to_path
+from pipelex.tools.utils.file_utils import save_text_to_path
 from pipelex.tools.utils.path_utils import ensure_path, get_incremental_directory_path, get_incremental_file_path
 
 SAMPLE_RESULTS_DIR_PATH = "results/samples"
@@ -39,5 +39,5 @@ def output_result(
     content: str,
 ):
     result_file_path = get_results_file_path(sample_name, file_name)
-    save_to_path(content, result_file_path)
+    save_text_to_path(content, result_file_path)
     pretty_print(f"file://{os.path.abspath(result_file_path)}", title=title)

@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: © 2025 Evotis S.A.S.
+# SPDX-License-Identifier: Elastic-2.0
+# "Pipelex" is a trademark of Evotis S.A.S.
+
+domain = "power_extractor"
+definition = "The domain for power extractor"
+
+
+[pipe.write_markdown_from_page_content]
+PipeLLM = "Write markdown from page content"
+input = "documents.PageContent"
+output = "TextContent"
+images = ["page_content.screenshot"]
+system_prompt = """You are multimodal LLM, expert at converting images into perfect markdown."""
+prompt_template = """
+You are given an image which is a screenshot of a page of a document.
+You are also given the text extracted from the page by an OCR model.
+Your task is to output the perfect markdown of the page.
+
+Here is the text extracted from the page:
+@page_content.text_and_images.text
+
+- Make sure you do not miss any information from the page. The text extracted from the page is not always complete. Your task is to complete the text and add the missing information using the page screenshot.
+- Output only the markdown, nothing else. No need for "```markdown" or "```".
+- In case of diagrams, charts, visualizations, etc. with text inside (the text may not appear in the input text - the OCR fails to extract it), make sure to include the text in the markdown. Feel free to chose the most appropriate markdown element to do so.
+"""
+
+[pipe.power_extractor]
+PipeSequence = "Update page content with markdown"
+input = "documents.PageContent"
+output = "TextContent"
+steps = [
+    { pipe = "extract_page_contents_from_pdf", result = "page_contents" },
+    { pipe = "write_markdown_from_page_content", batch_as = "page_content", result = "markdowns" },
+]
