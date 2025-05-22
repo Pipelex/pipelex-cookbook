@@ -8,6 +8,8 @@
 
 - WIP Sample for the new execute_mission API: it tracks costs related to a specific mission_id
 
+- Fix for Windows: load text files using explicit "utf-8" encoding
+
 ## [v0.1.1] - 2025-05-19
 
 - Polish pyproject metadata
