@@ -23,7 +23,7 @@ async def hello_world():
     pretty_print(pipe_output, title="Your first Pipelex output")
 
     # Get the report (tokens used and cost)
-    get_report_delegate().general_report()
+    get_report_delegate().generate_report()
 
 
 Pipelex.make()
