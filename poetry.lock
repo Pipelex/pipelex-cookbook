@@ -2272,8 +2272,8 @@ mistralai = ["mistralai (==1.5.2)"]
 [package.source]
 type = "git"
 url = "https://github.com/Pipelex/pipelex.git"
-reference = "feature/page-view"
-resolved_reference = "047540e97e76458422c45467e6e667f34d90d276"
+reference = "dev"
+resolved_reference = "247a78f186eea16c52d095ea5b015bc918a15121"
 
 [[package]]
 name = "pluggy"
@@ -4385,4 +4385,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.12"
-content-hash = "ea8d4a4dc46a040e2c1567970744691066b4b417bea1f789d75104c8893648a9"
+content-hash = "198c6593fc6fd1bff415546931d2b8c01d66455dbdda1a2f7026c1bb8f5d0852"
