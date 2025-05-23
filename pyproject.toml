@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "pipelex-cookbook"
-version = "0.1.3"
+version = "0.1.4"
 description = "Cookbook for Pipelex, the open-source declarative language that lets you define replicable, structured, composable LLM pipelines."
 authors = ["Evotis S.A.S. <evotis@pipelex.com>"]
 maintainers = ["Pipelex staff <oss@pipelex.com>"]
@@ -35,13 +35,7 @@ include = "utils"
 
 [tool.poetry.dependencies]
 beautifulsoup4 = "^4.13.4"
-pipelex = { version = "0.2.1", extras = [
-    "mistralai",
-    "anthropic",
-    "google",
-    "bedrock",
-    "fal",
-] }
+pipelex = {git = "https://github.com/Pipelex/pipelex.git", branch = "dev", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"]}
 python = ">=3.11,<3.12"
 
 [tool.poetry.group.dev.dependencies]
