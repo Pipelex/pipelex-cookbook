@@ -34,7 +34,7 @@ async def extract_table(table_screenshot: str):
     )
 
 
-IMAGE_URL = "data/table_1.png"
+IMAGE_URL = "assets/table_1.png"
 Pipelex.make()
 asyncio.run(
     extract_table(

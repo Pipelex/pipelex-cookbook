@@ -32,7 +32,7 @@ async def summarize_by_mission(text: str):
     get_mission_tracker().output_flowchart()
 
 
-with open("data/sample_text_3.txt", "r", encoding="utf-8") as f:
+with open("assets/sample_text_3.txt", "r", encoding="utf-8") as f:
     text = f.read()
 
 Pipelex.make()

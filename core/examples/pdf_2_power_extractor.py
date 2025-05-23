@@ -36,7 +36,7 @@ async def power_extractor(pdf_url: str) -> None:
 
 async def main():
     # simple OCR method would have been insufficient
-    PDF_PATH_2 = "data/fintech_article_with_text_in_images.pdf"
+    PDF_PATH_2 = "assets/fintech_article_with_text_in_images.pdf"
     await power_extractor(
         pdf_url=PDF_PATH_2,
     )

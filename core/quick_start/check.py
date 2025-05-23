@@ -5,4 +5,4 @@
 from pipelex.pipelex import Pipelex
 
 Pipelex.make()
-print("Pipelex loadded successfully")
+print("Pipelex loaded successfully")

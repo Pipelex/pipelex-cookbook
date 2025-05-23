@@ -32,7 +32,7 @@ async def summarize_with_structure(text: str):
     get_report_delegate().generate_report()
 
 
-with open("data/sample_text_1.txt", "r", encoding="utf-8") as f:
+with open("assets/sample_text_1.txt", "r", encoding="utf-8") as f:
     text = f.read()
 
 Pipelex.make()

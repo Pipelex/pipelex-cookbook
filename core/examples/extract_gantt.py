@@ -44,6 +44,6 @@ async def extract_gantt(image_url: str):
     )
 
 
-IMAGE_URL = "data/gantt/gantt_tree_house.png"
+IMAGE_URL = "assets/gantt/gantt_tree_house.png"
 Pipelex.make()
 asyncio.run(extract_gantt(IMAGE_URL))
