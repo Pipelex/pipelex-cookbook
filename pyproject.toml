@@ -21,17 +21,17 @@ classifiers = [
 Documentation = "https://github.com/Pipelex/pipelex/blob/dev/doc/Documentation.md"
 Changelog = "https://github.com/Pipelex/pipelex/blob/dev/CHANGELOG.md"
 
-# [[tool.poetry.packages]]
-# include = "core"
+[[tool.poetry.packages]]
+include = "core"
 
-# [[tool.poetry.packages]]
-# include = "community"
+[[tool.poetry.packages]]
+include = "community"
 
-# [[tool.poetry.packages]]
-# include = "pipelex_libraries"
+[[tool.poetry.packages]]
+include = "pipelex_libraries"
 
-# [[tool.poetry.packages]]
-# include = "utils"
+[[tool.poetry.packages]]
+include = "utils"
 
 [tool.poetry.dependencies]
 beautifulsoup4 = "^4.13.4"
