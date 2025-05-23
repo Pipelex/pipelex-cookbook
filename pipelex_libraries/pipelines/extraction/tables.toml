@@ -24,7 +24,7 @@ images = ["table_screenshot"]
 llm = "llm_to_extract_tables"
 llm_to_structure = "llm_to_extract_tables"
 prompt_template = """
-You are given a picture (screenshot) of a table, taken from a PDF document.
+You are given an image which is a view of a table, taken from a PDF document.
 Your goal is to extract the table from the image **in html**.
 
 Make sure you do not forget any text.
