@@ -1,83 +1,128 @@
-# Contributing to Pipelex-cookbook
+# Contributing to **Pipelex Cookbook**
 
-Thank you for your interest in contributing! Contributions are very welcome. We appreciate first time contributors and we are happy help you get started. Join our community on Discord and feel free to reach out with questions in the #code-contributions and #pipeline-contributions channels.
+Thank you for sharing your pipeline!  
+This repository exists to showcase **working examples**. The most valuable contribution you can make is a **TOML pipeline (or a small set of them) that others can clone, run, and learn from.**
 
-Everyone interacting in Discord, codebases, mailing lists, events, or any other Pipelex activities is expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md). Please review it before getting started.
+---
 
-Most of the issues that are open for contributions are tagged with `good first issue` or `help-welcome`. If you see an issue that isn't tagged that you're interested in, post a comment with your approach, and we'll be happy to assign it to you. If you submit a fix that isn't linked to an issue you're assigned, there's chance it won't be accepted. Don't hesitate to ping the Pipelex team on Discord to discuss your choice of issue before getting to work.
+## 📑 Quick Checklist
 
-We are open to contributions to Pipelex-cookbook:
+| ✅ Do | 🚫 Don’t |
+|-------|---------|
+| Put new .toml and .py files under `community/<topic>/<title>/` | Add custom code to `core/` (reserved for curated demos) |
+| Add a short comment header describing the pipeline, its inputs, and outputs | Submit a file without context |
+| Run `pipelex validate` before committing | Hard-code API keys or secrets |
 
-- **Bug fixes**: Crashes, incorrect output, performance issues
-- **Feature**: New API, CLI flag, module, test coverage
-- **Refactor**: Rethink architecture
-- **Chore**: Dependency updates, config tweaks, file renames
-- **Doc**: Main docs, SWE Agent rules, tutorials, examples, READMEs
-- **CI/CD**: GitHub Actions, packaging, release tooling
+---
 
-## Contribution process
+## 1. What Can I Contribute?
 
-- Fork the pipelex-cookbook repository
-- Clone the repository locally
-- Install dependencies: `make install` (creates .venv and installs dependencies)
-- Copy `.env.example` to `.env` and fill in required API keys (at least OpenAI)
-- Run checks to make sure all is good: `make check` & `make runtests`
-- Create a branch with the format user_name/category/short_slug where category is one of: `feature`, `fix`, `refactor`, `doc`, `cicd` or `chore`
-- Make and commit changes
-- Push your local branch to your fork
-- Open a PR that [links to an existing Issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) which does not include the `needs triage` label
-- Write a PR title and description by filling the template
-- CI tests will be triggered and maintainers will review the code
-- Respond to feedback if required
-- Merge the contribution
+* **New pipelines** – end-to-end examples solving a clear task (preferred)  
+* **Enhancements** – improved prompts, cheaper model settings, extra comments  
+* **Docs** – README snippets, diagrams, walkthroughs
 
-## Requirements
+Bug-fixes to existing samples are welcome, but the core Pipelex library lives in the separate `pipelex` repository.
 
-- Python ≥ 3.11 < 3.12
-- poetry ≥ 2.0.1
+---
 
-## Development Setup
+## 2. Repository Layout
 
-- Fork & clone the repository
-- Run `make install` to set up virtualenv and dependencies
-- Copy `.env.example` to `.env` and configure API keys
-- Use Poetry for dependency management:
-  - Runtime deps: `poetry add <package>`
-  - Dev deps: `poetry add --group dev <package>`
-  - Keep dependencies alphabetically ordered in pyproject.toml
+```
 
-## Pull Request Process
+pipelex-cookbook/
+├── core/             # Official, curated demos
+└── community/        # ⭐ Community contributions
+└── <topic>/
+├── my\_pipe.toml
+└── README.md      (optional extra context)
 
-- Fork the pipelex-cookbook repository
-- Clone the repository locally
-- Install dependencies: `make install` (creates .venv and installs dependencies)
-- Copy `.env.example` to `.env` and fill in required API keys (at least OpenAI)
-- Run checks to make sure all is good: `make check` & `make runtests`
-- Create a branch for your feature/bug-fix with the format user_name/feature/some_feature or user_name/fix/some_bugfix
-- Make and commit changes
-- Push your local branch to your fork
-- When it's ready, run quality tests:
-- Run `make fix-unused-imports` to removed unused imports
-- Run `make check` for formatting & linting with Ruff, and type-checking with Pyright and Mypy
-- Run `make runtests` for test suite
-- Open a PR that [links to an existing Issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) including a PR title and description
-- Mark as Draft until CI passes
-- Maintainers will review the code
-- Respond to feedback if required
-- Merge the contribution
+````
 
-## Environment Setup
+Choose or create a **topic folder** (`rag`, `finance-qa`, `games`, …) that best fits your pipeline.
 
-- Copy `.env.example` to `.env`
-- Fill in required credentials (OPENAI_API_KEY, AWS_ACCESS_KEY_ID, etc.)
-- Never commit `.env`
+---
 
-## For Maintainers
+## 3. Before You Start
 
-- Use `make bump-version` to update version in pyproject.toml
+1. **Fork & clone** this repo.  
+2. Run `make install` to set up a virtual environment with Pipelex and test dependencies.  
+3. Copy `.env.example` to `.env`, then add at least `OPENAI_API_KEY` (or another key your pipeline needs).  
+4. Create a branch:  
+   ```bash
+   git checkout -b <your-name>/<pipeline>/<slug>
+````
 
-## License
+---
 
-- Pipelex-cookbook is licensed under Elastic v2 license [ELv2](LICENSE)
-- You have to sign our [CLA](CLA.md) during your first pull request process otherwise we're not able to accept your contributions.
-- The process signature uses the [CLA assistant lite](https://github.com/marketplace/actions/cla-assistant-lite).
+## 4. Authoring Guidelines
+
+| Aspect             | Rule                                                                                              |
+| ------------------ | ------------------------------------------------------------------------------------------------- |
+| **File name**      | Use snake\_case, no spaces: `summarize_news.toml`                                                 |
+| **Comment header** | `toml<br># Pipeline: Summarize News<br># Inputs: RSS URL<br># Outputs: JSON {title, summary}<br>` |
+| **Secrets**        | Read from environment variables; never hard-code keys                                             |
+| **Dependencies**   | If needed, list them in `community/<topic>/requirements.txt`                                      |
+| **Runability**     | Default config should run on the free or lowest-cost model tier when possible                     |
+
+Someone should be able to run:
+
+```bash
+pipelex run community/<topic>/your_pipe.toml
+```
+
+and reproduce your results.
+
+---
+
+## 5. Local Sanity Check
+
+```bash
+# Validate TOML schema and I/O shapes
+make validate-pipes  # wraps `pipelex validate community/**.toml`
+
+# Optional: lint headers, spell-check docs
+make lint-docs
+```
+
+Passing these checks locally saves time during review.
+
+---
+
+## 6. Opening Your Pull Request
+
+1. Push your branch to your fork.
+2. Open a PR to `main` and choose the **Community Pipeline** template.
+3. Fill out the checklist (validation passed, description added, external dependencies listed).
+4. Keep the PR in **Draft** until CI is green.
+5. A maintainer will do a light review; you remain the long-term maintainer of your pipeline.
+
+Use clear titles such as `feat(pipeline): summarise_finance_news` or `add(game_dialogue_gen)`.
+
+---
+
+## 7. Communication Channels
+
+| Purpose                     | Where                                 |
+| --------------------------- | ------------------------------------- |
+| Ask “is this idea a fit?”   | GitHub **Discussions → Show & Tell**  |
+| Report a cookbook bug       | GitHub **Issues**                     |
+| Real-time chat / pairing    | **Discord** `#pipeline-contributions` |
+| Private or security matters | `security@pipelex.dev`                |
+
+---
+
+## 8. Legal Bits
+
+* **License** – By contributing, you agree your submission is MIT-licensed like the rest of this repo.
+* **CLA** – The first time you open a PR, the CLA-assistant bot will guide you through signing the Contributor License Agreement.
+* **Code of Conduct** – Be kind. All interactions fall under [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
+
+---
+
+### Thank You!
+
+Pipelines are the heart of Pipelex—every new example helps the community build faster.
+Happy piping! 🚀
+
+```
+```

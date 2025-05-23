@@ -10,9 +10,9 @@ from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
 from pipelex.run import run_pipe_code
 
-from cookbook.utils.results_utils import get_results_dir_path
+from utils.results_utils import get_results_dir_path
 
-PDF_URL = "data/illustrated_train_article.pdf"
+PDF_URL = "assets/illustrated_train_article.pdf"
 
 SAMPLE_NAME = "pdf_1_simple_ocr"
 
