@@ -18,5 +18,5 @@ which can handle complex documents with text embedded in images, thanks to a sec
 Run any sample from the repository root, for example:
 
 ```bash
-python cookbook/samples/extract_table.py
+python core/examples/extract_table.py
 ```

@@ -8,8 +8,8 @@ from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
 from pipelex.run import run_pipe_code
 
-from cookbook.utils.results_utils import output_result
-from pipelex_libraries.pipelines.extraction.tables import HtmlTable
+from pipelex_libraries.pipelines.examples.extraction.tables import HtmlTable
+from utils.results_utils import output_result
 
 SAMPLE_NAME = "extract_table"
 
@@ -34,7 +34,7 @@ async def extract_table(table_screenshot: str):
     )
 
 
-IMAGE_URL = "data/table_1.png"
+IMAGE_URL = "assets/table_1.png"
 Pipelex.make()
 asyncio.run(
     extract_table(

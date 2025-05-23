@@ -10,8 +10,8 @@ from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
 from pipelex.run import run_pipe_code
 
-from cookbook.utils.results_utils import get_results_dir_path
-from pipelex_libraries.pipelines.power_extractor.power_extractor import merge_markdown_and_images
+from pipelex_libraries.pipelines.examples.power_extractor.power_extractor import merge_markdown_and_images
+from utils.results_utils import get_results_dir_path
 
 SAMPLE_NAME = "pdf_2_power_extractor"
 
@@ -36,7 +36,7 @@ async def power_extractor(pdf_url: str) -> None:
 
 async def main():
     # simple OCR method would have been insufficient
-    PDF_PATH_2 = "data/fintech_article_with_text_in_images.pdf"
+    PDF_PATH_2 = "assets/fintech_article_with_text_in_images.pdf"
     await power_extractor(
         pdf_url=PDF_PATH_2,
     )

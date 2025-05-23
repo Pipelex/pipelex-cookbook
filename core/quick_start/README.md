@@ -6,10 +6,10 @@ your `.env` file.
 
 - `check.py` verifies that the library loads correctly.
 - `hello_world.py` runs a minimal pipeline that returns a greeting.
-- `summarize.py` loads the text in `data/sample_text_1.txt` and produces a structured summary.
+- `summarize.py` loads the text in `assets/sample_text_1.txt` and produces a structured summary.
 
 Example:
 
 ```bash
-python cookbook/quick_start/hello_world.py
+python core/quick_start/hello_world.py
 ```
