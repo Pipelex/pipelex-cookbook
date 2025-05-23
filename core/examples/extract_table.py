@@ -8,8 +8,8 @@ from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
 from pipelex.run import run_pipe_code
 
-from cookbook.utils.results_utils import output_result
-from pipelex_libraries.pipelines.extraction.tables import HtmlTable
+from pipelex_libraries.pipelines.examples.extraction.tables import HtmlTable
+from utils.results_utils import output_result
 
 SAMPLE_NAME = "extract_table"
 

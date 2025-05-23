@@ -21,8 +21,17 @@ classifiers = [
 Documentation = "https://github.com/Pipelex/pipelex/blob/dev/doc/Documentation.md"
 Changelog = "https://github.com/Pipelex/pipelex/blob/dev/CHANGELOG.md"
 
-[[tool.poetry.packages]]
-include = "cookbook"
+# [[tool.poetry.packages]]
+# include = "core"
+
+# [[tool.poetry.packages]]
+# include = "community"
+
+# [[tool.poetry.packages]]
+# include = "pipelex_libraries"
+
+# [[tool.poetry.packages]]
+# include = "utils"
 
 [tool.poetry.dependencies]
 beautifulsoup4 = "^4.13.4"
@@ -61,7 +70,7 @@ types-toml = "^0.10.8.20240310"
 check_untyped_defs = true
 exclude = "^.*\\.venv/.*$"
 mypy_path = "."
-packages = ["cookbook", "pipelex_libraries"]
+packages = ["core", "community", "pipelex_libraries", "utils"]
 plugins = ["pydantic.mypy"]
 python_version = "3.11"
 warn_return_any = true
@@ -79,7 +88,7 @@ enableExperimentalFeatures = false
 enableTypeIgnoreComments = true
 exclude = ["**/node_modules", "**/__pycache__"]
 extraPaths = ["./tests"]
-include = ["cookbook", "pipelex_libraries"]
+include = ["core", "community", "pipelex_libraries", "utils"]
 pythonVersion = "3.11"
 reportAbstractUsage = "error"
 reportArgumentType = "error"
