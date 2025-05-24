@@ -35,7 +35,13 @@ include = "utils"
 
 [tool.poetry.dependencies]
 beautifulsoup4 = "^4.13.4"
-pipelex = {git = "https://github.com/Pipelex/pipelex.git", branch = "dev", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"]}
+pipelex = { version = "0.2.2", extras = [
+    "mistralai",
+    "anthropic",
+    "google",
+    "bedrock",
+    "fal",
+] }
 python = ">=3.11,<3.12"
 
 [tool.poetry.group.dev.dependencies]

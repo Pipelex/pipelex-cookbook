@@ -362,14 +362,14 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "boto3-stubs"
-version = "1.38.21"
-description = "Type annotations for boto3 1.38.21 generated with mypy-boto3-builder 8.11.0"
+version = "1.38.23"
+description = "Type annotations for boto3 1.38.23 generated with mypy-boto3-builder 8.11.0"
 optional = false
 python-versions = ">=3.8"
 groups = ["dev"]
 files = [
-    {file = "boto3_stubs-1.38.21-py3-none-any.whl", hash = "sha256:685130a7d5b8388144412d66466c1739a536b8d804308b6508ea9a7897f3cd4b"},
-    {file = "boto3_stubs-1.38.21.tar.gz", hash = "sha256:81bf885522c783456f343552a16f227e368b06af7021238d209e3e256237410e"},
+    {file = "boto3_stubs-1.38.23-py3-none-any.whl", hash = "sha256:fb6f97862fa67f8c3052a936ef4e012880a6c0719fce5b94b24e205c300c24dd"},
+    {file = "boto3_stubs-1.38.23.tar.gz", hash = "sha256:f7632c193f06828b984d7e2bcfbc8c5eca8066ed390a235ad9f35f72307512bc"},
 ]
 
 [package.dependencies]
@@ -425,7 +425,7 @@ bedrock-data-automation-runtime = ["mypy-boto3-bedrock-data-automation-runtime (
 bedrock-runtime = ["mypy-boto3-bedrock-runtime (>=1.38.0,<1.39.0)"]
 billing = ["mypy-boto3-billing (>=1.38.0,<1.39.0)"]
 billingconductor = ["mypy-boto3-billingconductor (>=1.38.0,<1.39.0)"]
-boto3 = ["boto3 (==1.38.21)"]
+boto3 = ["boto3 (==1.38.23)"]
 braket = ["mypy-boto3-braket (>=1.38.0,<1.39.0)"]
 budgets = ["mypy-boto3-budgets (>=1.38.0,<1.39.0)"]
 ce = ["mypy-boto3-ce (>=1.38.0,<1.39.0)"]
@@ -1986,14 +1986,14 @@ signedtoken = ["cryptography (>=3.0.0)", "pyjwt (>=2.0.0,<3)"]
 
 [[package]]
 name = "openai"
-version = "1.81.0"
+version = "1.82.0"
 description = "The official Python library for the openai API"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "openai-1.81.0-py3-none-any.whl", hash = "sha256:1c71572e22b43876c5d7d65ade0b7b516bb527c3d44ae94111267a09125f7bae"},
-    {file = "openai-1.81.0.tar.gz", hash = "sha256:349567a8607e0bcffd28e02f96b5c2397d0d25d06732d90ab3ecbf97abf030f9"},
+    {file = "openai-1.82.0-py3-none-any.whl", hash = "sha256:8c40647fea1816516cb3de5189775b30b5f4812777e40b8768f361f232b61b30"},
+    {file = "openai-1.82.0.tar.gz", hash = "sha256:b0a009b9a58662d598d07e91e4219ab4b1e3d8ba2db3f173896a92b9b874d1a7"},
 ]
 
 [package.dependencies]
@@ -2226,41 +2226,43 @@ name = "pipelex"
 version = "0.2.2"
 description = "Pipelex is an open-source dev tool based on a simple declarative language that lets you define replicable, structured, composable LLM pipelines."
 optional = false
-python-versions = ">=3.11,<3.12"
+python-versions = "<3.12,>=3.11"
 groups = ["main"]
-files = []
-develop = false
+files = [
+    {file = "pipelex-0.2.2-py3-none-any.whl", hash = "sha256:235f24bc36b0c12b34f8c6738d95164d8d4be9b48636c46c47defdfe5b5c2b67"},
+    {file = "pipelex-0.2.2.tar.gz", hash = "sha256:2c729656e62ee1205fd65b9fc972dbe337881c6c938195517d254e93b23d74bf"},
+]
 
 [package.dependencies]
-aioboto3 = {version = "^13.4.0", optional = true}
+aioboto3 = {version = ">=13.4.0,<14.0.0", optional = true, markers = "extra == \"bedrock\""}
 aiofiles = "<24.0"
-anthropic = {version = "^0.49.0", optional = true}
-boto3 = {version = "^1.34.131", optional = true}
-fal-client = {version = "^0.4.1", optional = true}
-filetype = "^1.2.0"
-google-auth-oauthlib = {version = "^1.2.1", optional = true}
-httpx = "^0.27.0"
+anthropic = {version = ">=0.49.0,<0.50.0", optional = true, markers = "extra == \"anthropic\""}
+boto3 = {version = ">=1.34.131,<2.0.0", optional = true, markers = "extra == \"bedrock\""}
+fal-client = {version = ">=0.4.1,<0.5.0", optional = true, markers = "extra == \"fal\""}
+filetype = ">=1.2.0,<2.0.0"
+google-auth-oauthlib = {version = ">=1.2.1,<2.0.0", optional = true, markers = "extra == \"google\""}
+httpx = ">=0.27.0,<0.28.0"
 instructor = "1.7.2"
-jinja2 = "^3.1.4"
-json2html = "^1.3.0"
+jinja2 = ">=3.1.4,<4.0.0"
+json2html = ">=1.3.0,<2.0.0"
 kajson = "0.1.0"
-markdown = "^3.6"
-mistralai = {version = "1.5.2", optional = true}
-networkx = "^3.4.2"
-openai = "^1.60.1"
-openpyxl = "^3.1.5"
-pandas = "^2.2.3"
-pillow = "^11.2.1"
+markdown = ">=3.6,<4.0"
+mistralai = {version = "1.5.2", optional = true, markers = "extra == \"mistralai\""}
+networkx = ">=3.4.2,<4.0.0"
+openai = ">=1.60.1,<2.0.0"
+openpyxl = ">=3.1.5,<4.0.0"
+pandas = ">=2.2.3,<3.0.0"
+pillow = ">=11.2.1,<12.0.0"
 pydantic = "2.10.6"
-pypdfium2 = "^4.30.1"
-python-dotenv = "^1.0.1"
-PyYAML = "^6.0.2"
-rich = "^13.8.1"
-shortuuid = "^1.0.13"
-toml = "^0.10.2"
-typer = "^0.12.5"
-typing-extensions = "^4.12.2"
-yattag = "^1.15.2"
+pypdfium2 = ">=4.30.1,<5.0.0"
+python-dotenv = ">=1.0.1,<2.0.0"
+PyYAML = ">=6.0.2,<7.0.0"
+rich = ">=13.8.1,<14.0.0"
+shortuuid = ">=1.0.13,<2.0.0"
+toml = ">=0.10.2,<0.11.0"
+typer = ">=0.12.5,<0.13.0"
+typing-extensions = ">=4.12.2,<5.0.0"
+yattag = ">=1.15.2,<2.0.0"
 
 [package.extras]
 anthropic = ["anthropic (>=0.49.0,<0.50.0)"]
@@ -2268,12 +2270,6 @@ bedrock = ["aioboto3 (>=13.4.0,<14.0.0)", "boto3 (>=1.34.131,<2.0.0)"]
 fal = ["fal-client (>=0.4.1,<0.5.0)"]
 google = ["google-auth-oauthlib (>=1.2.1,<2.0.0)"]
 mistralai = ["mistralai (==1.5.2)"]
-
-[package.source]
-type = "git"
-url = "https://github.com/Pipelex/pipelex.git"
-reference = "dev"
-resolved_reference = "247a78f186eea16c52d095ea5b015bc918a15121"
 
 [[package]]
 name = "pluggy"
@@ -4029,14 +4025,14 @@ files = [
 
 [[package]]
 name = "types-networkx"
-version = "3.4.2.20250515"
+version = "3.4.2.20250523"
 description = "Typing stubs for networkx"
 optional = false
 python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "types_networkx-3.4.2.20250515-py3-none-any.whl", hash = "sha256:3cbed973948448efc713550956fc21aa423d85e4419d96b14c4fcfbbe7953a9c"},
-    {file = "types_networkx-3.4.2.20250515.tar.gz", hash = "sha256:b81a5b1ccdff793698cc566ccfe6be5d64713f6f2aa80374f592005f416e5ff0"},
+    {file = "types_networkx-3.4.2.20250523-py3-none-any.whl", hash = "sha256:c8743e177411c22d586ae8a20c5f0a83d078de98156f31e22b0f26b412c315af"},
+    {file = "types_networkx-3.4.2.20250523.tar.gz", hash = "sha256:c35e7b39b72e3fc1a8a2c13df7609c34e41fc63d1ddaeec8fe5ed019c08e9e51"},
 ]
 
 [package.dependencies]
@@ -4385,4 +4381,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.12"
-content-hash = "198c6593fc6fd1bff415546931d2b8c01d66455dbdda1a2f7026c1bb8f5d0852"
+content-hash = "64cd7e6172f7b06f675a2256840575033eae9cca6e15efb0639d1ef4e2bf24a3"
