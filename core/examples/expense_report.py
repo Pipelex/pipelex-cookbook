@@ -19,13 +19,13 @@ def read_text_file(file_path: str) -> str:
 
 
 async def process_expense_report():
-    invoice_dejeuner_1 = read_text_file("data/expense_report/invoice_dejeuner_1.txt")
-    invoice_dejeuner_2 = read_text_file("data/expense_report/invoice_dejeuner_2.txt")
-    invoice_diner = read_text_file("data/expense_report/invoice_diner.txt")
-    invoice_flight = read_text_file("data/expense_report/invoice_flight.txt")
-    invoice_hotel = read_text_file("data/expense_report/invoice_hotel.txt")
-    invoice_trajet = read_text_file("data/expense_report/invoice_trajet.txt")
-    expense_report_text = read_text_file("data/expense_report/expense_report.txt")
+    invoice_dejeuner_1 = read_text_file("assets/expense_report/invoice_dejeuner_1.txt")
+    invoice_dejeuner_2 = read_text_file("assets/expense_report/invoice_dejeuner_2.txt")
+    invoice_diner = read_text_file("assets/expense_report/invoice_diner.txt")
+    invoice_flight = read_text_file("assets/expense_report/invoice_flight.txt")
+    invoice_hotel = read_text_file("assets/expense_report/invoice_hotel.txt")
+    invoice_trajet = read_text_file("assets/expense_report/invoice_trajet.txt")
+    expense_report_text = read_text_file("assets/expense_report/expense_report.txt")
 
     # Create Stuff objects
     invoice_list_stuff = StuffFactory.make_stuff(
