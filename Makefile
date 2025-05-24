@@ -45,7 +45,8 @@ make cleanenv                 - Remove virtual env and lock files
 make cleanderived             - Remove extraneous compiled files, caches, logs, etc.
 make cleanlibraries           - Remove pipelex_libraries
 make cleanall                 - Remove all -> cleanenv + cleanderived + cleanlibraries
-make reinitlibraries          - Remove pipelex_libraries and init libraries again
+make reinitbaselibrary        - Remove pipelex_libraries and init libraries again
+make reinstall                - Reinstall dependencies
 
 make merge-check-ruff-lint    - Run ruff merge check without updating files
 make merge-check-ruff-format  - Run ruff merge check without updating files
@@ -53,6 +54,7 @@ make merge-check-mypy         - Run mypy merge check without updating files
 make merge-check-pyright	  - Run pyright merge check without updating files
 
 make rl                       - Shorthand -> reinitlibraries
+make ri                       - Shorthand -> reinstall
 make run-setup                - Run the setup sequence
 make s                        - Shorthand -> run-setup
 make init                     - Run pipelex init
@@ -152,6 +154,11 @@ cleanenv:
 	find . -type d -wholename './.venv' -exec rm -rf {} + && \
 	echo "Cleaned up virtual env and dependency lock files";
 
+cleanlock:
+	$(call PRINT_TITLE,"Erasing poetry lock file")
+	@find . -name 'poetry.lock' -delete && \
+	echo "Cleaned up poetry lock file";
+
 cleanbaselibrary:
 	$(call PRINT_TITLE,"Erasing derived files and directories")
 	@find . -type d -wholename './pipelex_libraries/pipelines/base_library' -exec rm -rf {} + && \
@@ -159,6 +166,12 @@ cleanbaselibrary:
 
 reinitbaselibrary: cleanbaselibrary init
 	@echo "Reinitialized pipelex base library";
+
+reinstall: cleanenv cleanlock install
+	@echo "Reinstalled dependencies";
+
+ri: reinstall
+	@echo "> done: ri = reinstall"
 
 rl: reinitbaselibrary
 	@echo "> done: rl = reinitlibraries"
