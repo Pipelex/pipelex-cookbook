@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.6] - 2025-05-25
+
+- Fix version dependency to Pipelex
+
 ## [v0.1.5] - 2025-05-25
 
 - Reorganize repo

@@ -1470,14 +1470,14 @@ files = [
 
 [[package]]
 name = "kajson"
-version = "0.1.0"
-description = ""
+version = "0.1.4"
+description = "Powerful universal JSON encoder/decoder for Python objects with support for pydantic v2."
 optional = false
 python-versions = "<3.12,>=3.11"
 groups = ["main"]
 files = [
-    {file = "kajson-0.1.0-py3-none-any.whl", hash = "sha256:7e3b5de23acd5446e5c54d22c966067cd4d0834daabe1ae8f777e4dddabc35cc"},
-    {file = "kajson-0.1.0.tar.gz", hash = "sha256:1d0b6264ec603da15c8d625b795bf5521c77ea4f42a6bfd0cebd6a183e54e0c2"},
+    {file = "kajson-0.1.4-py3-none-any.whl", hash = "sha256:fbea1ae670744f91ccd8754adf9fa98315aa2b9bd20d76be753cb86771eaa131"},
+    {file = "kajson-0.1.4.tar.gz", hash = "sha256:61f11fb3452afad9cf9c53febe1f2f28af3d2fe8744fb7cc17fd0732e46fccb0"},
 ]
 
 [package.dependencies]
@@ -2164,14 +2164,14 @@ xmp = ["defusedxml"]
 
 [[package]]
 name = "pipelex"
-version = "0.2.4"
+version = "0.2.7"
 description = "Pipelex is an open-source dev tool based on a simple declarative language that lets you define replicable, structured, composable LLM pipelines."
 optional = false
 python-versions = "<3.12,>=3.11"
 groups = ["main"]
 files = [
-    {file = "pipelex-0.2.4-py3-none-any.whl", hash = "sha256:e6906a4abc9c37f9d77ae064bfdbf84cbbc6e7d7bbbeaa8b62cbd2d5012a81f3"},
-    {file = "pipelex-0.2.4.tar.gz", hash = "sha256:370ec907431d1ca929283bb0b1438ea317278297f4a3f85b6c51395a5af78f0f"},
+    {file = "pipelex-0.2.7-py3-none-any.whl", hash = "sha256:d59c8d76829f8111822238691e8cfabe940d80d69ed1dafc39fa20a1ce38b592"},
+    {file = "pipelex-0.2.7.tar.gz", hash = "sha256:673735866c999aba424bb71f62e0cf3566c35a6e668c163b7ecd84eb194e0df3"},
 ]
 
 [package.dependencies]
@@ -2186,7 +2186,7 @@ httpx = ">=0.27.0,<0.28.0"
 instructor = "1.7.2"
 jinja2 = ">=3.1.4,<4.0.0"
 json2html = ">=1.3.0,<2.0.0"
-kajson = "0.1.0"
+kajson = "0.1.4"
 markdown = ">=3.6,<4.0"
 mistralai = {version = "1.5.2", optional = true, markers = "extra == \"mistralai\""}
 networkx = ">=3.4.2,<4.0.0"
@@ -4270,4 +4270,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<3.12"
-content-hash = "bba512fc38d8af1d907079ddbd0f8e482558b27918f1f961153a1f753fec9653"
+content-hash = "a09aa6a1fe3feeb178a49d741e18da9478f43eab4a3e8eb82d589d4e39a3d9cd"
