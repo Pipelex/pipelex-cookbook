@@ -330,3 +330,6 @@ fix-unused-imports: env
 	$(call PRINT_TITLE,"Fixing unused imports")
 	. $(VIRTUAL_ENV)/bin/activate && \
 	$(LOCAL_RUFF) check --select=F401 --fix -v .
+
+get-uv-version:
+	@awk '/^\[tool.uv\]/{f=1;next} f==1&&/^required-version/{print $$3;exit}' pyproject.toml | tr -d '"'

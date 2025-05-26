@@ -60,7 +60,7 @@ pip install --upgrade pip
 make install
 ```
 
-This will install the Pipelex python library and its dependencies using poetry.
+This will install the Pipelex python library and its dependencies using uv.
 
 ### Set up environment variables
 
