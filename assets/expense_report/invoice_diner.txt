@@ -1,0 +1,27 @@
+invoice_id: 3
+🧾 Reçu
+Ristorante La Tavola
+22 Rue du Palais Gallien
+33000 Bordeaux, France
+SIRET : 812 345 678 00017
+TVA intracom : FR58 812345678
+📞 05 56 78 90 12
+
+Date : 06/09/2017
+Heure : 21:17
+N° Ticket : 045-17-0906
+
+Détail :
+2× Menu italien complet ............ 70,00 €
+
+1× Vin rouge Chianti ................ 18,00 €
+
+2× Café expresso ...................... 7,00 €
+
+Total TTC : 95,00 €
+TVA incluse (10%)
+Paiement : Carte bancaire (CB)
+Statut : Payé ✔️
+
+Merci et à bientôt !
+La Tavola - Bordeaux 🍝

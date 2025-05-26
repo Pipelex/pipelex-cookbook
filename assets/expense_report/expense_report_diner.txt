@@ -1,0 +1,27 @@
+NOTE DE FRAIS
+
+Nom	Jean MARTIN
+Poste	Business Development Junior
+Nom du responsable	Marie DUPONT
+Type de véhicule	5 CV
+Objet des frais	Mission à Bordeaux
+Mois	Septembre
+Année	2017
+
+DÉTAIL DES DÉPENSES :
+| Date       | Description                         | Hôtel (TTC) | Transport (TTC) | Restaurant (TTC) | Autres (TTC) | Kilométrage | Compensation | Sous-total |
+|------------|--------------------------------------|-------------|------------------|-------------------|--------------|-------------|---------------|-------------|
+| 06/09/2017 | Dîner avec Client                    |             |                  | 95,00 €           |              |             |               | 95,00 €     |
+
+
+
+
+Déclaration :
+Je certifie sur l’honneur avoir personnellement avancé les frais indiqués ci-dessus et demande leur remboursement selon la politique interne de l’entreprise. Je joins le justificatif nécessaire à cette déclaration.
+
+Fait à Paris, le 29 mars 2025
+
+Signature du collaborateur,
+
+Thomas Hébrard
+

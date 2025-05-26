@@ -1,0 +1,31 @@
+invoice_id: 5
+ Facture
+Hôtel Le Régent
+8 Rue Esprit des Lois
+33000 Bordeaux, France
+SIRET : 812 654 987 00019
+TVA intracom : FR66 812654987
+📞 05 56 52 88 99
+✉️ contact@hotel-leregent.fr
+
+Facturé à :
+Jean MARTIN
+Business Development Junior
+Pipelex
+jean.martin@pipelex.com
+
+Date de la facture : 05/09/2017
+N° de facture : REG-20170905-203
+
+🛏️ Détail du séjour
+Description	Quantité	Prix Unitaire TTC	Total TTC
+Nuitée chambre standard	1	92,00 €	92,00 €
+Petit déjeuner continental	1	8,00 €	8,00 €
+🧾 Total
+Libellé	Montant
+Sous-total TTC	100,00 €
+TVA (10%)	9,09 €
+Total TTC	100,00 €
+💳 Mode de paiement : Carte bancaire (CB)
+Paiement effectué le 05/09/2017
+

@@ -1,0 +1,27 @@
+invoice_id: 1
+Reçu
+Café du Port
+1 Quai Deschamps
+33100 Bordeaux, France
+SIRET : 834 567 321 00012
+TVA intracom : FR45 834567321
+📞 05 56 32 45 67
+
+Date : 06/09/2017
+Heure : 12:28
+N° Ticket : 092-17-0906
+
+Détail :
+1× Salade composée .................. 13,50 €
+
+1× Perrier 33cl ........................... 2,00 €
+
+1× Café ...................................... 1,50 €
+
+Total TTC : 17,00 €
+TVA incluse (10%)
+Paiement : Carte bancaire (CB)
+Statut : Payé ✔️
+
+À bientôt !
+Café du Port – Bordeaux

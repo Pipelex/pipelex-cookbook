@@ -1,0 +1,19 @@
+invoice_id: 6
+ Note de frais – Trajet avec véhicule personnel
+Nom : Jean MARTIN
+Poste : Business Development Junior
+Entreprise : Pipelex
+Date : 04/09/2017
+Objet : Trajet domicile → Aéroport Orly (aller-retour)
+
+🚗 Détails du déplacement
+Départ	Arrivée	Distance parcourue	Tarif kilométrique	Montant
+Domicile (Paris)	Aéroport Orly	70 km	0,5479 €/km	38,36 €
+🧾 Total remboursement
+Libellé	Montant
+Indemnité kilométrique	38,36 €
+📝 Déclaration
+Je soussigné Jean MARTIN, certifie avoir utilisé mon véhicule personnel pour les besoins professionnels précités et demande le remboursement selon le barème en vigueur.
+
+Signature :
+Jean MARTIN

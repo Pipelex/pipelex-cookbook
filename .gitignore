@@ -1,0 +1,32 @@
+
+# env
+.env
+
+# venv
+.venv
+venv/
+
+# reports
+reports/
+
+# pycache
+__pycache__
+
+# Python build artifacts
+build/*
+*.egg-info/
+dist/
+*.pyc
+
+# mypy
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
+
+# Results
+results/
+
+# temps
+temp/
+pipelex_super.toml

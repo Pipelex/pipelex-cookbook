@@ -1,0 +1,32 @@
+invoice_id: 4
+Air France
+45 Rue de Paris
+95747 Roissy CDG Cedex, France
+SIRET : 420 495 178 00032
+TVA intracom : FR42 420495178
+📞 09 69 39 36 54
+✉️ support@airfrance.fr
+🌐 www.airfrance.fr
+
+Facturé à :
+Jean MARTIN
+Business Development Junior
+Pipelex
+jean.martin@pipelex.com
+
+Date de la facture : 04/09/2017
+N° de facture : AF-INV-20170904-5821
+Réservation : ZD7R2F
+
+✈️ Détail du vol
+Vol	Date	De	À	Classe	Tarif TTC
+AF7632	04/09/2017	Paris Orly (ORY)	Bordeaux (BOD)	Économie	79,50 €
+AF7639	06/09/2017	Bordeaux (BOD)	Paris Orly (ORY)	Économie	79,50 €
+🧾 Total
+Libellé	Montant
+Sous-total TTC	159,00 €
+TVA (10%)	14,45 €
+Total TTC	159,00 €
+💳 Mode de paiement : Carte bancaire (CB)
+Paiement effectué le 04/09/2017
+

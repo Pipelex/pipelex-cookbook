@@ -1,0 +1,27 @@
+
+
+domain = "images"
+definition = "Generic image-related domain"
+
+[concept]
+ImggPrompt = "Prompt to generate an image"
+VisualDescription = "Visual description of something"
+SpecificImageAnalysis = "Specific analysis of an image"
+
+[concept.Photo]
+Concept = "Photo"
+structure = "ImageContent"
+refines = ["native.Image"]
+
+[pipe]
+
+[pipe.describe_image]
+PipeLLM = "Describe an image"
+input = "native.Image"
+output = "VisualDescription"
+system_prompt = "You are a very good observer."
+images = ["image"]
+llm = "llm_to_describe_img"
+prompt_template = """
+Describe the provided image in great detail.
+"""
