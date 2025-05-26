@@ -1,5 +1,3 @@
-
-
 ifeq ($(wildcard .env),.env)
 include .env
 export
@@ -13,12 +11,16 @@ LOCAL_PYTEST := $(VIRTUAL_ENV)/bin/pytest
 LOCAL_PYRIGHT := $(VIRTUAL_ENV)/bin/pyright
 LOCAL_RUFF := $(VIRTUAL_ENV)/bin/ruff
 
+define GET_UV_VERSION
+$(shell awk '/^\[tool.uv\]/{f=1;next} f==1&&/^required-version/{print $$3;exit}' pyproject.toml | tr -d '"')
+endef
+
 define PRINT_TITLE
-    $(eval PADDED_PROJECT_NAME := $(shell printf '%-15s' "[$(PROJECT_NAME)] " | sed 's/ /=/g'))
-    $(eval PADDED_TARGET_NAME := $(shell printf '%-15s' "($@) " | sed 's/ /=/g'))
+    $(eval PADDED_PROJECT_NAME := $(shell printf '%-15s' "[$(PROJECT_NAME)] " | sed 's/ /=/g'))
+    $(eval PADDED_TARGET_NAME := $(shell printf '%-15s' "($@) " | sed 's/ /=/g'))
     $(if $(1),\
-		$(eval TITLE := $(shell printf '%s' "=== $(PADDED_PROJECT_NAME) $(PADDED_TARGET_NAME)" | sed 's/[[:space:]]/ /g')$(shell echo " $(1) " | sed 's/[[:space:]]/ /g')),\
-		$(eval TITLE := $(shell printf '%s' "=== $(PADDED_PROJECT_NAME) $(PADDED_TARGET_NAME)" | sed 's/[[:space:]]/ /g'))\
+		$(eval TITLE := $(shell printf '%s' "=== $(PADDED_PROJECT_NAME) $(PADDED_TARGET_NAME)" | sed 's/[[:space:]]/ /g')$(shell echo " $(1) " | sed 's/[[:space:]]/ /g')),\
+		$(eval TITLE := $(shell printf '%s' "=== $(PADDED_PROJECT_NAME) $(PADDED_TARGET_NAME)" | sed 's/[[:space:]]/ /g'))\
 	)
 	$(eval PADDED_TITLE := $(shell printf '%-126s' "$(TITLE)" | sed 's/ /=/g'))
 	@echo ""
@@ -30,9 +32,9 @@ Manage $(PROJECT_NAME) located in $(CURDIR).
 Usage:
 
 make env                      - Create python virtual env
-make lock                     - Refresh poetry.lock without updating anything
+make lock                     - Refresh uv.lock without updating anything
 make install                  - Create local virtualenv & install all dependencies
-make update                   - Upgrade dependencies via poetry
+make update                   - Upgrade dependencies via uv
 
 make format                   - format with ruff format
 make lint                     - lint with ruff check
@@ -75,7 +77,7 @@ make fix-unused-imports       - Fix unused imports with ruff
 endef
 export HELP
 
-.PHONY: all help env lock install update format lint pyright mypy cleanderived cleanenv run-setup s runtests test test-with-prints test-inference t ti test-imgg check cc li merge-check-ruff-lint merge-check-ruff-format merge-check-mypy check-unused-imports fix-unused-imports test-name bump-version
+.PHONY: all help env lock install update format lint pyright mypy cleanderived cleanenv run-setup s runtests test test-with-prints test-inference t ti test-imgg check cc li merge-check-ruff-lint merge-check-ruff-format merge-check-mypy check-unused-imports fix-unused-imports test-name bump-version check-uv get-uv-version
 
 all help:
 	@echo "$$HELP"
@@ -85,13 +87,29 @@ all help:
 ### SETUP
 ##########################################################################################
 
-env:
+check-uv:
+	$(call PRINT_TITLE,"Checking UV version")
+	@UV_VERSION=$(GET_UV_VERSION); \
+	if [ -z "$$UV_VERSION" ]; then \
+		echo "Error: UV version not found in pyproject.toml"; \
+		exit 1; \
+	fi; \
+	echo "UV_VERSION: $$UV_VERSION"; \
+	if ! command -v uv >/dev/null 2>&1; then \
+		echo "Installing UV version $$UV_VERSION"; \
+		curl -LsSf https://astral.sh/uv/$$UV_VERSION/install.sh | sh; \
+	elif [ "$$(uv --version | cut -d ' ' -f 2)" != "$$UV_VERSION" ]; then \
+		echo "Updating UV to version $$UV_VERSION"; \
+		curl -LsSf https://astral.sh/uv/$$UV_VERSION/install.sh | sh; \
+	else \
+		echo "UV version $$UV_VERSION is already installed"; \
+	fi
+
+env: check-uv
 	$(call PRINT_TITLE,"Creating virtual environment")
 	@if [ ! -d $(VIRTUAL_ENV) ]; then \
 		echo "Creating Python virtual env in \`${VIRTUAL_ENV}\`"; \
-		python3.11 -m venv $(VIRTUAL_ENV); \
-		. $(VIRTUAL_ENV)/bin/activate && \
-		echo "Created Python virtual env in \`${VIRTUAL_ENV}\`"; \
+		uv venv $(VIRTUAL_ENV) --python 3.11; \
 	else \
 		echo "Python virtual env already exists in \`${VIRTUAL_ENV}\`"; \
 	fi
@@ -103,23 +121,19 @@ init: env
 install: env
 	$(call PRINT_TITLE,"Installing dependencies")
 	@. $(VIRTUAL_ENV)/bin/activate && \
-	$(LOCAL_PYTHON) -m pip install --upgrade pip setuptools wheel && \
-	$(LOCAL_PYTHON) -m pip install "poetry>=2.0.0,<2.1.0" && \
-	$(LOCAL_PYTHON) -m poetry install && \
-	pipelex init && \
-	echo "Installed Pipelex coobook dependencies in ${VIRTUAL_ENV} and initialized Pipelex libraries";
+	uv pip install -e ".[dev]" && \
+	$(VIRTUAL_ENV)/bin/pipelex init && \
+	echo "Installed Pipelex cookbook dependencies in ${VIRTUAL_ENV} and initialized Pipelex libraries";
 
 lock: env
 	$(call PRINT_TITLE,"Resolving dependencies without update")
-	@. $(VIRTUAL_ENV)/bin/activate && \
-	poetry lock && \
-	echo poetry lock without update;
+	@uv lock && \
+	echo "uv lock without update";
 
 update: env
 	$(call PRINT_TITLE,"Updating all dependencies")
-	@. $(VIRTUAL_ENV)/bin/activate && \
-	$(LOCAL_PYTHON) -m pip install --upgrade pip setuptools wheel && \
-	poetry update && \
+	@uv pip compile --upgrade pyproject.toml -o requirements.lock && \
+	uv pip install -e ".[dev]" && \
 	echo "Updated dependencies in ${VIRTUAL_ENV}";
 
 run-setup: env
@@ -146,14 +160,14 @@ cleanderived:
 
 cleanenv:
 	$(call PRINT_TITLE,"Erasing virtual environment")
-	find . -name '.Pipfile.lock' -delete && \
+	find . -name 'requirements.lock' -delete && \
 	find . -type d -wholename './.venv' -exec rm -rf {} + && \
 	echo "Cleaned up virtual env and dependency lock files";
 
 cleanlock:
-	$(call PRINT_TITLE,"Erasing poetry lock file")
-	@find . -name 'poetry.lock' -delete && \
-	echo "Cleaned up poetry lock file";
+	$(call PRINT_TITLE,"Erasing uv lock file")
+	@find . -name 'requirements.lock' -delete && \
+	echo "Cleaned up uv lock file";
 
 cleanbaselibrary:
 	$(call PRINT_TITLE,"Erasing derived files and directories")
@@ -316,11 +330,3 @@ fix-unused-imports: env
 	$(call PRINT_TITLE,"Fixing unused imports")
 	. $(VIRTUAL_ENV)/bin/activate && \
 	$(LOCAL_RUFF) check --select=F401 --fix -v .
-
-CURRENT_VERSION := $(shell grep '^version = ' pyproject.toml | sed -E 's/version = "(.*)"/\1/')
-NEXT_VERSION := $(shell echo $(CURRENT_VERSION) | awk -F. '{$$NF = $$NF + 1;} 1' | sed 's/ /./g')
-
-bump-version: env
-	$(call PRINT_TITLE,"Bumping version from $(CURRENT_VERSION) to $(NEXT_VERSION)")
-	@. $(VIRTUAL_ENV)/bin/activate && poetry version $(NEXT_VERSION)
-	@echo "Version bumped to $(NEXT_VERSION)"
