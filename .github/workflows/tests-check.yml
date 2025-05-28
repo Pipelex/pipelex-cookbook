@@ -56,7 +56,7 @@ jobs:
       - name: Verify UV installation
         run: uv --version
 
-      - name: Install dependencies
+      - name: Install virtual env and dependencies
         run: make install
 
       - name: Run tests
