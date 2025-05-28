@@ -810,8 +810,8 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.2.7"
-source = { registry = "https://pypi.org/simple" }
+version = "0.2.9"
+source = { git = "https://github.com/Pipelex/pipelex.git?rev=dev#8a5b6702b8619f3e04e7548651f16a3c7947c535" }
 dependencies = [
     { name = "aiofiles" },
     { name = "filetype" },
@@ -836,10 +836,6 @@ dependencies = [
     { name = "typer" },
     { name = "typing-extensions" },
     { name = "yattag" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/3e/e5/5bf5d5f745062846440d9e2bb4650eefa979ea65b1b7515ecf05c99be950/pipelex-0.2.7.tar.gz", hash = "sha256:673735866c999aba424bb71f62e0cf3566c35a6e668c163b7ecd84eb194e0df3", size = 157423, upload-time = "2025-05-26T07:24:10.262Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/7c/a5/ec5222711c50847d5f90d9481d22602e3bd760023029f9f997946787aa08/pipelex-0.2.7-py3-none-any.whl", hash = "sha256:d59c8d76829f8111822238691e8cfabe940d80d69ed1dafc39fa20a1ce38b592", size = 262129, upload-time = "2025-05-26T07:24:08.444Z" },
 ]
 
 [package.optional-dependencies]
@@ -894,7 +890,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], specifier = "==0.2.7" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], git = "https://github.com/Pipelex/pipelex.git?rev=dev" },
     { name = "pyright", marker = "extra == 'dev'", specifier = "==1.1.398" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
@@ -1302,7 +1298,7 @@ wheels = [
 
 [[package]]
 name = "typer"
-version = "0.12.5"
+version = "0.16.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -1310,9 +1306,9 @@ dependencies = [
     { name = "shellingham" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c5/58/a79003b91ac2c6890fc5d90145c662fd5771c6f11447f116b63300436bc9/typer-0.12.5.tar.gz", hash = "sha256:f592f089bedcc8ec1b974125d64851029c3b1af145f04aca64d69410f0c9b722", size = 98953, upload-time = "2024-08-24T21:17:57.346Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c5/8c/7d682431efca5fd290017663ea4588bf6f2c6aad085c7f108c5dbc316e70/typer-0.16.0.tar.gz", hash = "sha256:af377ffaee1dbe37ae9440cb4e8f11686ea5ce4e9bae01b84ae7c63b87f1dd3b", size = 102625, upload-time = "2025-05-26T14:30:31.824Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a8/2b/886d13e742e514f704c33c4caa7df0f3b89e5a25ef8db02aa9ca3d9535d5/typer-0.12.5-py3-none-any.whl", hash = "sha256:62fe4e471711b147e3365034133904df3e235698399bc4de2b36c8579298d52b", size = 47288, upload-time = "2024-08-24T21:17:55.451Z" },
+    { url = "https://files.pythonhosted.org/packages/76/42/3efaf858001d2c2913de7f354563e3a3a2f0decae3efe98427125a8f441e/typer-0.16.0-py3-none-any.whl", hash = "sha256:1f79bed11d4d02d4310e3c1b7ba594183bcedb0ac73b27a9e5f28f6fb5b98855", size = 46317, upload-time = "2025-05-26T14:30:30.523Z" },
 ]
 
 [[package]]

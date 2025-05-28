@@ -1,5 +1,6 @@
-from pipelex.core.stuff_content import StructuredContent
 from pydantic import Field
+
+from pipelex.core.stuff_content import StructuredContent
 
 
 class RetrievedExcerpt(StructuredContent):

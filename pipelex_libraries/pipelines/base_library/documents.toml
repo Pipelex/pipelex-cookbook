@@ -15,4 +15,4 @@ input = "PDF"
 output = "PageContent"
 pdf = "pdf"
 page_images = true
-page_views = true
+page_views = false
