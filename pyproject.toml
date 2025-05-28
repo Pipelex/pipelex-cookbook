@@ -48,7 +48,7 @@ Documentation = "https://github.com/Pipelex/pipelex/blob/main/doc/Documentation.
 Changelog = "https://github.com/Pipelex/pipelex/blob/main/CHANGELOG.md"
 
 [tool.uv]
-required-version = ">=0.7.2"
+required-version = "0.7.2"
 
 [tool.mypy]
 check_untyped_defs = true
