@@ -2,11 +2,10 @@ from datetime import datetime
 from enum import StrEnum
 from typing import Generic, List, Literal, Optional, TypeVar, Union
 
-from pydantic import Field, model_validator
-from typing_extensions import Self, override
-
 from pipelex import pretty_print
 from pipelex.core.stuff_content import StructuredContent
+from pydantic import Field, model_validator
+from typing_extensions import Self, override
 
 
 class QuestionCategoryEnum(StrEnum):
