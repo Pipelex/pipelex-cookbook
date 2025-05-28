@@ -273,19 +273,19 @@ test-imgg: env
 
 format: env
 	$(call PRINT_TITLE,"Formatting with ruff")
-	@$(LOCAL_RUFF) format .
+	@uv run ruff format .
 
 lint: env
 	$(call PRINT_TITLE,"Linting with ruff")
-	@$(LOCAL_RUFF) check . --fix
+	@uv run ruff check . --fix
 
 pyright: env
 	$(call PRINT_TITLE,"Typechecking with pyright")
-	@$(LOCAL_PYRIGHT) --pythonpath $(LOCAL_PYTHON)
+	@uv run pyright --pythonpath $(LOCAL_PYTHON)
 
 mypy: env
 	$(call PRINT_TITLE,"Typechecking with mypy")
-	@$(LOCAL_PYTHON) $(LOCAL_MYPY)
+	@uv run mypy
 
 
 ##########################################################################################
@@ -295,23 +295,23 @@ mypy: env
 merge-check-ruff-format: env
 	$(call PRINT_TITLE,"Formatting with ruff")
 	. $(VIRTUAL_ENV)/bin/activate && \
-	$(LOCAL_RUFF) format --check -v .
+	uv run ruff format --check -v .
 
 merge-check-ruff-lint: env check-unused-imports
 	$(call PRINT_TITLE,"Linting with ruff without fixing files")
 	. $(VIRTUAL_ENV)/bin/activate && \
-	$(LOCAL_RUFF) check -v .
+	uv run ruff check -v .
 
 merge-check-pyright: env
 	$(call PRINT_TITLE,"Typechecking with pyright")
 	. $(VIRTUAL_ENV)/bin/activate && \
-	$(LOCAL_PYRIGHT) -p pyproject.toml
+	uv run pyright -p pyproject.toml
 
 merge-check-mypy: env
 	$(call PRINT_TITLE,"Typechecking with mypy")
 	. $(VIRTUAL_ENV)/bin/activate && \
-	$(LOCAL_PYTHON) $(LOCAL_MYPY) --version && \
-	$(LOCAL_PYTHON) $(LOCAL_MYPY) --config-file pyproject.toml
+	uv run mypy --version && \
+	uv run mypy --config-file pyproject.toml
 
 ##########################################################################################
 ### SHORTHANDS
@@ -320,7 +320,7 @@ merge-check-mypy: env
 check-unused-imports: env
 	$(call PRINT_TITLE,"Checking for unused imports without fixing")
 	. $(VIRTUAL_ENV)/bin/activate && \
-	$(LOCAL_RUFF) check --select=F401 --no-fix .
+	uv run ruff check --select=F401 --no-fix .
 
 c: init format lint pyright mypy
 	@echo "> done: c = check"
@@ -340,4 +340,4 @@ li: lock install
 fix-unused-imports: env
 	$(call PRINT_TITLE,"Fixing unused imports")
 	. $(VIRTUAL_ENV)/bin/activate && \
-	$(LOCAL_RUFF) check --select=F401 --fix -v .
+	uv run ruff check --select=F401 --fix -v .
