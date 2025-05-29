@@ -1,72 +1,54 @@
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry]
+[project]
 name = "pipelex-cookbook"
-version = "0.1.6"
+version = "0.1.7"
 description = "Cookbook for Pipelex, the open-source declarative language that lets you define replicable, structured, composable LLM pipelines."
-authors = ["Evotis S.A.S. <evotis@pipelex.com>"]
-maintainers = ["Pipelex staff <oss@pipelex.com>"]
+authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
+maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/Pipelex/pipelex-cookbook"
-homepage = "https://pipelex.com"
+requires-python = ">=3.11,<3.12"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Operating System :: OS Independent",
-    "License :: OSI Approved :: MIT License",
 ]
-exclude = ["tests/"]
 
-[tool.poetry.urls]
-Documentation = "https://github.com/Pipelex/pipelex/blob/dev/doc/Documentation.md"
-Changelog = "https://github.com/Pipelex/pipelex/blob/dev/CHANGELOG.md"
+dependencies = [
+    "beautifulsoup4==4.13.4",
+    "pipelex[mistralai,anthropic,google,bedrock,fal]==0.2.8",
+]
 
-[[tool.poetry.packages]]
-include = "core"
+[tool.setuptools]
+packages = ["core", "assets", "community", "utils"]
 
-[[tool.poetry.packages]]
-include = "community"
+[project.optional-dependencies]
+dev = [
+    "boto3-stubs>=1.35.24",
+    "mypy>=1.11.2",
+    "pyright==1.1.398",
+    "pytest>=8.3.3",
+    "pytest-pretty==1.2.0",
+    "pytest_asyncio>=0.24.0",
+    "ruff>=0.6.8",
+    "types-aioboto3[bedrock,bedrock-runtime]>=13.4.0",
+    "types-aiofiles>=24.1.0.20240626",
+    "types-beautifulsoup4>=4.12.0.20240907",
+    "types-markdown>=3.6.0.20240316",
+    "types-networkx>=3.3.0.20241020",
+    "types-openpyxl>=3.1.5.20250306",
+    "types-requests>=2.32.0.2024091",
+    "types-PyYAML>=6.0.12.20250326",
+    "types-toml>=0.10.8.20240310",
+]
 
-[[tool.poetry.packages]]
-include = "pipelex_libraries"
+[project.urls]
+Homepage = "https://pipelex.com"
+Repository = "https://github.com/Pipelex/pipelex-cookbook"
+Documentation = "https://github.com/Pipelex/pipelex/blob/main/doc/Documentation.md"
+Changelog = "https://github.com/Pipelex/pipelex/blob/main/CHANGELOG.md"
 
-[[tool.poetry.packages]]
-include = "utils"
-
-[tool.poetry.dependencies]
-beautifulsoup4 = "^4.13.4"
-pipelex = { version = "0.2.7", extras = [
-    "mistralai",
-    "anthropic",
-    "google",
-    "bedrock",
-    "fal",
-] }
-python = ">=3.11,<3.12"
-
-[tool.poetry.group.dev.dependencies]
-boto3-stubs = "^1.35.24"
-mypy = "^1.11.2"
-pyright = "1.1.398" # version 1.1.399 generates a ton of false positives
-pytest = "^8.3.3"
-pytest-pretty = "1.2.0"
-pytest_asyncio = "^0.24.0"
-ruff = "^0.6.8"
-types-aioboto3 = { version = "^13.4.0", extras = [
-    "bedrock",
-    "bedrock-runtime",
-] }
-types-aiofiles = "^24.1.0.20240626"
-types-beautifulsoup4 = "^4.12.0.20240907"
-types-markdown = "^3.6.0.20240316"
-types-networkx = "^3.3.0.20241020"
-types-openpyxl = "^3.1.5.20250306"
-types-requests = "^2.32.0.2024091"
-types-PyYAML = "^6.0.12.20250326"
-types-toml = "^0.10.8.20240310"
+[tool.uv]
+required-version = "0.7.2"
 
 [tool.mypy]
 check_untyped_defs = true
@@ -215,3 +197,5 @@ select = [
     "E501",
     "I",
 ]
+
+
