@@ -1,6 +1,0 @@
-
-[pipelex.log_config.package_log_levels]
-pipelex = "INFO"
-
-[cogt.cogt_report_config]
-cost_report_unit_scale = 0.01
