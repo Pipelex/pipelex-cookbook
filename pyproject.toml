@@ -19,7 +19,11 @@ dependencies = [
 ]
 
 [tool.setuptools]
-packages = ["core", "assets", "community", "utils"]
+packages = ["core", "assets", "community", "utils", "tests"]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project.optional-dependencies]
 dev = [
@@ -46,10 +50,6 @@ Homepage = "https://pipelex.com"
 Repository = "https://github.com/Pipelex/pipelex-cookbook"
 Documentation = "https://github.com/Pipelex/pipelex/blob/main/doc/Documentation.md"
 Changelog = "https://github.com/Pipelex/pipelex/blob/main/CHANGELOG.md"
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
 
 [tool.uv]
 required-version = ">=0.7.2"
