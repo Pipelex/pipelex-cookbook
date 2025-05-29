@@ -212,7 +212,7 @@ tn: test
 
 test-with-prints: env
 	$(call PRINT_TITLE,"Unit testing with prints and our rich logs")
-	@echo "• Running unit tests"
+	@echo "• Running unit tests using `$(LOCAL_PYTEST)`"
 	@if [ -n "$(TEST)" ]; then \
 		$(LOCAL_PYTEST) -s -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
 	else \
