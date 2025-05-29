@@ -255,7 +255,7 @@ lint: env
 
 pyright: env
 	$(call PRINT_TITLE,"Typechecking with pyright")
-	@uv run pyright --pythonpath $(LOCAL_PYTHON)
+	@uv run pyright
 
 mypy: env
 	$(call PRINT_TITLE,"Typechecking with mypy")

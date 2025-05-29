@@ -47,6 +47,11 @@ Repository = "https://github.com/Pipelex/pipelex-cookbook"
 Documentation = "https://github.com/Pipelex/pipelex/blob/main/doc/Documentation.md"
 Changelog = "https://github.com/Pipelex/pipelex/blob/main/CHANGELOG.md"
 
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
 [tool.uv]
 required-version = ">=0.7.2"
 
