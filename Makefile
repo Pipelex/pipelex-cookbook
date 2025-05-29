@@ -3,10 +3,10 @@ include .env
 export
 endif
 VIRTUAL_ENV := $(CURDIR)/.venv
-LOCAL_PYTHON := $(VIRTUAL_ENV)/bin/python3.11
 PROJECT_NAME := $(shell grep '^name = ' pyproject.toml | sed -E 's/name = "(.*)"/\1/')
 
-LOCAL_PYTEST := $(VIRTUAL_ENV)/bin/pytest
+LOCAL_PYTHON := uv run python3.11
+LOCAL_PYTEST := uv run pytest
 
 UV_MIN_VERSION = $(shell grep -m1 'required-version' pyproject.toml | sed -E 's/.*= *"([^<>=, ]+).*/\1/')
 
