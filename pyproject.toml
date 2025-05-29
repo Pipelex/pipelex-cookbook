@@ -48,9 +48,8 @@ Documentation = "https://github.com/Pipelex/pipelex/blob/main/doc/Documentation.
 Changelog = "https://github.com/Pipelex/pipelex/blob/main/CHANGELOG.md"
 
 [build-system]
-requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.build_meta"
-
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.uv]
 required-version = ">=0.7.2"
