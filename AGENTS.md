@@ -14,7 +14,11 @@ This python 3.11 repo named pipelex-cookbook has several packages placed at the 
 ## Code Style & formatting
 
 - Imitate existing style
-- After editing code, run `make format` -> it runs `ruff format .` with proper settings
+- Use type hints
+- Respect Pydantic v2 standard
+- Use Typer for CLIs
+- Use explicit keyword arguments for function calls with multiple parameters (e.g., `func(arg_name=value)` not just `func(value)`)
+- Add trailing commas to multi-line lists, dicts, function arguments, and tuples with >2 items (helps with cleaner diffs and prevents syntax errors when adding items)
 - All imports inside this repo's packages must be absolute package paths from the root
 
 ## Linting & checking
@@ -26,10 +30,13 @@ This python 3.11 repo named pipelex-cookbook has several packages placed at the 
 
 ## Testing
 
-- Always test with `make runtests` -> it runs pytest on our `tests/` directory using proper sttings
-- If all unit tests pass, run `make run-setup` -> it runs a minimal version of our app with just the inits and data loading
+- Always test with `make codex-tests` -> it runs pytest on our `tests/` directory using proper settings
+- If all unit tests pass, run `make validate` -> it runs a minimal version of our app with just the inits and data loading
 
 ## PR Instructions
 
-- One-line summary of the change.
+- Run `make fix-unused-imports` -> removes unused imports, required to validate PR
+- Re-run checks in one call with `make check` -> formatting and linting with Ruff, type-checking with Pyright and Mypy
+- Re-run `make codex-tests`
+- Write a one-line summary of the changes.
 - Be sure to list changes made to configs, tests and dependencies
