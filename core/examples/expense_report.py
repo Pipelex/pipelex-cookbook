@@ -8,13 +8,15 @@ from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.run import run_pipe_code
 
+from pipelex_libraries.pipelines.examples.expense_report.expense_report import ExpenseValidationCombo
+
 
 def read_text_file(file_path: str) -> str:
     with open(file_path, "r") as f:
         return f.read()
 
 
-async def process_expense_report():
+async def process_expense_report() -> ListContent[ExpenseValidationCombo]:
     invoice_dejeuner_1 = read_text_file("assets/expense_report/invoice_dejeuner_1.txt")
     invoice_dejeuner_2 = read_text_file("assets/expense_report/invoice_dejeuner_2.txt")
     invoice_diner = read_text_file("assets/expense_report/invoice_diner.txt")
@@ -52,11 +54,15 @@ async def process_expense_report():
         pipe_code="process_expense_report",
         working_memory=working_memory,
     )
-
-    # Log output and generate report
-    pretty_print(pipe_output, title="Processing output for invoice")
-    get_report_delegate().generate_report()
+    return pipe_output.main_stuff_as_list(item_type=ExpenseValidationCombo)
 
 
+# start Pipelex
 Pipelex.make()
-asyncio.run(process_expense_report())
+# run sample using asyncio
+expense_validations = asyncio.run(process_expense_report())
+
+# Display cost report (tokens used and cost)
+get_report_delegate().generate_report()
+# output results
+pretty_print(expense_validations, title="Expense validations")
