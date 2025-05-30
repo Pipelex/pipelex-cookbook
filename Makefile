@@ -200,34 +200,34 @@ gha-tests: env
 run-all-tests: env
 	$(call PRINT_TITLE,"Running all unit tests")
 	@echo "• Running all unit tests"
-	$(LOCAL_PYTEST) --exitfirst --quiet
+	$(VENV_PYTEST) --exitfirst --quiet
 
 run-manual-trigger-gha-tests: env
 	$(call PRINT_TITLE,"Running GHA tests")
 	@echo "• Running GHA unit tests for inference, llm, and not gha_disabled"
-	$(LOCAL_PYTEST) --exitfirst --quiet -m "not gha_disabled and (inference or llm)" || [ $$? = 5 ]
+	$(VENV_PYTEST) --exitfirst --quiet -m "not gha_disabled and (inference or llm)" || [ $$? = 5 ]
 
 run-gha_disabled-tests: env
 	$(call PRINT_TITLE,"Running GHA disabled tests")
 	@echo "• Running GHA disabled unit tests"
-	$(LOCAL_PYTEST) --exitfirst --quiet -m "gha_disabled" || [ $$? = 5 ]
+	$(VENV_PYTEST) --exitfirst --quiet -m "gha_disabled" || [ $$? = 5 ]
 
 test: env
 	$(call PRINT_TITLE,"Unit testing without prints but displaying logs via pytest for WARNING level and above")
 	@echo "• Running unit tests"
 	@if [ -n "$(TEST)" ]; then \
-		$(LOCAL_PYTEST) -o log_cli=true -o log_level=WARNING -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+		$(VENV_PYTEST) -o log_cli=true -o log_level=WARNING -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
 	else \
-		$(LOCAL_PYTEST) -o log_cli=true -o log_level=WARNING $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+		$(VENV_PYTEST) -o log_cli=true -o log_level=WARNING $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
 	fi
 
 test-with-prints: env
 	$(call PRINT_TITLE,"Unit testing with prints and our rich logs")
-	@echo "• Running unit tests using `$(LOCAL_PYTEST)`"
+	@echo "• Running unit tests using `$(VENV_PYTEST)`"
 	@if [ -n "$(TEST)" ]; then \
-		$(LOCAL_PYTEST) -s -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+		$(VENV_PYTEST) -s -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
 	else \
-		$(LOCAL_PYTEST) -s $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+		$(VENV_PYTEST) -s $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
 	fi
 
 t: test-with-prints
@@ -236,9 +236,9 @@ t: test-with-prints
 test-inference: env
 	$(call PRINT_TITLE,"Unit testing")
 	@if [ -n "$(TEST)" ]; then \
-		$(LOCAL_PYTEST) --exitfirst -m "inference and not imgg" -s -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+		$(VENV_PYTEST) --exitfirst -m "inference and not imgg" -s -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
 	else \
-		$(LOCAL_PYTEST) --exitfirst -m "inference and not imgg" -s $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+		$(VENV_PYTEST) --exitfirst -m "inference and not imgg" -s $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
 	fi
 
 ti: test-inference
@@ -258,9 +258,9 @@ to: test-ocr
 test-imgg: env
 	$(call PRINT_TITLE,"Unit testing")
 	@if [ -n "$(TEST)" ]; then \
-		$(LOCAL_PYTEST) --exitfirst -m "imgg" -s -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+		$(VENV_PYTEST) --exitfirst -m "imgg" -s -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
 	else \
-		$(LOCAL_PYTEST) --exitfirst -m "imgg" -s $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+		$(VENV_PYTEST) --exitfirst -m "imgg" -s $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
 	fi
 
 tg: test-imgg
@@ -280,7 +280,8 @@ lint: env
 
 pyright: env
 	$(call PRINT_TITLE,"Typechecking with pyright")
-	@$(VENV_PYRIGHT)
+	$(VENV_PYRIGHT) --pythonpath $(VENV_PYTHON)  && \
+	echo "Done typechecking with pyright — disregard warning about latest version, it's giving us false positives"
 
 mypy: env
 	$(call PRINT_TITLE,"Typechecking with mypy")
