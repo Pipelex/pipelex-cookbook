@@ -8,9 +8,10 @@ from pipelex_libraries.pipelines.examples.extraction.gantt import GanttChart
 from utils.results_utils import output_result
 
 SAMPLE_NAME = "extract_gantt"
+IMAGE_URL = "assets/gantt/gantt_tree_house.png"
 
 
-async def extract_gantt(image_url: str):
+async def extract_gantt(image_url: str) -> GanttChart:
     # Create Working Memory
     working_memory = WorkingMemoryFactory.make_from_image(
         image_url=image_url,
@@ -26,20 +27,24 @@ async def extract_gantt(image_url: str):
 
     # Output the result
     gantt_chart = pipe_output.main_stuff_as(content_type=GanttChart)
-    output_result(
-        sample_name=SAMPLE_NAME,
-        title="Gantt Chart",
-        file_name="gantt_chart.json",
-        content=gantt_chart.rendered_json(),
-    )
-    output_result(
-        sample_name=SAMPLE_NAME,
-        title="Gantt Chart",
-        file_name="gantt_chart.md",
-        content=gantt_chart.rendered_markdown(),
-    )
+    return gantt_chart
 
 
-IMAGE_URL = "assets/gantt/gantt_tree_house.png"
+# start Pipelex
 Pipelex.make()
-asyncio.run(extract_gantt(IMAGE_URL))
+# run sample using asyncio
+gantt_chart = asyncio.run(extract_gantt(IMAGE_URL))
+
+# output results
+output_result(
+    sample_name=SAMPLE_NAME,
+    title="Gantt Chart",
+    file_name="gantt_chart.json",
+    content=gantt_chart.rendered_json(),
+)
+output_result(
+    sample_name=SAMPLE_NAME,
+    title="Gantt Chart",
+    file_name="gantt_chart.md",
+    content=gantt_chart.rendered_markdown(),
+)

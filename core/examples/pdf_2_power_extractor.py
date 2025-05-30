@@ -10,9 +10,10 @@ from pipelex_libraries.pipelines.examples.power_extractor.power_extractor import
 from utils.results_utils import get_results_dir_path
 
 SAMPLE_NAME = "pdf_2_power_extractor"
+PDF_PATH_2 = "assets/fintech_article_with_text_in_images.pdf"
 
 
-async def power_extractor(pdf_url: str) -> None:
+async def power_extractor(pdf_url: str) -> TextAndImagesContent:
     working_memory = WorkingMemoryFactory.make_from_pdf(
         pdf_url=pdf_url,
         concept_code="documents.PDF",
@@ -24,19 +25,15 @@ async def power_extractor(pdf_url: str) -> None:
     )
     working_memory = pipe_output.working_memory
     markdown_and_images: TextAndImagesContent = merge_markdown_and_images(working_memory)
-    pretty_print(markdown_and_images)
-
-    output_dir = get_results_dir_path(sample_name=SAMPLE_NAME)
-    markdown_and_images.save_to_directory(directory=output_dir)
+    return markdown_and_images
 
 
-async def main():
-    # simple OCR method would have been insufficient
-    PDF_PATH_2 = "assets/fintech_article_with_text_in_images.pdf"
-    await power_extractor(
-        pdf_url=PDF_PATH_2,
-    )
-
-
+# start Pipelex
 Pipelex.make()
-asyncio.run(main())
+# run sample using asyncio
+markdown_and_images = asyncio.run(power_extractor(pdf_url=PDF_PATH_2))
+
+# output results
+pretty_print(markdown_and_images)
+output_dir = get_results_dir_path(sample_name=SAMPLE_NAME)
+markdown_and_images.save_to_directory(directory=output_dir)

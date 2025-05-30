@@ -1,5 +1,49 @@
 # Changelog
 
+## [v0.1.8] - 2025-05-30
+
+### Added
+
+**Codex support**
+* **AGENTS.md**: contributor guide for agends such as OpenAI's Codex, covering repo layout, code style, testing, linting and PR workflow
+* New pytest marker `codex_disabled` to disable tests that can't run on Codex, because they require internet access for instance
+
+* Unit tests in `tests/test_results_utils.py`
+* New GitHub Action **changelog-check.yml** to verify that every release branch includes a matching changelog entry
+* Pipeline **pipe.extract\_page\_contents\_and\_views\_from\_pdf** plus updated TOML definitions
+* Makefile targets: `validate`, `codex-tests`, `gha-tests`, `test-ocr`, `test-imgg` and shorthand aliases
+* Examples refactored into callable async functions so they can be imported and exercised by tests (yet to be added)
+
+### Changed
+
+* **uv** handling: `pyproject.toml`, requires `uv >=0.7.2`; `check-uv` installs or upgrades to the minimum compatible version
+* Large Makefile refactor
+  * Replaced hard-coded paths with `VENV_*` macros
+  * Legacy `runtests` split into `codex-tests` and `gha-tests`
+* Examples cleaned up: added type hints, used cost reports, exported results via `utils.results_utils`
+
+### Deprecated
+
+* `make runtests` superseded by `make codex-tests` and `make gha-tests`
+
+### Internal
+
+* Added `.cursor` and `.git` workflow files to Ruff exclude list
+
+## [v0.1.7] - 2025-05-26
+
+### Added:
+- New file `pipelex_libraries/llm_integrations/custom.toml` introducing first-class support for custom LLMs:  
+  - **Gemma 3 4B** (`custom-gemma-3."gemma3:4b".latest`)  
+  - **Llama 4 Scout** (`custom-llama-4."llama4:scout".latest`)  
+
+### Changed:
+- Core dependency **pipelex** upgraded from `0.2.4` to `0.2.7`.
+- Dependency **kajson** upgraded from `0.1.0` to `0.1.4`.
+
+### Fixed:
+- Incorrect version constraint on `pipelex` in `pyproject.toml`.
+
 ## [v0.1.6] - 2025-05-25
 
 - Fix version dependency to Pipelex

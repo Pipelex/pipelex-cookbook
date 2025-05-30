@@ -13,8 +13,6 @@ This rule explains how to build pipes.
 
 pipelex_libraries
 └── pipelines
-    ├── structures
-    └── toml
 
 ## Pipeline file naming
 

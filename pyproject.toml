@@ -1,6 +1,6 @@
 [project]
 name = "pipelex-cookbook"
-version = "0.1.7"
+version = "0.1.8"
 description = "Cookbook for Pipelex, the open-source declarative language that lets you define replicable, structured, composable LLM pipelines."
 authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
@@ -15,11 +15,15 @@ classifiers = [
 
 dependencies = [
     "beautifulsoup4==4.13.4",
-    "pipelex[mistralai,anthropic,google,bedrock,fal]==0.2.8",
+    "pipelex[mistralai,anthropic,google,bedrock,fal]==0.2.9",
 ]
 
 [tool.setuptools]
-packages = ["core", "assets", "community", "utils"]
+packages = ["core", "assets", "community", "utils", "tests"]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project.optional-dependencies]
 dev = [
@@ -48,7 +52,7 @@ Documentation = "https://github.com/Pipelex/pipelex/blob/main/doc/Documentation.
 Changelog = "https://github.com/Pipelex/pipelex/blob/main/CHANGELOG.md"
 
 [tool.uv]
-required-version = "0.7.2"
+required-version = ">=0.7.2"
 
 [tool.mypy]
 check_untyped_defs = true
@@ -168,11 +172,21 @@ markers = [
     "llm: slow and costly due to llm inference calls",
     "imgg: slow and costly due to imgg inference calls",
     "gha_disabled: tests that should not run in GitHub Actions",
+    "codex_disabled: tests that should not run in Codex",
 ]
 minversion = "8.0"
 
 [tool.ruff]
-exclude = [".mypy_cache", ".ruff_cache", ".venv", ".vscode", "trigger_pipeline"]
+exclude = [
+    ".cursor",
+    ".git",
+    ".github",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".venv",
+    ".vscode",
+    "trigger_pipeline",
+]
 line-length = 150
 target-version = "py311"
 
@@ -197,5 +211,3 @@ select = [
     "E501",
     "I",
 ]
-
-
