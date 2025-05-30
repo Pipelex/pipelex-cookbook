@@ -109,7 +109,7 @@ env: check-uv
 	fi
 
 init: env
-	$(call PRINT_TITLE,"Running `pipelex init`")
+	$(call PRINT_TITLE,"Running pipelex init")
 	$(VENV_PIPELEX) init
 
 install: env
