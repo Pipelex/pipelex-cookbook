@@ -1,5 +1,19 @@
 # Changelog
 
+## [v0.1.7] - 2025-05-26
+
+### Added:
+- New file `pipelex_libraries/llm_integrations/custom.toml` introducing first-class support for custom LLMs:  
+  - **Gemma 3 4B** (`custom-gemma-3."gemma3:4b".latest`)  
+  - **Llama 4 Scout** (`custom-llama-4."llama4:scout".latest`)  
+
+### Changed:
+- Core dependency **pipelex** upgraded from `0.2.4` to `0.2.7`.
+- Dependency **kajson** upgraded from `0.1.0` to `0.1.4`.
+
+### Fixed:
+- Incorrect version constraint on `pipelex` in `pyproject.toml`.
+
 ## [v0.1.6] - 2025-05-25
 
 - Fix version dependency to Pipelex
