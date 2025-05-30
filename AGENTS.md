@@ -30,10 +30,7 @@ This python 3.11 repo named pipelex-cookbook has several packages placed at the 
 - Name test files with `test_` prefix
 - Use descriptive names that match the functionality being tested
 - Place test files in the appropriate subdirectory of `tests/`:
-    - `tests/cogt/` for tests related to sub-package `pipelex.cogt`
-    - `tests/tools/` for tests related to sub-package `pipelex.tools`
-    - `tests/pipelex/` for tests related to `pipelex`and not its sub-packages
-- More precisely, for `pipelex` and `pipelex.cogt` place the tests inside subdirectories named either `asynch` for async test functions and `synchro` for normal non-async test functions
+- More precisely place async tests inside the `asynch` subdirectory
 
 ### Markers
 
