@@ -19,7 +19,7 @@ dependencies = [
 ]
 
 [tool.setuptools]
-packages = ["core", "assets", "community", "utils", "tests"]
+packages = ["core", "community", "utils", "tests"]
 
 [build-system]
 requires = ["setuptools>=68", "wheel"]
