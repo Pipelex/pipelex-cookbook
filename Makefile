@@ -3,28 +3,31 @@ include .env
 export
 endif
 VIRTUAL_ENV := $(CURDIR)/.venv
-LOCAL_PYTHON := $(VIRTUAL_ENV)/bin/python3.11
 PROJECT_NAME := $(shell grep '^name = ' pyproject.toml | sed -E 's/name = "(.*)"/\1/')
 
-LOCAL_PYTEST := $(VIRTUAL_ENV)/bin/pytest
+VENV_PYTHON := $(VIRTUAL_ENV)/bin/python3.11
+VENV_PYTEST := $(VIRTUAL_ENV)/bin/pytest
+VENV_RUFF := $(VIRTUAL_ENV)/bin/ruff
+VENV_PYRIGHT := $(VIRTUAL_ENV)/bin/pyright
+VENV_MYPY := $(VIRTUAL_ENV)/bin/mypy
+VENV_PIPELEX := $(VIRTUAL_ENV)/bin/pipelex
 
-UV_MIN = $(shell grep -m1 'required-version' pyproject.toml \
-                  | sed -E 's/.*= *"([^<>=, ]+).*/\1/')
-
-define GET_UV_VERSION
-$(shell awk '/^\[tool.uv\]/{f=1;next} f==1&&/^required-version/{print $$3;exit}' pyproject.toml | tr -d '"')
-endef
+UV_MIN_VERSION = $(shell grep -m1 'required-version' pyproject.toml | sed -E 's/.*= *"([^<>=, ]+).*/\1/')
 
 define PRINT_TITLE
-    $(eval PADDED_PROJECT_NAME := $(shell printf '%-15s' "[$(PROJECT_NAME)] " | sed 's/ /=/g'))
-    $(eval PADDED_TARGET_NAME := $(shell printf '%-15s' "($@) " | sed 's/ /=/g'))
-    $(if $(1),\
-		$(eval TITLE := $(shell printf '%s' "=== $(PADDED_PROJECT_NAME) $(PADDED_TARGET_NAME)" | sed 's/[[:space:]]/ /g')$(shell echo " $(1) " | sed 's/[[:space:]]/ /g')),\
-		$(eval TITLE := $(shell printf '%s' "=== $(PADDED_PROJECT_NAME) $(PADDED_TARGET_NAME)" | sed 's/[[:space:]]/ /g'))\
-	)
-	$(eval PADDED_TITLE := $(shell printf '%-126s' "$(TITLE)" | sed 's/ /=/g'))
-	@echo ""
-	@echo "$(PADDED_TITLE)"
+    $(eval PROJECT_PART := [$(PROJECT_NAME)])
+    $(eval TARGET_PART := ($@))
+    $(eval MESSAGE_PART := $(1))
+    $(if $(MESSAGE_PART),\
+        $(eval FULL_TITLE := === $(PROJECT_PART) ===== $(TARGET_PART) ====== $(MESSAGE_PART) ),\
+        $(eval FULL_TITLE := === $(PROJECT_PART) ===== $(TARGET_PART) ====== )\
+    )
+    $(eval TITLE_LENGTH := $(shell echo -n "$(FULL_TITLE)" | wc -c | tr -d ' '))
+    $(eval PADDING_LENGTH := $(shell echo $$((126 - $(TITLE_LENGTH)))))
+    $(eval PADDING := $(shell printf '%*s' $(PADDING_LENGTH) '' | tr ' ' '='))
+    $(eval PADDED_TITLE := $(FULL_TITLE)$(PADDING))
+    @echo ""
+    @echo "$(PADDED_TITLE)"
 endef
 
 define HELP
@@ -35,6 +38,7 @@ make env                      - Create python virtual env
 make lock                     - Refresh uv.lock without updating anything
 make install                  - Create local virtualenv & install all dependencies
 make update                   - Upgrade dependencies via uv
+make validate                 - Run the setup sequence to validate the config and libraries
 
 make format                   - format with ruff format
 make lint                     - lint with ruff check
@@ -55,17 +59,17 @@ make merge-check-pyright	  - Run pyright merge check without updating files
 
 make rl                       - Shorthand -> reinitlibraries
 make ri                       - Shorthand -> reinstall
-make run-setup                - Run the setup sequence
-make s                        - Shorthand -> run-setup
+make v                        - Shorthand -> validate
 make init                     - Run pipelex init
-make runtests		          - Run tests for github actions (exit on first failure) (no inference)
+make codex-tests              - Run tests for Codex (exit on first failure) (no inference, no codex_disabled)
+make gha-tests		          - Run tests for github actions (exit on first failure) (no inference, no gha_disabled)
 make test                     - Run unit tests (no inference)
-make tn                       - Shorthand -> test
 make test-with-prints         - Run tests with prints (no inference)
 make t                        - Shorthand -> test-with-prints
 make test-inference           - Run unit tests only for inference (with prints)
 make ti                       - Shorthand -> test-inference
 make test-imgg                - Run unit tests only for imgg (with prints)
+make test-g					  - Shorthand -> test-imgg
 
 make check                    - Shorthand -> format lint mypy
 make c                        - Shorthand -> check
@@ -77,7 +81,7 @@ make fix-unused-imports       - Fix unused imports with ruff
 endef
 export HELP
 
-.PHONY: all help env lock install update format lint pyright mypy cleanderived cleanenv run-setup s runtests test test-with-prints test-inference t ti test-imgg check cc li merge-check-ruff-lint merge-check-ruff-format merge-check-mypy check-unused-imports fix-unused-imports test-name bump-version check-uv get-uv-version
+.PHONY: all help env lock install update format lint pyright mypy cleanderived cleanenv validate v codex-tests gha-tests test test-with-prints test-inference t ti test-imgg tg test-ocr tocheck cc li merge-check-ruff-lint merge-check-ruff-format merge-check-mypy check-unused-imports fix-unused-imports check-uv
 
 all help:
 	@echo "$$HELP"
@@ -88,33 +92,12 @@ all help:
 ##########################################################################################
 
 check-uv:
-	$(call PRINT_TITLE,"Checking UV version")
-	@UV_VERSION=$(GET_UV_VERSION); \
-	if [ -z "$$UV_VERSION" ]; then \
-		echo "Error: UV version not found in pyproject.toml"; \
-		exit 1; \
-	fi; \
-	echo "UV_VERSION: $$UV_VERSION"; \
-	if ! command -v uv >/dev/null 2>&1; then \
-		echo "Installing UV version $$UV_VERSION"; \
-		curl -LsSf https://astral.sh/uv/$$UV_VERSION/install.sh | sh; \
-	elif [ "$$(uv --version | cut -d ' ' -f 2)" != "$$UV_VERSION" ]; then \
-		echo "Updating UV to version $$UV_VERSION"; \
-		curl -LsSf https://astral.sh/uv/$$UV_VERSION/install.sh | sh; \
-	else \
-		echo "UV version $$UV_VERSION is already installed"; \
-	fi
-
-CURRENT_VERSION := $(shell grep '^version = ' pyproject.toml | sed -E 's/version = "(.*)"/\1/')
-NEXT_VERSION := $(shell echo $(CURRENT_VERSION) | awk -F. '{$$NF = $$NF + 1;} 1' | sed 's/ /./g')
-
-get-uv-version:
-	@UV_VERSION=$(GET_UV_VERSION); \
-	if [ -z "$$UV_VERSION" ]; then \
-		echo "Error: UV version not found in pyproject.toml" >&2; \
-		exit 1; \
-	fi; \
-	echo "$$UV_VERSION"
+	$(call PRINT_TITLE,"Ensuring uv ≥ $(UV_MIN_VERSION)")
+	@command -v uv >/dev/null 2>&1 || { \
+		echo "uv not found – installing latest …"; \
+		curl -LsSf https://astral.sh/uv/install.sh | sh; \
+	}
+	@uv self update >/dev/null 2>&1 || true
 
 env: check-uv
 	$(call PRINT_TITLE,"Creating virtual environment")
@@ -126,14 +109,14 @@ env: check-uv
 	fi
 
 init: env
-	$(call PRINT_TITLE,"Running `pipelex init`")
-	pipelex init
+	$(call PRINT_TITLE,"Running pipelex init")
+	$(VENV_PIPELEX) init
 
 install: env
 	$(call PRINT_TITLE,"Installing dependencies")
 	@. $(VIRTUAL_ENV)/bin/activate && \
-	uv pip install -e ".[dev]" && \
-	$(VIRTUAL_ENV)/bin/pipelex init && \
+	uv sync --all-extras && \
+	$(VENV_PIPELEX) init && \
 	echo "Installed Pipelex cookbook dependencies in ${VIRTUAL_ENV} and initialized Pipelex libraries";
 
 lock: env
@@ -147,9 +130,9 @@ update: env
 	uv pip install -e ".[dev]" && \
 	echo "Updated dependencies in ${VIRTUAL_ENV}";
 
-run-setup: env
+validate: env
 	$(call PRINT_TITLE,"Running setup sequence")
-	pipelex run-setup
+	$(VENV_PIPELEX) validate
 
 ##############################################################################################
 ############################      Cleaning                        ############################
@@ -204,45 +187,47 @@ cleanall: cleanderived cleanenv cleanlibraries
 ### TESTING
 ##########################################################################################
 
-runtests: env
+codex-tests: env
+	$(call PRINT_TITLE,"Unit testing for Codex")
+	@echo "• Running unit tests for Codex (excluding inference and codex_disabled)"
+	$(VENV_PYTEST) --exitfirst --quiet -m "not inference and not codex_disabled" || [ $$? = 5 ]
+
+gha-tests: env
 	$(call PRINT_TITLE,"Unit testing for github actions")
-	@echo "• Running unit tests (excluding inference, and gha_disabled)"
-	$(LOCAL_PYTEST) --exitfirst --quiet -m "not inference and not gha_disabled" || [ $$? = 5 ]
+	@echo "• Running unit tests for github actions (excluding inference and gha_disabled)"
+	$(VENV_PYTEST) --exitfirst --quiet -m "not inference and not gha_disabled" || [ $$? = 5 ]
 
 run-all-tests: env
 	$(call PRINT_TITLE,"Running all unit tests")
 	@echo "• Running all unit tests"
-	$(LOCAL_PYTEST) --exitfirst --quiet
+	$(VENV_PYTEST) --exitfirst --quiet
 
 run-manual-trigger-gha-tests: env
 	$(call PRINT_TITLE,"Running GHA tests")
 	@echo "• Running GHA unit tests for inference, llm, and not gha_disabled"
-	$(LOCAL_PYTEST) --exitfirst --quiet -m "not gha_disabled and (inference or llm)" || [ $$? = 5 ]
+	$(VENV_PYTEST) --exitfirst --quiet -m "not gha_disabled and (inference or llm)" || [ $$? = 5 ]
 
 run-gha_disabled-tests: env
 	$(call PRINT_TITLE,"Running GHA disabled tests")
 	@echo "• Running GHA disabled unit tests"
-	$(LOCAL_PYTEST) --exitfirst --quiet -m "gha_disabled" || [ $$? = 5 ]
+	$(VENV_PYTEST) --exitfirst --quiet -m "gha_disabled" || [ $$? = 5 ]
 
 test: env
 	$(call PRINT_TITLE,"Unit testing without prints but displaying logs via pytest for WARNING level and above")
 	@echo "• Running unit tests"
 	@if [ -n "$(TEST)" ]; then \
-		$(LOCAL_PYTEST) -o log_cli=true -o log_level=WARNING -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+		$(VENV_PYTEST) -o log_cli=true -o log_level=WARNING -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
 	else \
-		$(LOCAL_PYTEST) -o log_cli=true -o log_level=WARNING $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+		$(VENV_PYTEST) -o log_cli=true -o log_level=WARNING $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
 	fi
-
-tn: test
-	@echo "> done: tn = test"
 
 test-with-prints: env
 	$(call PRINT_TITLE,"Unit testing with prints and our rich logs")
-	@echo "• Running unit tests"
+	@echo "• Running unit tests using `$(VENV_PYTEST)`"
 	@if [ -n "$(TEST)" ]; then \
-		$(LOCAL_PYTEST) -s -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+		$(VENV_PYTEST) -s -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
 	else \
-		$(LOCAL_PYTEST) -s $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+		$(VENV_PYTEST) -s $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
 	fi
 
 t: test-with-prints
@@ -251,21 +236,35 @@ t: test-with-prints
 test-inference: env
 	$(call PRINT_TITLE,"Unit testing")
 	@if [ -n "$(TEST)" ]; then \
-		$(LOCAL_PYTEST) --exitfirst -m "inference and not imgg" -s -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+		$(VENV_PYTEST) --exitfirst -m "inference and not imgg" -s -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
 	else \
-		$(LOCAL_PYTEST) --exitfirst -m "inference and not imgg" -s $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+		$(VENV_PYTEST) --exitfirst -m "inference and not imgg" -s $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
 	fi
 
 ti: test-inference
 	@echo "> done: ti = test-inference"
 
+test-ocr: env
+	$(call PRINT_TITLE,"Unit testing ocr")
+	@if [ -n "$(TEST)" ]; then \
+		$(VENV_PYTEST) --exitfirst -m "ocr" -s -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+	else \
+		$(VENV_PYTEST) --exitfirst -m "ocr" -s $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+	fi
+
+to: test-ocr
+	@echo "> done: to = test-ocr"
+
 test-imgg: env
 	$(call PRINT_TITLE,"Unit testing")
 	@if [ -n "$(TEST)" ]; then \
-		$(LOCAL_PYTEST) --exitfirst -m "imgg" -s -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+		$(VENV_PYTEST) --exitfirst -m "imgg" -s -k "$(TEST)" $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
 	else \
-		$(LOCAL_PYTEST) --exitfirst -m "imgg" -s $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
+		$(VENV_PYTEST) --exitfirst -m "imgg" -s $(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,-v)); \
 	fi
+
+tg: test-imgg
+	@echo "> done: tg = test-imgg"
 
 ############################################################################################
 ############################               Linting              ############################
@@ -273,19 +272,20 @@ test-imgg: env
 
 format: env
 	$(call PRINT_TITLE,"Formatting with ruff")
-	@uv run ruff format .
+	@$(VENV_RUFF) format .
 
 lint: env
 	$(call PRINT_TITLE,"Linting with ruff")
-	@uv run ruff check . --fix
+	@$(VENV_RUFF) check . --fix
 
 pyright: env
 	$(call PRINT_TITLE,"Typechecking with pyright")
-	@uv run pyright --pythonpath $(LOCAL_PYTHON)
+	$(VENV_PYRIGHT) --pythonpath $(VENV_PYTHON)  && \
+	echo "Done typechecking with pyright — disregard warning about latest version, it's giving us false positives"
 
 mypy: env
 	$(call PRINT_TITLE,"Typechecking with mypy")
-	@uv run mypy
+	@$(VENV_MYPY)
 
 
 ##########################################################################################
@@ -294,24 +294,20 @@ mypy: env
 
 merge-check-ruff-format: env
 	$(call PRINT_TITLE,"Formatting with ruff")
-	. $(VIRTUAL_ENV)/bin/activate && \
-	uv run ruff format --check -v .
+	$(VENV_RUFF) format --check -v .
 
 merge-check-ruff-lint: env check-unused-imports
 	$(call PRINT_TITLE,"Linting with ruff without fixing files")
-	. $(VIRTUAL_ENV)/bin/activate && \
-	uv run ruff check -v .
+	$(VENV_RUFF) check -v .
 
 merge-check-pyright: env
 	$(call PRINT_TITLE,"Typechecking with pyright")
-	. $(VIRTUAL_ENV)/bin/activate && \
-	uv run pyright -p pyproject.toml
+	$(VENV_PYRIGHT) --pythonpath $(VENV_PYTHON)
 
 merge-check-mypy: env
 	$(call PRINT_TITLE,"Typechecking with mypy")
-	. $(VIRTUAL_ENV)/bin/activate && \
-	uv run mypy --version && \
-	uv run mypy --config-file pyproject.toml
+	$(VENV_MYPY) --version && \
+	$(VENV_MYPY) --config-file pyproject.toml
 
 ##########################################################################################
 ### SHORTHANDS
@@ -319,8 +315,7 @@ merge-check-mypy: env
 
 check-unused-imports: env
 	$(call PRINT_TITLE,"Checking for unused imports without fixing")
-	. $(VIRTUAL_ENV)/bin/activate && \
-	uv run ruff check --select=F401 --no-fix .
+	$(VENV_RUFF) check --select=F401 --no-fix .
 
 c: init format lint pyright mypy
 	@echo "> done: c = check"
@@ -331,13 +326,12 @@ cc: init cleanderived c
 check: init cleanderived check-unused-imports c
 	@echo "> done: check"
 
-s: init run-setup
-	@echo "> done: s = run-setup"
+v: init validate
+	@echo "> done: v = validate"
 
 li: lock install
 	@echo "> done: lock install"
 
 fix-unused-imports: env
 	$(call PRINT_TITLE,"Fixing unused imports")
-	. $(VIRTUAL_ENV)/bin/activate && \
-	uv run ruff check --select=F401 --fix -v .
+	$(VENV_RUFF) check --select=F401 --fix -v .

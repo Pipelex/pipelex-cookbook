@@ -1,7 +1,6 @@
 import asyncio
 
 from pipelex import pretty_print
-from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.run import run_pipe_code
 
@@ -18,9 +17,8 @@ async def hello_world():
     # Print the output
     pretty_print(pipe_output, title="Your first Pipelex output")
 
-    # Get the report (tokens used and cost)
-    get_report_delegate().generate_report()
 
-
+# start Pipelex
 Pipelex.make()
+# run sample using asyncio
 asyncio.run(hello_world())

@@ -8,9 +8,10 @@ from pipelex_libraries.pipelines.examples.extraction.tables import HtmlTable
 from utils.results_utils import output_result
 
 SAMPLE_NAME = "extract_table"
+IMAGE_URL = "assets/table_1.png"
 
 
-async def extract_table(table_screenshot: str):
+async def extract_table(table_screenshot: str) -> HtmlTable:
     working_memory = WorkingMemoryFactory.make_from_image(
         image_url=table_screenshot,
         concept_code="tables.TableScreenshot",
@@ -21,19 +22,18 @@ async def extract_table(table_screenshot: str):
         working_memory=working_memory,
     )
     html_table = pipe_output.main_stuff_as(content_type=HtmlTable)
-
-    output_result(
-        sample_name=SAMPLE_NAME,
-        title="HTML Table extracted",
-        file_name="extracted_table.html",
-        content=html_table.inner_html_table,
-    )
+    return html_table
 
 
-IMAGE_URL = "assets/table_1.png"
+# start Pipelex
 Pipelex.make()
-asyncio.run(
-    extract_table(
-        table_screenshot=IMAGE_URL,
-    )
+# run sample using asyncio
+html_table = asyncio.run(extract_table(IMAGE_URL))
+
+# output results
+output_result(
+    sample_name=SAMPLE_NAME,
+    title="HTML Table extracted",
+    file_name="extracted_table.html",
+    content=html_table.inner_html_table,
 )
