@@ -7,7 +7,7 @@ This rule automates checking the pipes all lint and load properly.
 
 When you modify the pipeline .toml files and/or the structures in the *.py files of the pipelex_libraries, you must check that they load properly.
 Do the following:
-1- Call `make run-setup`
+1- Call `make validate`
 2- Fetch logs from the console
 3- Fix linting or validation issues
 

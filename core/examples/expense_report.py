@@ -23,10 +23,10 @@ async def process_expense_report() -> ListContent[ExpenseValidationCombo]:
     invoice_flight = read_text_file("assets/expense_report/invoice_flight.txt")
     invoice_hotel = read_text_file("assets/expense_report/invoice_hotel.txt")
     invoice_trajet = read_text_file("assets/expense_report/invoice_trajet.txt")
-    expense_report_text = read_text_file("assets/expense_report/expense_report.txt")
+    expense_report_str = read_text_file("assets/expense_report/expense_report.txt")
 
     # Create Stuff objects
-    invoice_list_stuff = StuffFactory.make_stuff(
+    invoice_list = StuffFactory.make_stuff(
         concept_code="expense_report.InvoiceText",
         content=ListContent(
             items=[
@@ -40,14 +40,14 @@ async def process_expense_report() -> ListContent[ExpenseValidationCombo]:
         ),
         name="invoice_text_list",
     )
-    expense_report_text_stuff = StuffFactory.make_stuff(
+    expense_report_text = StuffFactory.make_stuff(
         concept_code="expense_report.ExpenseReportText",
-        content=TextContent(text=expense_report_text),
+        content=TextContent(text=expense_report_str),
         name="expense_report_text",
     )
 
     # Create Working Memory
-    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs([invoice_list_stuff, expense_report_text_stuff])
+    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs([invoice_list, expense_report_text])
 
     # Run the pipe
     pipe_output = await run_pipe_code(
