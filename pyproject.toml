@@ -18,6 +18,9 @@ dependencies = [
     "pipelex[mistralai,anthropic,google,bedrock,fal]==0.2.9",
 ]
 
+[tool.uv.sources]
+pipelex = { path = "../pipelex", editable = true }
+
 [tool.setuptools]
 packages = ["core", "community", "utils", "tests"]
 

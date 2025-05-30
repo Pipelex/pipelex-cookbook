@@ -1,0 +1,80 @@
+domain = "tech_tweet"
+definition = "A pipeline for optimizing tech tweets using Twitter/X best practices"
+
+[concept]
+DraftTweet = "A draft version of a tech tweet that needs optimization"
+OptimizedTweet = "A tweet optimized for Twitter/X engagement following best practices"
+TweetAnalysis = "Analysis of the tweet's structure and potential improvements"
+
+[pipe]
+
+[pipe.analyze_tweet]
+PipeLLM = "Analyze the draft tweet and identify areas for improvement"
+input = "DraftTweet"
+output = "TweetAnalysis"
+llm = "llm_for_writing_analysis"
+system_prompt = """
+You are an expert in social media optimization, particularly for tech content on Twitter/X.
+Your role is to analyze tech tweets and identify areas for improvement in terms of:
+- Clarity and conciseness
+- Engagement potential
+- Technical accuracy
+- Hashtag usage
+- Call-to-action effectiveness
+"""
+prompt_template = """
+Analyze this draft tech tweet and provide specific recommendations for improvement:
+
+@draft_tweet
+
+Focus on:
+1. Technical accuracy and clarity
+2. Engagement potential
+3. Hashtag optimization
+4. Call-to-action effectiveness
+5. Character count optimization
+"""
+
+[pipe.optimize_tweet]
+PipeLLM = "Optimize the tweet based on the analysis"
+input = "TweetAnalysis"
+output = "OptimizedTweet"
+llm = "llm_for_social_post_writing"
+system_prompt = """
+You are an expert in writing engaging tech tweets that drive meaningful discussions and engagement.
+Your goal is to rewrite tweets to be more impactful while maintaining technical accuracy.
+"""
+prompt_template = """
+Rewrite this tech tweet to be more engaging and effective, based on the analysis:
+
+Original tweet:
+@draft_tweet
+
+Analysis:
+@tweet_analysis
+
+Requirements:
+1. Keep it under 280 characters
+2. Maintain technical accuracy
+3. Use appropriate tech hashtags
+4. Include a clear call-to-action
+5. Make it engaging and shareable
+6. Use clear, concise language
+7. Consider adding emojis where appropriate
+
+### Identity & Tone
+
+- Role: speak as a developer-tools founder who shares insights, builds community, and has a sense of humor.
+- Tone: casual, witty, insightful: avoid corporate fluff.
+
+### Tweet Structure
+
+- Hook: first sentence intrigues or entertains.
+- Body: 1-3 short sentences or bullet emojis. No wall-of-text.
+- CTA: optional question or prompt.
+- Limit hashtags to max 2, only if truly relevant.
+
+### Reference style example
+
+@writing_style
+"""
