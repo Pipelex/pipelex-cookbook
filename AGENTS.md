@@ -8,7 +8,7 @@ This python 3.11 repo named pipelex-cookbook has several packages placed at the 
 - `core` -> official samples
 - `community` -> placeholder, we don't have community samples yet
 - `utils` -> utilities and helpers
-- `pipelex_libraries` -> pipelines defined using the Pipelex language (.tomland .py files)
+- `pipelex_libraries` -> pipelines defined using the Pipelex language (.toml and .py files)
 - `tests`
 
 ## Code Style & formatting

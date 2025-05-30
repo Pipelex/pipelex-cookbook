@@ -302,7 +302,7 @@ merge-check-ruff-lint: env check-unused-imports
 
 merge-check-pyright: env
 	$(call PRINT_TITLE,"Typechecking with pyright")
-	$(VENV_PYRIGHT)
+	$(VENV_PYRIGHT) --pythonpath $(VENV_PYTHON)
 
 merge-check-mypy: env
 	$(call PRINT_TITLE,"Typechecking with mypy")
