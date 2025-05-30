@@ -21,6 +21,58 @@ This python 3.11 repo named pipelex-cookbook has several packages placed at the 
 - Add trailing commas to multi-line lists, dicts, function arguments, and tuples with >2 items (helps with cleaner diffs and prevents syntax errors when adding items)
 - All imports inside this repo's packages must be absolute package paths from the root
 
+## Writing tests
+
+- Always use pytest
+
+### Test file structure
+
+- Name test files with `test_` prefix
+- Use descriptive names that match the functionality being tested
+- Place test files in the appropriate subdirectory of `tests/`:
+    - `tests/cogt/` for tests related to sub-package `pipelex.cogt`
+    - `tests/tools/` for tests related to sub-package `pipelex.tools`
+    - `tests/pipelex/` for tests related to `pipelex`and not its sub-packages
+- More precisely, for `pipelex` and `pipelex.cogt` place the tests inside subdirectories named either `asynch` for async test functions and `synchro` for normal non-async test functions
+
+### Markers
+
+Apply the appropriate markers:
+- "llm: uses an LLM to generate text or objects"
+- "imgg: uses an image generation AI"
+- "inference: uses either an LLM or an image generation AI"
+- "gha_disabled: will not be able to run properly on GitHub Actions"
+- "codex_disabled: will not be able to run properly on Codex"  # typically relevant for tests that need internet access, which Codex doesn't allow
+
+Several markers may be applied. For instance, if the test uses an LLM, then it uses inference, so you must mark with both `inference`and `llm`.
+
+### Test Class Structure
+
+Always group the tests of a module into a test class:
+
+```python
+@pytest.mark.llm
+@pytest.mark.inference
+@pytest.mark.asyncio(loop_scope="class")
+class TestFooBar:
+    @pytest.mark.parametrize(
+        "topic test_case_blueprint",
+        [
+            TestCases.CASE_1,
+            TestCases.CASE_2,
+        ],
+    )
+    async def test_pipe_processing(
+        self,
+        request: FixtureRequest,
+        topic: str,
+        test_case_blueprint: StuffBlueprint,
+    ):
+        # Test implementation
+```
+
+Sometimes it can be convenient to access the test's name in its body, for instance to include into a job_id. To achieve that, add the argument `request: FixtureRequest` into the signature and then you can get the test name using `cast(str, request.node.originalname),  # type: ignore`. 
+
 ## Linting & checking
 
 - Run `make lint` -> it runs `ruff check . --fix` to enforce all our linting rules
