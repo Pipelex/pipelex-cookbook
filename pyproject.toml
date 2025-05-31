@@ -22,11 +22,7 @@ dependencies = [
 pipelex = { path = "../pipelex", editable = true }
 
 [tool.setuptools]
-packages = ["core", "community", "utils", "tests"]
-
-[build-system]
-requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.build_meta"
+packages = ["core", "community", "utils"]
 
 [project.optional-dependencies]
 dev = [
