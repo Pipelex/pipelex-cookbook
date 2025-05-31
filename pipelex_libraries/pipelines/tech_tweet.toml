@@ -28,12 +28,6 @@ Analyze this draft tech tweet and provide specific recommendations for improveme
 
 @draft_tweet
 
-Focus on:
-1. Technical accuracy and clarity
-2. Engagement potential
-3. Hashtag optimization
-4. Call-to-action effectiveness
-5. Character count optimization
 """
 
 [pipe.optimize_tweet]
@@ -55,13 +49,9 @@ Analysis:
 @tweet_analysis
 
 Requirements:
-1. Keep it under 280 characters
-2. Maintain technical accuracy
-3. Use appropriate tech hashtags
-4. Include a clear call-to-action
-5. Make it engaging and shareable
-6. Use clear, concise language
-7. Consider adding emojis where appropriate
+- Include a clear call-to-action
+- Make it engaging and shareable
+- Use clear, concise language
 
 ### Identity & Tone
 
@@ -78,6 +68,12 @@ Requirements:
 ### Reference style example
 
 @writing_style
+
+### Additional style instructions
+
+No hashtags.
+Minimal emojis.
+Keep the strong meaning of the original tweet.
 """
 
 [pipe.optimize_tweet_sequence]

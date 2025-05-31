@@ -52,7 +52,8 @@ dev = [
 Homepage = "https://pipelex.com"
 Repository = "https://github.com/Pipelex/pipelex-cookbook"
 Documentation = "https://github.com/Pipelex/pipelex/blob/main/doc/Documentation.md"
-Changelog = "https://github.com/Pipelex/pipelex/blob/main/CHANGELOG.md"
+Changelog = "https://github.com/Pipelex/pipelex-cookbook/blob/main/CHANGELOG.md"
+
 
 [tool.uv]
 required-version = ">=0.7.2"

@@ -17,31 +17,5 @@
             ],
             "console": "integratedTerminal"
         },
-        {
-            "name": "Debug legacy check",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "pipelex.cli._cli",
-            "args": [
-                "check",
-            ],
-            "console": "integratedTerminal",
-            "justMyCode": true
-        },
-        {
-            "name": "Debug Expense Report",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "pipelex.cli",
-            "args": [
-                "expense",
-                "--pipe",
-                "process_expense_report",
-                "--expense-report",
-                "expense_report_diner"
-            ],
-            "console": "integratedTerminal",
-            "justMyCode": false
-        }
     ]
 }

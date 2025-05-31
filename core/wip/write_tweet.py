@@ -80,4 +80,5 @@ optimized_tweet = asyncio.run(
 )
 
 # output results
-pretty_print(optimized_tweet, title="Optimized Tweet")
+print(optimized_tweet.text)
+pretty_print(optimized_tweet.text, title="Optimized Tweet")
