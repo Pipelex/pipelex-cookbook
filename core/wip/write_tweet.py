@@ -10,7 +10,7 @@ from pipelex.run import run_pipe_code
 from pipelex.tools.environment import get_optional_env
 from pipelex.tools.misc.file_utils import load_text_from_path
 
-from pipelex_libraries.pipelines.tech_tweet import OptimizedTweet
+from pipelex_libraries.pipelines.examples.tech_tweet import OptimizedTweet
 from utils.input_utils import optional_sample_text_from_path
 
 SAMPLE_NAME = "write_tweet"
