@@ -6,32 +6,32 @@ authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
 license = "MIT"
 readme = "README.md"
-requires-python = ">=3.11,<3.12"
+requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Operating System :: OS Independent",
 ]
 
 dependencies = [
     "beautifulsoup4==4.13.4",
-    "pipelex[mistralai,anthropic,google,bedrock,fal]==0.2.9",
+    "pipelex[mistralai,anthropic,google,bedrock,fal]==0.2.11",
 ]
 
 [tool.setuptools]
-packages = ["core", "community", "utils", "tests"]
-
-[build-system]
-requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.build_meta"
+packages = ["core", "community", "utils"]
 
 [project.optional-dependencies]
+compat = ["backports.strenum>=1.3.0 ; python_version < '3.11'"]
 dev = [
     "boto3-stubs>=1.35.24",
     "mypy>=1.11.2",
     "pyright==1.1.398",
     "pytest>=8.3.3",
-    "pytest-pretty==1.2.0",
+    "pytest-sugar>=1.0.0",
     "pytest_asyncio>=0.24.0",
     "ruff>=0.6.8",
     "types-aioboto3[bedrock,bedrock-runtime]>=13.4.0",
