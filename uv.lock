@@ -546,15 +546,14 @@ wheels = [
 
 [[package]]
 name = "kajson"
-version = "0.1.4"
+version = "0.1.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
-    { name = "rich" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0b/1e/7eb1a10f04b67efbac1026a629a22bf55d68f915ecb58aeae7e6453de729/kajson-0.1.4.tar.gz", hash = "sha256:61f11fb3452afad9cf9c53febe1f2f28af3d2fe8744fb7cc17fd0732e46fccb0", size = 14533, upload-time = "2025-05-25T15:53:51.204Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/51/38/300e06d9e5c98d2bcb922e3d2813836f74754a117bcf5c9ff019a20eea0b/kajson-0.1.5.tar.gz", hash = "sha256:cf166e417642127e4a4bca3d31788b64fcd1969f6bc103df2fa59e069c27b8a8", size = 15061, upload-time = "2025-06-02T15:28:52.403Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d2/ea/6417590de6edcaff1a7520b4305bfca66183090c1e46a21951abfd883798/kajson-0.1.4-py3-none-any.whl", hash = "sha256:fbea1ae670744f91ccd8754adf9fa98315aa2b9bd20d76be753cb86771eaa131", size = 18587, upload-time = "2025-05-25T15:53:49.6Z" },
+    { url = "https://files.pythonhosted.org/packages/b5/7c/12f2167e1b1056e73224b7c4f8062807af47f0bc6a26ef773e3f8219c773/kajson-0.1.5-py3-none-any.whl", hash = "sha256:5fbc4065fa85f56dccf93d644a9d3ee1bccb504d7f27f030a1beacc6ba21e1d6", size = 21090, upload-time = "2025-06-02T15:28:50.765Z" },
 ]
 
 [[package]]
@@ -810,8 +809,8 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.2.9"
-source = { editable = "../pipelex" }
+version = "0.2.11"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
     { name = "filetype" },
@@ -837,6 +836,10 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "yattag" },
 ]
+sdist = { url = "https://files.pythonhosted.org/packages/a8/f7/34231855ecd0bda1d3357e62e4edd089491d077b635390d03904f6c6c2ac/pipelex-0.2.11.tar.gz", hash = "sha256:82c7285433ef43d62aed2ab47b1b05ac654a9cd60a01e9147118f2246c1d9689", size = 162207, upload-time = "2025-06-02T19:25:51.79Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/48/17/31c1d0cdf39738c89b5d590b74bb3af6ddd8ac6a9e79bc2817cf7032c994/pipelex-0.2.11-py3-none-any.whl", hash = "sha256:dc4c73feabb30a97103d6871b304090655a4134b637c592b15789a2966d89a8b", size = 273055, upload-time = "2025-06-02T19:25:50.162Z" },
+]
 
 [package.optional-dependencies]
 anthropic = [
@@ -855,58 +858,6 @@ google = [
 mistralai = [
     { name = "mistralai" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "aioboto3", marker = "extra == 'bedrock'", specifier = ">=13.4.0" },
-    { name = "aiofiles", specifier = "<24.0" },
-    { name = "anthropic", marker = "extra == 'anthropic'", specifier = ">=0.49.0" },
-    { name = "boto3", marker = "extra == 'bedrock'", specifier = ">=1.34.131" },
-    { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
-    { name = "fal-client", marker = "extra == 'fal'", specifier = ">=0.4.1" },
-    { name = "filetype", specifier = ">=1.2.0" },
-    { name = "google-auth-oauthlib", marker = "extra == 'google'", specifier = ">=1.2.1" },
-    { name = "httpx", specifier = ">=0.27.0" },
-    { name = "instructor", specifier = ">=1.8.3" },
-    { name = "jinja2", specifier = ">=3.1.4" },
-    { name = "json2html", specifier = ">=1.3.0" },
-    { name = "kajson", specifier = "==0.1.4" },
-    { name = "markdown", specifier = ">=3.6" },
-    { name = "mistralai", marker = "extra == 'mistralai'", specifier = "==1.5.2" },
-    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "networkx", specifier = ">=3.4.2" },
-    { name = "openai", specifier = ">=1.60.1" },
-    { name = "openpyxl", specifier = ">=3.1.5" },
-    { name = "pandas", specifier = ">=2.2.3" },
-    { name = "pandas-stubs", marker = "extra == 'dev'", specifier = ">=2.2.3.241126" },
-    { name = "pillow", specifier = ">=11.2.1" },
-    { name = "pydantic", specifier = "==2.10.6" },
-    { name = "pypdfium2", specifier = ">=4.30.1" },
-    { name = "pyright", marker = "extra == 'dev'", specifier = "==1.1.398" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
-    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
-    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=6.1.1" },
-    { name = "pytest-pretty", marker = "extra == 'dev'", specifier = "==1.2.0" },
-    { name = "python-dotenv", specifier = ">=1.0.1" },
-    { name = "pyyaml", specifier = ">=6.0.2" },
-    { name = "rich", specifier = ">=13.8.1" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.6.8" },
-    { name = "shortuuid", specifier = ">=1.0.13" },
-    { name = "toml", specifier = ">=0.10.2" },
-    { name = "typer", specifier = ">=0.16.0" },
-    { name = "types-aioboto3", extras = ["bedrock", "bedrock-runtime"], marker = "extra == 'dev'", specifier = ">=13.4.0" },
-    { name = "types-aiofiles", marker = "extra == 'dev'", specifier = ">=24.1.0.20240626" },
-    { name = "types-beautifulsoup4", marker = "extra == 'dev'", specifier = ">=4.12.0.20240907" },
-    { name = "types-markdown", marker = "extra == 'dev'", specifier = ">=3.6.0.20240316" },
-    { name = "types-networkx", marker = "extra == 'dev'", specifier = ">=3.3.0.20241020" },
-    { name = "types-openpyxl", marker = "extra == 'dev'", specifier = ">=3.1.5.20250306" },
-    { name = "types-pyyaml", marker = "extra == 'dev'", specifier = ">=6.0.12.20250326" },
-    { name = "types-requests", marker = "extra == 'dev'", specifier = ">=2.32.0.2024091" },
-    { name = "types-toml", marker = "extra == 'dev'", specifier = ">=0.10.8.20240310" },
-    { name = "typing-extensions", specifier = ">=4.12.2" },
-    { name = "yattag", specifier = ">=1.15.2" },
-]
-provides-extras = ["anthropic", "bedrock", "fal", "google", "mistralai", "dev"]
 
 [[package]]
 name = "pipelex-cookbook"
@@ -942,7 +893,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], editable = "../pipelex" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], specifier = "==0.2.11" },
     { name = "pyright", marker = "extra == 'dev'", specifier = "==1.1.398" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
