@@ -1,8 +1,9 @@
-from typing import ClassVar, Self
+from typing import ClassVar
 
 from bs4 import BeautifulSoup
 from pipelex.core.stuff_content import StructuredContent
 from pydantic import model_validator
+from typing_extensions import Self
 
 
 class HtmlTable(StructuredContent):

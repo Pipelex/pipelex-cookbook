@@ -7,8 +7,6 @@ from pipelex.core.stuff_factory import StuffFactory
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
 from pipelex.run import run_pipe_code
-from pipelex.tools.environment import get_optional_env
-from pipelex.tools.misc.file_utils import load_text_from_path
 
 from pipelex_libraries.pipelines.examples.tech_tweet import OptimizedTweet
 from utils.input_utils import optional_sample_text_from_path
