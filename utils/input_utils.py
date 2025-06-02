@@ -11,7 +11,7 @@ def optional_sample_text_from_path(filename: str) -> Optional[str]:
     """
     samples_path = get_optional_env("SAMPLES_PATH")
     if samples_path is None:
-        log.info(f"No samples path defined in env, we won't use text from a file for '{filename}'")
+        log.info(f"The samples path var `SAMPLES_PATH` is not defined in env, we won't use text from a file for '{filename}'")
         return None
     path = f"{samples_path}/{filename}"
     text = failable_load_text_from_path(path=path)

@@ -51,17 +51,14 @@ async def optimize_tweet(draft_tweet_str: str, writing_style_str: str) -> Optimi
 # start Pipelex
 Pipelex.make()
 
-# get sample data
 
-draft_tweet = optional_sample_text_from_path(filename="draft_tweet.md")
-if not draft_tweet:
-    draft_tweet = """
+# get sample data
+SAMPLE_DRAFT_TWEET = """
 We're seeing a revolution in game AI with LLMs enabling NPCs to have dynamic, contextual conversations. Our tests show that players engage 3x longer with AI-driven characters vs traditional scripted ones. The key is fine-tuning models on game-specific dialogue while maintaining character consistency.
 """
+draft_tweet = optional_sample_text_from_path(filename="draft_tweet.md") or SAMPLE_DRAFT_TWEET
 
-writing_style = optional_sample_text_from_path(filename="writing_style.md")
-if not writing_style:
-    writing_style = """
+SAMPLE_WRITING_STYLE = """
 🚀 Just shipped v2.0 of our API!
 
 • 50% faster response times
@@ -70,6 +67,8 @@ if not writing_style:
 
 Try it out and let me know what you think! #DevTools
 """
+writing_style = optional_sample_text_from_path(filename="writing_style.md") or SAMPLE_WRITING_STYLE
+
 
 # run sample using asyncio
 optimized_tweet = asyncio.run(

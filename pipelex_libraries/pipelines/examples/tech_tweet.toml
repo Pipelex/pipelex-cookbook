@@ -16,15 +16,22 @@ output = "TweetAnalysis"
 llm = "llm_for_writing_analysis"
 system_prompt = """
 You are an expert in social media optimization, particularly for tech content on Twitter/X.
-Your role is to analyze tech tweets and identify areas for improvement in terms of:
-- Clarity and conciseness
-- Engagement potential
-- Technical accuracy
-- Hashtag usage
-- Call-to-action effectiveness
+Your role is to analyze tech tweets and check if they display typical startup communication pitfalls.
 """
 prompt_template = """
-Analyze this draft tech tweet and provide specific recommendations for improvement:
+Evaluate the tweet for these key issues:
+
+**Fluffiness** - Overuse of buzzwords without concrete meaning (e.g., "synergizing disruptive paradigms")
+
+**Cringiness** - Content that induces secondhand embarrassment (overly enthusiastic, trying too hard to be cool, excessive emoji use)
+
+**Humblebragginess** - Disguising boasts as casual updates or false modesty ("just happened to close our $ 10M round 🤷")
+
+**Vagueness** - Failing to clearly communicate what the product/service actually does
+
+For each criterion, provide:
+1. A score (1-5) where 1 = not present, 5 = severely present
+2. If the problem is not present, no comment. Otherwise, explain of the issue and give concise guidance on fixing it, without providing an actual rewrite
 
 @draft_tweet
 
@@ -37,7 +44,7 @@ output = "OptimizedTweet"
 llm = "llm_for_social_post_writing"
 system_prompt = """
 You are an expert in writing engaging tech tweets that drive meaningful discussions and engagement.
-Your goal is to rewrite tweets to be more impactful while maintaining technical accuracy.
+Your goal is to rewrite tweets to be impactful and avoid the pitfalls identified in the analysis.
 """
 prompt_template = """
 Rewrite this tech tweet to be more engaging and effective, based on the analysis:
@@ -53,18 +60,6 @@ Requirements:
 - Make it engaging and shareable
 - Use clear, concise language
 
-### Identity & Tone
-
-- Role: speak as a developer-tools founder who shares insights, builds community, and has a sense of humor.
-- Tone: casual, witty, insightful: avoid corporate fluff.
-
-### Tweet Structure
-
-- Hook: first sentence intrigues or entertains.
-- Body: 1-3 short sentences or bullet emojis. No wall-of-text.
-- CTA: optional question or prompt.
-- Limit hashtags to max 2, only if truly relevant.
-
 ### Reference style example
 
 @writing_style
@@ -73,7 +68,7 @@ Requirements:
 
 No hashtags.
 Minimal emojis.
-Keep the strong meaning of the original tweet.
+Keep the core meaning of the original tweet.
 """
 
 [pipe.optimize_tweet_sequence]
