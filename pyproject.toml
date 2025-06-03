@@ -18,7 +18,7 @@ classifiers = [
 
 dependencies = [
     "beautifulsoup4==4.13.4",
-    "pipelex[mistralai,anthropic,google,bedrock,fal]==0.2.11",
+    "pipelex[mistralai,anthropic,google,bedrock,fal] @ git+https://github.com/Pipelex/pipelex.git@dev",
 ]
 
 [tool.setuptools]
@@ -33,6 +33,7 @@ dev = [
     "pytest>=8.3.3",
     "pytest-sugar>=1.0.0",
     "pytest_asyncio>=0.24.0",
+    "pytest-xdist>= 3.6.1",
     "ruff>=0.6.8",
     "types-aioboto3[bedrock,bedrock-runtime]>=13.4.0",
     "types-aiofiles>=24.1.0.20240626",
