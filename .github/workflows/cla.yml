@@ -23,7 +23,7 @@ jobs:
           PERSONAL_ACCESS_TOKEN: ${{ secrets.CLA_SIGNATURES }}
         with:
           path-to-signatures: "signatures/version1/cla.json"
-          path-to-document: "https://github.com/Pipelex/pipelex/blob/main/CLA.md"
+          path-to-document: "https://github.com/Pipelex/pipelex-cookbook/blob/main/CLA.md"
           branch: main
           allowlist: lchoquel,thomashebrard,antoinepipelex,bot*
           remote-organization-name: Pipelex

@@ -2,12 +2,12 @@ import asyncio
 
 from pipelex import pretty_print
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
-from pipelex.hub import get_mission_tracker, get_report_delegate
+from pipelex.hub import get_report_delegate
 from pipelex.mission.execute import execute_mission
 from pipelex.pipelex import Pipelex
 
 
-async def summarize_by_mission(text: str):
+async def summarize_by_mission(text: str) -> str:
     # Load the working memory with the text
     working_memory = WorkingMemoryFactory.make_from_text(text=text)
 
@@ -17,19 +17,23 @@ async def summarize_by_mission(text: str):
         working_memory=working_memory,
     )
 
-    summary_text = pipe_output.main_stuff_as_text
+    summary_text = pipe_output.main_stuff_as_str
 
-    # Print the output
-    pretty_print(summary_text, title=f"Summarized by steps — mission {mission_id}")
+    pretty_print(mission_id, title="Mission ID")
 
     # Get the report (tokens used and cost)
     get_report_delegate().generate_report(mission_id=mission_id)
-    get_report_delegate().generate_report()
-    get_mission_tracker().output_flowchart()
+    return summary_text
 
 
 with open("assets/sample_text_3.txt", "r", encoding="utf-8") as f:
     text = f.read()
 
+
+# start Pipelex
 Pipelex.make()
-asyncio.run(summarize_by_mission(text))
+# run sample using asyncio
+summary_text = asyncio.run(summarize_by_mission(text))
+
+# Print the output
+pretty_print(summary_text, title="Summarized by steps")

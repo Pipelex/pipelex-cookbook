@@ -3,4 +3,4 @@ description: Creating samples to show how to run pipes.
 globs: 
 alwaysApply: false
 ---
-When adding exampls to run pipes, put it into `cookbook/samples` and take inspiration from the existying examples.
+When adding examples to run pipes, put it into `community/wip` and take inspiration from the existing examples.
