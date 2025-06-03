@@ -14,7 +14,6 @@
         ".mypy_cache": true,
         ".pytest_cache": true,
         ".ruff_cache": true,
-        "pipelex_cookbook.egg-info": true
     },
     "python.testing.pytestArgs": [
         "tests"
