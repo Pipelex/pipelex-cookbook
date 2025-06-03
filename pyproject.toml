@@ -21,9 +21,6 @@ dependencies = [
     "pipelex[mistralai,anthropic,google,bedrock,fal] @ git+https://github.com/Pipelex/pipelex.git@dev",
 ]
 
-[tool.uv.sources]
-pipelex = { path = "../pipelex", editable = true }
-
 [tool.setuptools]
 packages = ["core", "community", "utils"]
 
