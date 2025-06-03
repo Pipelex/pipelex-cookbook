@@ -1,8 +1,8 @@
 from datetime import datetime
-from enum import StrEnum
 from typing import List, Literal, Optional
 
 from pipelex.core.stuff_content import StructuredContent
+from pipelex.types import StrEnum
 from pydantic import Field, ValidationInfo, field_validator
 
 

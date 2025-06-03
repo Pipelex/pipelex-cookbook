@@ -44,17 +44,7 @@ git clone https://github.com/Pipelex/pipelex-cookbook.git
 cd pipelex-cookbook
 ```
 
-### Prepare your virtual environment
-
-Example using venv:
-
-```bash
-python3.11 -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip
-```
-
-### Install Pipelex and other tools for the cookbook
+### Create virtual environment, install Pipelex and other dependencies
 
 ```bash
 make install

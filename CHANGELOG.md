@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.1.9] - 2025-06-03
+
+- Compatible with python-version: `["3.10", "3.11", "3.12", "3.13"]`
+- Use `pretty-sugar`
+- Sample Pipeline to improve a tweet
+- Various fixes and improvements in docs and code
+- Use renamed `Mission` to `Pipeline`
+- `Makefile`: avoid defaulting `pytest` to verbose. Setup target `make test-xdist` = Run unit tests with xdist, make it the default for shorthand `make t`. The old `make t` is now `make tp` (test-with-prints)
+
 ## [v0.1.8] - 2025-05-30
 
 ### Added
