@@ -1,9 +1,9 @@
-from datetime import date, datetime
-from enum import StrEnum
+from datetime import datetime
 from typing import List, Optional
 
 from pipelex.core.stuff_content import ImageContent, PageContent, StructuredContent, TextAndImagesContent, TextContent
 from pipelex.core.working_memory import WorkingMemory
+from pipelex.types import StrEnum
 from pydantic import BaseModel
 
 
