@@ -56,6 +56,9 @@ Changelog = "https://github.com/Pipelex/pipelex-cookbook/blob/main/CHANGELOG.md"
 [tool.uv]
 required-version = ">=0.7.2"
 
+[tool.uv.sources]
+pipelex = { git = "https://github.com/Pipelex/pipelex.git", rev = "dev" }
+
 [tool.mypy]
 check_untyped_defs = true
 exclude = "^.*\\.venv/.*$"
