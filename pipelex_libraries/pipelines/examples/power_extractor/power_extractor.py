@@ -1,17 +1,50 @@
-from typing import List
+from datetime import datetime
+from typing import List, Optional
 
-from pipelex.core.stuff_content import ImageContent, PageContent, TextAndImagesContent, TextContent
+from pipelex.core.stuff_content import ImageContent, PageContent, StructuredContent, TextAndImagesContent, TextContent
 from pipelex.core.working_memory import WorkingMemory
-from pydantic import BaseModel
+from pipelex.types import StrEnum
 
 
 class PageContentAndMarkdownMatchError(ValueError):
     pass
 
 
-class TextAndImages(BaseModel):
-    text: str
-    images: List[str]
+class IndexScale(StrEnum):
+    A = "A"
+    B = "B"
+    C = "C"
+    D = "D"
+    E = "E"
+    F = "F"
+    G = "G"
+
+
+class Dpe(StructuredContent):
+    address: Optional[str] = None
+    date_of_issue: Optional[datetime] = None
+    date_of_expiration: Optional[datetime] = None
+    energy_efficiency_class: Optional[IndexScale] = None
+    per_year_per_m2_consumption: Optional[float] = None
+    co2_emission_class: Optional[IndexScale] = None
+    per_year_per_m2_co2_emissions: Optional[float] = None
+    yearly_energy_costs: Optional[float] = None
+
+
+class Products(StructuredContent):
+    name: Optional[str] = None
+    quantity: Optional[int] = None
+    unit_price: Optional[float] = None
+    total_price: Optional[float] = None
+
+
+class ProofOfPurchase(StructuredContent):
+    date_of_purchase: Optional[datetime] = None
+    amount_paid: Optional[float] = None
+    currency: Optional[str] = None
+    payment_method: Optional[str] = None
+    purchase_number: Optional[str] = None
+    products: Optional[List[Products]] = None
 
 
 # TODO: wrap this in a PipeFunc
