@@ -6,32 +6,32 @@ from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
 from pipelex.run import run_pipe_code
 
-from pipelex_libraries.pipelines.examples.power_extractor.power_extractor import Dpe, merge_markdown_and_images
+from pipelex_libraries.pipelines.examples.power_extractor.power_extractor import ProofOfPurchase
 from utils.results_utils import get_results_dir_path
 
-SAMPLE_NAME = "pdf_power_extractor_dpe"
-PDF_PATH_2 = "assets/dpe_single_page.pdf"
+SAMPLE_NAME = "pdf_power_extractor_proof_of_purchase"
+PDF_PATH_2 = "assets/restaurant_invoice.pdf"
 
 
-async def power_extractor(pdf_url: str) -> Dpe:
+async def power_extractor(pdf_url: str) -> ProofOfPurchase:
     working_memory = WorkingMemoryFactory.make_from_pdf(
         pdf_url=pdf_url,
         concept_code="documents.PDF",
         name="pdf",
     )
     pipe_output = await run_pipe_code(
-        pipe_code="power_extractor_dpe",
+        pipe_code="power_extractor_proof_of_purchase",
         working_memory=working_memory,
     )
     working_memory = pipe_output.working_memory
-    dpe: Dpe = working_memory.get_list_stuff_first_item_as(name="dpe", item_type=Dpe)
-    return dpe
+    proof_of_purchase: ProofOfPurchase = working_memory.get_list_stuff_first_item_as(name="proof_of_purchase", item_type=ProofOfPurchase)
+    return proof_of_purchase
 
 
 # start Pipelex
 Pipelex.make()
 # run sample using asyncio
-dpe = asyncio.run(power_extractor(pdf_url=PDF_PATH_2))
+proof_of_purchase = asyncio.run(power_extractor(pdf_url=PDF_PATH_2))
 
 # output results
 output_dir = get_results_dir_path(sample_name=SAMPLE_NAME)

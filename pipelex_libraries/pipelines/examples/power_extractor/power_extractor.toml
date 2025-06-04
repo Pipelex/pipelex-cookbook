@@ -3,6 +3,13 @@
 domain = "power_extractor"
 definition = "The domain for power extractor"
 
+[concept.Dpe]
+Concept = "A diagnostic of the energy performance of a building"
+structure = "Dpe"
+
+[concept.ProofOfPurchase]
+Concept = "Elements from a proof of purchase"
+structure = "ProofOfPurchase"
 
 [pipe.write_markdown_from_page_content]
 PipeLLM = "Write markdown from page content"
@@ -36,9 +43,10 @@ steps = [
 [pipe.write_markdown_from_page_content_proof_of_purchase]
 PipeLLM = "Write markdown from page content"
 input = "documents.PageContent"
-output = "TextContent"
+output = "ProofOfPurchase"
 images = ["page_content.page_view"]
 llm = "llm_for_ocr"
+structuring_method = "preliminary_text"
 system_prompt = """You are multimodal LLM, expert at converting images into perfect markdown."""
 prompt_template = """
 You are given an image of a proof of purchase.
@@ -61,15 +69,16 @@ input = "documents.PageContent"
 output = "TextContent"
 steps = [
     { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },
-    { pipe = "write_markdown_from_page_content_proof_of_purchase", batch_as = "page_content", result = "markdowns" },
+    { pipe = "write_markdown_from_page_content_proof_of_purchase", batch_as = "page_content", result = "proof_of_purchase" },
 ]
 
 [pipe.write_markdown_from_page_content_dpe]
 PipeLLM = "Write markdown from page content of a 'Diagnostic de Performance Energetique'"
 input = "documents.PageContent"
-output = "TextContent"
+output = "Dpe"
 images = ["page_content.page_view"]
 llm = "llm_for_ocr"
+structuring_method = "preliminary_text"
 system_prompt = """You are multimodal LLM, expert at converting images into perfect markdown."""
 prompt_template = """
 You are given an image of a French 'Diagnostic de Performance Energetique'.
@@ -94,5 +103,5 @@ input = "documents.PageContent"
 output = "TextContent"
 steps = [
     { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },
-    { pipe = "write_markdown_from_page_content_dpe", batch_as = "page_content", result = "markdowns" },
+    { pipe = "write_markdown_from_page_content_dpe", batch_as = "page_content", result = "dpe" },
 ]
