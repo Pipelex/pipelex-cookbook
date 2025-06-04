@@ -9,6 +9,7 @@ PipeLLM = "Write markdown from page content"
 input = "documents.PageContent"
 output = "TextContent"
 images = ["page_content.page_view"]
+llm = "llm_for_ocr"
 system_prompt = """You are multimodal LLM, expert at converting images into perfect markdown."""
 prompt_template = """
 You are given an image which is a view  of a document page.
@@ -30,4 +31,68 @@ output = "TextContent"
 steps = [
     { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },
     { pipe = "write_markdown_from_page_content", batch_as = "page_content", result = "markdowns" },
+]
+
+[pipe.write_markdown_from_page_content_proof_of_purchase]
+PipeLLM = "Write markdown from page content"
+input = "documents.PageContent"
+output = "TextContent"
+images = ["page_content.page_view"]
+llm = "llm_for_ocr"
+system_prompt = """You are multimodal LLM, expert at converting images into perfect markdown."""
+prompt_template = """
+You are given an image of a proof of purchase.
+Your role is to convert the image into perfect markdown.
+
+To help you do so, you are given the text extracted from the page by an OCR model.
+@page_content.text_and_images.text
+
+- Make sure you collect every titles, numbers and currencies from the proof of purchase.
+- Pay attention to the text alignment, it might have been misaligned by the OCR.
+- The OCR extracted may be highly incomplete. It is your job to complete the text and add the missing information using the image.
+- Output only the markdown, nothing else. No need for "```markdown" or "```".
+- You can use html if it helps you.
+- You can use tables if it is relevant.
+"""
+
+[pipe.power_extractor_proof_of_purchase]
+PipeSequence = "Update page content with markdown"
+input = "documents.PageContent"
+output = "TextContent"
+steps = [
+    { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },
+    { pipe = "write_markdown_from_page_content_proof_of_purchase", batch_as = "page_content", result = "markdowns" },
+]
+
+[pipe.write_markdown_from_page_content_dpe]
+PipeLLM = "Write markdown from page content of a 'Diagnostic de Performance Energetique'"
+input = "documents.PageContent"
+output = "TextContent"
+images = ["page_content.page_view"]
+llm = "llm_for_ocr"
+system_prompt = """You are multimodal LLM, expert at converting images into perfect markdown."""
+prompt_template = """
+You are given an image of a French 'Diagnostic de Performance Energetique'.
+Your role is to convert the image into perfect markdown.
+
+To help you do so, you are given the text extracted from the page by an OCR model.
+@page_content.text_and_images.text
+
+- It is very important that you collect every elements, especially if they are related to the energy performance of the building.
+- Pay attention to all the pieces ofinformation that may be included in images, graphs, charts or tables.
+- We value letters like "A, B, C, D, E, F, G" as they are energy performance classes.
+- Pay attention to the text alignment, it might have been misaligned by the OCR.
+- The OCR extracted may be highly incomplete. It is your job to complete the text and add the missing information using the image.
+- Output only the markdown, nothing else. No need for "```markdown" or "```".
+- You can use html if it helps you.
+- You can use tables if it is relevant.
+"""
+
+[pipe.power_extractor_dpe]
+PipeSequence = "Update page content with markdown"
+input = "documents.PageContent"
+output = "TextContent"
+steps = [
+    { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },
+    { pipe = "write_markdown_from_page_content_dpe", batch_as = "page_content", result = "markdowns" },
 ]
