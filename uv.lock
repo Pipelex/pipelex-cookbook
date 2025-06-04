@@ -1328,8 +1328,8 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.2.13"
-source = { git = "https://github.com/Pipelex/pipelex.git?rev=dev#726919cf498f4744718b07125288f85206899b9b" }
+version = "0.2.12"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
     { name = "filetype" },
@@ -1356,6 +1356,10 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "yattag" },
 ]
+sdist = { url = "https://files.pythonhosted.org/packages/42/1f/3460a50c4f76b61c2b53736fcc2346d9bfe1cce3712946c54f1fd199e9f2/pipelex-0.2.12.tar.gz", hash = "sha256:a1682bd35fd2fe648e3c35dc4fe8dccd3ea3d55e765cafcca0d6957b19ddbdb4", size = 163053, upload-time = "2025-06-03T16:57:12.016Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7a/25/c9147bd18c16b1e6149bdc4036c11f37dc40b51df06ba7a261edcf8d7731/pipelex-0.2.12-py3-none-any.whl", hash = "sha256:79ecd5a15674fe441eedacd68061d48f5b1820d09a2fd61cdd864e6ded33ae04", size = 274858, upload-time = "2025-06-03T16:57:10.331Z" },
+]
 
 [package.optional-dependencies]
 anthropic = [
@@ -1377,7 +1381,7 @@ mistralai = [
 
 [[package]]
 name = "pipelex-cookbook"
-version = "0.1.10"
+version = "0.1.11"
 source = { virtual = "." }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -1414,7 +1418,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], git = "https://github.com/Pipelex/pipelex.git?rev=dev" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], specifier = "==0.2.12" },
     { name = "pyright", marker = "extra == 'dev'", specifier = "==1.1.398" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
