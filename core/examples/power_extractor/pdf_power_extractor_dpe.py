@@ -1,12 +1,10 @@
 import asyncio
 
-from pipelex import pretty_print
-from pipelex.core.stuff_content import TextAndImagesContent
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
 from pipelex.run import run_pipe_code
 
-from pipelex_libraries.pipelines.examples.power_extractor.power_extractor import Dpe, merge_markdown_and_images
+from pipelex_libraries.pipelines.examples.power_extractor.power_extractor import Dpe
 from utils.results_utils import get_results_dir_path
 
 SAMPLE_NAME = "pdf_power_extractor_dpe"

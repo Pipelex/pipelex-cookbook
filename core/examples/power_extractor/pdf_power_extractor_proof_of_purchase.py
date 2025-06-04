@@ -1,7 +1,5 @@
 import asyncio
 
-from pipelex import pretty_print
-from pipelex.core.stuff_content import TextAndImagesContent
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
 from pipelex.run import run_pipe_code
