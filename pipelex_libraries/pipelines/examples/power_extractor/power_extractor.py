@@ -10,17 +10,7 @@ class PageContentAndMarkdownMatchError(ValueError):
     pass
 
 
-class IndicePerformanceEnergetique(StrEnum):
-    A = "A"
-    B = "B"
-    C = "C"
-    D = "D"
-    E = "E"
-    F = "F"
-    G = "G"
-
-
-class IndiceEmissions(StrEnum):
+class IndexScale(StrEnum):
     A = "A"
     B = "B"
     C = "C"
@@ -34,9 +24,9 @@ class Dpe(StructuredContent):
     address: Optional[str] = None
     date_of_issue: Optional[datetime] = None
     date_of_expiration: Optional[datetime] = None
-    energy_efficiency_class: Optional[IndicePerformanceEnergetique] = None
+    energy_efficiency_class: Optional[IndexScale] = None
     per_year_per_m2_consumption: Optional[float] = None
-    co2_emission_class: Optional[IndiceEmissions] = None
+    co2_emission_class: Optional[IndexScale] = None
     per_year_per_m2_co2_emissions: Optional[float] = None
     yearly_energy_costs: Optional[float] = None
 
