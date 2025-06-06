@@ -4,7 +4,7 @@ from pipelex import pretty_print
 from pipelex.core.stuff_content import ListContent, PageContent
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
-from pipelex.run import run_pipe_code
+from pipelex.pipeline.execute import execute_pipeline
 
 from utils.results_utils import get_results_dir_path
 
@@ -18,7 +18,7 @@ async def simple_ocr(pdf_url: str):
         concept_code="documents.PDF",
         name="pdf",
     )
-    pipe_output = await run_pipe_code(
+    pipe_output, _ = await execute_pipeline(
         pipe_code="extract_page_contents_from_pdf",
         working_memory=working_memory,
     )

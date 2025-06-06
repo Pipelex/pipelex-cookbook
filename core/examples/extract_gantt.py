@@ -2,7 +2,7 @@ import asyncio
 
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
-from pipelex.run import run_pipe_code
+from pipelex.pipeline.execute import execute_pipeline
 
 from pipelex_libraries.pipelines.examples.extraction.gantt import GanttChart
 from utils.results_utils import output_result
@@ -20,7 +20,7 @@ async def extract_gantt(image_url: str) -> GanttChart:
     )
 
     # Run the pipe
-    pipe_output = await run_pipe_code(
+    pipe_output, _ = await execute_pipeline(
         pipe_code="extract_gantt_by_steps",
         working_memory=working_memory,
     )

@@ -2,7 +2,7 @@ import asyncio
 
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
-from pipelex.run import run_pipe_code
+from pipelex.pipeline.execute import execute_pipeline
 
 from pipelex_libraries.pipelines.examples.extraction.tables import HtmlTable
 from utils.results_utils import output_result
@@ -17,7 +17,7 @@ async def extract_table(table_screenshot: str) -> HtmlTable:
         concept_code="tables.TableScreenshot",
         name="table_screenshot",
     )
-    pipe_output = await run_pipe_code(
+    pipe_output, _ = await execute_pipeline(
         pipe_code="extract_html_table_and_review",
         working_memory=working_memory,
     )

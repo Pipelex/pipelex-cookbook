@@ -2,4 +2,3 @@
 
 llm_for_writing_analysis = { llm_handle = "claude-4-opus", temperature = 0.5 }
 llm_for_social_post_writing = { llm_handle = "claude-4-opus", temperature = 0.5 }
-llm_for_img_to_text = { llm_handle = "best-claude", temperature = 0.1 }
