@@ -1,6 +1,6 @@
 [project]
 name = "pipelex-cookbook"
-version = "0.1.11"
+version = "0.1.12"
 description = "Cookbook for Pipelex, the open-source declarative language that lets you define replicable, structured, composable LLM pipelines."
 authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
@@ -18,7 +18,7 @@ classifiers = [
 
 dependencies = [
     "beautifulsoup4==4.13.4",
-    "pipelex[mistralai,anthropic,google,bedrock,fal]==0.2.12",
+    "pipelex[mistralai,anthropic,google,bedrock,fal]==0.2.14",
 ]
 
 [tool.setuptools]
@@ -59,7 +59,7 @@ required-version = ">=0.7.2"
 check_untyped_defs = true
 exclude = "^.*\\.venv/.*$"
 mypy_path = "."
-packages = ["core", "community", "pipelex_libraries", "utils"]
+packages = ["core", "community", "pipelex_libraries", "utils", "tests"]
 plugins = ["pydantic.mypy"]
 python_version = "3.11"
 warn_return_any = true
@@ -77,7 +77,7 @@ enableExperimentalFeatures = false
 enableTypeIgnoreComments = true
 exclude = ["**/node_modules", "**/__pycache__"]
 extraPaths = ["./tests"]
-include = ["core", "community", "pipelex_libraries", "utils"]
+include = ["core", "community", "pipelex_libraries", "utils", "tests"]
 pythonVersion = "3.11"
 reportAbstractUsage = "error"
 reportArgumentType = "error"
