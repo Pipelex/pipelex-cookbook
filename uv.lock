@@ -579,16 +579,16 @@ wheels = [
 
 [[package]]
 name = "google-auth"
-version = "2.40.2"
+version = "2.40.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cachetools" },
     { name = "pyasn1-modules" },
     { name = "rsa" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/66/84/f67f53c505a6b2c5da05c988e2a5483f5ba9eee4b1841d2e3ff22f547cd5/google_auth-2.40.2.tar.gz", hash = "sha256:a33cde547a2134273226fa4b853883559947ebe9207521f7afc707efbf690f58", size = 280990, upload-time = "2025-05-21T18:04:59.816Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9e/9b/e92ef23b84fa10a64ce4831390b7a4c2e53c0132568d99d4ae61d04c8855/google_auth-2.40.3.tar.gz", hash = "sha256:500c3a29adedeb36ea9cf24b8d10858e152f2412e3ca37829b3fa18e33d63b77", size = 281029, upload-time = "2025-06-04T18:04:57.577Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6a/c7/e2d82e6702e2a9e2311c138f8e1100f21d08aed0231290872b229ae57a86/google_auth-2.40.2-py2.py3-none-any.whl", hash = "sha256:f7e568d42eedfded58734f6a60c58321896a621f7c116c411550a4b4a13da90b", size = 216102, upload-time = "2025-05-21T18:04:57.547Z" },
+    { url = "https://files.pythonhosted.org/packages/17/63/b19553b658a1692443c62bd07e5868adaa0ad746a0751ba62c59568cd45b/google_auth-2.40.3-py2.py3-none-any.whl", hash = "sha256:1370d4593e86213563547f97a92752fc658456fe4514c809544f330fed45a7ca", size = 216137, upload-time = "2025-06-04T18:04:55.573Z" },
 ]
 
 [[package]]
@@ -1328,7 +1328,7 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.2.12"
+version = "0.2.14"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -1356,9 +1356,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "yattag" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/42/1f/3460a50c4f76b61c2b53736fcc2346d9bfe1cce3712946c54f1fd199e9f2/pipelex-0.2.12.tar.gz", hash = "sha256:a1682bd35fd2fe648e3c35dc4fe8dccd3ea3d55e765cafcca0d6957b19ddbdb4", size = 163053, upload-time = "2025-06-03T16:57:12.016Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/58/73/a753b613053b4158f8fa0cbd34ea42fc096811b3662b7b9b05d2254febc9/pipelex-0.2.14.tar.gz", hash = "sha256:65545ed6bf98faa6dd1aab9aa72ae967566c385a215e43752dcfc78ca1790e10", size = 161820, upload-time = "2025-06-06T15:40:47.032Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7a/25/c9147bd18c16b1e6149bdc4036c11f37dc40b51df06ba7a261edcf8d7731/pipelex-0.2.12-py3-none-any.whl", hash = "sha256:79ecd5a15674fe441eedacd68061d48f5b1820d09a2fd61cdd864e6ded33ae04", size = 274858, upload-time = "2025-06-03T16:57:10.331Z" },
+    { url = "https://files.pythonhosted.org/packages/49/dd/17c318d6ae95c2518b02dcba56864188640a0f8e5e572d1568a8d5400b8b/pipelex-0.2.14-py3-none-any.whl", hash = "sha256:2b6f8e43bbf786361fae123f2a3949b7794661570b3f2fe6499c3f3664f26319", size = 272260, upload-time = "2025-06-06T15:40:45.433Z" },
 ]
 
 [package.optional-dependencies]
@@ -1381,7 +1381,7 @@ mistralai = [
 
 [[package]]
 name = "pipelex-cookbook"
-version = "0.1.11"
+version = "0.1.12"
 source = { virtual = "." }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -1418,7 +1418,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], specifier = "==0.2.12" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], specifier = "==0.2.14" },
     { name = "pyright", marker = "extra == 'dev'", specifier = "==1.1.398" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },

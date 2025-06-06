@@ -6,7 +6,7 @@ from pipelex.core.stuff_factory import StuffFactory
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
-from pipelex.run import run_pipe_code
+from pipelex.pipeline.execute import execute_pipeline
 
 from pipelex_libraries.pipelines.examples.expense_report.expense_report import ExpenseValidationCombo
 
@@ -50,7 +50,7 @@ async def process_expense_report() -> ListContent[ExpenseValidationCombo]:
     working_memory = WorkingMemoryFactory.make_from_multiple_stuffs([invoice_list, expense_report_text])
 
     # Run the pipe
-    pipe_output = await run_pipe_code(
+    pipe_output, _ = await execute_pipeline(
         pipe_code="process_expense_report",
         working_memory=working_memory,
     )
