@@ -2,7 +2,7 @@ import asyncio
 
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
-from pipelex.run import run_pipe_code
+from pipelex.pipeline.execute import execute_pipeline
 
 from pipelex_libraries.pipelines.examples.power_extractor.power_extractor import Dpe
 from utils.results_utils import get_results_dir_path
@@ -17,7 +17,7 @@ async def power_extractor(pdf_url: str) -> Dpe:
         concept_code="documents.PDF",
         name="pdf",
     )
-    pipe_output = await run_pipe_code(
+    pipe_output, _ = await execute_pipeline(
         pipe_code="power_extractor_dpe",
         working_memory=working_memory,
     )

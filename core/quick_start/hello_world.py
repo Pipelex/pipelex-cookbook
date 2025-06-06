@@ -2,7 +2,7 @@ import asyncio
 
 from pipelex import pretty_print
 from pipelex.pipelex import Pipelex
-from pipelex.run import run_pipe_code
+from pipelex.pipeline.execute import execute_pipeline
 
 
 async def hello_world():
@@ -10,7 +10,7 @@ async def hello_world():
     This function demonstrates the use of a super simple Pipelex pipeline to generate text.
     """
     # Run the pipe
-    pipe_output = await run_pipe_code(
+    pipe_output, _ = await execute_pipeline(
         pipe_code="hello_world",
     )
 

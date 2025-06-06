@@ -6,7 +6,7 @@ from pipelex.core.stuff_content import TextContent
 from pipelex.core.stuff_factory import StuffFactory
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
-from pipelex.run import run_pipe_code
+from pipelex.pipeline.execute import execute_pipeline
 
 from pipelex_libraries.pipelines.examples.tech_tweet import OptimizedTweet
 from utils.input_utils import optional_sample_text_from_path
@@ -36,7 +36,7 @@ async def optimize_tweet(draft_tweet_str: str, writing_style_str: str) -> Optimi
     )
 
     # Run the sequence pipe
-    pipe_output = await run_pipe_code(
+    pipe_output, _ = await execute_pipeline(
         pipe_code="optimize_tweet_sequence",
         working_memory=working_memory,
     )
