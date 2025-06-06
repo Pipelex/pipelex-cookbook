@@ -59,7 +59,7 @@ required-version = ">=0.7.2"
 check_untyped_defs = true
 exclude = "^.*\\.venv/.*$"
 mypy_path = "."
-packages = ["core", "community", "pipelex_libraries", "utils"]
+packages = ["core", "community", "pipelex_libraries", "utils", "tests"]
 plugins = ["pydantic.mypy"]
 python_version = "3.11"
 warn_return_any = true
@@ -77,7 +77,7 @@ enableExperimentalFeatures = false
 enableTypeIgnoreComments = true
 exclude = ["**/node_modules", "**/__pycache__"]
 extraPaths = ["./tests"]
-include = ["core", "community", "pipelex_libraries", "utils"]
+include = ["core", "community", "pipelex_libraries", "utils", "tests"]
 pythonVersion = "3.11"
 reportAbstractUsage = "error"
 reportArgumentType = "error"

@@ -1,5 +1,5 @@
 import pytest
-from pipelex.run import run_pipe_code
+from pipelex.pipeline.execute import execute_pipeline
 
 
 @pytest.mark.asyncio
@@ -8,7 +8,7 @@ from pipelex.run import run_pipe_code
 async def test_hello_world():
     """Test that the hello_world function runs successfully."""
     # Run the pipe
-    pipe_output = await run_pipe_code(
+    pipe_output, _ = await execute_pipeline(
         pipe_code="hello_world",
     )
 
