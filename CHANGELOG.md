@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.12] - 2025-06-06
+
+- Bumped pipelex to v0.2.13
+
 ## [v0.1.11] - 2025-06-04
 
 ### Added
