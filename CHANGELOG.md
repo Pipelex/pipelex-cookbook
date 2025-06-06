@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.1.11] - 2025-06-04
+
+### Added
+
+**2 samples for power extraction**:
+
+- `extract_dpe`: Extract structured data from French "Diagnostics de Performance Energétique". It illustrates how Pipelex can enable you to tackle strongly formatted PDF extraction by combining OCR models, LLM vision, and validation.
+- `extract_proof_of_purchase`: Extract structured data from proofs of purchase. Another use case for extracting structured data from unstructured documents.
+
 ## [v0.1.9] - 2025-06-03
 
 - Compatible with python-version: `["3.10", "3.11", "3.12", "3.13"]`
