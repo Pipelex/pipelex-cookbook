@@ -18,7 +18,7 @@ refines = ["native.Image"]
 [pipe]
 [pipe.extract_gantt_timescale]
 PipeLLM = "Describe the timescale of a gantt chart"
-input = "GanttChartImage"
+inputs = { gantt_chart_image = "GanttChartImage" }
 output = "GanttTimescaleDescription"
 images = ["gantt_chart_image"]
 llm = "llm_to_extract_diagram"
@@ -30,7 +30,7 @@ Please analyze the timescale: what is the smallest unit detailed in the time sca
 
 [pipe.extract_gantt_task_names]
 PipeLLM = "List all the tasks"
-input = "GanttChartImage"
+inputs = { gantt_chart_image = "GanttChartImage" }
 output = "GanttTaskName"
 images = ["gantt_chart_image"]
 llm = "llm_to_extract_diagram"
@@ -43,7 +43,7 @@ multiple_output = true
 
 [pipe.extract_details_of_task]
 PipeLLM = "Extract the precise dates of the task, start_date and end_date"
-input = "GanttTaskName"
+inputs = { gantt_chart_image = "GanttChartImage", gantt_timescale = "GanttTimescaleDescription", gantt_task_name = "GanttTaskName" }
 output = "GanttTaskDetails"
 images = ["gantt_chart_image"]
 llm = "llm_to_extract_diagram"
@@ -62,7 +62,7 @@ Here is the name of the task you have to extract the dates for:
 
 [pipe.gather_in_a_gantt_chart]
 PipeLLM = "Gather all the tasks in a gantt chart"
-input = "GanttTaskDetails"
+inputs = { details_of_all_tasks = "GanttTaskDetails" }
 output = "GanttChart"
 prompt_template = """
 Now you will receive all the necessary information to build a gantt chart.
@@ -73,7 +73,7 @@ Here are the task details:
 
 [pipe.extract_gantt_by_steps]
 PipeSequence = "Extract all details from a gantt chart"
-input = "GanttChartImage"
+inputs = { gantt_chart_image = "GanttChartImage" }
 output = "GanttChart"
 steps = [
     { pipe = "extract_gantt_timescale", result = "gantt_timescale" },
@@ -89,7 +89,7 @@ steps = [
 
 [pipe.transcript_gantt_direct]
 PipeLLM = "Extract all details from a gantt chart"
-input = "GanttChartImage"
+inputs = { image = "GanttChartImage" }
 output = "GanttTranscript"
 images = ["image"]
 llm = "llm_to_extract_diagram"

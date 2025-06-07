@@ -8,7 +8,7 @@ Employee = "Employee information for expense tracking"
 [pipe]
 [pipe.extract_employee_from_expense_report]
 PipeLLM = "Extract employee information from expense report"
-input = "ExpenseReportText"
+inputs = { expense_report_text = "ExpenseReportText" }
 output = "Employee"
 system_prompt = """You are an expert at extracting employee information from expense reports."""
 prompt_template = """
