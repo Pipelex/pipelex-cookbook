@@ -8,7 +8,7 @@ Expense = "A single expense line item/article"
 [pipe]
 [pipe.extract_expenses_from_expense_report]
 PipeLLM = "Extract the list of expenses from an expense report"
-input = "ExpenseReportText"
+inputs = { expense_report_text = "ExpenseReportText" }
 output = "Expense"
 multiple_output = true
 system_prompt = """You are an expert at extracting business expenses from invoices and expense reports.

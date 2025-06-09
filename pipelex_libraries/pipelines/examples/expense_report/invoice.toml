@@ -17,7 +17,7 @@ refines = ["native.Image"]
 
 [pipe.analyze_invoice]
 PipeLLM = "Analyze the invoice"
-input = "InvoiceText"
+inputs = { invoice_text = "InvoiceText" }
 output = "InvoiceDetails"
 prompt_template = """
 Analyze this invoice:
@@ -27,7 +27,7 @@ Analyze this invoice:
 
 [pipe.extract_invoice]
 PipeLLM = "Extract invoice information from an invoice text transcript"
-input = "InvoiceText"
+inputs = { invoice_text = "InvoiceText", invoice_details = "InvoiceDetails" }
 output = "Invoice"
 llm = "llm_to_extract_invoice"
 prompt_template = """
@@ -40,7 +40,7 @@ The category of this invoice is: $invoice_details.category.
 
 [pipe.process_invoice]
 PipeSequence = "Process relevant information from an invoice"
-input = "InvoiceText"
+inputs = { invoice_text = "InvoiceText" }
 output = "Invoice"
 steps = [
     { pipe = "analyze_invoice", result = "invoice_details" },

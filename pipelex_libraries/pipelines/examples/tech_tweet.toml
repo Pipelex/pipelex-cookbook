@@ -11,7 +11,7 @@ WritingStyle = "A style of writing"
 
 [pipe.analyze_tweet]
 PipeLLM = "Analyze the draft tweet and identify areas for improvement"
-input = "DraftTweet"
+inputs = { draft_tweet = "DraftTweet" }
 output = "TweetAnalysis"
 llm = "llm_for_writing_analysis"
 system_prompt = """
@@ -39,7 +39,7 @@ For each criterion, provide:
 
 [pipe.optimize_tweet]
 PipeLLM = "Optimize the tweet based on the analysis"
-input = "TweetAnalysis"
+inputs = { draft_tweet = "DraftTweet", tweet_analysis = "TweetAnalysis", writing_style = "WritingStyle" }
 output = "OptimizedTweet"
 llm = "llm_for_social_post_writing"
 system_prompt = """
@@ -73,7 +73,7 @@ Keep the core meaning of the original tweet.
 
 [pipe.optimize_tweet_sequence]
 PipeSequence = "Analyze and optimize a tech tweet in sequence"
-input = "DraftTweet"
+inputs = { draft_tweet = "DraftTweet", writing_style = "WritingStyle" }
 output = "OptimizedTweet"
 steps = [
     { pipe = "analyze_tweet", result = "tweet_analysis" },

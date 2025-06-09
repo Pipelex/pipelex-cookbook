@@ -8,7 +8,7 @@ ExpenseValidationCombo = "Combined validation result for an expense"
 
 [pipe.validate_expense_restauration_urssaf]
 PipeLLM = "Validate restaurant expenses according to URSSAF rules"
-input = "Expense"
+inputs = { matched_expense = "Expense" }
 output = "ExpenseValidation"
 system_prompt = """
 You are an expert at validating French restaurant expenses according to URSSAF rules.
@@ -41,7 +41,7 @@ Include specific issues in the issues list if any URSSAF rules are not met, espe
 
 [pipe.validate_expense_restauration_custom]
 PipeLLM = "Validate restaurant expenses according to custom business rules"
-input = "Expense"
+inputs = { matched_expense = "Expense", employee = "Employee" }
 output = "ExpenseValidation"
 system_prompt = """
 You are an expert at validating French restaurant expenses according to custom business rules.
@@ -66,7 +66,7 @@ Include specific issues in the issues list if any rules are not met, especially 
 [pipe]
 [pipe.validate_expense_restauration]
 PipeParallel = "Validate restaurant and food expenses according to French VAT and URSSAF rules"
-input = "Expense"
+inputs = { matched_expense = "Expense", employee = "Employee" }
 output = "ExpenseValidation"
 parallels = [
    { pipe = "validate_expense_restauration_urssaf", result = "urssaf_validation" },

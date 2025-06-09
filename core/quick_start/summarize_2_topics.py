@@ -2,7 +2,7 @@ import asyncio
 
 from pipelex import pretty_print
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
-from pipelex.hub import get_report_delegate
+from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
@@ -21,7 +21,7 @@ async def summarize_by_steps(text: str):
     return summary_text
 
 
-with open("assets/sample_text_1.txt", "r", encoding="utf-8") as f:
+with open("assets/sample_text_3.txt", "r", encoding="utf-8") as f:
     text = f.read()
 
 # start Pipelex
@@ -33,3 +33,5 @@ summary_text = asyncio.run(summarize_by_steps(text))
 get_report_delegate().generate_report()
 # output results
 pretty_print(summary_text, title="Summarized by steps")
+
+get_pipeline_tracker().output_flowchart()

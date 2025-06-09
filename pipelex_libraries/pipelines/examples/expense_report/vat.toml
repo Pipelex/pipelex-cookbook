@@ -4,7 +4,7 @@ domain = "expense_report"
 
 [pipe.calculate_vat]
 PipeLLM = "Calculate VAT for the expense"
-input = "Expense"
+inputs = { expense = "Expense" }
 output = "VAT"
 system_prompt = """
 You are an expert in French VAT rules for business expenses.
