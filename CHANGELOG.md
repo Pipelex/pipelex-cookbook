@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.13] - 2025-06-09
+
+- Adapt to the new pipe input handling in Pipelex v0.3.0
+
 ## [v0.1.12] - 2025-06-06
 
 - Bumped pipelex to v0.2.14: generalized the new `execute_pipeline` method, enabling to track pipelines from beginning to end with inference cost reporting
