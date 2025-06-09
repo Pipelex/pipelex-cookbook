@@ -28,9 +28,9 @@ PipeSequence = "Summarize text by steps: extract topics, summarize for each topi
 inputs = { text = "Text" }
 output = "Summary"
 steps = [
-    { pipe = "extract_topics", result = "topics" },
-    { pipe = "summarize_topic", batch_over = "topics2", batch_as = "topic", result = "summarized_topics" },
-    { pipe = "summarize_from_summaries", result = "summary" },
+    { pipe = "test_extract_topics", result = "topics" },
+    { pipe = "test_summarize_topic", batch_over = "topics", batch_as = "topic", result = "summarized_topics" },
+    { pipe = "test_summarize_from_summaries", result = "summary" },
 ]
 
 [pipe.test_extract_topics]
