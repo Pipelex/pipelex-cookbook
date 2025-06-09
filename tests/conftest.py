@@ -1,4 +1,3 @@
-
 import pipelex.config
 import pipelex.pipelex
 import pytest

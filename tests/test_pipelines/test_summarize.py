@@ -1,4 +1,3 @@
-
 import pytest
 from pipelex import pretty_print
 from pipelex.core.pipe_run_params import PipeRunMode
