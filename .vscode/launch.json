@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
             "name": "Debug tests",
             "type": "debugpy",
             "request": "launch",
@@ -16,6 +24,6 @@
                 "-k test_pipe_run"
             ],
             "console": "integratedTerminal"
-        },
+        }
     ]
 }

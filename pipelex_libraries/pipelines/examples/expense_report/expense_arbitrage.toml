@@ -7,7 +7,7 @@ ExpenseCategory = "Type of expense (restauration, péage, billet d'avion, access
 
 [pipe.classify_expense]
 PipeLLM = "Classify the type of expense"
-input = "Expense"
+inputs = { matched_expense = "Expense" }
 output = "ExpenseCategory"
 system_prompt = """You are an expert in French business expense classification."""
 prompt_template = """
@@ -25,7 +25,7 @@ Classify as one of:
 
 [pipe.expense_conditional_validation]
 PipeCondition = "Choose the rules to apply"
-input = "Expense"
+inputs = { expense_category = "ExpenseCategory" }
 output = "RulesToApply"
 expression = "expense_category.category"
 
@@ -38,7 +38,7 @@ office_supplies = "validate_expense_office_supplies"
 
 [pipe.arbitrate_expense]
 PipeSequence = "Arbitrate an expense"
-input = "Expense"
+inputs = { matched_expense = "Expense", employee = "Employee" }
 output = "expense_report.ExpenseValidationCombo"
 steps = [
     { pipe = "classify_expense", result = "expense_category" },

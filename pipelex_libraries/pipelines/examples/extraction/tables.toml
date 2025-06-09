@@ -16,7 +16,7 @@ refines = ["native.Image"]
 [pipe]
 [pipe.extract_html_table_from_image]
 PipeLLM = "Get an HTML table"
-input = "TableScreenshot"
+inputs = { table_screenshot = "TableScreenshot" }
 output = "HtmlTable"
 images = ["table_screenshot"]
 llm = "llm_to_extract_tables"
@@ -33,7 +33,7 @@ Make sure you replicate the formatting (borders, text formatting, colors, text a
 
 [pipe.review_html_table]
 PipeLLM = "Review an HTML table"
-input = "HtmlTable"
+inputs = { table_screenshot = "TableScreenshot", html_table = "HtmlTable" }
 output = "HtmlTable"
 images = ["table_screenshot"]
 llm = "llm_to_extract_tables"
@@ -51,7 +51,7 @@ Make sure you do not forget any text.
 
 [pipe.extract_html_table_and_review]
 PipeSequence = "Get an HTML table and review it"
-input = "TableScreenshot"
+inputs = { table_screenshot = "TableScreenshot" }
 output = "HtmlTable"
 steps = [
     { pipe = "extract_html_table_from_image", result = "html_table" },

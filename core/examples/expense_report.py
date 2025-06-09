@@ -4,7 +4,7 @@ from pipelex import pretty_print
 from pipelex.core.stuff_content import ListContent, TextContent
 from pipelex.core.stuff_factory import StuffFactory
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
-from pipelex.hub import get_report_delegate
+from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
@@ -66,3 +66,5 @@ expense_validations = asyncio.run(process_expense_report())
 get_report_delegate().generate_report()
 # output results
 pretty_print(expense_validations, title="Expense validations")
+
+get_pipeline_tracker().output_flowchart()

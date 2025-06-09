@@ -17,7 +17,7 @@ refines = ["native.Image"]
 [pipe] ############### Pipeline definitions ###############
 [pipe.extract_expense_report]
 PipeParallel = "Extract useful information from an expense report"
-input = "ExpenseReportText"
+inputs = { expense_report_text = "ExpenseReportText" }
 output = "Composite"
 parallels = [
    { pipe = "extract_employee_from_expense_report", result = "employee" },
@@ -27,7 +27,7 @@ parallels = [
 
 [pipe.match_expense_with_invoice]
 PipeLLM = "Match an expense with the corresponding invoice"
-input = "Expense"
+inputs = { expense = "Expense", invoices = "Invoice" }
 output = "Expense"
 prompt_template = """
 Match the expense with its corresponding invoice:
@@ -39,7 +39,7 @@ Match the expense with its corresponding invoice:
 
 [pipe.extract_invoices]
 PipeBatch = "Process invoices in batch"
-input = "Text"
+inputs = { invoice_text = "Text" }
 output = "Invoice"
 branch_pipe_code = "extract_invoice"
 input_list_name = "invoice_text_list"
