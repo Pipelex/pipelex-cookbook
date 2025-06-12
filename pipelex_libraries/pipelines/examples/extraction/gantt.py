@@ -13,8 +13,8 @@ class GanttTaskDetails(StructuredContent):
     """Do not include timezone in the dates."""
 
     name: str
-    start_date: Optional[datetime]
-    end_date: Optional[datetime]
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
 
     @field_validator("start_date", "end_date")
     @classmethod
@@ -26,7 +26,7 @@ class GanttTaskDetails(StructuredContent):
 
 class Milestone(StructuredContent):
     name: str
-    date: datetime
+    date: Optional[datetime]
 
     @field_validator("date")
     @classmethod
