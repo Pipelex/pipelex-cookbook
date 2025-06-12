@@ -7,7 +7,7 @@ from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
-from pipelex_libraries.pipelines.examples.expense_report.expense_report import Invoice
+from pipelex_libraries.pipelines.examples.invoice_extractor.invoice import Invoice
 
 
 def read_text_file(file_path: str) -> str:

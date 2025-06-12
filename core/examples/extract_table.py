@@ -4,7 +4,7 @@ from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
-from pipelex_libraries.pipelines.examples.extraction.tables import HtmlTable
+from pipelex_libraries.pipelines.examples.extract_table.table import HtmlTable
 from utils.results_utils import output_result
 
 SAMPLE_NAME = "extract_table"

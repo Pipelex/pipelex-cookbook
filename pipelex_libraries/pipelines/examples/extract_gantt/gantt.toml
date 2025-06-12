@@ -25,7 +25,6 @@ steps = [
     { pipe = "gather_in_a_gantt_chart", result = "gantt_chart" },
 ]
 
-
 [pipe.extract_gantt_timescale]
 PipeLLM = "Describe the timescale of a gantt chart"
 inputs = { gantt_chart_image = "GanttChartImage" }
