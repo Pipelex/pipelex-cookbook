@@ -8,7 +8,7 @@ from pipelex_libraries.pipelines.examples.power_extractor.power_extractor import
 from utils.results_utils import get_results_dir_path
 
 SAMPLE_NAME = "pdf_power_extractor_proof_of_purchase"
-PDF_PATH = "assets/restaurant_invoice.pdf"
+PDF_PATH = "assets/extract_proof_of_purchase/restaurant_invoice.pdf"
 
 
 async def power_extractor(pdf_url: str) -> ProofOfPurchase:

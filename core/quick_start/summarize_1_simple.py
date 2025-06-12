@@ -23,7 +23,7 @@ async def summarize_with_structure(text: str) -> StructuredSummary:
     return summary
 
 
-with open("assets/sample_text_1.txt", "r", encoding="utf-8") as f:
+with open("assets/summarize/sample_text_1.txt", "r", encoding="utf-8") as f:
     text = f.read()
 
 # start Pipelex

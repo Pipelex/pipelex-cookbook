@@ -16,7 +16,7 @@ def read_text_file(file_path: str) -> str:
 
 
 async def process_expense_report() -> ListContent[Invoice]:
-    invoice_pdf_path = "assets/expense_report/invoice_1.pdf"
+    invoice_pdf_path = "assets/invoice_extractor/invoice_1.pdf"
 
     # Create Stuff objects
     working_memory = WorkingMemoryFactory.make_from_pdf(

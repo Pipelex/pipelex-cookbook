@@ -8,7 +8,7 @@ from pipelex_libraries.pipelines.examples.extraction.tables import HtmlTable
 from utils.results_utils import output_result
 
 SAMPLE_NAME = "extract_table"
-IMAGE_URL = "assets/table_1.png"
+IMAGE_URL = "assets/extract_table/table_1.png"
 
 
 async def extract_table(table_screenshot: str) -> HtmlTable:
