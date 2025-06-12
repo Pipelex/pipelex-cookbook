@@ -8,7 +8,7 @@ from pipelex_libraries.pipelines.examples.power_extractor.power_extractor import
 from utils.results_utils import get_results_dir_path
 
 SAMPLE_NAME = "pdf_power_extractor_dpe"
-PDF_PATH = "assets/dpe_single_page.pdf"
+PDF_PATH = "assets/extract_dpe/dpe_single_page.pdf"
 
 
 async def power_extractor(pdf_url: str) -> Dpe:

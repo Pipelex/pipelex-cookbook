@@ -10,7 +10,7 @@ from pipelex_libraries.pipelines.examples.power_extractor.power_extractor import
 from utils.results_utils import get_results_dir_path
 
 SAMPLE_NAME = "pdf_power_extractor_generic"
-PDF_PATH = "assets/fintech_article_with_text_in_images.pdf"
+PDF_PATH = "assets/extract_generic/fintech_article_with_text_in_images.pdf"
 
 
 async def power_extractor(pdf_url: str) -> TextAndImagesContent:

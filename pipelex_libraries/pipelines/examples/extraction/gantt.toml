@@ -1,5 +1,3 @@
-
-
 domain = "gantt"
 definition = "The domain for gantt charts"
 system_prompt = "You are an expert in gantt charts, you know all the different tricks, forms, traps"
@@ -10,12 +8,24 @@ GanttTaskName = "Names of a task in a gantt chart"
 GanttTaskDetails = "Task in a gantt chart"
 GanttChart = "A gantt chart transcript fully detailing the contents of the chart"
 GanttTranscript = "A gantt chart transcript fully detailing the contents of the chart in markdown format"
+
 [concept.GanttChartImage]
 Concept = "A gantt chart detailing a project timeline"
-structure = "ImageContent"
 refines = ["native.Image"]
 
 [pipe]
+[pipe.extract_gantt_by_steps]
+PipeSequence = "Extract all details from a gantt chart"
+inputs = { gantt_chart_image = "GanttChartImage" }
+output = "GanttChart"
+steps = [
+    { pipe = "extract_gantt_timescale", result = "gantt_timescale" },
+    { pipe = "extract_gantt_task_names", result = "gantt_task_names" },
+    { pipe = "extract_details_of_task", batch_as = "gantt_task_name", result = "details_of_all_tasks" },
+    { pipe = "gather_in_a_gantt_chart", result = "gantt_chart" },
+]
+
+
 [pipe.extract_gantt_timescale]
 PipeLLM = "Describe the timescale of a gantt chart"
 inputs = { gantt_chart_image = "GanttChartImage" }
@@ -35,29 +45,30 @@ output = "GanttTaskName"
 images = ["gantt_chart_image"]
 llm = "llm_to_extract_diagram"
 llm_to_structure = "llm_to_extract_diagram"
+multiple_output = true
 prompt_template = """
 I am sharing an image of a Gantt chart.
 Please analyse the image and list all the task names.
 """
-multiple_output = true
 
 [pipe.extract_details_of_task]
 PipeLLM = "Extract the precise dates of the task, start_date and end_date"
 inputs = { gantt_chart_image = "GanttChartImage", gantt_timescale = "GanttTimescaleDescription", gantt_task_name = "GanttTaskName" }
 output = "GanttTaskDetails"
+structuring_method = "preliminary_text"
 images = ["gantt_chart_image"]
 llm = "llm_to_extract_diagram"
 prompt_template = """
 I am sharing an image of a Gantt chart.
-Please analyse the image and for a given task name (and only this task), extract the precise dates of the task: start_date and end_date.
+Please analyse the image and for a given task name (and only this task), extract the information of the task, if relevant.
 
 Be careful, the time unit is this:
-{{ gantt_timescale|tag("timescale") }}
+@gantt_timescale
 
 If the task is a milestone, then only output the start_date.
 
 Here is the name of the task you have to extract the dates for:
-{{ gantt_task_name|tag("task_name") }}
+@gantt_task_name
 """
 
 [pipe.gather_in_a_gantt_chart]
@@ -68,20 +79,8 @@ prompt_template = """
 Now you will receive all the necessary information to build a gantt chart.
 
 Here are the task details:
-{{ details_of_all_tasks|tag("details_of_all_tasks") }}
+@details_of_all_tasks
 """
-
-[pipe.extract_gantt_by_steps]
-PipeSequence = "Extract all details from a gantt chart"
-inputs = { gantt_chart_image = "GanttChartImage" }
-output = "GanttChart"
-steps = [
-    { pipe = "extract_gantt_timescale", result = "gantt_timescale" },
-    { pipe = "extract_gantt_task_names", result = "gantt_task_names" },
-    { pipe = "extract_details_of_task", batch_as = "gantt_task_name", result = "details_of_all_tasks" },
-    { pipe = "gather_in_a_gantt_chart", result = "gantt_chart" },
-]
-
 
 ########################################################
 # Transcript direct in one go
