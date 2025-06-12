@@ -128,9 +128,17 @@ Create detailed content that:
 4. Maintains a clear flow of events
 """
 
+[pipe.format_chapter]
+PipeSequence = "Format the scene according to screenplay standards"
+inputs = { chapter = "Chapter" }
+output = "FormattedScene"
+steps = [
+    { pipe = "format_scene", batch_over = "scenes", batch_as = "scene", result = "formatted_scenes" }
+]
+
 [pipe.format_scene]
 PipeLLM = "Format the scene according to screenplay standards"
-inputs = { chapter = "Chapter" }
+inputs = { scene = "Scene" }
 output = "FormattedScene"
 system_prompt = """
 You are an expert in screenplay formatting, ensuring every scene follows industry standards perfectly.
@@ -140,7 +148,7 @@ prompt_template = """
 Format this scene according to standard screenplay format:
 
 Scene Content:
-@chapter.scenes[0]
+@scene
 
 Follow these formatting rules:
 1. Scene heading must be in ALL CAPS: INT/EXT. LOCATION - TIME OF DAY
@@ -151,14 +159,12 @@ Follow these formatting rules:
 6. Scene transitions in ALL CAPS, right-aligned
 """
 
-
-
 [pipe.create_formatted_screenplay]
 PipeSequence = "Create a properly formatted screenplay"
 inputs = { screenplay = "Screenplay" }
 output = "FormattedScreenplay"
 steps = [
-    { pipe = "format_scene", batch_over = "chapters", batch_as = "chapter", result = "formatted_scenes" }
+    { pipe = "format_chapter", batch_over = "chapters", batch_as = "chapter", result = "formatted_scenes" }
 ]
 
 [pipe.create_initial_scenes]
