@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.14] - 2025-06-13
+
+- Cleaned-up the examples
+
 ## [v0.1.13] - 2025-06-09
 
 - Adapt to the new pipe input handling in Pipelex v0.3.0
@@ -82,7 +86,7 @@
 ## [v0.1.3] - 2025-05-22
 
 - Samples for OCR:
-    - pdf_1_simple_ocr.py: use Mistram OCR to extract text from image or pdf
+    - simple_ocr.py: use Mistram OCR to extract text from image or pdf
     - pdf_2_power_extractor.py: use OCR in combination with a VLM (Vision Language Model) to catch all the details and reach higher reliability
 
 - WIP Sample for the new execute_mission API: it tracks costs related to a specific mission_id
