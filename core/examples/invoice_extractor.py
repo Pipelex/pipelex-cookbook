@@ -31,7 +31,7 @@ async def process_expense_report() -> ListContent[Invoice]:
     return pipe_output.main_stuff_as_list(item_type=Invoice)
 
 
-# start Pipelex 
+# start Pipelex
 Pipelex.make()
 
 # run sample using asyncio
