@@ -1,5 +1,3 @@
-
-
 domain = "tables"
 definition = "Extracting tables from images"
 system_prompt = "You are an expert at data tables and html syntax and you have a strong attention to details."
@@ -9,9 +7,7 @@ HtmlTable = "An HTML table"
 
 [concept.TableScreenshot]
 Concept = "A screenshot of a table (table in the sense of a data structure used to organize information in rows and columns)"
-structure = "ImageContent"
 refines = ["native.Image"]
-
 
 [pipe]
 [pipe.extract_html_table_from_image]

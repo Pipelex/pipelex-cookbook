@@ -8,7 +8,7 @@ from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
-from pipelex_libraries.pipelines.examples.tech_tweet import OptimizedTweet
+from pipelex_libraries.pipelines.examples.write_tweet.tech_tweet import OptimizedTweet
 from utils.input_utils import optional_sample_text_from_path
 
 SAMPLE_NAME = "write_tweet"

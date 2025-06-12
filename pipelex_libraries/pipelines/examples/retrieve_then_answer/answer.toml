@@ -24,7 +24,7 @@ inputs = { "enriched_question" = "EnrichedQuestion" }
 output = "native.Dynamic"
 steps = [
   { pipe = "pre_answer_question", result = "answer" },
-  { pipe = "clean_answer", result = "cleaned_answer" },
+  { pipe = "cleanse_answer", result = "cleaned_answer" },
 ]
 
 [pipe.write_context_of_text]
@@ -88,7 +88,7 @@ Not all of of the exceprts are necessarily relevant to the question, but all of 
 {% if client_instructions %}
 Here are important instructions from the customer to take into account in order to enrich the question.
 The client instructions are important and you absolutely must follow them. However, it DOES NOT contain the answer.
-@?client_instructions
+@client_instructions
 {% endif %}
 
 Important rules for answering:
@@ -106,7 +106,7 @@ Important rules for answering:
 Here is the fields format of the answer you must output:
 """
 
-[pipe.clean_answer]
+[pipe.cleanse_answer]
 PipeLLM = "Clean the answer"
 inputs = { "answer" = "native.Dynamic" }
 output = "native.Dynamic"
@@ -114,7 +114,6 @@ structuring_method = "preliminary_text"
 prompt_template = """
 You are helping to clean answers that were generated from analyzing document excerpts to answer specific questions.
 
-Here is the answer to clean:
 @answer
 
 Your task is to clean the answer by handling cases where no clear answer could be found in the document excerpts.
