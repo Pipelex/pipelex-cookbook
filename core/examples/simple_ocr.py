@@ -8,8 +8,8 @@ from pipelex.pipeline.execute import execute_pipeline
 
 from utils.results_utils import get_results_dir_path
 
-SAMPLE_NAME = "pdf_1_simple_ocr"
-PDF_URL = "assets/pdf_1_simple_ocr/illustrated_train_article.pdf"
+SAMPLE_NAME = "simple_ocr"
+PDF_URL = "assets/simple_ocr/illustrated_train_article.pdf"
 
 
 async def simple_ocr(pdf_url: str):

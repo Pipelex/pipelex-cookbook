@@ -18,7 +18,7 @@ rely on helper functions in `cookbook/utils` and write their results to the
   handle various document types.
 - `invoice_extractor.py` specializes in extracting structured data from invoice documents,
   including line items, totals, and vendor information.
-- `pdf_1_simple_ocr.py` demonstrates basic OCR capabilities on PDF documents,
+- `simple_ocr.py` demonstrates basic OCR capabilities on PDF documents,
   extracting text and images from each page.
 - `retrieve_then_answer.py` showcases a RAG (Retrieval-Augmented Generation) pipeline
   that first retrieves relevant information and then answers questions about documents.
