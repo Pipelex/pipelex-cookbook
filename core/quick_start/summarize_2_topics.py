@@ -21,7 +21,7 @@ async def summarize_by_steps(text: str):
     return summary_text
 
 
-with open("assets/sample_text_3.txt", "r", encoding="utf-8") as f:
+with open("assets/summarize/sample_text_3.txt", "r", encoding="utf-8") as f:
     text = f.read()
 
 # start Pipelex
