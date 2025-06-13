@@ -1,4 +1,0 @@
-
-
-domain = "expense_report"
-definition = "Domain for extracting and validating business expenses from invoices and expense reports"

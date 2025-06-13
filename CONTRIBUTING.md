@@ -9,7 +9,7 @@ This repository exists to showcase **working examples**. The most valuable contr
 
 | ✅ Do | 🚫 Don’t |
 |-------|---------|
-| Put new code files under `community/` paths | Add custom code to `core/` (reserved for curated demos) |
+| Put new code files under `examples/wip` paths | Add custom code to `examples/` (reserved for curated demos) |
 | Run `pipelex validate` before committing | Hard-code API keys or secrets |
 
 ---
@@ -29,8 +29,8 @@ Bug-fixes to existing samples are welcome, but the core Pipelex library lives in
 ```
 
 pipelex-cookbook/
-├── core/             # Official, curated demos
-└── community/        # ⭐ Community contributions
+├── examples/             # Official, curated demos
+└── quick_start/          # Quick start examples
 └── pipelex_libraries/pipelines/<topic>/your_pipe.toml
 
 ```
