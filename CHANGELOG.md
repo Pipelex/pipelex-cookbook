@@ -2,7 +2,7 @@
 
 ## [v0.1.14] - 2025-06-13
 
-- Cleaned-up the examples
+- Cleaned-up the examples and the repository structure
 - WIP examples
 - Bump pipelex to v0.3.2
 
