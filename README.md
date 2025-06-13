@@ -23,16 +23,14 @@ If you just want to **run** an example, jump to **Quick Start**. If you'd like t
 ├── pipelex_libraries/         # Main library code
 │   ├── pipelines/             # Pipeline implementations
 │   │   ├── base_library/      # Core pipeline components
-│   │   ├── community/         # 💡 Community-contributed pipelines
 │   │   ├── examples/          # Example pipelines
 │   │   └── quick_start/       # Quick start tutorials
 │   ├── llm_deck/              # LLM deck components
 │   ├── llm_integrations/      # LLM provider integrations
 │   └── templates/             # Prompt templates
-├── core/                      # Curated, battle-tested demos
-│   ├── examples/              # Advanced examples (PDF extraction, expense processing, etc.)
-│   └── quick_start/           # Getting started tutorials
-└── community/                 # 💡 Your contributions live here!  See Contributing ↓
+├── examples/                  # Advanced examples (PDF extraction, expense processing, etc.)
+|   ├── wip/                   # Work in progress examples
+└── quick_start/               # Getting started tutorials
 ```
 
 ---
@@ -63,7 +61,7 @@ Enter your API keys into your `.env` file. The `OPENAI_API_KEY` is enough to get
 ### Run Hello World
 
 ```bash
-python core/quick_start/hello_world.py
+python quick_start/hello_world.py
 ```
 
 ---
@@ -73,7 +71,7 @@ python core/quick_start/hello_world.py
 We ❤️ contributions!  Before opening a pull request, please:
 
 1. **Read [`CONTRIBUTING.md`](CONTRIBUTING.md)**.
-2. Add your file under **`community/<your-folder>`**; feel free to group related examples by topic.
+2. Add your file under **`examples/wip/<your-folder>`**; feel free to group related examples by topic.
 3. Include a short **README snippet at the top of your TOML** describing purpose, inputs, and expected outputs.
 4. Verify the pipeline runs locally with a free/open LLM preset when possible, to lower the entry barrier for reviewers.
 

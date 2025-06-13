@@ -1,0 +1,221 @@
+domain = "screenplay"
+definition = "A pipeline for generating screenplays from pitches"
+
+[concept]
+Pitch = "A pitch for a screenplay"
+DetailedPitch = "A detailed pitch with character ideas and synopsis"
+Character = "A character in the screenplay"
+CharacterList = "A list of characters in the screenplay"
+Scene = "A scene in the screenplay"
+Chapter = "A chapter in the screenplay"
+ChapterList = "A list of chapters in the screenplay"
+Screenplay = "A complete screenplay with characters and scenes"
+FormattedScene = "A scene formatted according to standard screenplay conventions"
+FormattedSceneList = "A list of formatted scenes"
+FormattedScreenplay = "A screenplay formatted according to industry standards"
+
+[pipe]
+
+[pipe.analyze_pitch]
+PipeLLM = "Analyze and expand the pitch with character ideas and synopsis"
+inputs = { pitch = "Pitch" }
+output = "DetailedPitch"
+system_prompt = """
+You are an expert story analyst and screenwriter. Your task is to analyze a pitch and expand it with more details,
+including character ideas and a synopsis.
+"""
+prompt_template = """
+Analyze this pitch and expand it with more details:
+
+@pitch
+
+Create a response that includes:
+1. The original pitch
+2. An expanded version with more details about the story
+3. Brief descriptions of 3-4 main characters (just names and quick descriptions)
+4. A detailed synopsis (2-3 paragraphs)
+"""
+
+[pipe.create_characters]
+PipeLLM = "Create detailed character profiles"
+inputs = { detailed_pitch = "DetailedPitch" }
+output = "CharacterList"
+system_prompt = """
+You are an expert character designer with experience in creating rich, complex characters.
+Your task is to create detailed character profiles based on the character ideas in the pitch.
+"""
+prompt_template = """
+Create detailed character profiles based on these character ideas:
+
+@detailed_pitch.character_ideas
+"""
+
+[pipe.create_chapters]
+PipeLLM = "Create chapters with brief descriptions"
+inputs = { detailed_pitch = "DetailedPitch" }
+output = "ChapterList"
+system_prompt = """
+You are an expert story structurer. Your task is to break down the story into chapters,
+each with a clear purpose and progression.
+"""
+prompt_template = """
+Based on this detailed pitch:
+
+Original Pitch: $detailed_pitch.original_pitch
+Expanded Pitch: $detailed_pitch.expanded_pitch
+Synopsis: $detailed_pitch.synopsis
+
+Create 4 chapters that tell this story. For each chapter:
+- Give it a title
+- Write a brief description of what happens
+- Leave the scenes array empty (it will be filled in the next step)
+"""
+
+[pipe.create_scene_outline]
+PipeLLM = "Create a basic outline for a scene"
+inputs = { chapter = "Chapter", characters = "CharacterList", detailed_pitch = "DetailedPitch" }
+output = "Scene"
+system_prompt = """
+You are an expert screenwriter with experience in crafting compelling scenes.
+Your task is to create a basic outline for a scene that fits within the chapter's narrative.
+"""
+prompt_template = """
+Create a scene outline for scene #@ in this chapter:
+
+Chapter Title: $chapter.title
+Chapter Description: $chapter.description
+
+Available characters:
+@characters
+
+Story context:
+Original Pitch: $detailed_pitch.original_pitch
+Expanded Pitch: $detailed_pitch.expanded_pitch
+Synopsis: $detailed_pitch.synopsis
+
+Create a scene outline with:
+1. A clear title
+2. Location and time of day
+3. List of characters present
+4. Basic description of what happens
+5. Initial action that sets up the scene
+"""
+
+[pipe.develop_scene_content]
+PipeLLM = "Develop the scene's content with detailed action and dialogue"
+inputs = { scene = "Scene", characters = "CharacterList" }
+output = "Scene"
+system_prompt = """
+You are an expert screenwriter specializing in rich character interactions and engaging dialogue.
+Your task is to develop the scene's content with detailed action and meaningful dialogue.
+"""
+prompt_template = """
+Develop this scene outline into full content:
+
+Scene Title: $scene.title
+Location: $scene.location
+Time: $scene.time_of_day
+Characters Present: $scene.characters_present
+Initial Action: $scene.action
+
+Available Characters:
+@characters
+
+Create detailed content that:
+1. Expands the action into clear, visual descriptions
+2. Adds meaningful dialogue that reveals character and advances the story
+3. Includes character movements and reactions
+4. Maintains a clear flow of events
+"""
+
+[pipe.format_chapter]
+PipeSequence = "Format the scene according to screenplay standards"
+inputs = { chapter = "Chapter" }
+output = "FormattedScene"
+steps = [
+    { pipe = "format_scene", batch_over = "scenes", batch_as = "scene", result = "formatted_scenes" }
+]
+
+[pipe.format_scene]
+PipeLLM = "Format the scene according to screenplay standards"
+inputs = { scene = "Scene" }
+output = "FormattedScene"
+system_prompt = """
+You are an expert in screenplay formatting, ensuring every scene follows industry standards perfectly.
+Your task is to format the scene content according to professional screenplay conventions.
+"""
+prompt_template = """
+Format this scene according to standard screenplay format:
+
+Scene Content:
+@scene
+
+Follow these formatting rules:
+1. Scene heading must be in ALL CAPS: INT/EXT. LOCATION - TIME OF DAY
+2. Action blocks must be clear and visual, using present tense
+3. Character names in ALL CAPS when speaking
+4. Dialogue centered with character name above
+5. Parentheticals in (parentheses) below character name when needed
+6. Scene transitions in ALL CAPS, right-aligned
+"""
+
+[pipe.create_formatted_screenplay]
+PipeSequence = "Create a properly formatted screenplay"
+inputs = { screenplay = "Screenplay" }
+output = "FormattedScreenplay"
+steps = [
+    { pipe = "format_chapter", batch_over = "chapters", batch_as = "chapter", result = "formatted_scenes" }
+]
+
+[pipe.create_initial_scenes]
+PipeLLM = "Create initial scene list for a chapter"
+inputs = { chapter = "Chapter" }
+output = "Scene"
+multiple_output = true
+system_prompt = """
+You are an expert story structurer. Your task is to break down a chapter into its key scenes.
+"""
+prompt_template = """
+Create a list of scenes for this chapter:
+
+Chapter Title: $chapter.title
+Chapter Description: $chapter.description
+
+For each scene, provide:
+1. Scene index (starting from 1)
+2. Basic title
+3. Initial location
+4. Time of day
+
+Create 2-4 scenes that together tell this chapter's story effectively.
+"""
+
+[pipe.create_scene_sequence]
+PipeSequence = "Create and develop a single scene"
+inputs = { scene = "Scene", characters = "CharacterList", detailed_pitch = "DetailedPitch" }
+output = "Scene"
+steps = [
+    { pipe = "create_scene_outline", result = "scene_outline" },
+    { pipe = "develop_scene_content", result = "developed_scene" }
+]
+
+[pipe.create_scenes_sequence]
+PipeSequence = "Create all scenes for a chapter sequentially"
+inputs = { chapter = "Chapter", characters = "CharacterList", detailed_pitch = "DetailedPitch" }
+output = "Chapter"
+steps = [
+    { pipe = "create_initial_scenes", result = "initial_scenes" },
+    { pipe = "create_scene_sequence", batch_over = "initial_scenes", batch_as = "scene", result = "developed_scenes" }
+]
+
+[pipe.generate_screenplay]
+PipeSequence = "Generate a complete screenplay from a pitch"
+inputs = { pitch = "Pitch" }
+output = "FormattedScreenplay"
+steps = [
+    { pipe = "analyze_pitch", result = "detailed_pitch" },
+    { pipe = "create_characters", result = "characters" },
+    { pipe = "create_chapters", result = "chapters" },
+    { pipe = "create_scenes_sequence", batch_over = "chapters", batch_as = "chapter", result = "chapters_with_scenes" },
+    { pipe = "create_formatted_screenplay", result = "formatted_screenplay" }
+] 

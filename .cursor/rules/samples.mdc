@@ -3,4 +3,4 @@ description: Creating samples to show how to run pipes.
 globs: 
 alwaysApply: false
 ---
-When adding examples to run pipes, put it into `community/wip` and take inspiration from the existing examples.
+When adding examples to run pipes, put it into `examples/wip` and take inspiration from the existing examples.
