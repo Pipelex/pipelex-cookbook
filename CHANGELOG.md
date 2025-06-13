@@ -4,6 +4,7 @@
 
 - Cleaned-up the examples
 - WIP examples
+- Bump pipelex to v0.3.2
 
 ## [v0.1.13] - 2025-06-09
 
