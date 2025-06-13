@@ -10,7 +10,7 @@ from pipelex.pipeline.execute import execute_pipeline
 
 async def generate_screenplay(pitch: str):
     """Generate a screenplay from a pitch using the pipeline."""
-    
+
     # Create Stuff object for the pitch
     pitch_stuff = StuffFactory.make_from_str(
         str_value=pitch,
