@@ -19,7 +19,7 @@ async def generate_screenplay(pitch: str):
     )
 
     # Create Working Memory
-    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs([pitch_stuff])
+    working_memory = WorkingMemoryFactory.make_from_single_stuff(pitch_stuff)
 
     # Run the pipe
     pipe_output, _ = await execute_pipeline(
