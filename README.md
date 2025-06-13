@@ -28,8 +28,8 @@ If you just want to **run** an example, jump to **Quick Start**. If you'd like t
 │   ├── llm_deck/              # LLM deck components
 │   ├── llm_integrations/      # LLM provider integrations
 │   └── templates/             # Prompt templates
-├── wip/                       # Curated, battle-tested demos
 ├── examples/                  # Advanced examples (PDF extraction, expense processing, etc.)
+|   ├── wip/                   # Work in progress examples
 └── quick_start/               # Getting started tutorials
 ```
 

@@ -4,6 +4,8 @@ The scripts in this folder demonstrate various Pipelex pipelines and capabilitie
 rely on helper functions in `cookbook/utils` and write their results to the
 `results/samples/` directory.
 
+The folder wip contains work in progress. The pipelines in this folder are not stable.
+
 ## Available Examples
 
 - `expense_report.py` processes invoices and an expense report to extract
