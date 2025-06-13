@@ -21,8 +21,8 @@ dependencies = [
     "pipelex[mistralai,anthropic,google,bedrock,fal]==0.3.2",
 ]
 
-[tool.setuptools]
-packages = ["utils", "examples", "quick_start"]
+[tool.uv.sources]
+pipelex = { path = "../pipelex", editable = true }
 
 [project.optional-dependencies]
 compat = ["backports.strenum>=1.3.0 ; python_version < '3.11'"]
@@ -176,6 +176,7 @@ markers = [
     "codex_disabled: tests that should not run in Codex",
 ]
 minversion = "8.0"
+xfail_strict = true
 
 [tool.ruff]
 exclude = [

@@ -7,15 +7,11 @@ from rich import print
 from rich.console import Console
 from rich.traceback import Traceback
 
-pytest_plugins = [
-    "pipelex.test_extras.shared_pytest_plugins",
-]
-
 
 @pytest.fixture(scope="function", autouse=True)
-def pretty():
+def reset_pipelex_instance_fixture():
     # Code to run before each test
-    print("\n")
     yield
     # Code to run after each test
-    print("\n")
+    print("\n[magenta]pipelex instance teardown[/magenta]")
+    pipelex.pipelex.Pipelex.get_instance().teardown()
