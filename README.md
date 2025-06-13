@@ -71,7 +71,7 @@ python quick_start/hello_world.py
 We ❤️ contributions!  Before opening a pull request, please:
 
 1. **Read [`CONTRIBUTING.md`](CONTRIBUTING.md)**.
-2. Add your file under **`wip/<your-folder>`**; feel free to group related examples by topic.
+2. Add your file under **`examples/wip/<your-folder>`**; feel free to group related examples by topic.
 3. Include a short **README snippet at the top of your TOML** describing purpose, inputs, and expected outputs.
 4. Verify the pipeline runs locally with a free/open LLM preset when possible, to lower the entry barrier for reviewers.
 
