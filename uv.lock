@@ -179,7 +179,7 @@ wheels = [
 
 [[package]]
 name = "anthropic"
-version = "0.52.2"
+version = "0.54.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -190,9 +190,9 @@ dependencies = [
     { name = "sniffio" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/63/84/95126ee8df1acedd60bd03fe368d6335d65fe92e2c97581a81a82e8f576b/anthropic-0.52.2.tar.gz", hash = "sha256:9047bc960e8513950579c9cb730c16a84af3fcb56341ad7dc730772f83757050", size = 306204, upload-time = "2025-06-02T11:27:59.308Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/89/28/80cb9bb6e7ce77d404145b51da4257455805c17f0a6be528ff3286e3882f/anthropic-0.54.0.tar.gz", hash = "sha256:5e6f997d97ce8e70eac603c3ec2e7f23addeff953fbbb76b19430562bb6ba815", size = 312376, upload-time = "2025-06-11T02:46:27.642Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/77/3b/6f67f4e061d73cfaffc44dd41cbbe8b09efe1ec37b8135a2bcc043736d62/anthropic-0.52.2-py3-none-any.whl", hash = "sha256:00d52555f503e81e21aff0103db04cd93979cdf87ce8dd43c660ca6deae83ac6", size = 286262, upload-time = "2025-06-02T11:27:57.536Z" },
+    { url = "https://files.pythonhosted.org/packages/de/b9/6ffb48e82c5e97b03cecee872d134a6b6666c2767b2d32ed709f3a60a8fe/anthropic-0.54.0-py3-none-any.whl", hash = "sha256:c1062a0a905daeec17ca9c06c401e4b3f24cb0495841d29d752568a1d4018d56", size = 288774, upload-time = "2025-06-11T02:46:25.578Z" },
 ]
 
 [[package]]
@@ -1340,8 +1340,8 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.3.1"
-source = { registry = "https://pypi.org/simple" }
+version = "0.3.2"
+source = { git = "https://github.com/Pipelex/pipelex.git?rev=dev#7b427926284120e9e496ba4d6e67c5306a9b659c" }
 dependencies = [
     { name = "aiofiles" },
     { name = "filetype" },
@@ -1369,10 +1369,6 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "yattag" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/59/58/738abed2a6ffcd21b946087dbb4b37ee27f0933825a4215ed80cdf6355b8/pipelex-0.3.1.tar.gz", hash = "sha256:e4517cb0e181a07af39841f30b9c6df038436f8098a33c838e40e23b5ab0e7e7", size = 164449, upload-time = "2025-06-10T14:09:09.623Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/2a/bf/d56eadece9e7c4998ae6479ab38a9f3e877924beefb003856dbea85c69cc/pipelex-0.3.1-py3-none-any.whl", hash = "sha256:442d28938fe722ebd64700df5f2bf5e82ca78bebcf84f069d6ae1e8966552dd7", size = 276373, upload-time = "2025-06-10T14:09:07.293Z" },
-]
 
 [package.optional-dependencies]
 anthropic = [
@@ -1394,7 +1390,7 @@ mistralai = [
 
 [[package]]
 name = "pipelex-cookbook"
-version = "0.1.13"
+version = "0.1.14"
 source = { virtual = "." }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -1431,7 +1427,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], specifier = "==0.3.1" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], git = "https://github.com/Pipelex/pipelex.git?rev=dev" },
     { name = "pyright", marker = "extra == 'dev'", specifier = "==1.1.398" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
