@@ -28,7 +28,7 @@ rely on helper functions in `cookbook/utils` and write their results to the
 Run any sample from the repository root, for example:
 
 ```bash
-python core/examples/extract_table.py
+python examples/extract_table.py
 ```
 
 Each example includes detailed comments explaining the pipeline construction and configuration.

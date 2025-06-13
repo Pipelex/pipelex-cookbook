@@ -11,5 +11,5 @@ your `.env` file.
 Example:
 
 ```bash
-python core/quick_start/hello_world.py
+python quick_start/hello_world.py
 ```

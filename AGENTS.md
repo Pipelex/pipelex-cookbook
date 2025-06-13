@@ -5,10 +5,11 @@
 The purpose of pipelex-cookbook is to showcase samples based on the library named `pipelex`.
 This python 3.11 repo named pipelex-cookbook has several packages placed at the root of the repo.
 
-- `core` -> official samples
-- `community` -> placeholder, we don't have community samples yet
-- `utils` -> utilities and helpers
+- `examples` -> official examples of using pipelex
+- `quick_start` -> very simple pipelines to get your hands on pipelex
+- `wip` -> work in progress elements
 - `pipelex_libraries` -> pipelines defined using the Pipelex language (.toml and .py files)
+- `utils` -> utilities and helpers
 - `tests`
 
 ## Code Style & formatting
