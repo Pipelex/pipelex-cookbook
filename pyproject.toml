@@ -22,7 +22,8 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-pipelex = { git = "https://github.com/Pipelex/pipelex.git", branch = "feature/Pipelex-get_instance" }
+# pipelex = { git = "https://github.com/Pipelex/pipelex.git", branch = "feature/Pipelex-get_instance" }
+pipelex = { path = "../pipelex", editable = true }
 
 [project.optional-dependencies]
 compat = ["backports.strenum>=1.3.0 ; python_version < '3.11'"]
@@ -168,14 +169,14 @@ strictSetInference = true
 typeCheckingMode = "strict"
 
 [tool.pytest.ini_options]
-addopts = "--import-mode=importlib -ra -m 'not inference and not imgg'"
+addopts = "--import-mode=importlib -ra -m 'not (inference or needs_output'"
 asyncio_default_fixture_loop_scope = "session"
 markers = [
+    "needs_output: tests that need output to be displayed",
     "inference: slow and costly due to inference calls",
-    "llm: slow and costly due to llm inference calls",
-    "imgg: slow and costly due to imgg inference calls",
     "gha_disabled: tests that should not run in GitHub Actions",
     "codex_disabled: tests that should not run in Codex",
+    "dry_runnable: tests that can be run in dry-run mode",
 ]
 minversion = "8.0"
 xfail_strict = true
