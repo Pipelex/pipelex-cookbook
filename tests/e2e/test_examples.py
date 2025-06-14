@@ -1,3 +1,8 @@
+import pytest
+from pydantic import ValidationError
+
+
+@pytest.mark.dry_runnable
 class TestExamples:
     def test_extract_dpe(self):
         import examples.extract_dpe  # noqa: F401

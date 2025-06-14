@@ -1,3 +1,7 @@
+import pytest
+
+
+@pytest.mark.dry_runnable
 class TestQuickStart:
     def test_hello_world(self):
         import quick_start.hello_world  # noqa: F401
