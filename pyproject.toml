@@ -169,7 +169,7 @@ strictSetInference = true
 typeCheckingMode = "strict"
 
 [tool.pytest.ini_options]
-addopts = "--import-mode=importlib -ra -m 'not (inference or needs_output'"
+addopts = "--import-mode=importlib -ra -m 'not (inference or needs_output)'"
 asyncio_default_fixture_loop_scope = "session"
 markers = [
     "needs_output: tests that need output to be displayed",
