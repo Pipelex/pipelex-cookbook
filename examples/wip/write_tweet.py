@@ -17,12 +17,12 @@ SAMPLE_NAME = "write_tweet"
 async def optimize_tweet(draft_tweet_str: str, writing_style_str: str) -> OptimizedTweet:
     # Create the draft tweet stuff
     draft_tweet = StuffFactory.make_stuff(
-        concept_code="tech_tweet.DraftTweet",
+        concept_str="tech_tweet.DraftTweet",
         content=TextContent(text=draft_tweet_str),
         name="draft_tweet",
     )
     writing_style = StuffFactory.make_stuff(
-        concept_code="tech_tweet.WritingStyle",
+        concept_str="tech_tweet.WritingStyle",
         content=TextContent(text=writing_style_str),
         name="writing_style",
     )

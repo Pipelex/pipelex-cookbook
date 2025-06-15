@@ -15,7 +15,7 @@ PDF_URL = "assets/simple_ocr/illustrated_train_article.pdf"
 async def simple_ocr(pdf_url: str):
     working_memory = WorkingMemoryFactory.make_from_pdf(
         pdf_url=pdf_url,
-        concept_code="documents.PDF",
+        concept_str="documents.PDF",
         name="pdf",
     )
     pipe_output, _ = await execute_pipeline(

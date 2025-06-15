@@ -14,7 +14,7 @@ IMAGE_URL = "assets/extract_table/table_1.png"
 async def extract_table(table_screenshot: str) -> HtmlTable:
     working_memory = WorkingMemoryFactory.make_from_image(
         image_url=table_screenshot,
-        concept_code="tables.TableScreenshot",
+        concept_str="tables.TableScreenshot",
         name="table_screenshot",
     )
     pipe_output, _ = await execute_pipeline(

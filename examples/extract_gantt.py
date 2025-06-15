@@ -15,7 +15,7 @@ async def extract_gantt(image_url: str) -> GanttChart:
     # Create Working Memory
     working_memory = WorkingMemoryFactory.make_from_image(
         image_url=image_url,
-        concept_code="gantt.GanttImage",
+        concept_str="gantt.GanttImage",
         name="gantt_chart_image",
     )
 

@@ -14,7 +14,7 @@ PDF_PATH = "assets/extract_proof_of_purchase/restaurant_invoice.pdf"
 async def extract_proof_of_purchase(pdf_url: str) -> ProofOfPurchase:
     working_memory = WorkingMemoryFactory.make_from_pdf(
         pdf_url=pdf_url,
-        concept_code="documents.PDF",
+        concept_str="documents.PDF",
         name="pdf",
     )
     pipe_output, _ = await execute_pipeline(
