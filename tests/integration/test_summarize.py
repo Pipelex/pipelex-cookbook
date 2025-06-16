@@ -9,11 +9,11 @@ from pipelex.tools.misc.file_utils import load_text_from_path
 
 @pytest.fixture(scope="class")
 def file_path():
-    return "assets/sample_text_3.txt"
+    return "assets/summarize/sample_text_3.txt"
 
 
 @pytest.mark.inference
-@pytest.mark.llm
+@pytest.mark.dry_runnable
 @pytest.mark.asyncio(loop_scope="class")
 class TestSummarize:
     async def test_summarize_by_steps(

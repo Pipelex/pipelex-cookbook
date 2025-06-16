@@ -3,7 +3,6 @@ from pipelex.pipeline.execute import execute_pipeline
 
 
 @pytest.mark.asyncio
-@pytest.mark.llm
 @pytest.mark.inference
 async def test_hello_world():
     """Test that the hello_world function runs successfully."""

@@ -3,17 +3,17 @@ domain = "extract_generic"
 [pipe]
 [pipe.power_extractor]
 PipeSequence = "Update page content with markdown"
-inputs = { page_content = "documents.PageContent" }
-output = "native.Text"
+inputs = { page_content = "Page" }
+output = "Text"
 steps = [
-    { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },  # Located in the base library
+    { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },                # Located in the base library
     { pipe = "write_markdown_from_page_content", batch_as = "page_content", result = "markdowns" },
 ]
 
 [pipe.write_markdown_from_page_content]
 PipeLLM = "Write markdown from page content"
-inputs = { page_content = "documents.PageContent" }
-output = "native.Text"
+inputs = { page_content = "Page" }
+output = "Text"
 images = ["page_content.page_view"]
 llm = "llm_for_img_to_text"
 system_prompt = """You are a multimodal LLM, expert at converting images into perfect markdown."""

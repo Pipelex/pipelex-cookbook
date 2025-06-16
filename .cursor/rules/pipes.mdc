@@ -1,6 +1,6 @@
 ---
 description: 
-globs: **/pipelex_libraries/pipelines/toml/**/*.toml
+globs: **/pipelex_libraries/pipelines/**/*.toml
 alwaysApply: false
 ---
 This rule explains how to build pipes.
@@ -9,14 +9,14 @@ This rule explains how to build pipes.
 
 ## The pipelines/ directory
 
-- Pipelines and structures are defined in the `pipelex_libraries/pipelines/` directory
+- Pipelines and structures are defined in the `pipelex/libraries/pipelines` directory
 
-pipelex_libraries
+pipelex/libraries
 └── pipelines
 
 ## Pipeline file naming
 
-- Pipeline TOML files should be placed in the `pipelex_libraries/pipelines/` directory or a subdirectory of it
+- Pipeline TOML files should be placed in the `pipelex/libraries/pipelines/` directory or a subdirectory of it
 - The file name should be descriptive, in snake_case and end with `.toml`
 - The file should contain both concepts and pipes definitions
 
@@ -40,10 +40,13 @@ pipelex_libraries
     - Never include the usage context in the concept. The concept indicates what the stuff is in itself, it's not "for something", it just is something. e.g. don't define "TextToSummarize": it's just "Text". If you want to refine the concept for instance you can define "Essay".
     - In particular, never define a concept as a plural form: if the context of the pipeline execution makes it multiple, it will just be handled using a ListContent (see below). e.g. don't define a concept for "Stories", just define "Story".
     - Also, avoid including adjectives in concepts, e.g. don't define "LargeText", it's just "Text".
+- Don't redefine the native concepts from @concept_native.py
 
-## Important
+⚠️ Important ⚠️
 
 A Concept MUST NEVER be a plural noun and you should never create a SomeConceptList: lists and arrays are implicitly handled by Pipelex according to the context. Just define SomeConcept.
+
+- Define concepts in one of two ways:
 
 ## Simple text-based concept definition
 
@@ -58,14 +61,14 @@ ConceptName = "Description of the concept"
 [concept.ConceptName]
 Concept = "Description of the concept"
 structure = "StructureName"
-refines = ["ParentConcept"]  # Optional, for concept inheritance
+refines = "ParentConcept"  # Optional, for concept inheritance
 ```
 
 About the `structure` field:
 - It's Optional
 - It's the name of the Python BaseModel class used for the concept
 - The class must be a subclass of StuffContent
-- The class must be defined in a python module placed inside the `pipelex_libraries/pipelines/` directory too
+- The class must be defined in a python module placed inside the `pipelex/libraries/pipelines/` directory
 - If the `structure` field is omitted but a class with the same name as the concept is defined in the structures directory, then it's implicitly applied to the concept
 
 About the `refines` field:
@@ -85,7 +88,7 @@ Pipelex provides the following structures natively:
 - MermaidContent
 - LLMPromptContent
 
-The native structures are implied when using the native concepts: "native.Text", "native.Number", "native.Image"... do you don't have the state it.
+The native structures are implied when using the native concepts: "Text", "Number", "Image", "PDF",... do you don't have the state it.
 
 Some subclasses of StuffContent exist which you should never use directly:
 - ListContent: this is used internally to manipulate a list of stuff, but you should NEVER define a plural concept
@@ -132,7 +135,7 @@ Write a poem about an AI that meets a Software and they fall in l0ve.
 # Example of a PipeLLM that uses @ prefix to insert a block of text
 [pipe.process_text]
 PipeLLM = "Process input text using an LLM"
-input = "Text"
+inputs = { text = "Text" }
 output = "Text"
 llm = "llm_to_summarize_text"
 system_prompt = """
@@ -145,10 +148,10 @@ Summarize the following text:
 
 """
 
-# Example of a PipeLLM that uses @ prefix to insert a block of text but also a $ prefix to insert text inline in a sentence (that is teh case for the $topic)
+# Example of a PipeLLM that uses '@' prefix to insert a block of text but also a '$' prefix to insert text inline in a sentence (that is teh case for the $topic)
 [pipe.summarize_topic]
 PipeLLM = "Summarize a dense text with of focus on a specific topic."
-input = "Topic"
+inputs = { topic = "Topic", text = "Text" }
 output = "Summary"
 prompt_template = """
 Your goal is to summarize everything related to $topic in the provided text:
@@ -162,7 +165,7 @@ Your summary should not be longer than 2 sentences.
 # Example of a PipeLLM with image vision processing by a VLM
 [pipe.get_html_table_from_image]
 PipeLLM = "Convert table screenshot to HTML"
-input = "TableScreenshot"
+inputs = { table_screenshot = "TableScreenshot" }
 output = "HtmlTable"
 images = ["table_screenshot"]
 system_prompt = """
@@ -180,7 +183,7 @@ llm = "llm_to_extract_tables"
 # Example of a PipeSequence
 [pipe.answer_question_with_instructions]
 PipeSequence = "Answer a question with instructions"
-input = "Question"
+inputs = { question = "Question" }
 output = "FormattedAnswer"
 steps = [
     { pipe = "enrich_instructions", result = "instructions",  },
@@ -191,7 +194,7 @@ steps = [
 # Example of a PipeParallel
 [pipe.extract_expense_report]
 PipeParallel = "Extract useful information from an expense report"
-input = "ExpenseReportText"
+inputs = { expense_report = "ExpenseReportText" }
 output = "Composite"
 parallels = [
     { pipe = "extract_employee_from_expense_report", result = "employee" },
@@ -201,7 +204,7 @@ parallels = [
 # Example of a PipeCondition
 [pipe.expense_conditional_validation]
 PipeCondition = "Choose the rules to apply"
-input = "Expense"
+inputs = { expense = "Expense" }
 output = "RulesToApply"
 expression = "expense_category.category"
 ```
@@ -211,5 +214,5 @@ expression = "expense_category.category"
 When building a pipe:
 - First think about the logical steps you need to take. Then, plan the actual use of different patterns offered by Pipelex pipes, to apply them appropriately when you want to run things in sequence (PipeSequence) or in parallel, ot save time (PipeParallel).
 - Think about what PipeLLM you are going to need and which LLM skills they will need.
-- Write the pipe's toml and required structure in pipelex_libraries/pipelines
+- Write the pipe's toml and required structure in pipelex/pipelex_libraries/pipelines
 
