@@ -3,7 +3,7 @@ name: Create release
 on:
   push:
     branches:
-      - main
+      - fix/release
 
 jobs:
   github-release:
