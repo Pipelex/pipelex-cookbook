@@ -49,7 +49,7 @@ def merge_markdown_and_images(working_memory: WorkingMemory) -> TextAndImagesCon
 async def extract_generic(pdf_url: str) -> TextAndImagesContent:
     working_memory = WorkingMemoryFactory.make_from_pdf(
         pdf_url=pdf_url,
-        concept_str="documents.PDF",
+        concept_str="PDF",
         name="pdf",
     )
     pipe_output, _ = await execute_pipeline(

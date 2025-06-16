@@ -14,7 +14,7 @@ PDF_PATH = "assets/extract_dpe/dpe_single_page.pdf"
 async def extract_dpe(pdf_url: str) -> Dpe:
     working_memory = WorkingMemoryFactory.make_from_pdf(
         pdf_url=pdf_url,
-        concept_str="documents.PDF",
+        concept_str="PDF",
         name="pdf",
     )
     pipe_output, _ = await execute_pipeline(
