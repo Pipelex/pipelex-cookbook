@@ -207,7 +207,7 @@ We ❤️ contributions!  Before opening a pull request, please:
 | **GitHub Discussions → "Show & Tell"** | Share ideas, brainstorm, get early feedback.                              |
 | **GitHub Issues**                      | Report bugs or request features.                                          |
 | **Email (privacy & security)**         | [security@pipelex.com](mailto:security@pipelex.com)                       |
-| **Discord**                            | Real-time chat — [https://discord.gg/SReshKQjWt](https://discord.gg/SReshKQjWt) |
+| **Discord**                            | Real-time chat — [https://go.pipelex.com/IccCIv](https://go.pipelex.com/IccCIv) |
 
 
 ## 📝 License
