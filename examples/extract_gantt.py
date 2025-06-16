@@ -2,6 +2,7 @@ import asyncio
 
 from pipelex import pretty_print
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
+from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
@@ -35,4 +36,8 @@ Pipelex.make()
 # run sample using asyncio
 gantt_chart = asyncio.run(extract_gantt(IMAGE_URL))
 
+# Display cost report (tokens used and cost)
+get_report_delegate().generate_report()
+# output results
 pretty_print(gantt_chart, title="Gantt Chart")
+get_pipeline_tracker().output_flowchart()
