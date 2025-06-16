@@ -1,5 +1,4 @@
 import pytest
-from pydantic import ValidationError
 
 
 @pytest.mark.dry_runnable
