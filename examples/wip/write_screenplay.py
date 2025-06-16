@@ -14,7 +14,7 @@ async def generate_screenplay(pitch: str):
     # Create Stuff object for the pitch
     pitch_stuff = StuffFactory.make_from_str(
         str_value=pitch,
-        concept_code="screenplay.Pitch",
+        concept_str="screenplay.Pitch",
         name="pitch",
     )
 

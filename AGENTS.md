@@ -48,7 +48,6 @@ Several markers may be applied. For instance, if the test uses an LLM, then it u
 Always group the tests of a module into a test class:
 
 ```python
-@pytest.mark.llm
 @pytest.mark.inference
 @pytest.mark.asyncio(loop_scope="class")
 class TestFooBar:

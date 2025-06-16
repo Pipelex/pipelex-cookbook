@@ -7,7 +7,7 @@ HtmlTable = "An HTML table"
 
 [concept.TableScreenshot]
 Concept = "A screenshot of a table (table in the sense of a data structure used to organize information in rows and columns)"
-refines = ["native.Image"]
+refines = "Image"
 
 [pipe]
 [pipe.extract_html_table_from_image]

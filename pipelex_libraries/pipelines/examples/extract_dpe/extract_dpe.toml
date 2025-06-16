@@ -7,16 +7,16 @@ Dpe = "A diagnostic of the energy performance of a building"
 [pipe]
 [pipe.power_extractor_dpe]
 PipeSequence = "Update page content with markdown"
-inputs = { page_content = "documents.PageContent" }
-output = "native.Text"
+inputs = { page_content = "Page" }
+output = "Text"
 steps = [
-    { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" }, # Located in the base library, in the domain "documents"
+    { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },              # Located in the base library, in the domain "documents"
     { pipe = "write_markdown_from_page_content_dpe", batch_as = "page_content", result = "dpe" },
 ]
 
 [pipe.write_markdown_from_page_content_dpe]
 PipeLLM = "Write markdown from page content of a 'Diagnostic de Performance Energetique'"
-inputs = { page_content = "documents.PageContent" }
+inputs = { page_content = "Page" }
 output = "Dpe"
 images = ["page_content.page_view"]
 llm = "llm_for_img_to_text"

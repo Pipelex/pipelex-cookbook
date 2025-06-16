@@ -11,7 +11,7 @@ GanttTranscript = "A gantt chart transcript fully detailing the contents of the 
 
 [concept.GanttChartImage]
 Concept = "A gantt chart detailing a project timeline"
-refines = ["native.Image"]
+refines = "Image"
 
 [pipe]
 [pipe.extract_gantt_by_steps]
@@ -32,6 +32,7 @@ output = "GanttTimescaleDescription"
 images = ["gantt_chart_image"]
 llm = "llm_to_extract_diagram"
 llm_to_structure = "llm_to_extract_diagram"
+llm_to_structure_direct = "llm_to_extract_diagram"
 prompt_template = """
 I am sharing an image of a Gantt chart.
 Please analyze the timescale: what is the smallest unit detailed in the time scale?
@@ -44,6 +45,7 @@ output = "GanttTaskName"
 images = ["gantt_chart_image"]
 llm = "llm_to_extract_diagram"
 llm_to_structure = "llm_to_extract_diagram"
+llm_to_structure_direct = "llm_to_extract_diagram"
 multiple_output = true
 prompt_template = """
 I am sharing an image of a Gantt chart.

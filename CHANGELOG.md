@@ -1,5 +1,51 @@
 # Changelog
 
+## [v0.2.0] - 2025-06-16
+
+### Cookbook-Specific Enhancements
+
+### Test Infrastructure
+
+- Reorganized test structure into three categories:
+    - `tests/unit/` - Unit tests for individual functions
+    - `tests/integration/` - Integration tests for component interactions
+    - `tests/e2e/` - End-to-end tests for complete pipeline workflows
+- Added `dry_runnable` pytest marker for tests that can run without external API calls
+- Updated test configuration to use environment-based pipe run mode selection
+
+### Pipeline Development
+
+- **Prompt template enhancement**: added optional field syntax using `@?` prefix for conditional content insertion
+- **Validating pipelines**: updated from `make validate` to direct `pipelex validate` CLI command
+
+### New Examples + Enhancements
+
+- Enhanced tweet optimization pipeline with comprehensive analysis steps
+- Updated all examples to demonstrate flowchart generation and cost reporting
+- Fixed structural validation in HTML table extraction
+
+### Bug Fixes
+
+- Improved error messages for malformed HTML table structures
+- Fixed timezone handling in structured content models
+- Resolved test import issues in WIP examples
+
+### Adaptations to Pipelex v0.4.0
+
+The cookbook has been updated to align with breaking changes in Pipelex v0.4.0:
+
+### Concept System Updates
+
+- **Simplified native concepts**: removed `native.` prefix from built-in concepts (e.g., `native.Text` → `Text`, `native.PDF` → `PDF`)
+- **Updated concept definitions**: the `refines` attribute in concept definitions now accepts a string for single concept refinement
+- **Migrated concept references**:  `concept_code` parameters renamed to `concept_str` in StuffFactory
+
+### Integration Improvements
+
+- **Flowchart generation**: examples now utilize Pipelex's restored Mermaid flowchart generation capability
+- **Cost reporting**: added report generation calls to examples to showcase token usage and cost tracking
+- **Dry run support: test suite now leverages Pipelex's enhanced dry run configuration for pipeline validation without API calls**
+
 ## [v0.1.14] - 2025-06-13
 
 - Cleaned-up the examples and the repository structure

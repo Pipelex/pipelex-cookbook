@@ -17,17 +17,17 @@ async def retrieve_then_answer():
     # Example image path - adjust as needed
     text_path = "assets/retrieve_then_answer/contract.txt"
 
-    text_stuff = StuffFactory.make_from_str(str_value=read_text_from_file(text_path), name="text", concept_code="native.Text")
+    text_stuff = StuffFactory.make_from_str(str_value=read_text_from_file(text_path), name="text", concept_str="Text")
     question_stuff = StuffFactory.make_from_str(
         str_value="What are the transaction fees for using the WebTech Solutions data processing \
             platform, and how are they calculated?",
         name="question",
-        concept_code="answer.Question",
+        concept_str="answer.Question",
     )
     client_instructions = StuffFactory.make_from_str(
         str_value="If there are multiple fees, take the last one in time.",
         name="client_instructions",
-        concept_code="native.Text",
+        concept_str="Text",
     )
 
     # Create working memory from image

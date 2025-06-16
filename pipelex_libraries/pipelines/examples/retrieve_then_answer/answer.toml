@@ -9,8 +9,8 @@ EnrichedQuestion = "An enriched question"
 [pipe]
 [pipe.retrieve_then_answer]
 PipeSequence = "Answer a question, given the target type and the excerpts neeeded to answer it"
-inputs = { "question" = "answer.Question", "text" = "native.Text" }
-output = "native.Dynamic"
+inputs = { "question" = "answer.Question", text = "Text" }
+output = "Dynamic"
 steps = [
   { pipe = "write_context_of_text", result = "context" },
   { pipe = "retrieve_excerpts", result = "excerpts" },
@@ -21,7 +21,7 @@ steps = [
 [pipe.answer_question]
 PipeSequence = "Answer the question in a dynamically specified format"
 inputs = { "enriched_question" = "EnrichedQuestion" }
-output = "native.Dynamic"
+output = "Dynamic"
 steps = [
   { pipe = "pre_answer_question", result = "answer" },
   { pipe = "cleanse_answer", result = "cleaned_answer" },
@@ -29,8 +29,8 @@ steps = [
 
 [pipe.write_context_of_text]
 PipeLLM = "Write the context of a sample of text"
-inputs = { "text" = "native.Text" }
-output = "native.Text"
+inputs = { text = "Text" }
+output = "Text"
 prompt_template = """
 Your task is to write the context of a text.
 This context should be maximum of 30 words. 
@@ -41,7 +41,7 @@ The goal is to quickly understand the type of ducument by just reding this conte
 
 [pipe.enrich_question]
 PipeLLM = "Get an enriched question"
-inputs = { "question" = "answer.Question", "client_instructions" = "native.Text", "context" = "native.Text" }
+inputs = { "question" = "answer.Question", "client_instructions" = "Text", "context" = "Text" }
 output = "EnrichedQuestion"
 llm = "llm_to_enrich"
 prompt_template = """
@@ -69,8 +69,8 @@ Here are some rules that you absolutely must follow:
 
 [pipe.pre_answer_question]
 PipeLLM = "Answer the question in a dynamically specified format"
-inputs = { "enriched_question" = "EnrichedQuestion", "excerpts" = "retrieve.RetrievedExcerpt", "context" = "native.Text", "client_instructions" = "native.Text" }
-output = "native.Dynamic"
+inputs = { "enriched_question" = "EnrichedQuestion", "excerpts" = "retrieve.RetrievedExcerpt", "context" = "Text", "client_instructions" = "Text" }
+output = "Dynamic"
 llm = "llm_to_answer"
 structuring_method = "preliminary_text"
 prompt_template = """
@@ -108,8 +108,8 @@ Here is the fields format of the answer you must output:
 
 [pipe.cleanse_answer]
 PipeLLM = "Clean the answer"
-inputs = { "answer" = "native.Dynamic" }
-output = "native.Dynamic"
+inputs = { "answer" = "Dynamic" }
+output = "Dynamic"
 structuring_method = "preliminary_text"
 prompt_template = """
 You are helping to clean answers that were generated from analyzing document excerpts to answer specific questions.
