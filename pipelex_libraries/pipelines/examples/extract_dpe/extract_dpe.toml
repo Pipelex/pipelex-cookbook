@@ -16,9 +16,8 @@ steps = [
 
 [pipe.write_markdown_from_page_content_dpe]
 PipeLLM = "Write markdown from page content of a 'Diagnostic de Performance Energetique'"
-inputs = { page_content = "Page" }
+inputs = { "page_content.page_view" = "Page" }
 output = "Dpe"
-images = ["page_content.page_view"]
 llm = "llm_for_img_to_text"
 structuring_method = "preliminary_text"
 system_prompt = """You are a multimodal LLM, expert at converting images into perfect markdown."""

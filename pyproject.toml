@@ -18,7 +18,8 @@ classifiers = [
 
 dependencies = [
     "beautifulsoup4==4.13.4",
-    "pipelex[mistralai,anthropic,google,bedrock,fal]==0.4.0",
+    # "pipelex[mistralai,anthropic,google,bedrock,fal]==0.4.0",
+    "pipelex[mistralai,anthropic,google,bedrock,fal] @ file:///Users/thomashebrardevotis/dev/pipelex/pipelex",
 ]
 
 [project.optional-dependencies]
