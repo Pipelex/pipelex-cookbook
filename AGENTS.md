@@ -35,8 +35,6 @@ This python 3.11 repo named pipelex-cookbook has several packages placed at the 
 ### Markers
 
 Apply the appropriate markers:
-- "llm: uses an LLM to generate text or objects"
-- "imgg: uses an image generation AI"
 - "inference: uses either an LLM or an image generation AI"
 - "gha_disabled: will not be able to run properly on GitHub Actions"
 - "codex_disabled: will not be able to run properly on Codex"  # typically relevant for tests that need internet access, which Codex doesn't allow
