@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.2.1] - 2025-06-20
+
+- Bump `pipelex` to `v0.4.4`
+- Removed `gemini-1.5` support
+- Removed the `images` field from `PipeLLM` - images can now be referenced directly in the `inputs`
+- Pytest markers: stop using `llm` and `imgg`. Attach `dry_runnable` marker to some tests
+- Change Discord link
+
 ## [v0.2.0] - 2025-06-16
 
 ### Cookbook-Specific Enhancements
