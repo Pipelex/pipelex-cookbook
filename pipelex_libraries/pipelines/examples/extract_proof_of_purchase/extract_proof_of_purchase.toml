@@ -15,7 +15,7 @@ steps = [
 
 [pipe.write_markdown_from_page_content_proof_of_purchase]
 PipeLLM = "Write markdown from page content"
-inputs = { "page_content.page_view" = "Page" }
+inputs = { "page_content.page_view" = "Image" }
 output = "ProofOfPurchase"
 llm = "llm_for_img_to_text"
 structuring_method = "preliminary_text"
