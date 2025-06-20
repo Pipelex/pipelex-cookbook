@@ -16,7 +16,7 @@ VENV_PIPELEX := $(VIRTUAL_ENV)/bin/pipelex
 
 UV_MIN_VERSION = $(shell grep -m1 'required-version' pyproject.toml | sed -E 's/.*= *"([^<>=, ]+).*/\1/')
 
-USUAL_PYTEST_MARKERS := "(dry_runnable or not (inference or llm or imgg or ocr)) and not (needs_output or pipelex_api)"
+USUAL_PYTEST_MARKERS := "(dry_runnable or not inference) and not (needs_output or pipelex_api)"
 
 define PRINT_TITLE
     $(eval PROJECT_PART := [$(PROJECT_NAME)])
@@ -76,10 +76,6 @@ make test-with-prints         - Run tests with prints (no inference)
 make tp                       - Shorthand -> test-with-prints
 make test-inference           - Run unit tests only for inference (with prints)
 make ti                       - Shorthand -> test-inference
-make test-ocr                 - Run unit tests only for ocr (with prints)
-make to                       - Shorthand -> test-ocr
-make test-imgg                - Run unit tests only for imgg (with prints)
-make test-g					  - Shorthand -> test-imgg
 
 make check                    - Shorthand -> format lint mypy
 make c                        - Shorthand -> check
@@ -91,13 +87,12 @@ make fix-unused-imports       - Fix unused imports with ruff
 endef
 export HELP
 
-.PHONY: all help env lock install update format lint pyright mypy cleanderived cleanenv validate v codex-tests gha-tests test test-xdist t test-with-prints tp test-inference ti test-imgg tg test-ocr tocheck cc li merge-check-ruff-lint merge-check-ruff-format merge-check-mypy check-unused-imports fix-unused-imports check-uv
 .PHONY: \
 	all help env lock install update build \
 	format lint pyright mypy \
 	cleanderived cleanenv cleanlibraries cleanall \
 	test test-xdist t test-quiet tq test-with-prints tp test-inference ti \
-	test-imgg tg test-ocr to codex-tests gha-tests \
+	codex-tests gha-tests \
 	run-all-tests run-manual-trigger-gha-tests run-gha_disabled-tests \
 	validate v check c cc \
 	merge-check-ruff-lint merge-check-ruff-format merge-check-mypy merge-check-pyright \
@@ -282,35 +277,13 @@ tp: test-with-prints
 test-inference: env
 	$(call PRINT_TITLE,"Unit testing")
 	@if [ -n "$(TEST)" ]; then \
-		$(VENV_PYTEST) --pipe-run-mode live --exitfirst -m "inference and not imgg" -s -k "$(TEST)" $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
+		$(VENV_PYTEST) --pipe-run-mode live --exitfirst -m "inference" -s -k "$(TEST)" $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
 	else \
-		$(VENV_PYTEST) --pipe-run-mode live --exitfirst -m "inference and not imgg" -s $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
+		$(VENV_PYTEST) --pipe-run-mode live --exitfirst -m "inference" -s $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
 	fi
 
 ti: test-inference
 	@echo "> done: ti = test-inference"
-
-test-ocr: env
-	$(call PRINT_TITLE,"Unit testing ocr")
-	@if [ -n "$(TEST)" ]; then \
-		$(VENV_PYTEST) --pipe-run-mode live --exitfirst -m "ocr" -s -k "$(TEST)" $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
-	else \
-		$(VENV_PYTEST) --pipe-run-mode live --exitfirst -m "ocr" -s $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
-	fi
-
-to: test-ocr
-	@echo "> done: to = test-ocr"
-
-test-imgg: env
-	$(call PRINT_TITLE,"Unit testing")
-	@if [ -n "$(TEST)" ]; then \
-		$(VENV_PYTEST) --pipe-run-mode live --exitfirst -m "imgg" -s -k "$(TEST)" $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
-	else \
-		$(VENV_PYTEST) --pipe-run-mode live --exitfirst -m "imgg" -s $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
-	fi
-
-tg: test-imgg
-	@echo "> done: tg = test-imgg"
 
 ############################################################################################
 ############################               Linting              ############################
@@ -381,7 +354,6 @@ li: lock install
 check-TODOs: env
 	$(call PRINT_TITLE,"Checking for TODOs")
 	$(VENV_RUFF) check --select=TD -v .
-
 
 fix-unused-imports: env
 	$(call PRINT_TITLE,"Fixing unused imports")

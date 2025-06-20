@@ -3,7 +3,7 @@
 > Examples, recipes, and best-practice pipelines for the **[Pipelex](https://github.com/Pipelex/pipelex)** LLM Pipeline framework.
 
 
-If you just want to **run** an example, jump to **Quick Start**. If you'd like to **share** your own pipeline, head straight to **Contributing**. :books: Check out the [Pipelex Documentation](https://github.com/Pipelex/pipelex/blob/main/doc/Documentation.md) for more information.
+If you just want to **run** an example, jump to **Quick Start**. If you'd like to **share** your own pipeline, head straight to **Contributing**. :books: Check out the [Pipelex Documentation](https://docs.pipelex.com/) for more information, in particular the [Cookbook examples](https://docs.pipelex.com/pages/cookbook-examples/) section.
 
 ---
 

@@ -7,6 +7,7 @@
 - Removed the `images` field from `PipeLLM` - images can now be referenced directly in the `inputs`
 - Pytest markers: stop using `llm` and `imgg`. Attach `dry_runnable` marker to some tests
 - Change Discord link
+- Change Docs link
 
 ## [v0.2.0] - 2025-06-16
 
