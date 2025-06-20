@@ -29,7 +29,6 @@ steps = [
 PipeLLM = "Describe the timescale of a gantt chart"
 inputs = { gantt_chart_image = "GanttChartImage" }
 output = "GanttTimescaleDescription"
-images = ["gantt_chart_image"]
 llm = "llm_to_extract_diagram"
 llm_to_structure = "llm_to_extract_diagram"
 llm_to_structure_direct = "llm_to_extract_diagram"
@@ -42,7 +41,6 @@ Please analyze the timescale: what is the smallest unit detailed in the time sca
 PipeLLM = "List all the tasks"
 inputs = { gantt_chart_image = "GanttChartImage" }
 output = "GanttTaskName"
-images = ["gantt_chart_image"]
 llm = "llm_to_extract_diagram"
 llm_to_structure = "llm_to_extract_diagram"
 llm_to_structure_direct = "llm_to_extract_diagram"
@@ -57,7 +55,6 @@ PipeLLM = "Extract the precise dates of the task, start_date and end_date"
 inputs = { gantt_chart_image = "GanttChartImage", gantt_timescale = "GanttTimescaleDescription", gantt_task_name = "GanttTaskName" }
 output = "GanttTaskDetails"
 structuring_method = "preliminary_text"
-images = ["gantt_chart_image"]
 llm = "llm_to_extract_diagram"
 prompt_template = """
 I am sharing an image of a Gantt chart.
@@ -91,7 +88,6 @@ Here are the task details:
 PipeLLM = "Extract all details from a gantt chart"
 inputs = { image = "GanttChartImage" }
 output = "GanttTranscript"
-images = ["image"]
 llm = "llm_to_extract_diagram"
 prompt_template = """
 # **Task:** You are provided with an image depicting a planning or timeline.

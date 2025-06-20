@@ -31,9 +31,8 @@ steps = [
 
 [pipe.analyze_invoice]
 PipeLLM = "Analyze the invoice"
-inputs = { invoice_page = "Page" }
+inputs = { "invoice_page.page_view" = "Image", invoice_page = "Page" }
 output = "InvoiceDetails"
-images = ["invoice_page.page_view"]
 prompt_template = """
 Analyze this invoice:
 
@@ -42,10 +41,9 @@ Analyze this invoice:
 
 [pipe.extract_invoice_data]
 PipeLLM = "Extract invoice information from an invoice text transcript"
-inputs = { invoice_page = "Page", invoice_details = "InvoiceDetails" }
+inputs = { "invoice_page.page_view" = "Image", invoice_details = "InvoiceDetails", invoice_page = "Page" }
 output = "Invoice"
 llm = "llm_to_extract_invoice"
-images = ["invoice_page.page_view"]
 prompt_template = """
 Extract invoice information from this invoice:
 
