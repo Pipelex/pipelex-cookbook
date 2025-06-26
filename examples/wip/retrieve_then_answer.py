@@ -34,7 +34,7 @@ async def retrieve_then_answer():
     working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[text_stuff, question_stuff, client_instructions])
 
     # Execute the retrieve_then_answer pipeline
-    pipe_output, _ = await execute_pipeline(
+    pipe_output = await execute_pipeline(
         pipe_code="retrieve_then_answer", working_memory=working_memory, dynamic_output_concept_code="contracts.Fees"
     )
 
