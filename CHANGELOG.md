@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.2.2] - 2025-06-26
+
+- Bump `pipelex` to `v0.4.7`: Full changelog [here](https://docs.pipelex.com/changelog/)
+- `pipeline_run_id` is now available in `PipeOutput`
+
 ## [v0.2.1] - 2025-06-20
 
 - Bump `pipelex` to `v0.4.4`

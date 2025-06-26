@@ -14,7 +14,7 @@ async def summarize_with_structure(text: str) -> StructuredSummary:
     working_memory = WorkingMemoryFactory.make_from_text(text=text)
 
     # Run the pipe
-    pipe_output, _ = await execute_pipeline(
+    pipe_output = await execute_pipeline(
         pipe_code="summarize_with_structure",
         working_memory=working_memory,
     )
