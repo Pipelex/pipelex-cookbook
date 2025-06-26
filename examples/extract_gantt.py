@@ -35,8 +35,6 @@ Pipelex.make()
 # run sample using asyncio
 gantt_chart = asyncio.run(extract_gantt(IMAGE_URL))
 
-pretty_print(gantt_chart, title="Gantt Chart")
-
 # Display cost report (tokens used and cost)
 get_report_delegate().generate_report()
 # output results
