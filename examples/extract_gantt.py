@@ -21,11 +21,10 @@ async def extract_gantt(image_url: str) -> GanttChart:
     )
 
     # Run the pipe
-    pipe_output, _ = await execute_pipeline(
+    pipe_output = await execute_pipeline(
         pipe_code="extract_gantt_by_steps",
         working_memory=working_memory,
     )
-
     # Output the result
     return pipe_output.main_stuff_as(content_type=GanttChart)
 
@@ -35,6 +34,8 @@ Pipelex.make()
 
 # run sample using asyncio
 gantt_chart = asyncio.run(extract_gantt(IMAGE_URL))
+
+pretty_print(gantt_chart, title="Gantt Chart")
 
 # Display cost report (tokens used and cost)
 get_report_delegate().generate_report()
