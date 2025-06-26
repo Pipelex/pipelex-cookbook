@@ -26,7 +26,7 @@ class TestSummarize:
         working_memory = WorkingMemoryFactory.make_from_text(text=text)
 
         # Run the pipe
-        pipe_output, _ = await execute_pipeline(
+        pipe_output = await execute_pipeline(
             pipe_code="test_summarize_by_steps",
             working_memory=working_memory,
             pipe_run_mode=pipe_run_mode,
