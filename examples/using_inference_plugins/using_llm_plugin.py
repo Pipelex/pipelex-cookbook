@@ -19,10 +19,10 @@ from typing_extensions import override
 
 from tests.cases.test_data import LLMTestConstants, Person
 
-EXTERNAL_LLM_NAME = "openai_external_llm"
+LLM_PLUGIN_NAME = "llm_plugin_example_using_openai"
 
 
-class ExternalLLMWorkerOpenAI(LLMWorkerAbstract):
+class LLMPluginExampleUsingOpenAI(LLMWorkerAbstract):
     """
     OpenAI External LLM Worker that implements the OpenAI chat completion REST API
     using direct HTTP calls (not the OpenAI SDK).
@@ -45,6 +45,11 @@ class ExternalLLMWorkerOpenAI(LLMWorkerAbstract):
     @override
     def desc(self) -> str:
         return "LLM Worker using OpenAI REST API"
+
+    @property
+    @override
+    def is_gen_object_supported(self) -> bool:
+        return True
 
     def _make_messages(self, llm_job: LLMJob) -> List[Dict[str, str]]:
         """Build OpenAI messages format from LLMJob"""
@@ -190,6 +195,6 @@ async def gen_text_and_object_using_external_plugin(plugin_name: str):
 # start Pipelex
 Pipelex.make()
 # register external plugin
-get_plugin_manager().register_plugin(name=EXTERNAL_LLM_NAME, plugin_class=ExternalLLMWorkerOpenAI)
+get_plugin_manager().register_plugin(name=LLM_PLUGIN_NAME, plugin_class=LLMPluginExampleUsingOpenAI)
 # run sample using asyncio
-asyncio.run(gen_text_and_object_using_external_plugin(plugin_name=EXTERNAL_LLM_NAME))
+asyncio.run(gen_text_and_object_using_external_plugin(plugin_name=LLM_PLUGIN_NAME))
