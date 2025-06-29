@@ -11,7 +11,7 @@ from pipelex.cogt.llm.llm_job_factory import LLMJobFactory
 from pipelex.cogt.llm.llm_worker_abstract import LLMWorkerAbstract
 from pipelex.cogt.llm.llm_worker_factory import LLMWorkerFactory
 from pipelex.cogt.llm.token_category import NbTokensByCategoryDict, TokenCategory
-from pipelex.hub import get_plugin_manager, get_report_delegate
+from pipelex.hub import get_inference_manager, get_plugin_manager, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.reporting.reporting_protocol import ReportingProtocol
 from pipelex.tools.typing.pydantic_utils import BaseModelTypeVar
@@ -19,7 +19,7 @@ from typing_extensions import override
 
 from tests.cases.test_data import LLMTestConstants, Person
 
-LLM_PLUGIN_NAME = "llm_plugin_example_using_openai"
+# LLM_PLUGIN_NAME = "llm_plugin_example_using_openai"
 
 
 class LLMPluginExampleUsingOpenAI(LLMWorkerAbstract):
@@ -170,11 +170,16 @@ class LLMPluginExampleUsingOpenAI(LLMWorkerAbstract):
             raise ValueError(f"Failed to parse JSON response: {e}") from e
 
 
-async def gen_text_and_object_using_external_plugin(plugin_name: str):
-    llm_worker = LLMWorkerFactory.make_llm_worker_from_external_plugin(
-        external_plugin_name=plugin_name,
-        reporting_delegate=get_report_delegate(),
-    )
+async def gen_text_and_object_using_external_plugin(llm_worker: LLMWorkerAbstract):
+    # get_inference_manager().set_llm_worker(llm_handle=LLM_PLUGIN_NAME, llm_worker=llm_worker)
+    # llm_worker = LLMWorkerFactory.make_llm_worker_from_external_plugin(
+    #     external_plugin_name=plugin_name,
+    #     reporting_delegate=get_report_delegate(),
+    # )
+    # get_inference_manager().set_llm_worker_from_external_plugin(
+    #     llm_handle=LLM_PLUGIN_NAME,
+    #     llm_worker_class=LLMPluginExampleUsingOpenAI,
+    # )
     llm_job = LLMJobFactory.make_llm_job_from_prompt_contents(
         system_text=None,
         user_text=LLMTestConstants.USER_TEXT_SHORT,
@@ -195,6 +200,7 @@ async def gen_text_and_object_using_external_plugin(plugin_name: str):
 # start Pipelex
 Pipelex.make()
 # register external plugin
-get_plugin_manager().register_plugin(name=LLM_PLUGIN_NAME, plugin_class=LLMPluginExampleUsingOpenAI)
+# get_plugin_manager().register_plugin(name=LLM_PLUGIN_NAME, plugin_class=LLMPluginExampleUsingOpenAI)
 # run sample using asyncio
-asyncio.run(gen_text_and_object_using_external_plugin(plugin_name=LLM_PLUGIN_NAME))
+llm_worker = LLMPluginExampleUsingOpenAI(reporting_delegate=get_report_delegate())
+asyncio.run(gen_text_and_object_using_external_plugin(llm_worker=llm_worker))

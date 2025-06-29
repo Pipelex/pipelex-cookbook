@@ -209,12 +209,17 @@ async def hello_plugin():
 # start Pipelex
 Pipelex.make()
 # register external plugin
-plugin_name = LLM_PLUGIN_NAME
-get_plugin_manager().register_plugin(name=plugin_name, plugin_class=LLMPluginExampleUsingOpenAI)
-llm_external_worker = LLMWorkerFactory.make_llm_worker_from_external_plugin(
-    external_plugin_name=plugin_name,
-    reporting_delegate=get_report_delegate(),
+# plugin_name = LLM_PLUGIN_NAME
+# get_plugin_manager().register_plugin(name=plugin_name, plugin_class=LLMPluginExampleUsingOpenAI)
+# llm_external_worker = LLMWorkerFactory.make_llm_worker_from_external_plugin(
+#     external_plugin_name=plugin_name,
+#     reporting_delegate=get_report_delegate(),
+# )
+# llm_worker = LLMPluginExampleUsingOpenAI(reporting_delegate=get_report_delegate())
+# get_inference_manager().set_llm_worker(llm_handle=LLM_PLUGIN_NAME, llm_worker=llm_worker)
+get_inference_manager().set_llm_worker_from_external_plugin(
+    llm_handle=LLM_PLUGIN_NAME,
+    llm_worker_class=LLMPluginExampleUsingOpenAI,
 )
-get_inference_manager().set_llm_worker(llm_handle=plugin_name, llm_worker=llm_external_worker)
 # run sample using asyncio
 asyncio.run(hello_plugin())
