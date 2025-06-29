@@ -21,7 +21,7 @@ from pipelex.reporting.reporting_protocol import ReportingProtocol
 from pipelex.tools.typing.pydantic_utils import BaseModelTypeVar
 from typing_extensions import override
 
-from tests.integration.pipelex.cogt.test_data import LLMTestConstants, Person
+from tests.cases.test_data import LLMTestConstants, Person
 
 EXTERNAL_LLM_NAME = "openai_external_llm"
 
@@ -128,19 +128,18 @@ class ExternalLLMWorkerOpenAI(LLMWorkerAbstract):
     ) -> BaseModelTypeVar:
         messages = self._make_messages(llm_job)
 
-        # Add instruction for JSON output
-        schema_instruction = f"Respond with a valid JSON object that matches this schema: {schema.model_json_schema()}"
+        # Get the JSON schema for structured output
+        json_schema = schema.model_json_schema()
 
-        if messages and messages[-1]["role"] == "user":
-            messages[-1]["content"] += f"\n\n{schema_instruction}"
-        else:
-            messages.append({"role": "user", "content": schema_instruction})
-
+        # Use OpenAI's structured outputs with the actual schema
         payload = {
             "model": self.model,
             "messages": messages,
-            "temperature": llm_job.job_params.temperature or 0.7,
-            "response_format": {"type": "json_object"},
+            "temperature": llm_job.job_params.temperature or 0.5,
+            "response_format": {
+                "type": "json_schema",
+                "json_schema": {"name": f"{schema.__name__.lower()}_schema", "schema": json_schema},
+            },
         }
 
         if llm_job.job_params.max_tokens:
