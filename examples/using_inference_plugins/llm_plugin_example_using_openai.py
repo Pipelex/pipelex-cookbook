@@ -1,3 +1,4 @@
+import asyncio
 import json
 import os
 from typing import Any, Dict, List, Optional, Type
@@ -32,6 +33,24 @@ class LLMPluginExampleUsingOpenAI(LLMWorkerAbstract):
             raise CredentialsError("OPENAI_API_KEY environment variable is required")
         self.base_url = "https://api.openai.com/v1"
         self.model = "gpt-4o"
+        self._client: Optional[httpx.AsyncClient] = None
+
+    async def _get_client(self) -> httpx.AsyncClient:
+        """Get or create the HTTP client with proper lifecycle management."""
+        if self._client is None or self._client.is_closed:
+            self._client = httpx.AsyncClient(timeout=30.0)
+        return self._client
+
+    @override
+    def teardown(self) -> None:
+        """Clean up resources when the worker is no longer needed.
+
+        This should be called by external code when the worker instance
+        is no longer needed to properly close HTTP connections and free resources.
+        """
+        if self._client is not None and not self._client.is_closed:
+            asyncio.create_task(self._client.aclose())
+            self._client = None
 
     @property
     @override
@@ -58,14 +77,14 @@ class LLMPluginExampleUsingOpenAI(LLMWorkerAbstract):
         """Make HTTP request to OpenAI API"""
         headers = {"Content-Type": "application/json", "Authorization": f"Bearer {self.api_key}"}
 
-        async with httpx.AsyncClient() as client:
-            response = await client.post(f"{self.base_url}/chat/completions", headers=headers, json=payload, timeout=30.0)
-            response.raise_for_status()
-            json_response = response.json()
-            if not isinstance(json_response, dict):
-                raise LLMCompletionError(f"Invalid response from OpenAI: {json_response}")
-            dict_response: Dict[str, Any] = json_response
-            return dict_response
+        client = await self._get_client()
+        response = await client.post(f"{self.base_url}/chat/completions", headers=headers, json=payload)
+        response.raise_for_status()
+        json_response = response.json()
+        if not isinstance(json_response, dict):
+            raise LLMCompletionError(f"Invalid response from OpenAI: {json_response}")
+        dict_response: Dict[str, Any] = json_response
+        return dict_response
 
     def _update_token_usage(self, llm_job: LLMJob, response_data: Dict[str, Any]) -> None:
         """Update token usage from OpenAI response"""
