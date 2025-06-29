@@ -1,7 +1,7 @@
 import asyncio
 
 from pipelex import pretty_print
-from pipelex.hub import get_inference_manager
+from pipelex.hub import get_inference_manager, get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
@@ -30,3 +30,7 @@ get_inference_manager().set_llm_worker_from_external_plugin(
 )
 # run sample using asyncio
 asyncio.run(hello_plugin())
+
+# Display cost report (tokens used and cost)
+# TODO: costs are currently not handled for external plugins
+get_report_delegate().generate_report()
