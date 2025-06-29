@@ -8,10 +8,6 @@ from pipelex import pretty_print
 from pipelex.cogt.llm.llm_job import LLMJob
 from pipelex.cogt.llm.llm_job_components import LLMJobParams
 from pipelex.cogt.llm.llm_job_factory import LLMJobFactory
-from pipelex.cogt.llm.llm_models.llm_engine import LLMEngine
-from pipelex.cogt.llm.llm_models.llm_family import LLMFamily
-from pipelex.cogt.llm.llm_models.llm_model import LATEST_VERSION_NAME, LLMModel
-from pipelex.cogt.llm.llm_models.llm_platform import LLMPlatform
 from pipelex.cogt.llm.llm_worker_abstract import LLMWorkerAbstract
 from pipelex.cogt.llm.llm_worker_factory import LLMWorkerFactory
 from pipelex.cogt.llm.token_category import NbTokensByCategoryDict, TokenCategory
