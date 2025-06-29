@@ -3,11 +3,14 @@ import os
 from typing import Any, Dict, List, Optional, Type
 
 import httpx
+from pipelex.cogt.exceptions import LLMCompletionError, LLMWorkerError
 from pipelex.cogt.llm.llm_job import LLMJob
 from pipelex.cogt.llm.llm_worker_abstract import LLMWorkerAbstract
 from pipelex.cogt.llm.token_category import NbTokensByCategoryDict, TokenCategory
 from pipelex.reporting.reporting_protocol import ReportingProtocol
-from pipelex.tools.typing.pydantic_utils import BaseModelTypeVar
+from pipelex.tools.exceptions import CredentialsError
+from pipelex.tools.typing.pydantic_utils import BaseModelTypeVar, format_pydantic_validation_error
+from pydantic import ValidationError
 from typing_extensions import override
 
 
@@ -26,7 +29,7 @@ class LLMPluginExampleUsingOpenAI(LLMWorkerAbstract):
         LLMWorkerAbstract.__init__(self, reporting_delegate=reporting_delegate)
         self.api_key = os.getenv("OPENAI_API_KEY")
         if not self.api_key:
-            raise ValueError("OPENAI_API_KEY environment variable is required")
+            raise CredentialsError("OPENAI_API_KEY environment variable is required")
         self.base_url = "https://api.openai.com/v1"
         self.model = "gpt-4o"
 
@@ -51,7 +54,7 @@ class LLMPluginExampleUsingOpenAI(LLMWorkerAbstract):
             raise NotImplementedError("Images are not supported in this example")
         return messages
 
-    async def _make_openai_request(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+    async def _make_http_request(self, payload: Dict[str, Any]) -> Dict[str, Any]:
         """Make HTTP request to OpenAI API"""
         headers = {"Content-Type": "application/json", "Authorization": f"Bearer {self.api_key}"}
 
@@ -60,7 +63,7 @@ class LLMPluginExampleUsingOpenAI(LLMWorkerAbstract):
             response.raise_for_status()
             json_response = response.json()
             if not isinstance(json_response, dict):
-                raise ValueError(f"Invalid response from OpenAI: {json_response}")
+                raise LLMCompletionError(f"Invalid response from OpenAI: {json_response}")
             dict_response: Dict[str, Any] = json_response
             return dict_response
 
@@ -93,7 +96,7 @@ class LLMPluginExampleUsingOpenAI(LLMWorkerAbstract):
         if llm_job.job_params.seed:
             payload["seed"] = llm_job.job_params.seed
 
-        response_data = await self._make_openai_request(payload)
+        response_data = await self._make_http_request(payload)
 
         # Update token usage
         self._update_token_usage(llm_job, response_data)
@@ -101,13 +104,13 @@ class LLMPluginExampleUsingOpenAI(LLMWorkerAbstract):
         # Extract response content
         choices = response_data.get("choices", [])
         if not choices:
-            raise ValueError("No choices in OpenAI response")
+            raise LLMCompletionError("No choices in OpenAI response")
 
         content = choices[0]["message"]["content"]
         if not content:
-            raise ValueError("No content in OpenAI response")
+            raise LLMCompletionError("No content in OpenAI response")
         if not isinstance(content, str):
-            raise ValueError(f"Invalid content in OpenAI response: {content}")
+            raise LLMCompletionError(f"Invalid content in OpenAI response: {content}")
         return content
 
     @override
@@ -138,7 +141,7 @@ class LLMPluginExampleUsingOpenAI(LLMWorkerAbstract):
         if llm_job.job_params.seed:
             payload["seed"] = llm_job.job_params.seed
 
-        response_data = await self._make_openai_request(payload)
+        response_data = await self._make_http_request(payload)
 
         # Update token usage
         self._update_token_usage(llm_job, response_data)
@@ -146,14 +149,17 @@ class LLMPluginExampleUsingOpenAI(LLMWorkerAbstract):
         # Extract and parse JSON response
         choices = response_data.get("choices", [])
         if not choices:
-            raise ValueError("No choices in OpenAI response")
+            raise LLMCompletionError("No choices in completion response")
 
         content = choices[0]["message"]["content"]
         if not content:
-            raise ValueError("No content in OpenAI response")
+            raise LLMCompletionError("No content in completion response")
 
         try:
             json_data = json.loads(content)
-            return schema(**json_data)
-        except (json.JSONDecodeError, TypeError, ValueError) as e:
-            raise ValueError(f"Failed to parse JSON response: {e}") from e
+            return schema.model_validate(json_data)
+        except json.JSONDecodeError as exc:
+            raise LLMCompletionError(f"Failed to parse JSON response from completion: {exc}") from exc
+        except ValidationError as exc:
+            error_msg = format_pydantic_validation_error(exc)
+            raise LLMCompletionError(f"Failed to validate JSON response from completion: {error_msg}") from exc
