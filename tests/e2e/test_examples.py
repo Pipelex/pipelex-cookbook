@@ -26,3 +26,6 @@ class TestExamples:
 
     def test_using_llm_plugin(self):
         import examples.using_inference_plugins.using_llm_plugin  # noqa: F401
+
+    def test_hello_plugin(self):
+        import examples.using_inference_plugins.hello_plugin  # noqa: F401
