@@ -54,21 +54,8 @@ class MockExternalLLMWorker(LLMWorkerAbstract):
 
 
 async def gen_text_and_object_using_external_plugin(plugin_name: str):
-    llm_engine = LLMEngine(
-        llm_platform=LLMPlatform.EXTERNAL_LLM,
-        llm_model=LLMModel(
-            llm_name=plugin_name,
-            version=LATEST_VERSION_NAME,
-            default_platform=LLMPlatform.EXTERNAL_LLM,
-            llm_family=LLMFamily.SPECIFIC,
-            is_gen_object_supported=True,
-            platform_llm_id={LLMPlatform.EXTERNAL_LLM: plugin_name},
-            max_prompt_images=0,
-        ),
-    )
-    llm_worker_factory = LLMWorkerFactory()
-    llm_worker = llm_worker_factory.make_llm_worker(
-        llm_engine=llm_engine,
+    llm_worker = LLMWorkerFactory.make_llm_worker_from_external_plugin(
+        external_plugin_name=plugin_name,
         reporting_delegate=get_report_delegate(),
     )
     llm_job = LLMJobFactory.make_llm_job_from_prompt_contents(
