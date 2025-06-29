@@ -55,14 +55,14 @@ class MockExternalLLMWorker(LLMWorkerAbstract):
 
 async def gen_text_and_object_using_external_plugin(plugin_name: str):
     llm_engine = LLMEngine(
-        llm_platform=LLMPlatform.SPECIFIC_LLM,
+        llm_platform=LLMPlatform.EXTERNAL_LLM,
         llm_model=LLMModel(
             llm_name=plugin_name,
             version=LATEST_VERSION_NAME,
-            default_platform=LLMPlatform.SPECIFIC_LLM,
+            default_platform=LLMPlatform.EXTERNAL_LLM,
             llm_family=LLMFamily.SPECIFIC,
             is_gen_object_supported=True,
-            platform_llm_id={LLMPlatform.SPECIFIC_LLM: plugin_name},
+            platform_llm_id={LLMPlatform.EXTERNAL_LLM: plugin_name},
             max_prompt_images=0,
         ),
     )
