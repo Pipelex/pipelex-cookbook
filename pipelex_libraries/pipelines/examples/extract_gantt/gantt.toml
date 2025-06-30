@@ -30,8 +30,6 @@ PipeLLM = "Describe the timescale of a gantt chart"
 inputs = { gantt_chart_image = "GanttChartImage" }
 output = "GanttTimescaleDescription"
 llm = "llm_to_extract_diagram"
-llm_to_structure = "llm_to_extract_diagram"
-llm_to_structure_direct = "llm_to_extract_diagram"
 prompt_template = """
 I am sharing an image of a Gantt chart.
 Please analyze the timescale: what is the smallest unit detailed in the time scale?
@@ -42,8 +40,6 @@ PipeLLM = "List all the tasks"
 inputs = { gantt_chart_image = "GanttChartImage" }
 output = "GanttTaskName"
 llm = "llm_to_extract_diagram"
-llm_to_structure = "llm_to_extract_diagram"
-llm_to_structure_direct = "llm_to_extract_diagram"
 multiple_output = true
 prompt_template = """
 I am sharing an image of a Gantt chart.
