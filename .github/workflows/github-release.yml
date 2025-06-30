@@ -7,14 +7,10 @@ on:
 
 jobs:
   github-release:
-    name: >-
-      Sign the Python 🐍 distribution 📦 with Sigstore
-      and upload them to GitHub Release
+    name: Create GitHub Release
     runs-on: ubuntu-latest
-
     permissions:
       contents: write # IMPORTANT: mandatory for making GitHub Releases
-      id-token: write # IMPORTANT: mandatory for sigstore
 
     steps:
       - uses: actions/checkout@v4
