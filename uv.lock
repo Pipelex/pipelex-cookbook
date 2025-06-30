@@ -1410,7 +1410,7 @@ wheels = [
 [[package]]
 name = "pipelex"
 version = "0.4.9"
-source = { git = "https://github.com/Pipelex/pipelex.git?rev=fc23161230b9cccd70e5356a799868e140175b77#fc23161230b9cccd70e5356a799868e140175b77" }
+source = { git = "https://github.com/Pipelex/pipelex.git?rev=dev#11ee87d715fedd284dbb4d6435a71c3b9da8a231" }
 dependencies = [
     { name = "aiofiles" },
     { name = "filetype" },
@@ -1498,7 +1498,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], git = "https://github.com/Pipelex/pipelex.git?rev=fc23161230b9cccd70e5356a799868e140175b77" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], git = "https://github.com/Pipelex/pipelex.git?rev=dev" },
     { name = "pyright", marker = "extra == 'dev'", specifier = "==1.1.398" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
