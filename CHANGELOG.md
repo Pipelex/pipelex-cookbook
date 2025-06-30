@@ -6,7 +6,7 @@
 - Bump `pipelex` to `v0.4.9`
 
 ### New Features
-- **External LLM Plugin System**: Enable custom LLM integrations with examples for OpenAI REST API
+- **External LLM Plugin System**: Example to demonstrate how to use custom LLM integrations with one example based on OpenAI REST API
 - Added plugin examples in `examples/using_inference_plugins/`
 
 ### Infrastructure 
