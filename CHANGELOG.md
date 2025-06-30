@@ -1,5 +1,10 @@
   # Changelog
 
+## [v0.2.4] - 2025-06-30
+
+- Bump `pipelex` to `v0.4.11`
+- Avoid repetition of llm choice for structured generation in some examples
+
 ## [v0.2.3] - 2025-06-30
 
 ### Core Updates
