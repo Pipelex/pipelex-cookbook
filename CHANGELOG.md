@@ -2,7 +2,16 @@
 
 ## [v0.2.3] - 2025-06-30
 
+### Core Updates
 - Bump `pipelex` to `v0.4.9`
+
+### New Features
+- **External LLM Plugin System**: Enable custom LLM integrations with examples for OpenAI REST API
+- Added plugin examples in `examples/using_inference_plugins/`
+
+### Infrastructure 
+- **Enhanced GitHub Releases**: Added Sigstore signing and automatic changelog extraction
+- **Test Improvements**: Better organization and plugin test coverage
 
 
   ## [v0.2.2] - 2025-06-26
