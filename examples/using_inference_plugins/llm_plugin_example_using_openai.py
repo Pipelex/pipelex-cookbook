@@ -1,6 +1,5 @@
 import asyncio
 import json
-import os
 from typing import Any, Dict, List, Optional, Type
 
 import httpx
@@ -9,6 +8,7 @@ from pipelex.cogt.llm.llm_job import LLMJob
 from pipelex.cogt.llm.llm_worker_abstract import LLMWorkerAbstract
 from pipelex.cogt.llm.token_category import NbTokensByCategoryDict, TokenCategory
 from pipelex.reporting.reporting_protocol import ReportingProtocol
+from pipelex.tools.environment import get_required_env
 from pipelex.tools.exceptions import CredentialsError
 from pipelex.tools.typing.pydantic_utils import BaseModelTypeVar, format_pydantic_validation_error
 from pydantic import ValidationError
@@ -28,7 +28,7 @@ class LLMPluginExampleUsingOpenAI(LLMWorkerAbstract):
         reporting_delegate: Optional[ReportingProtocol] = None,
     ):
         LLMWorkerAbstract.__init__(self, reporting_delegate=reporting_delegate)
-        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.api_key = get_required_env("OPENAI_API_KEY")
         if not self.api_key:
             raise CredentialsError("OPENAI_API_KEY environment variable is required")
         self.base_url = "https://api.openai.com/v1"

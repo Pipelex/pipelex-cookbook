@@ -143,8 +143,7 @@ lock: env
 
 update: env
 	$(call PRINT_TITLE,"Updating all dependencies")
-	@uv pip compile --upgrade pyproject.toml -o requirements.lock && \
-	uv pip install -e ".[dev]" && \
+	@uv lock --upgrade && \
 	echo "Updated dependencies in ${VIRTUAL_ENV}";
 
 validate: env
