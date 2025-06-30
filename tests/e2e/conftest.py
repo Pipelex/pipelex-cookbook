@@ -13,7 +13,8 @@ def reset_pipelex_instance_fixture():
     yield
     # Code to run after each test
     print("\n[magenta]pipelex instance teardown[/magenta]")
-    pipelex.pipelex.Pipelex.get_instance().teardown()
+    if pipelex_instance := pipelex.pipelex.Pipelex.get_optional_instance():
+        pipelex_instance.teardown()
 
 
 @pytest.fixture(scope="function", autouse=True)

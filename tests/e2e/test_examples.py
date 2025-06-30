@@ -1,4 +1,5 @@
 import pytest
+from pipelex.tools.environment import get_optional_env
 
 
 @pytest.mark.dry_runnable
@@ -23,3 +24,10 @@ class TestExamples:
 
     def test_simple_ocr(self):
         import examples.simple_ocr  # noqa: F401
+
+    @pytest.mark.gha_disabled
+    def test_hello_plugin(self):
+        if not get_optional_env("OPENAI_API_KEY"):
+            pytest.skip("OPENAI_API_KEY is not set")
+        else:
+            import examples.using_inference_plugins.hello_plugin  # noqa: F401
