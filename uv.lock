@@ -1410,7 +1410,7 @@ wheels = [
 [[package]]
 name = "pipelex"
 version = "0.4.9"
-source = { git = "https://github.com/Pipelex/pipelex.git?rev=dev#11ee87d715fedd284dbb4d6435a71c3b9da8a231" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
     { name = "filetype" },
@@ -1438,6 +1438,10 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "yattag" },
 ]
+sdist = { url = "https://files.pythonhosted.org/packages/4f/71/3ce99b728c71d4f4ee91474aee6234e89b7eee5a6a6e0c2d1a441053f512/pipelex-0.4.9.tar.gz", hash = "sha256:9987fa08de12096eca14ea958fadfc38dc8b6e8579bee643db5605c6fde87e4a", size = 175840, upload-time = "2025-06-30T09:15:33.166Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e2/f9/960a22c9a6822b699c4ea1868ba5bfd2dd6bbd5c6e881fe7838eb14a5b3c/pipelex-0.4.9-py3-none-any.whl", hash = "sha256:7bd5a5cd5cbaaa1a5932a98672ba4df31cc569c2ddae1fdc83345b4c3e58570e", size = 291663, upload-time = "2025-06-30T09:15:31.444Z" },
+]
 
 [package.optional-dependencies]
 anthropic = [
@@ -1459,7 +1463,7 @@ mistralai = [
 
 [[package]]
 name = "pipelex-cookbook"
-version = "0.2.2"
+version = "0.2.3"
 source = { virtual = "." }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -1498,7 +1502,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], git = "https://github.com/Pipelex/pipelex.git?rev=dev" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], specifier = "==0.4.9" },
     { name = "pyright", marker = "extra == 'dev'", specifier = "==1.1.398" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
