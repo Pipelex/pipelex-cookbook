@@ -4,7 +4,7 @@ import os
 from typing import Any, Dict, List, Optional, Type
 
 import httpx
-from pipelex.cogt.exceptions import LLMCompletionError, LLMWorkerError
+from pipelex.cogt.exceptions import LLMCompletionError
 from pipelex.cogt.llm.llm_job import LLMJob
 from pipelex.cogt.llm.llm_worker_abstract import LLMWorkerAbstract
 from pipelex.cogt.llm.token_category import NbTokensByCategoryDict, TokenCategory
