@@ -15,7 +15,7 @@ async def extract_dpe(pdf_url: str) -> Dpe:
     working_memory = WorkingMemoryFactory.make_from_pdf(
         pdf_url=pdf_url,
         concept_str="PDF",
-        name="pdf",
+        name="ocr_input",
     )
     pipe_output = await execute_pipeline(
         pipe_code="power_extractor_dpe",

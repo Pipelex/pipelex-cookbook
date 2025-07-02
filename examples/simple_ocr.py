@@ -16,7 +16,7 @@ async def simple_ocr(pdf_url: str):
     working_memory = WorkingMemoryFactory.make_from_pdf(
         pdf_url=pdf_url,
         concept_str="PDF",
-        name="pdf",
+        name="ocr_input",
     )
     pipe_output = await execute_pipeline(
         pipe_code="extract_page_contents_from_pdf",

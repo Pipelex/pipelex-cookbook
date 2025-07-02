@@ -21,7 +21,7 @@ output = "GanttChart"
 steps = [
     { pipe = "extract_gantt_timescale", result = "gantt_timescale" },
     { pipe = "extract_gantt_task_names", result = "gantt_task_names" },
-    { pipe = "extract_details_of_task", batch_as = "gantt_task_name", result = "details_of_all_tasks" },
+    { pipe = "extract_details_of_task", batch_over = "gantt_task_names", batch_as = "gantt_task_name", result = "details_of_all_tasks" },
     { pipe = "gather_in_a_gantt_chart", result = "gantt_chart" },
 ]
 

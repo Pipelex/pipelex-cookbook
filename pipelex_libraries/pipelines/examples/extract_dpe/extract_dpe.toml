@@ -7,11 +7,11 @@ Dpe = "A diagnostic of the energy performance of a building"
 [pipe]
 [pipe.power_extractor_dpe]
 PipeSequence = "Update page content with markdown"
-inputs = { page_content = "Page" }
+inputs = { ocr_input = "PDF" }
 output = "Text"
 steps = [
     { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },              # Located in the base library, in the domain "documents"
-    { pipe = "write_markdown_from_page_content_dpe", batch_as = "page_content", result = "dpe" },
+    { pipe = "write_markdown_from_page_content_dpe", batch_over = "page_contents", batch_as = "page_content", result = "dpe" },
 ]
 
 [pipe.write_markdown_from_page_content_dpe]
