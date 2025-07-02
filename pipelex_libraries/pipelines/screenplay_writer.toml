@@ -130,7 +130,7 @@ Create detailed content that:
 
 [pipe.format_chapter]
 PipeSequence = "Format the scene according to screenplay standards"
-inputs = { chapter = "Chapter" }
+inputs = { scene = "Scene" }
 output = "FormattedScene"
 steps = [
     { pipe = "format_scene", batch_over = "scenes", batch_as = "scene", result = "formatted_scenes" }
@@ -161,7 +161,7 @@ Follow these formatting rules:
 
 [pipe.create_formatted_screenplay]
 PipeSequence = "Create a properly formatted screenplay"
-inputs = { screenplay = "Screenplay" }
+inputs = { scene = "Scene" }
 output = "FormattedScreenplay"
 steps = [
     { pipe = "format_chapter", batch_over = "chapters", batch_as = "chapter", result = "formatted_scenes" }
@@ -192,10 +192,10 @@ Create 2-4 scenes that together tell this chapter's story effectively.
 
 [pipe.create_scene_sequence]
 PipeSequence = "Create and develop a single scene"
-inputs = { scene = "Scene", characters = "CharacterList", detailed_pitch = "DetailedPitch" }
+inputs = { chapter = "Chapter", characters = "CharacterList", detailed_pitch = "DetailedPitch" }
 output = "Scene"
 steps = [
-    { pipe = "create_scene_outline", result = "scene_outline" },
+    { pipe = "create_scene_outline", result = "scene" },
     { pipe = "develop_scene_content", result = "developed_scene" }
 ]
 
@@ -208,14 +208,14 @@ steps = [
     { pipe = "create_scene_sequence", batch_over = "initial_scenes", batch_as = "scene", result = "developed_scenes" }
 ]
 
-[pipe.generate_screenplay]
-PipeSequence = "Generate a complete screenplay from a pitch"
-inputs = { pitch = "Pitch" }
-output = "FormattedScreenplay"
-steps = [
-    { pipe = "analyze_pitch", result = "detailed_pitch" },
-    { pipe = "create_characters", result = "characters" },
-    { pipe = "create_chapters", result = "chapters" },
-    { pipe = "create_scenes_sequence", batch_over = "chapters", batch_as = "chapter", result = "chapters_with_scenes" },
-    { pipe = "create_formatted_screenplay", result = "formatted_screenplay" }
-] 
+# [pipe.generate_screenplay]
+# PipeSequence = "Generate a complete screenplay from a pitch"
+# inputs = { pitch = "Pitch", chapter = "Chapter" }
+# output = "FormattedScreenplay"
+# steps = [
+#     { pipe = "analyze_pitch", result = "detailed_pitch" },
+#     { pipe = "create_characters", result = "characters" },
+#     { pipe = "create_chapters", result = "chapters" },
+#     { pipe = "create_scenes_sequence", batch_over = "chapters", batch_as = "chapter", result = "chapters_with_scenes" },
+#     { pipe = "create_formatted_screenplay", result = "formatted_screenplay" }
+# ] 

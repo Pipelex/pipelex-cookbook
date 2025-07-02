@@ -32,3 +32,5 @@ results/
 # temps
 temp/
 pipelex_super.toml
+
+gcp_credentials.json
