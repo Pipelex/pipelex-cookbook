@@ -39,10 +39,11 @@ async def run_advisory_orchestrator(problem_description: str) -> Tuple[Strategic
         problem_description: Description of the business problem to analyze
 
     Returns:
-        StrategicReport: Comprehensive strategic analysis and recommendations
+        Tuple[StrategicReport, str]: A tuple containing:
+            - StrategicReport: Comprehensive strategic analysis and recommendations
+            - str: Strategic report in markdown format
     """
-    print(f"🚀 Running Master Advisory Orchestrator on: {SAMPLE_NAME}")
-    print(f"📝 Problem: {problem_description[:100]}...")
+    print("🚀 Running Master Advisory Orchestrator\n")
 
     # Create Working Memory with the business problem
     working_memory = WorkingMemoryFactory.make_from_text(
@@ -51,7 +52,6 @@ async def run_advisory_orchestrator(problem_description: str) -> Tuple[Strategic
     )
 
     # Run the main orchestrator pipeline
-    print("\n🔄 Executing pipeline: master_advisory_orchestrator")
     pipe_output = await execute_pipeline(
         pipe_code="master_advisory_orchestrator",
         working_memory=working_memory,
