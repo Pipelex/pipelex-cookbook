@@ -51,3 +51,4 @@ The category of this invoice is: $invoice_details.category.
 
 @invoice_page.text_and_images.text.text
 """
+
