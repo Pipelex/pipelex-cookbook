@@ -2,7 +2,7 @@
 
 ## Repo structure
 
-The purpose of pipelex-cookbook is to showcase samples based on the library named `pipelex`.
+The purpose of pipelex-cookbook is to showcase examples based on the library named `pipelex`.
 This python 3.11 repo named pipelex-cookbook has several packages placed at the root of the repo.
 
 - `examples` -> official examples of using pipelex

@@ -2,7 +2,7 @@
 
 The scripts in this folder demonstrate various Pipelex pipelines and capabilities. They
 rely on helper functions in `cookbook/utils` and write their results to the
-`results/samples/` directory.
+`results/examples/` directory.
 
 The folder wip contains work in progress. The pipelines in this folder are not stable.
 
@@ -34,7 +34,7 @@ python examples/extract_table.py
 ```
 
 Each example includes detailed comments explaining the pipeline construction and configuration.
-The results will be saved in the `results/samples/` directory for inspection.
+The results will be saved in the `results/examples/` directory for inspection.
 
 ## Prerequisites
 

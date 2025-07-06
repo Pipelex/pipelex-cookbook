@@ -1,4 +1,5 @@
 import asyncio
+from typing import Tuple
 
 from pipelex import pretty_print
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
@@ -7,6 +8,7 @@ from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
 from pipelex_libraries.pipelines.examples.advisory_board.advisory_orchestrator import StrategicReport
+from utils.results_utils import output_result
 
 SAMPLE_NAME = "advisory_orchestrator"
 
@@ -29,7 +31,7 @@ Key stakeholders: CEO, VP Product, VP Sales, Head of Customer Success.
 """
 
 
-async def run_advisory_orchestrator(problem_description: str) -> StrategicReport:
+async def run_advisory_orchestrator(problem_description: str) -> Tuple[StrategicReport, str]:
     """
     Run the Master Advisory Orchestrator pipeline on a business problem.
 
@@ -56,8 +58,9 @@ async def run_advisory_orchestrator(problem_description: str) -> StrategicReport
     )
 
     # Output the result
-    strategic_report = pipe_output.main_stuff_as(content_type=StrategicReport)
-    return strategic_report
+    strategic_report = pipe_output.working_memory.get_stuff_as(name="strategic_report", content_type=StrategicReport)
+    strategic_report_markdown = pipe_output.main_stuff_as_str
+    return strategic_report, strategic_report_markdown
 
 
 def main():
@@ -71,17 +74,18 @@ def main():
     Pipelex.make()
 
     # Run the advisory orchestrator
-    strategic_report = asyncio.run(run_advisory_orchestrator(SAMPLE_BUSINESS_PROBLEM))
+    strategic_report, strategic_report_markdown = asyncio.run(run_advisory_orchestrator(SAMPLE_BUSINESS_PROBLEM))
 
     print("\n" + "=" * 80)
     print("📊 STRATEGIC REPORT RESULTS")
     print("=" * 80)
 
     # Display the strategic report
-    pretty_print(strategic_report, title="Master Advisory Orchestrator - Strategic Report")
+    pretty_print(strategic_report, title="Master Advisory Orchestrator - Strategic Report (json)")
+    pretty_print(strategic_report_markdown, title="Master Advisory Orchestrator - Strategic Report (markdown)")
 
     print("\n" + "=" * 80)
-    print("📈 PIPELINE PERFORMANCE")
+    print("📈 PIPELINE COST")
     print("=" * 80)
 
     # Display cost report (tokens used and cost)
@@ -92,6 +96,13 @@ def main():
     get_pipeline_tracker().output_flowchart()
 
     print("\n✅ Advisory orchestration complete!")
+
+    output_result(
+        sample_name=SAMPLE_NAME,
+        title="Master Advisory Orchestrator - Strategic Report (markdown)",
+        file_name="strategic_report.md",
+        content=strategic_report_markdown,
+    )
 
 
 if __name__ == "__main__":

@@ -1,0 +1,26 @@
+domain = "presentation"
+
+[pipe.present_as_markdown]
+PipeLLM = "Present information as markdown"
+inputs = { strategic_report = "Anything" }
+output = "Text"
+system_prompt = """
+You are an expert markdown formatter who creates clear, well-structured documents. You excel at organizing information into logical sections with appropriate headings, bullet points, and tables while maintaining readability and professional presentation.
+"""
+prompt_template = """
+Convert the following information into well-formatted markdown:
+
+@strategic_report
+
+Guidelines:
+- Include ALL information from the input - nothing should be omitted
+- Use clear heading hierarchy (H1, H2, H3) to organize content logically
+- Use bullet points for lists (maximum 2 levels deep)
+- Create tables when presenting structured data or comparisons
+- Use bold and italic formatting to emphasize key points
+- Include code blocks with appropriate syntax highlighting when code is present
+- Ensure the final document is professional and easy to read
+
+Output raw markdown, no additional text or formatting, don't add ```markdown or ``` at the beginning or end.
+"""
+

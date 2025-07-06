@@ -1,3 +1,3 @@
-# WIP samples
+# WIP examples
 
 Work in progress zone

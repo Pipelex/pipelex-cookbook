@@ -97,7 +97,7 @@ The cookbook has been updated to align with breaking changes in Pipelex v0.4.0:
 
 ### Added
 
-**2 samples for power extraction**:
+**2 examples for power extraction**:
 
 - `extract_dpe`: Extract structured data from French "Diagnostics de Performance Energétique". It illustrates how Pipelex can enable you to tackle strongly formatted PDF extraction by combining OCR models, LLM vision, and validation.
 - `extract_proof_of_purchase`: Extract structured data from proofs of purchase. Another use case for extracting structured data from unstructured documents.

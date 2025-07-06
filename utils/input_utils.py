@@ -7,13 +7,13 @@ from pipelex.tools.misc.file_utils import failable_load_text_from_path
 
 def optional_sample_text_from_path(filename: str) -> Optional[str]:
     """
-    Loads a text file from the samples path if it exists.
+    Loads a text file from the examples path if it exists.
     """
-    samples_path = get_optional_env("SAMPLES_PATH")
-    if samples_path is None:
-        log.info(f"The samples path var `SAMPLES_PATH` is not defined in env, we won't use text from a file for '{filename}'")
+    examples_path = get_optional_env("SAMPLES_PATH")
+    if examples_path is None:
+        log.info(f"The examples path var `SAMPLES_PATH` is not defined in env, we won't use text from a file for '{filename}'")
         return None
-    path = f"{samples_path}/{filename}"
+    path = f"{examples_path}/{filename}"
     text = failable_load_text_from_path(path=path)
     if not text:
         log.info(f"No text file found at'{path}'")

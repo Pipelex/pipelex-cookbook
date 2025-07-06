@@ -8,7 +8,7 @@ from pipelex.tools.misc.file_utils import (
     save_text_to_path,
 )
 
-SAMPLE_RESULTS_DIR_PATH = "results/samples"
+SAMPLE_RESULTS_DIR_PATH = "results/examples"
 
 
 def get_results_dir_path(sample_name: str):
