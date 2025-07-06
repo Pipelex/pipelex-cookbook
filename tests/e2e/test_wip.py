@@ -1,5 +1,5 @@
 import pytest
-from pipelex.exceptions import PipeInputError, PipeLibraryPipeNotFoundError
+from pipelex.exceptions import PipeLibraryPipeNotFoundError
 
 
 @pytest.mark.dry_runnable
