@@ -2,9 +2,11 @@
 
 ## [v0.2.5] - 2025-07-07
 
-### Changed
+### Core Updates
 
 - Bump `pipelex` to `v0.5.0`
+
+### Changed
 
 - **Terminology Update**: Renamed "samples" to "examples" throughout the codebase for consistency
   - Updated description in `.cursor/rules/samples.mdc`
@@ -31,12 +33,6 @@
     - Includes structured models for business problems, advisory boards, consensus analysis, and strategic reports
   - Added test coverage in `test_examples.py`
 
-- **Security**: Added `gcp_credentials.json` to `.gitignore` to prevent accidental credential commits
-
-### Fixed
-
-- **Test Updates**: Updated `test_wip.py` to use `PipeLibraryPipeNotFoundError` instead of `PipeInputError` for better error specificity
-
 ## [v0.2.4] - 2025-06-30
 
 - Bump `pipelex` to `v0.4.11`
@@ -48,10 +44,12 @@
 - Bump `pipelex` to `v0.4.9`
 
 ### New Features
+
 - **External LLM Plugin System**: Example to demonstrate how to use custom LLM integrations with one example based on OpenAI REST API
 - Added plugin examples in `examples/using_inference_plugins/`
 
 ### Infrastructure 
+
 - **Enhanced GitHub Releases**: Added Sigstore signing and automatic changelog extraction
 - **Test Improvements**: Better organization and plugin test coverage
 
