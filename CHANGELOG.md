@@ -1,4 +1,41 @@
-  # Changelog
+# Changelog
+
+## [v0.2.5] - 2025-07-07
+
+### Changed
+
+- Bump `pipelex` to `v0.5.0`
+
+- **Terminology Update**: Renamed "samples" to "examples" throughout the codebase for consistency
+  - Updated description in `.cursor/rules/samples.mdc`
+  - Modified documentation in `AGENTS.md` and `CHANGELOG.md`
+  - Updated references in `CONTRIBUTING.md` and `examples/README.md`
+  - Changed output directory from `results/samples/` to `results/examples/`
+  - Updated environment variable references and function names in `utils/input_utils.py` and `utils/results_utils.py`
+
+- **Working Memory Naming**: Standardized PDF input naming convention
+  - Changed `name="pdf"` to `name="ocr_input"` in multiple extraction examples:
+    - `extract_dpe.py`
+    - `extract_generic.py`
+    - `extract_proof_of_purchase.py`
+    - `simple_ocr.py`
+  - Changed `name="invoice_pdf"` to `name="ocr_input"` in `invoice_extractor.py`
+
+### Added
+
+- **New Advisory Board Example**: Added a sophisticated multi-advisory board consultation system
+  - New files in `examples/wip/advisory_board/`:
+    - `README.md` - Comprehensive documentation for the advisory board orchestrator
+    - `advisory_board.py` - Main example script demonstrating complex pipeline orchestration
+  - New pipeline library: `pipelex_libraries/pipelines/wip/advisory_board/advisory_orchestrator.py`
+    - Includes structured models for business problems, advisory boards, consensus analysis, and strategic reports
+  - Added test coverage in `test_examples.py`
+
+- **Security**: Added `gcp_credentials.json` to `.gitignore` to prevent accidental credential commits
+
+### Fixed
+
+- **Test Updates**: Updated `test_wip.py` to use `PipeLibraryPipeNotFoundError` instead of `PipeInputError` for better error specificity
 
 ## [v0.2.4] - 2025-06-30
 
