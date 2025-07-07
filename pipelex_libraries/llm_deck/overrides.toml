@@ -5,8 +5,6 @@
 ####################################################################################################
 
 [llm_choice_overrides]
-# for_text = "disabled"
-# for_object = "disabled"
-for_text = "cheap_llm_for_text"
-for_object = "cheap_llm_for_object"
+for_text = "disabled"
+for_object = "disabled"
 

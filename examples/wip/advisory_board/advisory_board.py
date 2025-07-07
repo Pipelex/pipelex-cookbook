@@ -63,47 +63,25 @@ async def run_advisory_orchestrator(problem_description: str) -> Tuple[Strategic
     return strategic_report, strategic_report_markdown
 
 
-def main():
-    """Main function to run the advisory orchestrator example."""
-    print("=" * 80)
-    print("🏢 MASTER ADVISORY ORCHESTRATOR EXAMPLE")
-    print("=" * 80)
+# Start Pipelex
+Pipelex.make()
 
-    # Start Pipelex
-    print("⚙️  Initializing Pipelex...")
-    Pipelex.make()
+# Run the advisory orchestrator
+strategic_report, strategic_report_markdown = asyncio.run(run_advisory_orchestrator(SAMPLE_BUSINESS_PROBLEM))
 
-    # Run the advisory orchestrator
-    strategic_report, strategic_report_markdown = asyncio.run(run_advisory_orchestrator(SAMPLE_BUSINESS_PROBLEM))
+# Display the strategic report
+pretty_print(strategic_report, title="Master Advisory Orchestrator - Strategic Report (json)")
+pretty_print(strategic_report_markdown, title="Master Advisory Orchestrator - Strategic Report (markdown)")
 
-    print("\n" + "=" * 80)
-    print("📊 STRATEGIC REPORT RESULTS")
-    print("=" * 80)
+# Display cost report (tokens used and cost)
+get_report_delegate().generate_report()
 
-    # Display the strategic report
-    pretty_print(strategic_report, title="Master Advisory Orchestrator - Strategic Report (json)")
-    pretty_print(strategic_report_markdown, title="Master Advisory Orchestrator - Strategic Report (markdown)")
+# Output pipeline flowchart
+get_pipeline_tracker().output_flowchart()
 
-    print("\n" + "=" * 80)
-    print("📈 PIPELINE COST")
-    print("=" * 80)
-
-    # Display cost report (tokens used and cost)
-    get_report_delegate().generate_report()
-
-    # Output pipeline flowchart
-    print("\n🔗 Pipeline execution flowchart:")
-    get_pipeline_tracker().output_flowchart()
-
-    print("\n✅ Advisory orchestration complete!")
-
-    output_result(
-        sample_name=SAMPLE_NAME,
-        title="Master Advisory Orchestrator - Strategic Report (markdown)",
-        file_name="strategic_report.md",
-        content=strategic_report_markdown,
-    )
-
-
-if __name__ == "__main__":
-    main()
+output_result(
+    sample_name=SAMPLE_NAME,
+    title="Master Advisory Orchestrator - Strategic Report (markdown)",
+    file_name="strategic_report.md",
+    content=strategic_report_markdown,
+)
