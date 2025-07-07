@@ -1,7 +1,7 @@
-from enum import StrEnum
 from typing import Dict, List, Optional
 
 from pipelex.core.stuff_content import StructuredContent
+from pipelex.types import StrEnum
 from pydantic import Field
 
 
