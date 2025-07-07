@@ -7,7 +7,7 @@ InvoiceDetails = "The category of the invoice"
 [pipe]
 [pipe.process_invoice]
 PipeSequence = "Process relevant information from an invoice"
-inputs = { invoice_pdf = "PDF" }
+inputs = { ocr_input = "PDF" }
 output = "Invoice"
 steps = [
     { pipe = "extract_text_from_image", result = "invoice_pages" },
@@ -16,7 +16,7 @@ steps = [
 
 [pipe.extract_text_from_image]
 PipeOcr = "Extract page contents from an image"
-inputs = { invoice_pdf = "PDF" }
+inputs = { ocr_input = "PDF" }
 output = "Page"
 page_views = true
 
@@ -51,3 +51,4 @@ The category of this invoice is: $invoice_details.category.
 
 @invoice_page.text_and_images.text.text
 """
+

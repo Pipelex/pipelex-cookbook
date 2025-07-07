@@ -128,94 +128,93 @@ Create detailed content that:
 4. Maintains a clear flow of events
 """
 
-[pipe.format_chapter]
-PipeSequence = "Format the scene according to screenplay standards"
-inputs = { chapter = "Chapter" }
-output = "FormattedScene"
-steps = [
-    { pipe = "format_scene", batch_over = "scenes", batch_as = "scene", result = "formatted_scenes" }
-]
+# [pipe.format_chapter]
+# PipeSequence = "Format the scene according to screenplay standards"
+# output = "FormattedScene"
+# steps = [
+#     { pipe = "format_scene", batch_over = "scenes", batch_as = "scene", result = "formatted_scenes" }
+# ]
 
-[pipe.format_scene]
-PipeLLM = "Format the scene according to screenplay standards"
-inputs = { scene = "Scene" }
-output = "FormattedScene"
-system_prompt = """
-You are an expert in screenplay formatting, ensuring every scene follows industry standards perfectly.
-Your task is to format the scene content according to professional screenplay conventions.
-"""
-prompt_template = """
-Format this scene according to standard screenplay format:
+# [pipe.format_scene]
+# PipeLLM = "Format the scene according to screenplay standards"
+# inputs = { scene = "Scene" }
+# output = "FormattedScene"
+# system_prompt = """
+# You are an expert in screenplay formatting, ensuring every scene follows industry standards perfectly.
+# Your task is to format the scene content according to professional screenplay conventions.
+# """
+# prompt_template = """
+# Format this scene according to standard screenplay format:
 
-Scene Content:
-@scene
+# Scene Content:
+# @scene
 
-Follow these formatting rules:
-1. Scene heading must be in ALL CAPS: INT/EXT. LOCATION - TIME OF DAY
-2. Action blocks must be clear and visual, using present tense
-3. Character names in ALL CAPS when speaking
-4. Dialogue centered with character name above
-5. Parentheticals in (parentheses) below character name when needed
-6. Scene transitions in ALL CAPS, right-aligned
-"""
+# Follow these formatting rules:
+# 1. Scene heading must be in ALL CAPS: INT/EXT. LOCATION - TIME OF DAY
+# 2. Action blocks must be clear and visual, using present tense
+# 3. Character names in ALL CAPS when speaking
+# 4. Dialogue centered with character name above
+# 5. Parentheticals in (parentheses) below character name when needed
+# 6. Scene transitions in ALL CAPS, right-aligned
+# """
 
-[pipe.create_formatted_screenplay]
-PipeSequence = "Create a properly formatted screenplay"
-inputs = { screenplay = "Screenplay" }
-output = "FormattedScreenplay"
-steps = [
-    { pipe = "format_chapter", batch_over = "chapters", batch_as = "chapter", result = "formatted_scenes" }
-]
+# [pipe.create_formatted_screenplay]
+# PipeSequence = "Create a properly formatted screenplay"
+# output = "FormattedScreenplay"
+# steps = [
+#     { pipe = "format_chapter", batch_over = "chapters", batch_as = "chapter", result = "formatted_scenes" }
+# ]
 
-[pipe.create_initial_scenes]
-PipeLLM = "Create initial scene list for a chapter"
-inputs = { chapter = "Chapter" }
-output = "Scene"
-multiple_output = true
-system_prompt = """
-You are an expert story structurer. Your task is to break down a chapter into its key scenes.
-"""
-prompt_template = """
-Create a list of scenes for this chapter:
+# [pipe.create_initial_scenes]
+# PipeLLM = "Create initial scene list for a chapter"
+# inputs = { chapter = "Chapter" }
+# output = "Scene"
+# multiple_output = true
+# system_prompt = """
+# You are an expert story structurer. Your task is to break down a chapter into its key scenes.
+# """
+# prompt_template = """
+# Create a list of scenes for this chapter:
 
-Chapter Title: $chapter.title
-Chapter Description: $chapter.description
+# Chapter Title: $chapter.title
+# Chapter Description: $chapter.description
 
-For each scene, provide:
-1. Scene index (starting from 1)
-2. Basic title
-3. Initial location
-4. Time of day
+# For each scene, provide:
+# 1. Scene index (starting from 1)
+# 2. Basic title
+# 3. Initial location
+# 4. Time of day
 
-Create 2-4 scenes that together tell this chapter's story effectively.
-"""
+# Create 2-4 scenes that together tell this chapter's story effectively.
+# """
 
-[pipe.create_scene_sequence]
-PipeSequence = "Create and develop a single scene"
-inputs = { scene = "Scene", characters = "CharacterList", detailed_pitch = "DetailedPitch" }
-output = "Scene"
-steps = [
-    { pipe = "create_scene_outline", result = "scene_outline" },
-    { pipe = "develop_scene_content", result = "developed_scene" }
-]
+# [pipe.create_scene_sequence]
+# PipeSequence = "Create and develop a single scene"
+# inputs = { chapter = "Chapter", characters = "CharacterList", detailed_pitch = "DetailedPitch" }
+# output = "Scene"
+# steps = [
+#     { pipe = "create_scene_outline", result = "scene" },
+#     { pipe = "develop_scene_content", result = "developed_scene" }
+# ]
 
-[pipe.create_scenes_sequence]
-PipeSequence = "Create all scenes for a chapter sequentially"
-inputs = { chapter = "Chapter", characters = "CharacterList", detailed_pitch = "DetailedPitch" }
-output = "Chapter"
-steps = [
-    { pipe = "create_initial_scenes", result = "initial_scenes" },
-    { pipe = "create_scene_sequence", batch_over = "initial_scenes", batch_as = "scene", result = "developed_scenes" }
-]
+# [pipe.create_scenes_sequence]
+# PipeSequence = "Create all scenes for a chapter sequentially"
+# inputs = { chapter = "Chapter", characters = "CharacterList", detailed_pitch = "DetailedPitch" }
+# output = "Chapter"
+# steps = [
+#     { pipe = "create_initial_scenes", result = "initial_scenes" },
+#     { pipe = "create_scene_sequence", batch_over = "initial_scenes", batch_as = "scene", result = "developed_scenes" }
+# ]
 
-[pipe.generate_screenplay]
-PipeSequence = "Generate a complete screenplay from a pitch"
-inputs = { pitch = "Pitch" }
-output = "FormattedScreenplay"
-steps = [
-    { pipe = "analyze_pitch", result = "detailed_pitch" },
-    { pipe = "create_characters", result = "characters" },
-    { pipe = "create_chapters", result = "chapters" },
-    { pipe = "create_scenes_sequence", batch_over = "chapters", batch_as = "chapter", result = "chapters_with_scenes" },
-    { pipe = "create_formatted_screenplay", result = "formatted_screenplay" }
-] 
+# [pipe.generate_screenplay]
+# PipeSequence = "Generate a complete screenplay from a pitch"
+# inputs = { pitch = "Pitch", chapter = "Chapter" }
+# output = "FormattedScreenplay"
+# steps = [
+#     { pipe = "analyze_pitch", result = "detailed_pitch" },
+#     { pipe = "create_characters", result = "characters" },
+#     { pipe = "create_chapters", result = "chapters" },
+#     { pipe = "create_scenes_sequence", batch_over = "chapters", batch_as = "chapter", result = "chapters_with_scenes" },
+#     { pipe = "create_formatted_screenplay", result = "formatted_screenplay" }
+# ]
+
