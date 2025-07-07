@@ -1,4 +1,37 @@
-  # Changelog
+# Changelog
+
+## [v0.2.5] - 2025-07-07
+
+### Core Updates
+
+- Bump `pipelex` to `v0.5.0`
+
+### Changed
+
+- **Terminology Update**: Renamed "samples" to "examples" throughout the codebase for consistency
+  - Updated description in `.cursor/rules/samples.mdc`
+  - Modified documentation in `AGENTS.md` and `CHANGELOG.md`
+  - Updated references in `CONTRIBUTING.md` and `examples/README.md`
+  - Changed output directory from `results/samples/` to `results/examples/`
+  - Updated environment variable references and function names in `utils/input_utils.py` and `utils/results_utils.py`
+
+- **Working Memory Naming**: Standardized PDF input naming convention
+  - Changed `name="pdf"` to `name="ocr_input"` in multiple extraction examples:
+    - `extract_dpe.py`
+    - `extract_generic.py`
+    - `extract_proof_of_purchase.py`
+    - `simple_ocr.py`
+  - Changed `name="invoice_pdf"` to `name="ocr_input"` in `invoice_extractor.py`
+
+### Added
+
+- **New Advisory Board Example**: Added a sophisticated multi-advisory board consultation system
+  - New files in `examples/wip/advisory_board/`:
+    - `README.md` - Comprehensive documentation for the advisory board orchestrator
+    - `advisory_board.py` - Main example script demonstrating complex pipeline orchestration
+  - New pipeline library: `pipelex_libraries/pipelines/wip/advisory_board/advisory_orchestrator.py`
+    - Includes structured models for business problems, advisory boards, consensus analysis, and strategic reports
+  - Added test coverage in `test_examples.py`
 
 ## [v0.2.4] - 2025-06-30
 
@@ -11,10 +44,12 @@
 - Bump `pipelex` to `v0.4.9`
 
 ### New Features
+
 - **External LLM Plugin System**: Example to demonstrate how to use custom LLM integrations with one example based on OpenAI REST API
 - Added plugin examples in `examples/using_inference_plugins/`
 
 ### Infrastructure 
+
 - **Enhanced GitHub Releases**: Added Sigstore signing and automatic changelog extraction
 - **Test Improvements**: Better organization and plugin test coverage
 
@@ -97,7 +132,7 @@ The cookbook has been updated to align with breaking changes in Pipelex v0.4.0:
 
 ### Added
 
-**2 samples for power extraction**:
+**2 examples for power extraction**:
 
 - `extract_dpe`: Extract structured data from French "Diagnostics de Performance Energétique". It illustrates how Pipelex can enable you to tackle strongly formatted PDF extraction by combining OCR models, LLM vision, and validation.
 - `extract_proof_of_purchase`: Extract structured data from proofs of purchase. Another use case for extracting structured data from unstructured documents.

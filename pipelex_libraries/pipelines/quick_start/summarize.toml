@@ -29,7 +29,7 @@ inputs = { text = "Text" }
 output = "Summary"
 steps = [
     { pipe = "extract_topics", result = "topics" },
-    { pipe = "summarize_topic", batch_as = "topic", result = "summarized_topics" },
+    { pipe = "summarize_topic", batch_over = "topics", batch_as = "topic", result = "summarized_topics" },
     { pipe = "summarize_from_summaries", result = "summary" },
 ]
 
@@ -72,3 +72,4 @@ Your task is to generate an overall summary of the text based on the provided su
 
 Please provide only the summary, with no additional text or explanations.
 """
+

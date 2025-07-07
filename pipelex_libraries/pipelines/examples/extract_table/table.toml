@@ -51,3 +51,4 @@ steps = [
     { pipe = "extract_html_table_from_image", result = "html_table" },
     { pipe = "review_html_table", result = "reviewed_html_table" },
 ]
+

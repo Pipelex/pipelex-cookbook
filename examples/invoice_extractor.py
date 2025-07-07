@@ -21,7 +21,7 @@ async def process_expense_report() -> ListContent[Invoice]:
     # Create Stuff objects
     working_memory = WorkingMemoryFactory.make_from_pdf(
         pdf_url=invoice_pdf_path,
-        name="invoice_pdf",
+        name="ocr_input",
     )
     pipe_output = await execute_pipeline(
         pipe_code="process_invoice",

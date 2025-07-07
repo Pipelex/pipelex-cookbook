@@ -20,7 +20,7 @@ This repository exists to showcase **working examples**. The most valuable contr
 * **Enhancements** – improved prompts, cheaper model settings, extra comments  
 * **Docs** – README snippets, diagrams, walkthroughs
 
-Bug-fixes to existing samples are welcome, but the core Pipelex library lives in the separate [Pipelex](https://github.com/Pipelex/pipelex) repository.
+Bug-fixes to existing examples are welcome, but the core Pipelex library lives in the separate [Pipelex](https://github.com/Pipelex/pipelex) repository.
 
 ---
 
