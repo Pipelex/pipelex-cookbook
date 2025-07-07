@@ -25,6 +25,9 @@ class TestExamples:
     def test_simple_ocr(self):
         import examples.simple_ocr  # noqa: F401
 
+    def test_advisory_board(self):
+        import examples.wip.advisory_board  # noqa: F401
+
     @pytest.mark.gha_disabled
     def test_hello_plugin(self):
         if not get_optional_env("OPENAI_API_KEY"):
