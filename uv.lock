@@ -955,14 +955,14 @@ wheels = [
 
 [[package]]
 name = "kajson"
-version = "0.2.3"
+version = "0.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/70/8f/72a203f9aabb272091ce078e52a127d064ed89c7b5aba098f3210d4f6ffc/kajson-0.2.3.tar.gz", hash = "sha256:45a18d298d3b193dc904a53493a20069aefba68fe93432455a01cdd92c8dcaf4", size = 20134, upload-time = "2025-06-26T13:52:05.208Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b3/51/83d17d4fc6db6b9d497f91c6cbdf7c5677116797a44d0ad65960f1b66c90/kajson-0.3.0.tar.gz", hash = "sha256:5ea8e164cd7fc96877bf4038cf64c286ac4606814146c24dc9ecc4a2c6ac047d", size = 20271, upload-time = "2025-07-09T09:52:33.851Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b3/8e/798196dd104b3d02779cdb1627f10c704780f6b279124cf2e4633cc69da5/kajson-0.2.3-py3-none-any.whl", hash = "sha256:4df631383e898f30c8f13f49b1c58cc2d69e2629bb828728817c3edb675da065", size = 26240, upload-time = "2025-06-26T13:52:03.962Z" },
+    { url = "https://files.pythonhosted.org/packages/f9/d5/4a7974d072c5eb6565e5abe3d52b13f662491934dac4b9ea15836fa2da69/kajson-0.3.0-py3-none-any.whl", hash = "sha256:d8cc72875ebef6ea44c06c96fe63accf5b0721ca24ea1e593814dd45fd25bf15", size = 26711, upload-time = "2025-07-09T09:52:32.639Z" },
 ]
 
 [[package]]
@@ -1679,7 +1679,7 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.5.0"
+version = "0.5.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -1708,9 +1708,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "yattag" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ba/2e/31414851794a15098c236f11952637064e262f3778352c079cd7b2ae45cb/pipelex-0.5.0.tar.gz", hash = "sha256:bc338c1db680e114c055a28ef04e94d54f9f43725c9b0ec377d3e8b2dab86f0e", size = 184511, upload-time = "2025-07-07T13:44:29.74Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/89/71/5ce06cf24534c73f52c2268810d04624bbfdfee1642d44a6aa136b06efb4/pipelex-0.5.1.tar.gz", hash = "sha256:f34c14ebbca5d6ae7e9070d92f3ade2ed30cb3c02fa809d8604ebb8e2db5c37b", size = 184606, upload-time = "2025-07-09T10:13:22.624Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d0/f6/b5076fee3b5b77d49c3e5156c58ac3959ced204c516be9c4660f05968234/pipelex-0.5.0-py3-none-any.whl", hash = "sha256:0d95e51b046fecba5af4f8e95538795b513b9622cd1d0901a6ca3cba29bd2c4e", size = 303624, upload-time = "2025-07-07T13:44:28.312Z" },
+    { url = "https://files.pythonhosted.org/packages/f4/f7/4aca4dec9badd911103f829cbee07519d6078fbc792a3a1a96b68d094171/pipelex-0.5.1-py3-none-any.whl", hash = "sha256:231ac4fdbfca6d265ac741ad2b8fc5de5c1a030af86127d0682db6bca0963900", size = 303718, upload-time = "2025-07-09T10:13:21.111Z" },
 ]
 
 [package.optional-dependencies]
@@ -1733,7 +1733,7 @@ mistralai = [
 
 [[package]]
 name = "pipelex-cookbook"
-version = "0.2.4"
+version = "0.2.5"
 source = { virtual = "." }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -1772,7 +1772,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], specifier = "==0.5.0" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], specifier = "==0.5.1" },
     { name = "pyright", marker = "extra == 'dev'", specifier = "==1.1.398" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
