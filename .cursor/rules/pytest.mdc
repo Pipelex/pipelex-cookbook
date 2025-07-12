@@ -14,24 +14,32 @@ These rules apply when writing unit tests.
     - `tests/unit/` - for unit tests that test individual functions/classes in isolation
     - `tests/integration/` - for integration tests that test component interactions
     - `tests/e2e/` - for end-to-end tests that test complete workflows
-    - `tests/test_pipelines/` - for test pipeline definitions (TOML files)
+    - `tests/test_pipelines/` - for test pipeline definitions (TOML files and their structuring python files)
 - Fixtures are defined in conftest.py modules at different levels of the hierarchy, their scope is handled by pytest
-- Test configuration and setup data can be defined directly in test files or as fixtures
+- Test data is placed inside test_data.py at different levels of the hierarchy, they must be imported with package paths from the root like `tests.pipelex.test_data`. Their content is all constants, regrouped inside classes to keep things tidy.
+- Always put test inside Test classes.
+- The pipelex pipelines should be stored in `tests/test_pipelines` as well as the related structured Output classes that inherit from `StructuredContent`
 
 ## Markers
 
 Apply the appropriate markers:
+- "llm: uses an LLM to generate text or objects"
+- "imgg: uses an image generation AI"
 - "inference: uses either an LLM or an image generation AI"
 - "gha_disabled: will not be able to run properly on GitHub Actions"
-- "dry_runnable: can be run in dry-run mode"
 
 Several markers may be applied. For instance, if the test uses an LLM, then it uses inference, so you must mark with both `inference`and `llm`.
+
+## Tips
+
+- Never use the unittest.mock. Use pytest-mock
 
 ## Test Class Structure
 
 Always group the tests of a module into a test class:
 
 ```python
+@pytest.mark.llm
 @pytest.mark.inference
 @pytest.mark.asyncio(loop_scope="class")
 class TestFooBar:
@@ -51,7 +59,7 @@ class TestFooBar:
         # Test implementation
 ```
 
-Sometimes it can be convenient to access the test's name in its body, for instance to include into a job_id. To achieve that, add the argument `request: FixtureRequest` into the signature and then you can get th test name using `cast(str, request.node.originalname),  # type: ignore`. 
+Sometimes it can be convenient to access the test's name in its body, for instance to include into a job_id. To achieve that, add the argument `request: FixtureRequest` into the signature and then you can get the test name using `cast(str, request.node.originalname),  # type: ignore`. 
 
 # Pipe tests
 
@@ -100,10 +108,7 @@ pipe_output: PipeOutput = await pipe_router.run_pipe(
     pipe_code="pipe_name",
     pipe_run_params=PipeRunParamsFactory.make_run_params(),
     working_memory=working_memory,
-    job_metadata=JobMetadata(
-        
-        top_job_id=cast(str, request.node.originalname),  # type: ignore
-    ),
+    job_metadata=JobMetadata(),
 )
 ```
 
@@ -124,8 +129,8 @@ assert pipe_output.main_stuff is not None
 
 ## Test Data Organization
 
-- Define test data directly in test files using fixtures or class attributes
-- For complex test cases, use `StuffBlueprint`:
+- If it's not already there, create a `test_data.py` file in the test directory
+- Define test cases using `StuffBlueprint`:
 
 ```python
 class TestCases:
