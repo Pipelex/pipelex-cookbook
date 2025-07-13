@@ -77,12 +77,15 @@ make tp                       - Shorthand -> test-with-prints
 make test-inference           - Run unit tests only for inference (with prints)
 make ti                       - Shorthand -> test-inference
 
+make check-unused-imports     - Check for unused imports without fixing
+make fix-unused-imports       - Fix unused imports with ruff
+make fui                      - Shorthand -> fix-unused-imports
+make check-TODOs              - Check for TODOs
+
 make check                    - Shorthand -> format lint mypy
 make c                        - Shorthand -> check
 make cc                       - Shorthand -> cleanderived check
 make li                       - Shorthand -> lock install
-make check-unused-imports     - Check for unused imports without fixing
-make fix-unused-imports       - Fix unused imports with ruff
 
 endef
 export HELP
@@ -328,6 +331,25 @@ merge-check-mypy: env
 	$(VENV_MYPY) --config-file pyproject.toml
 
 ##########################################################################################
+### MISCELLANEOUS
+##########################################################################################
+
+check-unused-imports: env
+	$(call PRINT_TITLE,"Checking for unused imports without fixing")
+	$(VENV_RUFF) check --select=F401 --no-fix .
+
+fix-unused-imports: env
+	$(call PRINT_TITLE,"Fixing unused imports")
+	$(VENV_RUFF) check --select=F401 --fix .
+
+fui: fix-unused-imports
+	@echo "> done: fui = fix-unused-imports"
+
+check-TODOs: env
+	$(call PRINT_TITLE,"Checking for TODOs")
+	@$(VENV_RUFF) check --select=TD -v .
+
+##########################################################################################
 ### SHORTHANDS
 ##########################################################################################
 
@@ -349,11 +371,3 @@ v: init validate
 
 li: lock install
 	@echo "> done: lock install"
-
-check-TODOs: env
-	$(call PRINT_TITLE,"Checking for TODOs")
-	$(VENV_RUFF) check --select=TD .
-
-fix-unused-imports: env
-	$(call PRINT_TITLE,"Fixing unused imports")
-	$(VENV_RUFF) check --select=F401 --fix .
