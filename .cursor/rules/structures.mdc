@@ -25,7 +25,7 @@ from pydantic import BaseModel, Field
 
 from pipelex.core.stuff_content import StructuredContent
 
-class YourModel(StructuredContent):
+class YourModel(StructuredContent): # Always be a subclass of StructuredContent
     # Required fields
     field1: str
     field2: int
@@ -58,5 +58,5 @@ Structure classes defined within `pipelex_libraries/pipelines/` are automaticall
 - Use `Field` declaration and write the description
 - Use Pydantic validators for data cleaning/validation
 - Remove timezone info from datetime fields
-- Respect rules of [base_models.mdc](mdc:.cursor/rules/base_models.mdc)
+- Respect rules of @base_models.
 

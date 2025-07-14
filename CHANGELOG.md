@@ -1,5 +1,18 @@
 # Changelog
 
+## [v0.2.6] - 2025-07-14
+
+- Bump `pipelex` to `v0.5.2`
+
+### Changed
+
+- Update to Cursor rules
+- Renamed Makefile targets like `make doc` to `make docs` for consistency
+
+### Added
+
+- Issue templates
+
 ## [v0.2.5] - 2025-07-07
 
 ### Core Updates
