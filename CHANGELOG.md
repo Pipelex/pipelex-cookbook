@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.2.7] - 2025-07-14
+
+- Tweaked the issue templates
+
 ## [v0.2.6] - 2025-07-14
 
 - Bump `pipelex` to `v0.5.2`
