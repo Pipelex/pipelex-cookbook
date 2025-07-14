@@ -1,5 +1,21 @@
 blank_issues_enabled: false
 contact_links:
+  - name: 💡 Pipeline requests
+    url:  https://github.com/Pipelex/pipelex-cookbook/discussions/categories/ideas
+    about: "Please start an Idea Discussion."
+
+  - name: ✨ Pipelex feature request
+    url:  https://github.com/Pipelex/pipelex/issues?q=is%3Aissue%20state%3Aopen%20type%3AFeature
+    about: "Please head to the Pipelex repo for core library requests."
+
+  - name: 🐞 Pipelex bug report
+    url:  https://github.com/Pipelex/pipelex/issues?q=is%3Aissue%20state%3Aopen%20type%3ABug
+    about: "Please head to the Pipelex repo for core library bug reports."
+
   - name: 💬 Ask a question
-    url:  https://github.com/Pipelex/pipelex-cookbook/discussions
-    about: "Please start a Discussion instead of filing a blank issue."
+    url:  https://github.com/Pipelex/pipelex-cookbook/discussions/categories/q-a
+    about: "Please start a Q&A discussion."
+
+  - name: 📝 General discussion
+    url:  https://github.com/Pipelex/pipelex-cookbook/discussions/categories/general-discussion
+    about: "Don't hesitate to start a General discussion."

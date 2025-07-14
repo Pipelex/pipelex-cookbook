@@ -1,5 +1,5 @@
-name: "🐞 Bug report"
-description: "Report a reproducible problem with the library"
+name: "🐞 Cookbook bug report"
+description: "Report a reproducible problem with the cookbook examples"
 type: Bug
 labels:
   - status:needs-triage
@@ -16,7 +16,7 @@ body:
     attributes:
       label: "Before submitting"
       options:
-        - label: "I'm using the **latest released** version of the library"
+        - label: "I'm using the **latest released** version of the cookbook"
           required: true
         - label: "I've searched [open issues](issues?q=is%3Aissue%20state%3Aopen%20type%3ABug) and found no duplicate"
           required: true
