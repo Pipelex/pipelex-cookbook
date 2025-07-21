@@ -1,4 +1,5 @@
 import asyncio
+from typing import List
 
 from pipelex import pretty_print
 from pipelex.client.protocol import CompactMemory
@@ -11,21 +12,21 @@ from pipelex.tools.misc.json_utils import load_json_list_from_path
 
 from pipelex_libraries.pipelines.examples.discord_newsletter.models import DiscordArticle
 
-DISCORD_EXTRACT_PATH = "assets/discord_newsletter/discord_extract.json"
+# DISCORD_EXTRACT_PATH = "assets/discord_newsletter/discord_extract.json"
+DISCORD_EXTRACT_PATH = "assets/discord_newsletter/discord_sample.json"
 
 
 async def write_discord_newsletter(discord_extract_path: str) -> str:
     discord_articles_data = load_json_list_from_path(discord_extract_path)
 
-    discord_articles = [DiscordArticle.model_validate(article_data) for article_data in discord_articles_data]
+    discord_articles: List[DiscordArticle] = [DiscordArticle.model_validate(article_data) for article_data in discord_articles_data]
 
-    pretty_print(discord_articles, title="Discord Articles")
-    return "test"
+    # pretty_print(discord_articles, title="Discord Articles")
 
     pipe_output = await execute_pipeline(
         pipe_code="write_discord_newsletter",
         input_memory={
-            "discord_articles": {"concept_code": "DiscordArticle", "content": discord_articles},
+            "discord_articles": discord_articles,
         },
     )
     # Output the result
