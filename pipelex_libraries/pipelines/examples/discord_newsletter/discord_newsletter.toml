@@ -1,0 +1,86 @@
+domain = "discord_newsletter"
+definition = "Create newsletters from Discord channel content by summarizing messages and organizing them according to newsletter format"
+
+[concept]
+DiscordChannelUpdate = "A Discord channel with its messages for newsletter generation"
+ChannelSummary = "A summarized Discord channel for newsletter inclusion"
+Newsletter = "The final newsletter content with organized channel summaries"
+
+[pipe.write_discord_newsletter]
+PipeSequence = "Create a newsletter from Discord articles by summarizing channels and organizing content"
+inputs = { discord_channel_updates = "DiscordChannelUpdate" }
+output = "Newsletter"
+steps = [
+   { pipe = "summarize_discord_channel_update", batch_over = "discord_channel_updates", batch_as = "discord_channel_update", result = "channel_summaries" },
+   # { pipe = "create_newsletter", result = "newsletter" },
+]
+
+
+[pipe.summarize_discord_channel_update]
+PipeLLM = "Summarize a Discord channel's messages into newsletter-friendly content"
+inputs = { discord_channel_update = "DiscordChannelUpdate" }
+output = "ChannelSummary"
+llm = "llm_for_discord_newsletter"
+system_prompt = "You are a newsletter editor who creates engaging summaries of Discord channel content. You extract key information, preserve important links, and write in a clear, concise style suitable for newsletter readers."
+prompt_template = """
+Analyze this Discord channel update and create a newsletter-friendly summary.
+
+Channel Information:
+@discord_channel_update
+
+The summary should be informative and engaging for newsletter readers who want to understand what happened in this channel during the week.
+Generate one or more summary items: each one can correspond to a single message or to a bunch of messages that were part of the same conversation.
+Each summary item should be in plain text, no bullet points. You can make some parts **bold** to highlight important information.
+"""
+
+# prompt_template = """
+# Analyze this Discord channel and create a newsletter-friendly summary.
+
+# Channel Information:
+# @discord_article
+
+# Requirements:
+# - Extract the emoji and clean name from the channel name (e.g., "🧠-Knowledge" → emoji: "🧠", clean_name: "Knowledge")
+# - Write a thorough but concise summary of the channel's content in plain text (no bullet points)
+# - Make the content enjoyable to read by highlighting important information with **bold** formatting
+# - Extract all important links mentioned in messages
+# - Collect any image URLs from attachments
+# - Collect any video URLs from embeds for clean embedding
+# - Focus on the most significant discussions and contributions
+# - Preserve the conversational tone while making it newsletter-appropriate
+
+# The summary should be informative and engaging for newsletter readers who want to understand what happened in this channel during the week.
+# """
+
+[pipe.create_newsletter]
+PipeLLM = "Combine channel summaries into a complete newsletter following specific formatting requirements"
+inputs = { channel_summaries = "ChannelSummary" }
+output = "Newsletter"
+system_prompt = "You are a newsletter formatter who organizes Discord channel summaries into a well-structured newsletter following specific formatting guidelines."
+prompt_template = """
+Create a newsletter from these Discord channel summaries following these exact requirements:
+
+Channel Summaries:
+@channel_summaries
+
+Newsletter Format Requirements:
+
+1. **Weekly Summary**: For "Share" channels only, create a 200-character summary of the weekly content
+
+2. **New Members Section**: For "Introduce-Yourself" channels, format new member introductions as bullet points under "🙌 New members"
+
+3. **Channel Sections**:
+   - Each channel becomes an h2 section with emoji + titleized name
+   - Order sections by the position parameter (ascending)
+   - Content should be well-written in plain text, no bullet points
+   - Make links clickable and preserve image/video references
+   - Use **bold** on important bits for readability
+
+4. **Geographic Hubs**:
+   - Separate all location-based channels (containing country/city names or geographic indicators)
+   - Group them at the end under "🌎 Geographic hubs"
+   - Maintain position-based ordering within this section
+
+Format the newsletter content ready for Substack publication with proper markdown formatting.
+"""
+
