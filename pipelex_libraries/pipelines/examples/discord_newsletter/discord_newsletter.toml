@@ -20,7 +20,6 @@ steps = [
 PipeLLM = "Summarize a Discord channel's messages into newsletter-friendly content"
 inputs = { discord_channel_update = "DiscordChannelUpdate" }
 output = "ChannelSummary"
-llm = "llm_for_discord_newsletter"
 system_prompt = "You are a newsletter editor who creates engaging summaries of Discord channel content. You extract key information, preserve important links, and write in a clear, concise style suitable for newsletter readers."
 prompt_template = """
 Analyze this Discord channel update and create a newsletter-friendly summary.

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from pipelex.core.stuff_content import StructuredContent
 from pydantic import Field

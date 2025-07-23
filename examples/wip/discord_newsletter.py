@@ -2,9 +2,6 @@ import asyncio
 from typing import Any, List
 
 from pipelex import pretty_print
-from pipelex.client.protocol import CompactMemory
-from pipelex.core.stuff_factory import StuffFactory
-from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
