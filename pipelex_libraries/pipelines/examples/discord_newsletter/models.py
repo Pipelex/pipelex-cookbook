@@ -1,5 +1,6 @@
 from typing import List
 
+import markdown
 from pipelex.core.stuff_content import StructuredContent
 from pipelex.types import StrEnum
 from pydantic import Field, field_validator
@@ -42,7 +43,7 @@ class ChannelCategory(StrEnum):
     """Represents a category of Discord channels"""
 
     SHARE = "Share"
-    INTRODUCE_YOURSELF = "Introduce-Yourself"
+    INTRODUCE_YOURSELF = "Introduce Yourself"
     GEOGRAPHIC_HUBS = "Geographic Hubs"
     OTHER = "Other"
 
@@ -76,7 +77,12 @@ class ChannelSummary(StructuredContent):
         if "\U0001f1e6" <= first_character <= "\U0001f1ff":
             return ChannelCategory.GEOGRAPHIC_HUBS
 
-        if self.channel_name == "Introduce-Yourself":
+        if self.channel_name == ChannelCategory.INTRODUCE_YOURSELF:
             return ChannelCategory.INTRODUCE_YOURSELF
         else:
             return ChannelCategory.SHARE
+
+    @property
+    def summary_items_as_html(self) -> List[str]:
+        """Convert summary items to HTML"""
+        return [markdown.markdown(item) for item in self.summary_items]

@@ -62,12 +62,12 @@ $weekly_summary
 </p>
 
 <!-- New Members Section -->
-{% set introduce_channels = channel_summaries.content.items | selectattr('category', 'equalto', 'Introduce-Yourself') | list %}
+{% set introduce_channels = channel_summaries.content.items | selectattr('category', 'equalto', 'Introduce Yourself') | list %}
 {% if introduce_channels %}
    <h2>🙌 New members</h2>
    <ul>
       {% for channel in introduce_channels %}
-         {% for item in channel.summary_items %}
+         {% for item in channel.summary_items_as_html %}
             <li>{{ item }}</li>
          {% endfor %}
       {% endfor %}
@@ -79,7 +79,7 @@ $weekly_summary
 {% if regular_channels %}
    {% for channel in regular_channels %}
    <h2>{{ channel.channel_name }}</h2>
-      {% for item in channel.summary_items %}
+      {% for item in channel.summary_items_as_html %}
          <p>{{ item }}</p>
       {% endfor %}
    {% endfor %}
@@ -91,7 +91,7 @@ $weekly_summary
    <h2>🌎 Geographic hubs</h2>
    {% for channel in geo_hubs %}
       <h3>{{ channel.channel_name }}</h3>
-      {% for item in channel.summary_items %}
+      {% for item in channel.summary_items_as_html %}
          <p>{{ item }}</p>
       {% endfor %}
    {% endfor %}
