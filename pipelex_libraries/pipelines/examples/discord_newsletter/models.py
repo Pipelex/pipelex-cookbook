@@ -43,7 +43,7 @@ class ChannelCategory(StrEnum):
 
     SHARE = "Share"
     INTRODUCE_YOURSELF = "Introduce-Yourself"
-    GEOGRAPHIC_HUB = "Geographic Hub"
+    GEOGRAPHIC_HUBS = "Geographic Hubs"
     OTHER = "Other"
 
 
@@ -60,23 +60,17 @@ class ChannelSummary(StructuredContent):
         if not self.channel_name:
             raise ValueError("Channel name is empty")
 
+        if self.channel_name in ["Troll"]:
+            return ChannelCategory.OTHER
+
         first_character = self.channel_name[0]
 
         # Check if first character is a flag emoji (regional indicator symbols)
         # Flag emojis are in the Unicode range U+1F1E6 to U+1F1FF
         if "\U0001f1e6" <= first_character <= "\U0001f1ff":
-            return ChannelCategory.GEOGRAPHIC_HUB
+            return ChannelCategory.GEOGRAPHIC_HUBS
 
         if self.channel_name == "Introduce-Yourself":
             return ChannelCategory.INTRODUCE_YOURSELF
         else:
             return ChannelCategory.SHARE
-
-
-# class Newsletter(StructuredContent):
-#     """Represents the final newsletter content"""
-
-#     weekly_summary: str = Field(..., description="200 character summary of weekly Share channel content")
-#     new_members: List[str] = Field(default_factory=list, description="New member introductions in bullet points")
-#     channel_sections: List[ChannelSummary] = Field(default_factory=list, description="Ordered channel summaries")
-#     geographic_hubs: List[ChannelSummary] = Field(default_factory=list, description="Geographic hub channels grouped at end")

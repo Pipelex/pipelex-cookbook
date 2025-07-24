@@ -8,12 +8,14 @@ from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.json_utils import load_json_list_from_path
 
 from pipelex_libraries.pipelines.examples.discord_newsletter.models import DiscordChannelUpdate
+from utils.results_utils import output_result
 
-# DISCORD_EXTRACT_PATH = "assets/discord_newsletter/discord_extract.json"
-DISCORD_EXTRACT_PATH = "assets/discord_newsletter/discord_sample.json"
+SAMPLE_NAME = "discord_newsletter"
+DISCORD_EXTRACT_PATH = "assets/discord_newsletter/discord_extract.json"
+# DISCORD_EXTRACT_PATH = "assets/discord_newsletter/discord_sample.json"
 
 
-async def write_discord_newsletter(discord_extract_path: str) -> Any:
+async def write_discord_newsletter(discord_extract_path: str) -> str:
     # Load channel update list in json format
     discord_channel_updates_data = load_json_list_from_path(discord_extract_path)
     # Make it a list of structured content
@@ -27,19 +29,25 @@ async def write_discord_newsletter(discord_extract_path: str) -> Any:
         },
     )
 
-    # Output the result
-    # return pipe_output.main_stuff_as_str
-    return pipe_output.main_stuff
+    html_newsletter = pipe_output.main_stuff_as_str
+
+    return html_newsletter
 
 
 # start Pipelex
 Pipelex.make()
 
 # run sample using asyncio
-newsletter = asyncio.run(write_discord_newsletter(discord_extract_path=DISCORD_EXTRACT_PATH))
+html_newsletter = asyncio.run(write_discord_newsletter(discord_extract_path=DISCORD_EXTRACT_PATH))
 
 # Display cost report (tokens used and cost)
 get_report_delegate().generate_report()
 # output results
-pretty_print(newsletter, title="Discord Newsletter")
+pretty_print(html_newsletter, title="Discord Newsletter")
+output_result(
+    sample_name=SAMPLE_NAME,
+    title="Discord Newsletter",
+    file_name="discord_newsletter.html",
+    content=html_newsletter,
+)
 get_pipeline_tracker().output_flowchart()
