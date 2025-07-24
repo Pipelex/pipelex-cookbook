@@ -2,7 +2,7 @@ from typing import List
 
 from pipelex.core.stuff_content import StructuredContent
 from pipelex.types import StrEnum
-from pydantic import Field
+from pydantic import Field, field_validator
 
 
 class Attachment(StructuredContent):
@@ -53,6 +53,12 @@ class ChannelSummary(StructuredContent):
     channel_name: str = Field(..., description="Name of the Discord channel")
     position: int = Field(..., description="Position of the channel for ordering")
     summary_items: List[str] = Field(..., description="Well-written summaries of the channel's activity")
+
+    @field_validator("channel_name", mode="before")
+    @classmethod
+    def replace_hyphens_with_spaces(cls, v: str) -> str:
+        """Replace hyphens with spaces in channel name"""
+        return v.replace("-", " ")
 
     @property
     def category(self) -> ChannelCategory:

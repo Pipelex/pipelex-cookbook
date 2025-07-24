@@ -78,7 +78,7 @@ $weekly_summary
 {% set regular_channels = channel_summaries.content.items | selectattr('category', 'equalto', 'Share') | list | sort(attribute='position') %}
 {% if regular_channels %}
    {% for channel in regular_channels %}
-   <h2>{{ channel.channel_name }} ({{ channel.position }})</h2>
+   <h2>{{ channel.channel_name }}</h2>
       {% for item in channel.summary_items %}
          <p>{{ item }}</p>
       {% endfor %}
