@@ -4,7 +4,7 @@ definition = "Create newsletters from Discord channel content by summarizing mes
 [concept]
 DiscordChannelUpdate = "A Discord channel with its messages for newsletter generation"
 ChannelSummary = "A summarized Discord channel for newsletter inclusion"
-Newsletter = "The final newsletter content with organized channel summaries"
+HtmlNewsletter = "The final newsletter content in html format with organized channel summaries"
 
 [pipe.write_discord_newsletter]
 PipeSequence = "Create a newsletter from Discord articles by summarizing channels and organizing content"
@@ -12,6 +12,7 @@ inputs = { discord_channel_updates = "DiscordChannelUpdate" }
 output = "Newsletter"
 steps = [
    { pipe = "summarize_discord_channel_update", batch_over = "discord_channel_updates", batch_as = "discord_channel_update", result = "channel_summaries" },
+   { pipe = "write_weekly_summary", result = "weekly_summary" },
    # { pipe = "create_newsletter", result = "newsletter" },
 ]
 
@@ -30,56 +31,73 @@ Channel Information:
 The summary should be informative and engaging for newsletter readers who want to understand what happened in this channel during the week.
 Generate one or more summary items: each one can correspond to a single message or to a bunch of messages that were part of the same conversation.
 Each summary item should be in plain text, no bullet points. You can make some parts **bold** to highlight important information.
+
+Make sure to preserve the channel name and position from the input for proper ordering in the newsletter.
 """
 
-# prompt_template = """
-# Analyze this Discord channel and create a newsletter-friendly summary.
+[pipe.write_weekly_summary]
+PipeLLM = "Combine channel summaries into a short summary of the week's Share channel content (200 characters)"
+inputs = { channel_summaries = "ChannelSummary" }
+output = "Text"
+prompt_template = """
+Write a single overall summary of the week's content based on the following Share channel summaries:
 
-# Channel Information:
-# @discord_article
+{% for channel in channel_summaries.content.items %}
+{% if channel["category"] == "Share" %}
+{{ channel }}
+{% endif %}
+{% endfor %}
 
-# Requirements:
-# - Extract the emoji and clean name from the channel name (e.g., "🧠-Knowledge" → emoji: "🧠", clean_name: "Knowledge")
-# - Write a thorough but concise summary of the channel's content in plain text (no bullet points)
-# - Make the content enjoyable to read by highlighting important information with **bold** formatting
-# - Extract all important links mentioned in messages
-# - Collect any image URLs from attachments
-# - Collect any video URLs from embeds for clean embedding
-# - Focus on the most significant discussions and contributions
-# - Preserve the conversational tone while making it newsletter-appropriate
+Keep it short: 200 characters.
+"""
 
-# The summary should be informative and engaging for newsletter readers who want to understand what happened in this channel during the week.
-# """
+
+# {% for channel in channel_summaries.content.items if channel.category.value == "Share" %}
+# {{ channel }}
+# {% endfor %}
+
 
 [pipe.create_newsletter]
-PipeLLM = "Combine channel summaries into a complete newsletter following specific formatting requirements"
-inputs = { channel_summaries = "ChannelSummary" }
-output = "Newsletter"
-system_prompt = "You are a newsletter formatter who organizes Discord channel summaries into a well-structured newsletter following specific formatting guidelines."
-prompt_template = """
-Create a newsletter from these Discord channel summaries following these exact requirements:
+PipeJinja2 = "Combine weekly and channel summaries into a complete newsletter following specific formatting requirements"
+inputs = { weekly_summary = "Text", channel_summaries = "ChannelSummary" }
+output = "HtmlNewsletter"
+jinja2 = """
+<!-- Weekly Summary -->
+<h2>📊 Weekly Summary</h2>
+<p>{{ weekly_summary }}</p>
 
-Channel Summaries:
-@channel_summaries
+<!-- New Members Section -->
+{% set introduce_channels = channel_summaries | selectattr('category.value', 'equalto', 'Introduce-Yourself') | list %}
+{% if introduce_channels %}
+<h2>🙌 New members</h2>
+<ul>
+{% for channel in introduce_channels %}
+{% for item in channel.summary_items %}
+<li>{{ item }}</li>
+{% endfor %}
+{% endfor %}
+</ul>
+{% endif %}
 
-Newsletter Format Requirements:
+<!-- Regular Channel Sections (excluding Geographic Hubs and Introduce-Yourself) -->
+{% set regular_channels = channel_summaries | rejectattr('category.value', 'in', ['Geographic Hub', 'Introduce-Yourself']) | sort(attribute='position') %}
+{% for channel in regular_channels %}
+<h2>{{ channel.channel_name }}</h2>
+{% for item in channel.summary_items %}
+<p>{{ item }}</p>
+{% endfor %}
+{% endfor %}
 
-1. **Weekly Summary**: For "Share" channels only, create a 200-character summary of the weekly content
-
-2. **New Members Section**: For "Introduce-Yourself" channels, format new member introductions as bullet points under "🙌 New members"
-
-3. **Channel Sections**:
-   - Each channel becomes an h2 section with emoji + titleized name
-   - Order sections by the position parameter (ascending)
-   - Content should be well-written in plain text, no bullet points
-   - Make links clickable and preserve image/video references
-   - Use **bold** on important bits for readability
-
-4. **Geographic Hubs**:
-   - Separate all location-based channels (containing country/city names or geographic indicators)
-   - Group them at the end under "🌎 Geographic hubs"
-   - Maintain position-based ordering within this section
-
-Format the newsletter content ready for Substack publication with proper markdown formatting.
+<!-- Geographic Hubs Section -->
+{% set geo_hubs = channel_summaries | selectattr('category.value', 'equalto', 'Geographic Hub') | sort(attribute='position') %}
+{% if geo_hubs %}
+<h2>🌎 Geographic hubs</h2>
+{% for channel in geo_hubs %}
+<h3>{{ channel.channel_name }}</h3>
+{% for item in channel.summary_items %}
+<p>{{ item }}</p>
+{% endfor %}
+{% endfor %}
+{% endif %}
 """
 

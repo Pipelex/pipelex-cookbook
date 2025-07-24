@@ -1,6 +1,7 @@
 from typing import List
 
 from pipelex.core.stuff_content import StructuredContent
+from pipelex.types import StrEnum
 from pydantic import Field
 
 
@@ -37,39 +38,45 @@ class DiscordChannelUpdate(StructuredContent):
     messages: List[DiscordMessage] = Field(default_factory=list, description="List of messages in the channel")
 
 
-# class ChannelMetadata(StructuredContent):
-#     """Represents a summarized Discord channel for newsletter inclusion"""
+class ChannelCategory(StrEnum):
+    """Represents a category of Discord channels"""
 
-#     channel_name: str = Field(..., description="Name of the Discord channel")
-#     position: int = Field(..., description="Position of the channel for ordering")
-#     emoji: str = Field(..., description="Emoji at the beginning of the channel name")
-#     clean_name: str = Field(..., description="Clean titleized channel name without emoji")
-
-
-# class ChannelSummary(StructuredContent):
-#     """Represents a summarized Discord channel for newsletter inclusion"""
-
-#     channel_name: str = Field(..., description="Name of the Discord channel")
-#     position: int = Field(..., description="Position of the channel for ordering")
-#     emoji: str = Field(..., description="Emoji at the beginning of the channel name")
-#     clean_name: str = Field(..., description="Clean titleized channel name without emoji")
-#     summary_content: str = Field(..., description="Well-written summary of the channel's content")
-#     key_links: List[str] = Field(default_factory=list, description="Important links from the channel")
-#     image_urls: List[str] = Field(default_factory=list, description="Image URLs to include in newsletter")
-#     video_embeds: List[str] = Field(default_factory=list, description="Video URLs for clean embeds")
+    SHARE = "Share"
+    INTRODUCE_YOURSELF = "Introduce-Yourself"
+    GEOGRAPHIC_HUB = "Geographic Hub"
+    OTHER = "Other"
 
 
 class ChannelSummary(StructuredContent):
     """Represents a summarized Discord channel for newsletter inclusion"""
 
     channel_name: str = Field(..., description="Name of the Discord channel")
+    position: int = Field(..., description="Position of the channel for ordering")
     summary_items: List[str] = Field(..., description="Well-written summaries of the channel's activity")
 
+    @property
+    def category(self) -> ChannelCategory:
+        """Categorize channel based on its name"""
+        if not self.channel_name:
+            raise ValueError("Channel name is empty")
 
-class Newsletter(StructuredContent):
-    """Represents the final newsletter content"""
+        first_character = self.channel_name[0]
 
-    weekly_summary: str = Field(..., description="200 character summary of weekly Share channel content")
-    new_members: List[str] = Field(default_factory=list, description="New member introductions in bullet points")
-    channel_sections: List[ChannelSummary] = Field(default_factory=list, description="Ordered channel summaries")
-    geographic_hubs: List[ChannelSummary] = Field(default_factory=list, description="Geographic hub channels grouped at end")
+        # Check if first character is a flag emoji (regional indicator symbols)
+        # Flag emojis are in the Unicode range U+1F1E6 to U+1F1FF
+        if "\U0001f1e6" <= first_character <= "\U0001f1ff":
+            return ChannelCategory.GEOGRAPHIC_HUB
+
+        if self.channel_name == "Introduce-Yourself":
+            return ChannelCategory.INTRODUCE_YOURSELF
+        else:
+            return ChannelCategory.SHARE
+
+
+# class Newsletter(StructuredContent):
+#     """Represents the final newsletter content"""
+
+#     weekly_summary: str = Field(..., description="200 character summary of weekly Share channel content")
+#     new_members: List[str] = Field(default_factory=list, description="New member introductions in bullet points")
+#     channel_sections: List[ChannelSummary] = Field(default_factory=list, description="Ordered channel summaries")
+#     geographic_hubs: List[ChannelSummary] = Field(default_factory=list, description="Geographic hub channels grouped at end")
