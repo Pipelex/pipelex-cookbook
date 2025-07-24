@@ -1,5 +1,5 @@
 import asyncio
-from typing import Any, List
+from typing import List
 
 from pipelex import pretty_print
 from pipelex.hub import get_pipeline_tracker, get_report_delegate
