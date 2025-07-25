@@ -1679,8 +1679,8 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.6.7"
-source = { git = "https://github.com/Pipelex/pipelex.git?rev=dev#960233307901830ecda060819e86ecb0a28ffe09" }
+version = "0.6.8"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
     { name = "filetype" },
@@ -1707,6 +1707,10 @@ dependencies = [
     { name = "typer" },
     { name = "typing-extensions" },
     { name = "yattag" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ec/2a/ff702bc4359fd44eeca47f1c0b4671359b8aeb59a8419d44a9d3149bb284/pipelex-0.6.8.tar.gz", hash = "sha256:2c25dce4e35f04afec3a72cc282442cac10e47a927fa5047005b384f63aac01f", size = 188839, upload-time = "2025-07-25T09:52:29.826Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/37/6b/d54803d1c2da08e3a1861dd5aa34b6971553a96ce22cb72c39eb11d46389/pipelex-0.6.8-py3-none-any.whl", hash = "sha256:a1f0e2533c34a50ad134b7cfc230d67a4ecc496ba2d7d102f5c8647be4e4e626", size = 308630, upload-time = "2025-07-25T09:52:28.239Z" },
 ]
 
 [package.optional-dependencies]
@@ -1768,7 +1772,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], git = "https://github.com/Pipelex/pipelex.git?rev=dev" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], specifier = "==0.6.8" },
     { name = "pyright", marker = "extra == 'dev'", specifier = "==1.1.398" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
