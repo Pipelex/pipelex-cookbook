@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.2.8] - 2025-07-25
+
+- Bump `pipelex` to `v0.6.8`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+
 ## [v0.2.7] - 2025-07-14
 
 - Tweaked the issue templates
