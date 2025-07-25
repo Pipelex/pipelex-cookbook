@@ -13,6 +13,16 @@
             "justMyCode": false
         },
         {
+            "name": "Debug pipelex Validate",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/.venv/bin/pipelex",
+            "args": [
+                "validate"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Debug tests",
             "type": "debugpy",
             "request": "launch",

@@ -1,0 +1,1276 @@
+[
+  {
+    "id": "1320057977847283834",
+    "name": "Introduce-Yourself",
+    "type": "text",
+    "position": 4,
+    "parent": "1348223201812938782",
+    "message_count": 5,
+    "messages": [
+      {
+        "author": "Maria Chen (CyberSynth)",
+        "content": "## [**Maria Chen**](https://www.linkedin.com/in/fakeprofile1) \n\n*Founder & Lead AI Architect @ [CyberSynth](https://cybersynth.dev) · We build secure, decentralized AI systems.*\n\nHi everyone! I've been in the cybersecurity space for over a decade, transitioning into AI security about 3 years ago. I'm a big believer in open-source and building tools that empower developers. In my other life, I'm a competitive rock climber.\n\nSpecial power: Can debug race conditions in my sleep.\n\n📍 San Francisco, CA (PST)",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "David Lee (DataWeave)",
+        "content": "## [**David Lee**](https://www.linkedin.com/in/fakeprofile2)\n*Head of Data @ [DataWeave](https://dataweave.io) · Making data pipelines intelligent and autonomous.*\n\nHello! I'm David. I've been wrestling with large-scale data systems for my entire career, from Hadoop clusters to modern data lakes. Now I'm focused on applying LLMs to data engineering workflows. I also contribute to Apache Arrow.\n\nSpecial power: I roast my own coffee beans. The perfect pour-over is my art form.\n\n📍 London, UK (GMT)",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Sofia Rodriguez (LogicLoom)",
+        "content": "## [Sofia Rodriguez](https://www.linkedin.com/in/fakeprofile3)\n\n*Co-founder & CEO @ [LogicLoom](https://logicoom.ai) · LogicLoom is a platform for building and verifying complex agentic workflows. Think of it as unit testing for AI agents.*\n\nHey all! I'm a former philosophy professor turned tech entrepreneur. My passion is at the intersection of formal logic and machine learning. LogicLoom is my attempt to bring more rigor and reliability to the AI space.\n\nSpecial power: I can recite the first 200 digits of pi. It's a completely useless but fun party trick.\n\n📍 Berlin, DE (CET)",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Alex Ivanov (CogniCore)",
+        "content": "## [**Alex Ivanov**](https://www.linkedin.com/in/fakeprofile4/)\n*Senior ML Engineer @ [CogniCore](https://cognicore.tech) · We're creating next-gen multimodal models for creative industries.*\n\nHey everyone, I'm Alex. I have a background in computer graphics and generative art. At CogniCore, I work on models that can understand and generate video, audio, and text seamlessly. I'm always down to talk about diffusion models or creative AI.\n\nSpecial power: I built a robot that paints abstract art.\n\n📍 Tokyo, JP (JST)",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Chloe Dubois (Aether AI)",
+        "content": "## [**Chloe Dubois**](https://www.linkedin.com/in/fakeprofile5/)\n*CTO @ [Aether AI](https://aetherai.com) · Building efficient AI for edge devices.*\n\nHi! I'm Chloe. My focus is on model optimization, quantization, and running complex neural networks on resource-constrained hardware. Before Aether, I was at a major chip designer working on their mobile AI accelerators. When I'm not coding, I'm usually hiking in the mountains.\n\n📍 Grenoble, FR (CET)",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      }
+    ]
+  },
+  {
+    "id": "1320058207028248596",
+    "name": "Troll",
+    "type": "text",
+    "position": 55,
+    "parent": "1348222877174075432",
+    "message_count": 7,
+    "messages": [
+      {
+        "author": "Ben Carter (Momentum ML)",
+        "content": "The original 'cloud'.\n\nIn reply to Ben Carter (Momentum ML)'s message:\nThey called it 'The Mainframe'. We've come full circle.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "History of the Mainframe Computer",
+            "description": "A look back at the powerful machines that started the computing revolution and how their concepts are still relevant today.",
+            "type": "article"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Ben Carter (Momentum ML)",
+        "content": "They called it 'The Mainframe'. We've come full circle.",
+        "attachments": [
+          {
+            "name": "ancient_computer.jpg",
+            "url": ""
+          }
+        ],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "My LLM when I ask it to write a single line of CSS.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "When AI Overthinks The Problem",
+            "description": "A comedic sketch about an AI assistant that writes a 10-page thesis on the philosophical implications of a button color choice.",
+            "type": "video"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Isabella Rossi (FluidStack)",
+        "content": "I used QuantumLeap to optimize my fantasy football picks. Thanks for the server credits!",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Liam O'Malley (CoreLogic)",
+        "content": "Haha, exactly! We just thought it sounded cool. And it's an anagram for 'Cool Gil'.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "You know Liam O'Malley (CoreLogic) is in here, right? They're gonna have questions.",
+        "attachments": [
+          {
+            "name": "corelogic_logo_meme.png",
+            "url": ""
+          }
+        ],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Ben Carter (Momentum ML)",
+        "content": "This company name is a bold choice.",
+        "attachments": [
+          {
+            "name": "screenshot_startup_name.png",
+            "url": ""
+          }
+        ],
+        "embeds": [],
+        "link": ""
+      }
+    ]
+  },
+  {
+    "id": "1320059080857096214",
+    "name": "🧠-Knowledge",
+    "type": "text",
+    "position": 7,
+    "parent": "1320057304199987231",
+    "message_count": 2,
+    "messages": [
+      {
+        "author": "Fatima Al-Jamil (Synthax)",
+        "content": "Really insightful talk on data synthesis.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Fatima Al-Jamil (Synthax)",
+        "content": "For anyone interested in the future of synthetic data for training, this talk from the 'AI Engineering' summit was fantastic.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "Synthetic Data: The Key to Unlocking AGI? - AI Engineering Summit 2024",
+            "description": "Dr. Eva Rostova explores cutting-edge techniques for generating high-quality synthetic data and its impact on model performance and safety.",
+            "type": "video"
+          }
+        ],
+        "link": ""
+      }
+    ]
+  },
+  {
+    "id": "1324834149965631569",
+    "name": "🎉-Achievements",
+    "type": "text",
+    "position": 10,
+    "parent": "1320057304199987231",
+    "message_count": 5,
+    "messages": [
+      {
+        "author": "Chloe Dubois (Aether AI)",
+        "content": "We just open-sourced our model quantization toolkit! Would love to get feedback from the community.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "Announcing AetherLite: Our Open-Source Quantization Library",
+            "description": "Developers can now use AetherLite to shrink and accelerate their models for deployment on edge devices with minimal performance loss.",
+            "type": "article"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "Our work on generative graph networks was featured by Google AI's research blog!",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "NeuroNet's Groundbreaking Research in Graph-based RAG",
+            "description": "Highlighting a new approach that combines Knowledge Graphs with LLMs for more accurate and explainable responses. A collaborative effort with leading academics...",
+            "type": "article"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Ethan Brown (CodeFlow)",
+        "content": "We've finally released v1.0 of the Plakar backup format! A modern, content-addressable format for data snapshots. No more tarballs!",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "Plakar v1.0: A New Era for Data Backups",
+            "description": "Moving beyond legacy formats, Plakar offers speed, deduplication, and encryption for modern data protection needs.",
+            "type": "article"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Ben Carter (Momentum ML)",
+        "content": "Nope, I started by building custom ETL pipelines for scientific research data. Much more chaotic than any CRM! 😂\n\nIn reply to Kenji Tanaka (NeuroNet)'s message:\nI thought you started out as a data warehouse consultant?",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "I thought you started out as a data warehouse consultant?",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      }
+    ]
+  },
+  {
+    "id": "1348214314829615116",
+    "name": "👁-Computer-Vision",
+    "type": "text",
+    "position": 16,
+    "parent": "1348214680770052136",
+    "message_count": 1,
+    "messages": [
+      {
+        "author": "Olivia Garcia (Pixelate)",
+        "content": "Has anyone played with Gazelle-3B? It's a new open-weights vision model that's surprisingly good at understanding complex scenes and instructions. Really impressive for its size.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "Gazelle-3B: A Lightweight, High-Performance Vision Model",
+            "description": "An open-source VLM that excels at few-shot learning and instruction following for a wide range of visual tasks.",
+            "type": "article"
+          }
+        ],
+        "link": ""
+      }
+    ]
+  },
+  {
+    "id": "1348214970843791411",
+    "name": "💬-Language-Models",
+    "type": "text",
+    "position": 22,
+    "parent": "1348214680770052136",
+    "message_count": 11,
+    "messages": [
+      {
+        "author": "Leo Schmidt (Bio-Nexus)",
+        "content": "William Johnson (ByteForge), sure, send me a DM and we can set up some time to talk about model distillation.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "William Johnson (ByteForge)",
+        "content": "I'm looking into best practices for fine-tuning LLMs on specialized codebases (specifically, computational chemistry libraries). I'm generating a dataset of code diffs and maintainer feedback. If anyone has experience with creating high-quality datasets for code generation or RLHF in a niche domain, I'd love to pick your brain.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "William Johnson (ByteForge)",
+        "content": "Thank you!\n\nIn reply to Kenji Tanaka (NeuroNet)'s message:\nWilliam Johnson (ByteForge) is looking to connect with folks experienced in model pre-training and fine-tuning, especially for domain-specific applications. (maybe Leo Schmidt (Bio-Nexus), Fatima Al-Jamil (Synthax), Alex Ivanov (CogniCore) or anyone from the major labs?) btw William, the tool I mentioned was DataGenius.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "William Johnson (ByteForge) is looking to connect with folks experienced in model pre-training and fine-tuning, especially for domain-specific applications. (maybe Leo Schmidt (Bio-Nexus), Fatima Al-Jamil (Synthax), Alex Ivanov (CogniCore) or anyone from the major labs?) btw William, the tool I mentioned was DataGenius.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Alex Ivanov (CogniCore)",
+        "content": "Here's a quick demo running on my local machine. Inference is running through a custom vLLM-compatible server.",
+        "attachments": [
+          {
+            "name": "local_moe_demo.mp4",
+            "url": ""
+          }
+        ],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Alex Ivanov (CogniCore)",
+        "content": "Almost zero, the official implementation wasn't optimized for consumer hardware. The comparable open model is probably Llama-3.1 405B, which is impossible for me to run. The benefit here is getting near-SoTA reasoning in total privacy with very fast token generation. It's not beating the top-tier proprietary models, but for local use, it's a game changer.\n\nIn reply to Kenji Tanaka (NeuroNet)'s message:\nHow did it run before the optimizations?",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "How did it run before the optimizations?\n\nIn reply to Alex Ivanov (CogniCore)'s message:\nJust got the new Chimera-7B model running with the latest optimizations. Hitting 90 tokens/sec on a single 4090. This is wild for a Mixture-of-Experts model.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Alex Ivanov (CogniCore)",
+        "content": "Just got the new Chimera-7B model running with the latest optimizations. Hitting 90 tokens/sec on a single 4090. This is wild for a Mixture-of-Experts model.\n\nIn reply to Alex Ivanov (CogniCore)'s message:\nA new contender for the best locally-runnable model is here. Chimera-7B from Phoenix Labs. 64B total params, ~7B active. Smaller than Llama3 8B, faster than Mistral Medium. The architecture is wild.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Fatima Al-Jamil (Synthax)",
+        "content": "Also, the new Finch series of models from Baidu looks very strong. They have a version with a persistent memory architecture which is fascinating.\ntech report: [link to fake paper pdf]",
+        "attachments": [
+          {
+            "name": "finch_model_card.png",
+            "url": ""
+          }
+        ],
+        "embeds": [
+          {
+            "title": "Introducing the Finch Model Family",
+            "description": "We are open-sourcing our new family of language models, Finch, featuring dense and MoE variants, and a novel long-context memory mechanism.",
+            "type": "article"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Fatima Al-Jamil (Synthax)",
+        "content": "A 'fast' and 'slow' expert router is a cool concept. Reminds me of Kahneman's System 1 / System 2 thinking.\n\nIn reply to Alex Ivanov (CogniCore)'s message:\nA new contender for the best locally-runnable model is here. Chimera-7B from Phoenix Labs. 64B total params, ~7B active. Smaller than Llama3 8B, faster than Mistral Medium. The architecture is wild.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Alex Ivanov (CogniCore)",
+        "content": "A new contender for the best locally-runnable model is here. Chimera-7B from Phoenix Labs. 64B total params, ~7B active. Smaller than Llama3 8B, faster than Mistral Medium. The architecture is wild.",
+        "attachments": [
+          {
+            "name": "chimera_architecture.png",
+            "url": ""
+          }
+        ],
+        "embeds": [
+          {
+            "title": "phoenix-labs/Chimera-7B-Instruct · Hugging Face",
+            "description": "Model card for Chimera-7B-Instruct, a new sparse mixture-of-experts model.",
+            "type": "article"
+          }
+        ],
+        "link": ""
+      }
+    ]
+  },
+  {
+    "id": "1348215055564537906",
+    "name": "👄-Audio-And-Speech",
+    "type": "text",
+    "position": 13,
+    "parent": "1348214680770052136",
+    "message_count": 2,
+    "messages": [
+      {
+        "author": "James Taylor (SoundWave AI)",
+        "content": "Yes, we connected with the team directly, but it's always great to see the community getting excited about these collaborations!",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Zoe Williams (RoboGen)",
+        "content": "Just saw this post. Is this related to the work you were discussing? An open-source, community-driven speech model would be huge.\n\nIn reply to James Taylor (SoundWave AI)'s message:\nWe're hoping to release our foundational speech model in the next month. We're using a novel transformer architecture that's very efficient. We've been using Mistral as the text backbone, which has been great, but we're also experimenting with smaller, specialized models for on-device applications.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "",
+            "description": "Excited to partner with SoundWave AI to provide the language understanding for their new open-source speech synthesis model, 'Echo'!",
+            "type": "rich"
+          }
+        ],
+        "link": ""
+      }
+    ]
+  },
+  {
+    "id": "1348215199383031878",
+    "name": "🕵🏻-Autonomous-Agents",
+    "type": "text",
+    "position": 14,
+    "parent": "1348214680770052136",
+    "message_count": 20,
+    "messages": [
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "I meant that the official docs for the Nexus Agent prominently feature integrations with Sentry for monitoring and Jira for task management as their main examples.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Ava Singh (Quantum Works)",
+        "content": "Could you elaborate?",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Ava Singh (Quantum Works)",
+        "content": "Interesting. What makes you say that?\n\nIn reply to Noah Kim (Apex Dynamics)'s message:\nThe primary use case for the new Nexus Agent seems to be Sentry (observability) and Jira (project management).",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Ethan Brown (CodeFlow)",
+        "content": "100% agree.\n\nIn reply to Kenji Tanaka (NeuroNet)'s message:\nI will never, ever let an agent connect directly to a production database via MCP. That's a recipe for disaster.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "I will never, ever let an agent connect directly to a production database via MCP. That's a recipe for disaster.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "This is a great write-up on potential security issues with MCP and database tools.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "How an Agent Can Exfiltrate Your Database via an Insecure MCP",
+            "description": "We demonstrate an attack vector where a malicious actor can leverage an LLM agent's tool-use capabilities to access and leak sensitive data from a connected database through the Model Context Protocol.",
+            "type": "link"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "Big news: MCP now supports authentication via common providers. This is a huge step forward for security.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "Securing Your Agents: MCP Now Supports Authentication",
+            "description": "You can now protect your MCP servers and require user authentication before an AI agent can access its tools. Here's a quick demo showing how to implement it...",
+            "type": "article"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "Notion is also launching a managed remote MCP server for their API.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "The primary use case for the new Nexus Agent seems to be Sentry (observability) and Jira (project management).",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "The pace of development in the agent space is dizzying.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "The leading open-source agent, Nexus, just added support for remote MCP servers a few weeks ago.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "Nexus Agent Now Supports Remote MCP",
+            "description": "Today we're announcing support for remote MCP servers in Nexus Agent. This allows you to connect to tools and services without running a local server.",
+            "type": "article"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "The lead of the Open Source Initiative on MCP:",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "MCP: The TCP/IP Moment for Artificial Intelligence",
+            "description": "The Model Context Protocol (MCP) is emerging as a critical communication standard for AI systems, much like HTTP was for the web. Here's why it matters for the future of open source AI.",
+            "type": "article"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "I'm noticing that Nexus Agent has the best UX for adding MCPs with a simple 'nexus mcp add' command, much better than editing config files.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "OpenAI's tool use API requiring human verification for certain actions is an interesting, if slightly paternalistic, approach.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Ava Singh (Quantum Works)",
+        "content": "Not directly. The main sentiment I'm picking up is 'tool fatigue.' Developers are hesitant to commit to any single agent framework because the landscape is changing so rapidly. They're afraid of picking the 'wrong' horse. So it's less about a specific agent and more about the instability of the whole ecosystem.\n\nIn reply to Noah Kim (Apex Dynamics)'s message:\nAva Singh (Quantum Works) curious if you've seen any shift in developer tool usage since Nexus Agent became directly referenceable from GitHub actions?",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Leo Schmidt (Bio-Nexus)",
+        "content": "Great article, really inspiring!\n\nIn reply to Ava Singh (Quantum Works)'s message:\nI just published a new post on the missing architectural layers in the Generative AI stack. With MCP gaining traction, it highlights the need for more standardized protocols to build robust and scalable AI systems. Would love to hear your thoughts!",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "Ava Singh (Quantum Works) curious if you've seen any shift in developer tool usage since Nexus Agent became directly referenceable from GitHub actions?",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "Tagging the folks at OrchestrateAI as well.\n\nIn reply to Ava Singh (Quantum Works)'s message:\nI just published a new post on the missing architectural layers in the Generative AI stack. With MCP gaining traction, it highlights the need for more standardized protocols to build robust and scalable AI systems. Would love to hear your thoughts!",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "The team at Alpic should see this.\n\nIn reply to Ava Singh (Quantum Works)'s message:\nI just published a new post on the missing architectural layers in the Generative AI stack. With MCP gaining traction, it highlights the need for more standardized protocols to build robust and scalable AI systems. Would love to hear your thoughts!",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Ava Singh (Quantum Works)",
+        "content": "I just published a new post on the missing architectural layers in the Generative AI stack. With MCP gaining traction, it highlights the need for more standardized protocols to build robust and scalable AI systems. Would love to hear your thoughts!",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "The Generative AI Infrastructure Gap: 8 Protocols We Need Now",
+            "description": "The rapid evolution of AI is creating architectural debt. These are the 8 critical patterns and protocols we need to define to build the next generation of AI infrastructure.",
+            "type": "article"
+          }
+        ],
+        "link": ""
+      }
+    ]
+  },
+  {
+    "id": "1348220289225592872",
+    "name": "📱-Edge-And-Embedded-Ai",
+    "type": "text",
+    "position": 19,
+    "parent": "1348214680770052136",
+    "message_count": 22,
+    "messages": [
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "Cloudflare is more 'near-edge' than true edge. Their massive network of PoPs creates an edge-like experience with low latency, but you're still running in their data centers.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "The key difference is that 'local' compute is highly heterogeneous (different OS, CPU, RAM), while 'edge' compute (like Cloudflare Workers) is a standardized, homogeneous environment.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "I distinguish between 'local' and 'edge' based on the compute environment's nature.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "If it's running in the browser via WebAssembly, I'd call that edge.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "Right, if it's running on your machine via a CLI tool, that's 'local'.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Lucas Müller (ConnectSphere)",
+        "content": "Got it. So it doesn't have to be on a remote server. An MCP running on the user's device to control local applications would also be considered 'at the edge'.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "Exactly. When I say Edge+MCP, I'm talking about running the MCP server itself in an edge environment, close to the user.\n\nIn reply to Lucas Müller (ConnectSphere)'s message:\nWhat's the distinction you're making with 'Edge+MCP'? MCP is just a protocol; it can run anywhere. I'm currently building a demo where the LLM runs locally in-browser with transformers.js, and it communicates with both remote MCPs and a local MCP that controls the web app's UI.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "Mozilla's recent work on Wasm agents is super relevant here.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "Wasm Agents: Trustworthy AI in Your Browser",
+            "description": "We explore how to build AI agents that run entirely client-side using WebAssembly, ensuring privacy and eliminating server costs.",
+            "type": "article"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Lucas Müller (ConnectSphere)",
+        "content": "What's the distinction you're making with 'Edge+MCP'? MCP is just a protocol; it can run anywhere. I'm currently building a demo where the LLM runs locally in-browser with transformers.js, and it communicates with both remote MCPs and a local MCP that controls the web app's UI.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "Great, I'll send you a connection request and a calendar invite.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "Yes, let's connect. I think there's a huge opportunity here.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Chloe Dubois (Aether AI)",
+        "content": "Let's set up a call with our engineering team. We've been focused on the Wasm runtime, but we're actively exploring killer applications for it in the AI space.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "To be clear, I'm thinking about MCPs that act as gateways to external APIs, not MCPs that perform local actions on the device.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "This is exactly what I was hoping to hear! 😍\n\nIn reply to Chloe Dubois (Aether AI)'s message:\nInteresting. We can definitely do something with our new edge component runtime, which is based on Wasm.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Chloe Dubois (Aether AI)",
+        "content": "Interesting. We can definitely do something with our new edge component runtime, which is based on Wasm.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "Think about it: right now, agent developers have to host their own MCP servers because there are few reliable, managed options. SaaS companies will be forced to offer their own managed MCP endpoints for their APIs. If they can offer these as secure, sandboxed Wasm components that run on the edge, they offload compute costs and reduce latency. It's a huge win.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "Instead of spinning up a server just to run a headless browser for a web scraping tool.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "The idea of combining Edge compute with MCP for browser automation agents is a game-changer.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "So, is there a simple way to convert an MCP that communicates over stdio (like from a CLI tool) into something that can run on the edge? Cloudflare Workers now supports MCPs, which is close. But that requires rewriting the tool logic in a worker-compatible format. I'm looking for a lazy path for my friend Bob.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Chloe Dubois (Aether AI)",
+        "content": "Hey Noah Kim (Apex Dynamics), you've come to the right place. 😉 Edge + MCP is going to be a massive trend.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "Chloe Dubois (Aether AI)",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "Anyone from Aether AI here? I've been thinking about the potential for edge-hosted MCP servers. Is this on your radar?",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      }
+    ]
+  },
+  {
+    "id": "1348375177741996113",
+    "name": "🛡-Cyber",
+    "type": "text",
+    "position": 17,
+    "parent": "1348214680770052136",
+    "message_count": 4,
+    "messages": [
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "Wow, I missed this one. That's a nasty bug.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "Another critical sudo vulnerability just dropped.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "New Sudo Vulnerability Allows Any Local User to Gain Root Privileges",
+            "description": "Two new vulnerabilities have been discovered in the ubiquitous Sudo command-line utility, allowing local attackers to escalate their privileges to root on most Linux and macOS systems.",
+            "type": "article"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Ben Carter (Momentum ML)",
+        "content": "This is a baffling decision. They're deprecating their native desktop apps to focus on a web extension that barely works half the time and violates browser extension best practices. A huge step backwards.\n\nIn reply to Ben Carter (Momentum ML)'s message:\nIf you use Keeper for password management, you might want to consider migrating in the next couple of months. For teams, self-hosted VaultWarden or 1Password are far superior anyway.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Ben Carter (Momentum ML)",
+        "content": "If you use Keeper for password management, you might want to consider migrating in the next couple of months. For teams, self-hosted VaultWarden or 1Password are far superior anyway.",
+        "attachments": [
+          {
+            "name": "keeper_deprecation_email.png",
+            "url": ""
+          }
+        ],
+        "embeds": [],
+        "link": ""
+      }
+    ]
+  },
+  {
+    "id": "1348375429815337094",
+    "name": "🎛-Infrastructure",
+    "type": "text",
+    "position": 21,
+    "parent": "1348214680770052136",
+    "message_count": 8,
+    "messages": [
+      {
+        "author": "Maxence Maireaux (Formance)",
+        "content": "Patience is a virtue in the cloud <:troll:927870812969639958>\n\nIn reply to Ben Carter (Momentum ML)'s message:\nUpdate: The instance finally provisioned after about 36 hours. 😅",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Ben Carter (Momentum ML)",
+        "content": "Update: The instance finally provisioned after about 36 hours. 😅\n\nIn reply to Ben Carter (Momentum ML)'s message:\nIt's definitely not a quota issue; my limits are fine. It feels like a genuine capacity shortage, but I suspect there's a bug in their capacity scheduler.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Ben Carter (Momentum ML)",
+        "content": "It's definitely not a quota issue; my limits are fine. It feels like a genuine capacity shortage, but I suspect there's a bug in their capacity scheduler.\n\nIn reply to Noah Kim (Apex Dynamics)'s message:\nI believe AWS maintains separate capacity pools and quotas for on-demand vs. spot instances.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "Our AWS contact should be able to look into this.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "I believe AWS maintains separate capacity pools and quotas for on-demand vs. spot instances.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Ben Carter (Momentum ML)",
+        "content": "Specifically, trying to get a p4d.24xlarge in us-east-1.\n\nIn reply to Kenji Tanaka (NeuroNet)'s message:\nTagging our AWS guy.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "Tagging our AWS guy.\n\nIn reply to Ben Carter (Momentum ML)'s message:\nCan anyone from the AWS world explain this? I can get a spot instance immediately, but if I try to launch an on-demand instance of the exact same type, I get an 'Insufficient capacity' error.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Ben Carter (Momentum ML)",
+        "content": "Can anyone from the AWS world explain this? I can get a spot instance immediately, but if I try to launch an on-demand instance of the exact same type, I get an 'Insufficient capacity' error.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      }
+    ]
+  },
+  {
+    "id": "1348382082841444382",
+    "name": "🧬-Bio-Tech-Health-Chemistry",
+    "type": "text",
+    "position": 15,
+    "parent": "1348214680770052136",
+    "message_count": 2,
+    "messages": [
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "Hannah Bull (Entalpic)",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "William Johnson (ByteForge)",
+        "content": "Hi folks - I'm hosting an informal get-together for founders in the biotech / deeptech space next Tuesday at our office in Cambridge. Very casual, just a chance to connect. Let me know if you're interested in joining!",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      }
+    ]
+  },
+  {
+    "id": "1349424216994349076",
+    "name": "🤖-Robotic",
+    "type": "text",
+    "position": 25,
+    "parent": "1348214680770052136",
+    "message_count": 4,
+    "messages": [
+      {
+        "author": "Zoe Williams (RoboGen)",
+        "content": "😉 We've been busy. 🧑‍🍳",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "Zoe Williams (RoboGen) is this your team? 😄",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Leo Schmidt (Bio-Nexus)",
+        "content": "Hey everyone, RoboGen just released a new open-source robotics platform that looks amazing.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "Introducing RoboGen One - An Open-Source Platform for Embodied AI",
+            "description": "A new, affordable, and highly capable robotic arm for researchers and hobbyists to explore the future of AI.",
+            "type": "article"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Ben Carter (Momentum ML)",
+        "content": "This new robotics company, 'Sanctuary AI', just raised a $100M Series B. Their work on general-purpose humanoid robots looks incredible. https://sanctuary.ai",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "Sanctuary AI | AI for work",
+            "description": "Our mission is to create the world's first human-like intelligence in general-purpose robots that will help us work more safely, efficiently, and sustainably.",
+            "type": "link"
+          }
+        ],
+        "link": ""
+      }
+    ]
+  },
+  {
+    "id": "1349424604698902670",
+    "name": "💻-Programming",
+    "type": "text",
+    "position": 24,
+    "parent": "1348214680770052136",
+    "message_count": 16,
+    "messages": [
+      {
+        "author": "Arnaud Porterie (Vibe)",
+        "content": "Here's a comment from one of the study's authors clarifying their methodology. They acknowledge the limitations.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Arnaud Porterie (Vibe)",
+        "content": "Even if it only proves that there's a steep learning curve for effectively using AI tools, that's a valuable finding in itself.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "William Johnson (ByteForge)",
+        "content": "Exactly. And their sample size is tiny. It takes weeks of deliberate practice to get good at prompting and working with an AI pair programmer. You can't just drop it on someone and expect immediate productivity gains.\n\nIn reply to Ethan Brown (CodeFlow)'s message:\nThat's a fair point about the study's methodology. In the real world, developers use their judgment to decide when an AI tool is appropriate for a task. You wouldn't use it for complex architectural decisions, but you might for writing boilerplate or tests. Randomly assigning tasks ignores this crucial element of developer choice and expertise.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Ethan Brown (CodeFlow)",
+        "content": "That's a fair point about the study's methodology. In the real world, developers use their judgment to decide when an AI tool is appropriate for a task. You wouldn't use it for complex architectural decisions, but you might for writing boilerplate or tests. Randomly assigning tasks ignores this crucial element of developer choice and expertise.\n\nI understand why the researchers did it—to avoid selection bias—but a more realistic experiment might involve letting developers choose which tasks they think are AI-suitable, and then randomizing within that pool.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Arnaud Porterie (Vibe)",
+        "content": "I'm sure everyone has seen this study from Acme Research on AI's impact on developer productivity.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "Measuring the Real-World Impact of AI on Experienced Developers",
+            "description": "Our latest study finds that while AI coding assistants can improve speed on simple tasks, they show no significant productivity gain on complex, open-ended software engineering problems.",
+            "type": "article"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "The future is now, old man.",
+        "attachments": [
+          {
+            "name": "agent_swarm.png",
+            "url": ""
+          }
+        ],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "This is awesome. I'm building a test harness for multi-agent systems that does something very similar.\n\nIn reply to Kenji Tanaka (NeuroNet)'s message:\nThis video shows a 'swarm' of coding agents working in parallel on different parts of a codebase. Wild stuff.",
+        "attachments": [
+          {
+            "name": "multi-agent-system.png",
+            "url": ""
+          }
+        ],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "This video shows a 'swarm' of coding agents working in parallel on different parts of a codebase. Wild stuff.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "Terragon: Parallel AI Coding with a Swarm of Agents",
+            "description": "This demo showcases the Terragon platform, where multiple AI agents can be deployed to work on a single codebase in parallel, dramatically accelerating development.",
+            "type": "video"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Alex Ivanov (CogniCore)",
+        "content": "For anyone curious, you can get an LLM to generate the mermaid.js code for a flowchart like this, then render it. Super useful for visualizing complex logic.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "Haven't used Phind in a while, but this is a cool feature. The LLM generated a flowchart to explain the code it wrote. (pinging the Conception team)",
+        "attachments": [
+          {
+            "name": "phind_flowchart.png",
+            "url": ""
+          }
+        ],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "This new tool from Nya looks very promising for giving coding agents better context.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "",
+            "description": "Introducing Nia: give your coding agent long-term memory and full codebase context via MCP.",
+            "type": "rich"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "The winning project, 'Opencode', was really slick. A CLI tool written in Go.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "I saw a great post from a hackathon where they had all the top coding agents competing to solve the same problem.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Mia Johansson (GameCraft AI)",
+        "content": "The code looks like an internal tool they quickly packaged up to compete with the new Nexus Agent.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Mia Johansson (GameCraft AI)",
+        "content": "Nope, sticking with Nexus Agent for now. It's been great.\n\nIn reply to Kenji Tanaka (NeuroNet)'s message:\nHas anyone tried the new Gemini CLI tool?",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "Has anyone tried the new Gemini CLI tool?",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      }
+    ]
+  },
+  {
+    "id": "1349763169610104892",
+    "name": "🕹-Gaming",
+    "type": "text",
+    "position": 20,
+    "parent": "1348214680770052136",
+    "message_count": 9,
+    "messages": [
+      {
+        "author": "Ethan Brown (CodeFlow)",
+        "content": "Great interview. His perspective on AGI and simulation is fascinating. Thanks for sharing.\n\nIn reply to Kenji Tanaka (NeuroNet)'s message:\nNew interview with John Romero just dropped.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "New interview with John Romero just dropped.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "John Romero on the Future of AGI, Game Development, and Simulated Worlds",
+            "description": "The legendary creator of Doom shares his thoughts on where AI is heading and its potential to revolutionize gaming and create truly intelligent NPCs.",
+            "type": "video"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Ben Carter (Momentum ML)",
+        "content": "If you like strategy games, check out '0 A.D.', it's a full-fledged, open-source RTS like Age of Empires. For shooters, 'Xonotic' is a classic arena FPS with a great community.\n\nIn reply to Julien Seveno (Lightpanda 🐼)'s message:\nI'm looking for something that's complex enough to be interesting, but with a codebase that's approachable for a side project.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "Xonotic - The Free and Fast Arena Shooter",
+            "description": "A free and fast-paced first-person shooter for Windows, macOS, and Linux.",
+            "type": "link"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Mia Johansson (GameCraft AI)",
+        "content": "I'm looking for something that's complex enough to be interesting, but with a codebase that's approachable for a side project.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Mia Johansson (GameCraft AI)",
+        "content": "I was thinking of trying to implement some RL algorithms for NPC behavior, and maybe add some LLM-powered dialogue.\n\nIn reply to Ben Carter (Momentum ML)'s message:\nSure, there are tons. What kind of game are you interested in?",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "Any game made with the Godot engine is open source by nature!",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Ben Carter (Momentum ML)",
+        "content": "Sure, there are tons. What kind of game are you interested in?\n\nIn reply to Mia Johansson (GameCraft AI)'s message:\nDoes anyone know of any good open-source games that are fun to hack on?",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Mia Johansson (GameCraft AI)",
+        "content": "Does anyone know of any good open-source games that are fun to hack on?",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Ben Carter (Momentum ML)",
+        "content": "The new console from 'Playdate' looks so cool.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "Playdate - A New Handheld Gaming System",
+            "description": "It's yellow. It fits in your pocket. It has a beautiful black and white screen. And it has a crank.",
+            "type": "link"
+          }
+        ],
+        "link": ""
+      }
+    ]
+  },
+  {
+    "id": "1379014562887499786",
+    "name": "🇺🇸-San-Francisco",
+    "type": "text",
+    "position": 30,
+    "parent": "1379014152487440516",
+    "message_count": 1,
+    "messages": [
+      {
+        "author": "Maria Chen (CyberSynth)",
+        "content": "We're hosting a casual rooftop get-together tomorrow in SF for folks in the AI space. If you're around and want to talk shop over some drinks and snacks, come by! Lucas Müller (ConnectSphere) will be there too!",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "The AI Founders Mixer · Luma",
+            "description": "A casual networking event for AI founders, researchers, and builders. Join us on the rooftop for good conversation and great views.",
+            "type": "article"
+          }
+        ],
+        "link": ""
+      }
+    ]
+  },
+  {
+    "id": "1379014611801608224",
+    "name": "🇩🇪-Berlin",
+    "type": "text",
+    "position": 51,
+    "parent": "1379014152487440516",
+    "message_count": 4,
+    "messages": [
+      {
+        "author": "Leo Schmidt (Bio-Nexus)",
+        "content": "Perfect, thank you so much!\n\nIn reply to Sofia Rodriguez (LogicLoom)'s message:\nLeo Schmidt (Bio-Nexus) you can book a free trial day pass here: [link to fake booking site]. For a monthly desk, you'll have to contact them directly, but they're usually pretty flexible.",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Sofia Rodriguez (LogicLoom)",
+        "content": "Leo Schmidt (Bio-Nexus) you can book a free trial day pass here: [link to fake booking site]. For a monthly desk, you'll have to contact them directly, but they're usually pretty flexible.",
+        "attachments": [],
+        "embeds": [
+          {
+            "title": "Factory Berlin | Memberships",
+            "description": "Join our community of creators. We offer flexible memberships for individuals and teams, with access to our vibrant workspaces and events.",
+            "type": "article"
+          }
+        ],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "Maybe Sofia Rodriguez (LogicLoom) knows a good spot!",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Leo Schmidt (Bio-Nexus)",
+        "content": "@here Hey Berliners! Any recommendations for a good, affordable co-working space? I'm a newly-bootstrapped founder, so my budget is tight. Thanks!",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      }
+    ]
+  },
+  {
+    "id": "1379014794723463240",
+    "name": "🇳🇱-Amsterdam",
+    "type": "text",
+    "position": 47,
+    "parent": "1379014152487440516",
+    "message_count": 3,
+    "messages": [
+      {
+        "author": "Noah Kim (Apex Dynamics)",
+        "content": "Let's do it! 🔥",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Sophie Martin (Nether AI)",
+        "content": "Seems like we need to get the Amsterdam chapter more active!",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      },
+      {
+        "author": "Kenji Tanaka (NeuroNet)",
+        "content": "Welcome to the channel Sophie Martin (Nether AI)!",
+        "attachments": [],
+        "embeds": [],
+        "link": ""
+      }
+    ]
+  }
+]
