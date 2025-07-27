@@ -1,0 +1,200 @@
+# Fashion Analysis Pipeline
+# Analyzes fashion photos, identifies garments, imagines variations, and generates new images
+
+domain = "fashion_analysis"
+definition = "A pipeline for analyzing fashion photos, identifying garments, and generating variations with modified details"
+
+[concept]
+FashionPhoto = "An input fashion photograph showing one or more garments"
+GarmentAnalysis = "Detailed analysis of garments in the photo including type, style, colors, patterns, and key details"
+DetailVariation = "A creative variation idea for modifying one specific detail of a garment"
+ImagePrompt = "A detailed text prompt for generating a new fashion image with the variation"
+GeneratedImage = "A synthetically generated fashion photo with the modified detail"
+FashionReport = "A comprehensive report of the analysis and variation process"
+
+[pipe]
+[pipe.analyze_garments]
+PipeLLM = "Analyze the fashion photo and identify all garments and their details"
+inputs = { fashion_photo = "FashionPhoto" }
+output = "GarmentAnalysis"
+llm = "llm_for_vision_analysis"
+system_prompt = """
+You are an expert fashion analyst with deep knowledge of clothing design, fashion trends, and garment construction.
+Your role is to analyze fashion photographs and provide detailed descriptions of all visible garments.
+Focus on identifying specific design elements, materials, colors, patterns, silhouettes, and styling details.
+"""
+prompt_template = """
+Analyze this fashion photograph in detail:
+
+@fashion_photo
+
+Provide a comprehensive analysis including:
+
+**Garments Identified:**
+- List each visible garment (e.g., dress, jacket, pants, shoes, accessories)
+- For each garment, describe:
+  - Type and category
+  - Silhouette and fit
+  - Materials (apparent fabric type, texture)
+  - Colors (specific color names, not just "blue" but "navy blue" or "cobalt")
+  - Patterns or prints (if any)
+  - Key design details (buttons, zippers, seams, embellishments)
+  - Style characteristics (vintage, modern, minimalist, etc.)
+
+**Overall Styling:**
+- How the garments work together
+- Color palette coordination
+- Style aesthetic (e.g., casual, formal, streetwear, bohemian)
+
+**Notable Details:**
+- Unique or interesting design elements
+- Quality indicators
+- Potential modification points
+
+Be specific and detailed in your descriptions to enable accurate variation generation.
+"""
+
+[pipe.imagine_variation]
+PipeLLM = "Generate a creative variation idea for one specific garment detail"
+inputs = { garment_analysis = "GarmentAnalysis" }
+output = "DetailVariation"
+llm = "llm_for_creative_design"
+system_prompt = """
+You are a creative fashion designer with expertise in garment modification and trend forecasting.
+Your role is to imagine interesting and feasible variations to existing garment details that would create compelling new designs.
+Focus on single, specific modifications that would significantly change the garment's appearance while maintaining its core function.
+"""
+prompt_template = """
+Based on this garment analysis, imagine a creative variation for ONE specific detail:
+
+@garment_analysis
+
+Requirements for the variation:
+1. **Select ONE garment** from the analysis to modify
+2. **Choose ONE specific detail** to change (e.g., collar style, sleeve length, pattern, color, texture, closure type, hem style)
+3. **Propose a creative variation** that:
+   - Is fashion-forward and interesting
+   - Maintains the garment's functionality
+   - Creates a notable visual difference
+   - Is technically feasible to produce
+
+**Output Format:**
+- **Selected Garment:** [Name the specific garment]
+- **Original Detail:** [Describe the current detail being modified]
+- **Proposed Variation:** [Detailed description of the new version]
+- **Design Rationale:** [Why this change would be interesting/beneficial]
+- **Visual Impact:** [How this would change the overall appearance]
+
+Example variations:
+- Converting a button-down collar to an oversized bow collar
+- Changing straight-leg pants to wide palazzo style
+- Adding asymmetrical color blocking to a solid dress
+- Transforming regular sleeves to dramatic bell sleeves
+- Converting a regular hem to a high-low asymmetrical hem
+"""
+
+[pipe.create_image_prompt]
+PipeLLM = "Create a detailed prompt for generating the varied fashion image"
+inputs = { garment_analysis = "GarmentAnalysis", detail_variation = "DetailVariation" }
+output = "ImagePrompt"
+llm = "llm_for_prompt_engineering"
+system_prompt = """
+You are an expert in AI image generation prompts, specifically for fashion photography and clothing design.
+Your role is to create detailed, specific prompts that will generate high-quality fashion images with precise modifications.
+Focus on clear descriptions that AI image generators can accurately interpret.
+"""
+prompt_template = """
+Create a detailed image generation prompt based on:
+
+**Original Analysis:**
+@garment_analysis
+
+**Proposed Variation:**
+@detail_variation
+
+**Requirements:**
+1. Maintain all aspects of the original photo EXCEPT the specified variation
+2. Use specific fashion and photography terminology
+3. Include lighting, pose, and composition details
+4. Specify the exact modification clearly
+5. Ensure the prompt is detailed enough for accurate generation
+
+**Prompt Structure:**
+- **Subject & Pose:** [Description of the model/person and pose]
+- **Modified Garment:** [Detailed description incorporating the variation]
+- **Other Garments:** [Maintain original descriptions]
+- **Photography Style:** [Lighting, background, composition]
+- **Quality Modifiers:** [Professional, high-resolution, etc.]
+
+**Output the final prompt as a single, cohesive description suitable for AI image generation.**
+
+Example format:
+"Professional fashion photography of [subject description] wearing [modified garment with variation] and [other garments], [pose and styling], [lighting and background], high-resolution, editorial quality, detailed fabric textures"
+"""
+
+[pipe.generate_fashion_report]
+PipeLLM = "Create a comprehensive report of the analysis and variation process"
+inputs = { 
+    garment_analysis = "GarmentAnalysis", 
+    detail_variation = "DetailVariation", 
+    image_prompt = "ImagePrompt" 
+}
+output = "FashionReport"
+llm = "llm_for_report_generation"
+system_prompt = """
+You are a fashion industry analyst creating comprehensive reports on garment analysis and design variations.
+Your reports should be professional, detailed, and suitable for fashion designers, buyers, and trend analysts.
+"""
+prompt_template = """
+Create a comprehensive fashion analysis report based on:
+
+**Original Analysis:**
+@garment_analysis
+
+**Design Variation:**
+@detail_variation
+
+**Generated Prompt:**
+@image_prompt
+
+**Report Structure:**
+
+# Fashion Analysis & Variation Report
+
+## Executive Summary
+[Brief overview of the analysis and proposed variation]
+
+## Original Garment Analysis
+[Detailed breakdown of identified garments and their characteristics]
+
+## Proposed Design Variation
+[Detailed description of the suggested modification]
+
+## Design Rationale
+[Explanation of why this variation would be compelling]
+
+## Market Potential
+[Assessment of commercial viability and target audience]
+
+## Technical Considerations
+[Manufacturing and design implementation notes]
+
+## Visual Generation Strategy
+[How the AI prompt was constructed to achieve the variation]
+
+## Recommendations
+[Next steps for implementation or further development]
+
+Make the report professional and actionable for fashion industry professionals.
+"""
+
+[pipe.fashion_analysis_sequence]
+PipeSequence = "Complete fashion analysis and variation generation pipeline"
+inputs = { fashion_photo = "FashionPhoto" }
+output = "FashionReport"
+steps = [
+    { pipe = "analyze_garments", result = "garment_analysis" },
+    { pipe = "imagine_variation", result = "detail_variation" },
+    { pipe = "create_image_prompt", result = "image_prompt" },
+    { pipe = "generate_fashion_report", result = "fashion_report" },
+]

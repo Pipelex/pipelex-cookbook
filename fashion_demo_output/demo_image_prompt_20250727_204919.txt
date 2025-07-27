@@ -1,0 +1,11 @@
+Fashion Image Generation Prompt
+================================
+
+Professional fashion photography of a confident young woman in business attire, 
+standing with hands on hips against a clean white studio backdrop. She wears a 
+navy blue blazer with an elegant oversized bow collar (replacing traditional lapels), 
+white cotton button-down shirt, high-waisted charcoal gray straight-leg trousers, 
+and black leather pointed-toe pumps with 3-inch heels. Gold chain necklace and 
+stud earrings complete the look. Studio lighting creates subtle shadows and 
+highlights fabric textures. Editorial fashion photography style, high-resolution, 
+professional quality, detailed fabric textures.
