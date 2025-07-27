@@ -18,13 +18,8 @@ classifiers = [
 
 dependencies = [
     "beautifulsoup4==4.13.4",
-    "pipelex[mistralai,anthropic,google,bedrock,fal]==0.6.9",
+    "pipelex[mistralai,anthropic,google,bedrock,fal] @ git+https://github.com/Pipelex/pipelex.git@feature/Enable-native-concepts-in-input-memory",
 ]
-
-
-[tool.uv.sources]
-pipelex = { path = "../pipelex", editable = true }
-
 
 [project.optional-dependencies]
 compat = ["backports.strenum>=1.3.0 ; python_version < '3.11'"]
