@@ -1,7 +1,7 @@
 import asyncio
 
 from pipelex import pretty_print
-from pipelex.core.working_memory_factory import WorkingMemoryFactory
+from pipelex.core.stuff_content import ImageContent
 from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
@@ -13,17 +13,12 @@ IMAGE_URL = "assets/gantt/gantt_tree_house.png"
 
 
 async def extract_gantt(image_url: str) -> GanttChart:
-    # Create Working Memory
-    working_memory = WorkingMemoryFactory.make_from_image(
-        image_url=image_url,
-        concept_str="gantt.GanttImage",
-        name="gantt_chart_image",
-    )
-
     # Run the pipe
     pipe_output = await execute_pipeline(
         pipe_code="extract_gantt_by_steps",
-        working_memory=working_memory,
+        input_memory={
+            "gantt_chart_image": ImageContent(url=image_url),
+        },
     )
     # Output the result
     return pipe_output.main_stuff_as(content_type=GanttChart)
