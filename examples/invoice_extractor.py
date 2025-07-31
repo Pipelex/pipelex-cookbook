@@ -2,7 +2,6 @@ import asyncio
 
 from pipelex import pretty_print
 from pipelex.core.stuff_content import ListContent, PDFContent
-from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline

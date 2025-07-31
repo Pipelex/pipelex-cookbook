@@ -2,9 +2,6 @@
 import asyncio
 
 from pipelex import pretty_print
-from pipelex.core.stuff_content import TextContent
-from pipelex.core.stuff_factory import StuffFactory
-from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
@@ -15,31 +12,19 @@ from utils.input_utils import optional_sample_text_from_path
 SAMPLE_NAME = "write_tweet"
 
 
-async def optimize_tweet(draft_tweet_str: str, writing_style_str: str) -> OptimizedTweet:
-    # Create the draft tweet stuff
-    draft_tweet = StuffFactory.make_stuff(
-        concept_str="tech_tweet.DraftTweet",
-        content=TextContent(text=draft_tweet_str),
-        name="draft_tweet",
-    )
-    writing_style = StuffFactory.make_stuff(
-        concept_str="tech_tweet.WritingStyle",
-        content=TextContent(text=writing_style_str),
-        name="writing_style",
-    )
-
-    # Create working memory
-    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(
-        [
-            draft_tweet,
-            writing_style,
-        ]
-    )
-
-    # Run the sequence pipe
+async def optimize_tweet(draft_tweet: str, writing_style: str) -> OptimizedTweet:
     pipe_output = await execute_pipeline(
         pipe_code="optimize_tweet_sequence",
-        working_memory=working_memory,
+        input_memory={
+            "draft_tweet": {
+                "concept": "tweet.DraftTweet",
+                "content": draft_tweet,
+            },
+            "writing_style": {
+                "concept": "tech_tweet.WritingStyle",
+                "content": writing_style,
+            },
+        },
     )
 
     # Get the optimized tweet
@@ -102,8 +87,8 @@ writing_style = optional_sample_text_from_path(filename="writing_style.md") or S
 # run sample using asyncio
 optimized_tweet = asyncio.run(
     optimize_tweet(
-        draft_tweet_str=draft_tweet,
-        writing_style_str=writing_style,
+        draft_tweet=draft_tweet,
+        writing_style=writing_style,
     )
 )
 

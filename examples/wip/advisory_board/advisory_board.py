@@ -2,7 +2,6 @@ import asyncio
 from typing import Tuple
 
 from pipelex import pretty_print
-from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
@@ -45,16 +44,11 @@ async def run_advisory_orchestrator(problem_description: str) -> Tuple[Strategic
     """
     print("🚀 Running Master Advisory Orchestrator\n")
 
-    # Create Working Memory with the business problem
-    working_memory = WorkingMemoryFactory.make_from_text(
-        text=problem_description,
-        name="user_input",
-    )
-
-    # Run the main orchestrator pipeline
     pipe_output = await execute_pipeline(
         pipe_code="master_advisory_orchestrator",
-        working_memory=working_memory,
+        input_memory={
+            "user_input": problem_description,
+        },
     )
 
     # Output the result

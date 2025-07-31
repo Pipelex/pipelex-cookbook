@@ -1,7 +1,6 @@
 import asyncio
 
 from pipelex.core.stuff_content import ImageContent
-from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
