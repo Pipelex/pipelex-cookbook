@@ -10,6 +10,17 @@ VariationIdea = "Creative idea for modifying a fashion detail"
 Concept = "Prompt for generating a varied fashion image"
 refines = "images.ImgGenPrompt"
 
+[pipe.fashion_variation_pipeline]
+PipeSequence = "Complete pipeline to analyze fashion and generate variation"
+inputs = { fashion_photo = "Image" }
+output = "Image"
+steps = [
+    { pipe = "analyze_fashion_photo", result = "fashion_analysis" },
+    { pipe = "generate_variation_idea", result = "variation_idea" },
+    { pipe = "create_generation_prompt", result = "imgg_prompt" },
+    { pipe = "generate_fashion_variation", result = "varied_fashion_photo" },
+]
+
 [pipe.analyze_fashion_photo]
 PipeLLM = "Analyze garments and style in a fashion photo"
 inputs = { fashion_photo = "Image" }
@@ -37,22 +48,20 @@ output = "VariationIdea"
 system_prompt = "You are a creative fashion designer who specializes in subtle but impactful design variations."
 llm = "llm_for_creative_writing"
 prompt_template = """
-Based on this fashion analysis, create an interesting variation for ONE specific detail of ONE garment.
+Based on this fashion analysis, create an interesting variation for ONE of the important garments.
 
 @fashion_analysis
 
-Choose a single garment and one specific detail to modify. The variation should be:
-- Subtle but noticeable
+Choose a single garment to modify. The variation should be:
+- Noticeable but compatible with the rest of the outfit
 - Fashionable and realistic
 - Something that would genuinely improve or modernize the look
-- Feasible to achieve through AI image generation
 
 Examples of good variations:
 - Change shirt color from blue to burgundy
-- Add subtle floral pattern to plain dress
-- Change button style from plastic to wood
+- Add floral pattern to plain dress
 - Modify collar shape from round to V-neck
-- Change texture from smooth to ribbed knit
+- Change shape of hat or other accessory
 """
 
 [pipe.create_generation_prompt]
@@ -62,7 +71,7 @@ output = "FashionGenerationPrompt"
 system_prompt = "You are an expert at writing detailed prompts for AI image generation, specializing in fashion photography."
 llm = "llm_to_write_imgg_prompt"
 prompt_template = """
-Create a detailed image generation prompt based on the original photo analysis and the variation idea.
+Create an image generation prompt based on the original photo analysis and the variation idea.
 
 Original Fashion Analysis:
 @fashion_analysis
@@ -70,12 +79,13 @@ Original Fashion Analysis:
 Variation to Apply:
 @variation_idea
 
-Write a single comprehensive prompt_text that captures:
+Write a single positive prompt that captures:
 - The scene and setting details from the original photo
 - The complete outfit description with the specific variation applied
 - Photography style and technical specifications
 
 The generated image should maintain the same composition, pose, lighting, and setting as the original, with only the specified garment detail changed.
+Keep it concise.
 """
 
 [pipe.generate_fashion_variation]
@@ -83,15 +93,4 @@ PipeImgGen = "Generate the fashion photo with variation applied"
 inputs = { imgg_prompt = "FashionGenerationPrompt" }
 output = "Image"
 nb_steps = 8
-
-[pipe.fashion_variation_pipeline]
-PipeSequence = "Complete pipeline to analyze fashion and generate variation"
-inputs = { fashion_photo = "Image" }
-output = "Image"
-steps = [
-    { pipe = "analyze_fashion_photo", result = "fashion_analysis" },
-    { pipe = "generate_variation_idea", result = "variation_idea" },
-    { pipe = "create_generation_prompt", result = "imgg_prompt" },
-    { pipe = "generate_fashion_variation", result = "varied_fashion_photo" },
-]
 

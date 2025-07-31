@@ -2,14 +2,12 @@ import asyncio
 
 from pipelex import pretty_print
 from pipelex.core.stuff_content import ImageContent
-from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
 SAMPLE_NAME = "fashion_variation"
-# You can replace this with your own fashion photo URL or local file path
-IMAGE_URL = "https://example.com/fashion-photo.jpg"  # Replace with actual fashion photo
+IMAGE_URL = "https://storage.googleapis.com/public_test_files_7fa6_4277_9ab/fashion/fashion_photo_1.jpg"
 
 
 async def generate_fashion_variation(image_url: str) -> ImageContent:
@@ -19,17 +17,12 @@ async def generate_fashion_variation(image_url: str) -> ImageContent:
     2. Creating a creative variation idea for one garment detail
     3. Generating a new image with the variation applied
     """
-    # Create Working Memory with the fashion photo
-    working_memory = WorkingMemoryFactory.make_from_image(
-        image_url=image_url,
-        concept_str="native.Image",
-        name="fashion_photo",
-    )
-
     # Run the fashion variation pipeline
     pipe_output = await execute_pipeline(
         pipe_code="fashion_variation_pipeline",
-        working_memory=working_memory,
+        input_memory={
+            "fashion_photo": ImageContent(url=image_url),
+        },
     )
 
     # Output the result - a new image with the fashion variation

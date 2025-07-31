@@ -1,7 +1,7 @@
 import asyncio
 
 from pipelex import pretty_print
-from pipelex.core.stuff_content import ListContent
+from pipelex.core.stuff_content import ListContent, PDFContent
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
@@ -9,23 +9,16 @@ from pipelex.pipeline.execute import execute_pipeline
 
 from pipelex_libraries.pipelines.examples.invoice_extractor.invoice import Invoice
 
-
-def read_text_file(file_path: str) -> str:
-    with open(file_path, "r") as f:
-        return f.read()
+SAMPLE_NAME = "invoice_extractor"
+PDF_URL = "assets/invoice_extractor/invoice_1.pdf"
 
 
-async def process_expense_report() -> ListContent[Invoice]:
-    invoice_pdf_path = "assets/invoice_extractor/invoice_1.pdf"
-
-    # Create Stuff objects
-    working_memory = WorkingMemoryFactory.make_from_pdf(
-        pdf_url=invoice_pdf_path,
-        name="ocr_input",
-    )
+async def process_expense_report(pdf_url: str) -> ListContent[Invoice]:
     pipe_output = await execute_pipeline(
         pipe_code="process_invoice",
-        working_memory=working_memory,
+        input_memory={
+            "ocr_input": PDFContent(url=pdf_url),
+        },
     )
 
     return pipe_output.main_stuff_as_list(item_type=Invoice)
@@ -35,7 +28,7 @@ async def process_expense_report() -> ListContent[Invoice]:
 Pipelex.make()
 
 # run sample using asyncio
-expense_validations = asyncio.run(process_expense_report())
+expense_validations = asyncio.run(process_expense_report(pdf_url=PDF_URL))
 
 # Print results
 pretty_print(expense_validations, title="Expense validations")
