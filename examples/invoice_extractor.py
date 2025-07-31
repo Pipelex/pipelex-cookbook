@@ -12,7 +12,7 @@ SAMPLE_NAME = "invoice_extractor"
 PDF_URL = "assets/invoice_extractor/invoice_1.pdf"
 
 
-async def process_expense_report(pdf_url: str) -> ListContent[Invoice]:
+async def process_invoice(pdf_url: str) -> ListContent[Invoice]:
     pipe_output = await execute_pipeline(
         pipe_code="process_invoice",
         input_memory={
@@ -27,7 +27,7 @@ async def process_expense_report(pdf_url: str) -> ListContent[Invoice]:
 Pipelex.make()
 
 # run sample using asyncio
-expense_validations = asyncio.run(process_expense_report(pdf_url=PDF_URL))
+expense_validations = asyncio.run(process_invoice(pdf_url=PDF_URL))
 
 # Print results
 pretty_print(expense_validations, title="Expense validations")
