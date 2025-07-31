@@ -1,11 +1,17 @@
 import asyncio
 
 from pipelex import pretty_print
-from pipelex.core.stuff_factory import StuffFactory
-from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
+from pipelex.tools.misc.file_utils import load_text_from_path
+
+TEXT_PATH = "assets/retrieve_then_answer/contract.txt"
+QUESTION = """
+What are the transaction fees for using the WebTech Solutions data processing platform,
+and how are they calculated?
+"""
+CLIENT_INSTRUCTIONS = "If there are multiple fees, take the last one in time."
 
 
 def read_text_from_file(file_path: str) -> str:
@@ -13,29 +19,18 @@ def read_text_from_file(file_path: str) -> str:
         return file.read()
 
 
-async def retrieve_then_answer():
-    # Example image path - adjust as needed
-    text_path = "assets/retrieve_then_answer/contract.txt"
-
-    text_stuff = StuffFactory.make_from_str(str_value=read_text_from_file(text_path), name="text", concept_str="Text")
-    question_stuff = StuffFactory.make_from_str(
-        str_value="What are the transaction fees for using the WebTech Solutions data processing \
-            platform, and how are they calculated?",
-        name="question",
-        concept_str="answer.Question",
-    )
-    client_instructions = StuffFactory.make_from_str(
-        str_value="If there are multiple fees, take the last one in time.",
-        name="client_instructions",
-        concept_str="Text",
-    )
-
-    # Create working memory from image
-    working_memory = WorkingMemoryFactory.make_from_multiple_stuffs(stuff_list=[text_stuff, question_stuff, client_instructions])
-
-    # Execute the retrieve_then_answer pipeline
+async def retrieve_then_answer(text_path: str, question: str, client_instructions: str):
     pipe_output = await execute_pipeline(
-        pipe_code="retrieve_then_answer", working_memory=working_memory, dynamic_output_concept_code="contracts.Fees"
+        pipe_code="retrieve_then_answer",
+        dynamic_output_concept_code="contracts.Fees",
+        input_memory={
+            "text": load_text_from_path(path=text_path),
+            "question": {
+                "concept": "answer.Question",
+                "content": question,
+            },
+            "client_instructions": client_instructions,
+        },
     )
 
     return pipe_output
@@ -45,7 +40,13 @@ async def retrieve_then_answer():
 Pipelex.make()
 
 # Run sample using asyncio
-evaluation_result = asyncio.run(retrieve_then_answer())
+evaluation_result = asyncio.run(
+    retrieve_then_answer(
+        text_path=TEXT_PATH,
+        question=QUESTION,
+        client_instructions=CLIENT_INSTRUCTIONS,
+    )
+)
 
 # Print results
 pretty_print(evaluation_result, title="Purchase Document Evaluation")
