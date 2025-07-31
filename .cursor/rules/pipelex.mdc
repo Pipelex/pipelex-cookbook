@@ -413,18 +413,15 @@ IMAGE_URL = "assets/gantt/gantt_tree_house.png"
 
 
 async def extract_gantt(image_url: str) -> GanttChart:
-    # Create Working Memory
-    stuff = StuffFactory.make_from_image(
-        image_url=image_url,
-        concept_str="gantt.GanttImage",
-        name="gantt_chart_image",
-    )
-    working_memory = WorkingMemoryFactory.make_from_multiple_stuff([stuff])
-
     # Run the pipe
     pipe_output = await execute_pipeline(
         pipe_code="extract_gantt_by_steps",
-        working_memory=working_memory,
+        input_memory={
+            "gantt_chart_image": {
+                "concept": "gantt.GanttImage",
+                "content": ImageContent(url=image_url),
+            }
+        },
     )
     # Output the result
     return pipe_output.main_stuff_as(content_type=GanttChart)

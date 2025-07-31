@@ -1,5 +1,6 @@
 import asyncio
 
+from pipelex.core.stuff_content import PDFContent
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
@@ -12,14 +13,11 @@ PDF_PATH = "assets/extract_dpe/dpe_single_page.pdf"
 
 
 async def extract_dpe(pdf_url: str) -> Dpe:
-    working_memory = WorkingMemoryFactory.make_from_pdf(
-        pdf_url=pdf_url,
-        concept_str="PDF",
-        name="ocr_input",
-    )
     pipe_output = await execute_pipeline(
         pipe_code="power_extractor_dpe",
-        working_memory=working_memory,
+        input_memory={
+            "ocr_input": PDFContent(url=pdf_url),
+        },
     )
     working_memory = pipe_output.working_memory
     dpe: Dpe = working_memory.get_list_stuff_first_item_as(name="dpe", item_type=Dpe)
