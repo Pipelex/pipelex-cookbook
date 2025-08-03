@@ -393,9 +393,8 @@ Be sure to make the proper choice of prefix for each insertion.
 **DO NOT write "$topic" alone in an isolated line.**
 **DO write things like "Write an essay about $topic" included in an actual sentence.**
 
-# Example to start a pipe when its done
+# Example to execute a pipeline
 
-Here is an example of how to start a pipe:
 ```python
 import asyncio
 
@@ -443,7 +442,7 @@ The input memory is a dictionary of key-value pairs, where the key is the name o
 StuffContentOrData = Dict[str, Any] | StuffContent | List[Any] | str
 ImplicitMemory = Dict[str, StuffContentOrData]
 ```
-As you can seen, we made it so different ways can be used to define that stuff using structurec content or data.
+As you can seen, we made it so different ways can be used to define that stuff using structured content or data.
 
 So here are a few concrete examples of calls to execute_pipeline with various ways to set up the input memory:
 
