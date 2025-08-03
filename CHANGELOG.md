@@ -1,5 +1,19 @@
 # Changelog
 
+## [v0.2.9] - 2025-08-02
+
+- Bump `pipelex` to `v0.6.10`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+
+### Added
+ - Comprehensive Docs/Example Updates: Updated 15+ example files to demonstrate new API patterns
+ - New Fashion Variation Pipeline: Complete AI fashion pipeline showcasing multi-step image generation
+
+### Changed
+ - Streamlined Pipeline Execution: Replaced complex WorkingMemoryFactory pattern with intuitive input_memory dictionary approach
+ - Template Enhancements: Improved Jinja2 template syntax with proper tagging
+ - Parameter Consistency: Standardized input parameter naming across pipelines
+ - Vertex AI Integration: Updated to stable Gemini model identifiers
+
 ## [v0.2.8] - 2025-07-25
 
 - Bump `pipelex` to `v0.6.8`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)

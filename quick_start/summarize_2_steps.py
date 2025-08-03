@@ -1,20 +1,17 @@
 import asyncio
 
 from pipelex import pretty_print
-from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
 
 async def summarize_by_steps(text: str):
-    # Load the working memory with the text
-    working_memory = WorkingMemoryFactory.make_from_text(text=text)
-
-    # Run the pipe
     pipe_output = await execute_pipeline(
         pipe_code="summarize_by_steps",
-        working_memory=working_memory,
+        input_memory={
+            "text": text,
+        },
     )
 
     summary_text = pipe_output.main_stuff_as_text

@@ -1,6 +1,6 @@
 import asyncio
 
-from pipelex.core.working_memory_factory import WorkingMemoryFactory
+from pipelex.core.stuff_content import ImageContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
@@ -12,14 +12,14 @@ IMAGE_URL = "assets/extract_table/table_1.png"
 
 
 async def extract_table(table_screenshot: str) -> HtmlTable:
-    working_memory = WorkingMemoryFactory.make_from_image(
-        image_url=table_screenshot,
-        concept_str="tables.TableScreenshot",
-        name="table_screenshot",
-    )
     pipe_output = await execute_pipeline(
         pipe_code="extract_html_table_and_review",
-        working_memory=working_memory,
+        input_memory={
+            "table_screenshot": {
+                "concept": "tables.TableScreenshot",
+                "content": ImageContent(url=table_screenshot),
+            }
+        },
     )
     html_table = pipe_output.main_stuff_as(content_type=HtmlTable)
     return html_table

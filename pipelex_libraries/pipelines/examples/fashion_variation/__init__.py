@@ -1,0 +1,1 @@
+# Fashion variation pipeline module
