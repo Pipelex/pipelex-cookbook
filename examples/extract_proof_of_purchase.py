@@ -1,6 +1,6 @@
 import asyncio
 
-from pipelex.core.working_memory_factory import WorkingMemoryFactory
+from pipelex.core.stuff_content import PDFContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
@@ -12,14 +12,11 @@ PDF_PATH = "assets/extract_proof_of_purchase/restaurant_invoice.pdf"
 
 
 async def extract_proof_of_purchase(pdf_url: str) -> ProofOfPurchase:
-    working_memory = WorkingMemoryFactory.make_from_pdf(
-        pdf_url=pdf_url,
-        concept_str="PDF",
-        name="ocr_input",
-    )
     pipe_output = await execute_pipeline(
         pipe_code="power_extractor_proof_of_purchase",
-        working_memory=working_memory,
+        input_memory={
+            "ocr_input": PDFContent(url=pdf_url),
+        },
     )
     working_memory = pipe_output.working_memory
     proof_of_purchase: ProofOfPurchase = working_memory.get_list_stuff_first_item_as(name="proof_of_purchase", item_type=ProofOfPurchase)

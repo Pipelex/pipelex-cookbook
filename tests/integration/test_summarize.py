@@ -1,7 +1,6 @@
 import pytest
 from pipelex import pretty_print
 from pipelex.core.pipe_run_params import PipeRunMode
-from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.file_utils import load_text_from_path
@@ -22,13 +21,11 @@ class TestSummarize:
         file_path: str,
     ):
         text = load_text_from_path(file_path)
-        # Load the working memory with the text
-        working_memory = WorkingMemoryFactory.make_from_text(text=text)
-
-        # Run the pipe
         pipe_output = await execute_pipeline(
             pipe_code="test_summarize_by_steps",
-            working_memory=working_memory,
+            input_memory={
+                "text": text,
+            },
             pipe_run_mode=pipe_run_mode,
         )
 

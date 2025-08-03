@@ -12,7 +12,6 @@ from utils.results_utils import output_result
 
 SAMPLE_NAME = "discord_newsletter"
 DISCORD_EXTRACT_PATH = "assets/discord_newsletter/discord_extract.json"
-# DISCORD_EXTRACT_PATH = "assets/discord_newsletter/discord_sample.json"
 
 
 async def write_discord_newsletter(discord_extract_path: str) -> str:
