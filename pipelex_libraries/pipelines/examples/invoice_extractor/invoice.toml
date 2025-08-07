@@ -6,7 +6,8 @@ InvoiceDetails = "The category of the invoice"
 
 [pipe]
 [pipe.process_invoice]
-PipeSequence = "Process relevant information from an invoice"
+type = "PipeSequence"
+definition = "Process relevant information from an invoice"
 inputs = { ocr_input = "PDF" }
 output = "Invoice"
 steps = [
@@ -15,13 +16,15 @@ steps = [
 ]
 
 [pipe.extract_text_from_image]
-PipeOcr = "Extract page contents from an image"
+type = "PipeOcr"
+definition = "Extract page contents from an image"
 inputs = { ocr_input = "PDF" }
 output = "Page"
 page_views = true
 
 [pipe.extract_invoice]
-PipeSequence = "Extract invoice information from an invoice text transcript"
+type = "PipeSequence"
+definition = "Extract invoice information from an invoice text transcript"
 inputs = { invoice_page = "Page" }
 output = "Invoice"
 steps = [
@@ -30,7 +33,8 @@ steps = [
 ]
 
 [pipe.analyze_invoice]
-PipeLLM = "Analyze the invoice"
+type = "PipeLLM"
+definition = "Analyze the invoice"
 inputs = { "invoice_page.page_view" = "Image", invoice_page = "Page" }
 output = "InvoiceDetails"
 prompt_template = """
@@ -40,7 +44,8 @@ Analyze this invoice:
 """
 
 [pipe.extract_invoice_data]
-PipeLLM = "Extract invoice information from an invoice text transcript"
+type = "PipeLLM"
+definition = "Extract invoice information from an invoice text transcript"
 inputs = { "invoice_page.page_view" = "Image", invoice_details = "InvoiceDetails", invoice_page = "Page" }
 output = "Invoice"
 llm = "llm_to_extract_invoice"

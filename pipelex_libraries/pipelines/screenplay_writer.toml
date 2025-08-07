@@ -17,7 +17,8 @@ FormattedScreenplay = "A screenplay formatted according to industry standards"
 [pipe]
 
 [pipe.analyze_pitch]
-PipeLLM = "Analyze and expand the pitch with character ideas and synopsis"
+type = "PipeLLM"
+definition = "Analyze and expand the pitch with character ideas and synopsis"
 inputs = { pitch = "Pitch" }
 output = "DetailedPitch"
 system_prompt = """
@@ -37,7 +38,8 @@ Create a response that includes:
 """
 
 [pipe.create_characters]
-PipeLLM = "Create detailed character profiles"
+type = "PipeLLM"
+definition = "Create detailed character profiles"
 inputs = { detailed_pitch = "DetailedPitch" }
 output = "CharacterList"
 system_prompt = """
@@ -51,7 +53,8 @@ Create detailed character profiles based on these character ideas:
 """
 
 [pipe.create_chapters]
-PipeLLM = "Create chapters with brief descriptions"
+type = "PipeLLM"
+definition = "Create chapters with brief descriptions"
 inputs = { detailed_pitch = "DetailedPitch" }
 output = "ChapterList"
 system_prompt = """
@@ -72,7 +75,8 @@ Create 4 chapters that tell this story. For each chapter:
 """
 
 [pipe.create_scene_outline]
-PipeLLM = "Create a basic outline for a scene"
+type = "PipeLLM"
+definition = "Create a basic outline for a scene"
 inputs = { chapter = "Chapter", characters = "CharacterList", detailed_pitch = "DetailedPitch" }
 output = "Scene"
 system_prompt = """
@@ -102,7 +106,8 @@ Create a scene outline with:
 """
 
 [pipe.develop_scene_content]
-PipeLLM = "Develop the scene's content with detailed action and dialogue"
+type = "PipeLLM"
+definition = "Develop the scene's content with detailed action and dialogue"
 inputs = { scene = "Scene", characters = "CharacterList" }
 output = "Scene"
 system_prompt = """

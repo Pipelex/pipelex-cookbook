@@ -7,11 +7,12 @@ FashionAnalysis = "Analysis of garments and style in a fashion photo"
 VariationIdea = "Creative idea for modifying a fashion detail"
 
 [concept.FashionGenerationPrompt]
-Concept = "Prompt for generating a varied fashion image"
+definition = "Prompt for generating a varied fashion image"
 refines = "images.ImgGenPrompt"
 
 [pipe.fashion_variation_pipeline]
-PipeSequence = "Complete pipeline to analyze fashion and generate variation"
+type = "PipeSequence"
+definition = "Complete pipeline to analyze fashion and generate variation"
 inputs = { fashion_photo = "Image" }
 output = "Image"
 steps = [
@@ -22,7 +23,8 @@ steps = [
 ]
 
 [pipe.analyze_fashion_photo]
-PipeLLM = "Analyze garments and style in a fashion photo"
+type = "PipeLLM"
+definition = "Analyze garments and style in a fashion photo"
 inputs = { fashion_photo = "Image" }
 output = "FashionAnalysis"
 system_prompt = "You are a fashion expert with deep knowledge of clothing, styles, and fashion photography."
@@ -42,7 +44,8 @@ Focus on:
 """
 
 [pipe.generate_variation_idea]
-PipeLLM = "Generate a creative variation idea for one garment detail"
+type = "PipeLLM"
+definition = "Generate a creative variation idea for one garment detail"
 inputs = { fashion_analysis = "FashionAnalysis" }
 output = "VariationIdea"
 system_prompt = "You are a creative fashion designer who specializes in subtle but impactful design variations."
@@ -65,7 +68,8 @@ Examples of good variations:
 """
 
 [pipe.create_generation_prompt]
-PipeLLM = "Create a detailed prompt for image generation"
+type = "PipeLLM"
+definition = "Create a detailed prompt for image generation"
 inputs = { fashion_analysis = "FashionAnalysis", variation_idea = "VariationIdea", fashion_photo = "Image" }
 output = "FashionGenerationPrompt"
 system_prompt = "You are an expert at writing detailed prompts for AI image generation, specializing in fashion photography."
@@ -89,7 +93,8 @@ Keep it concise.
 """
 
 [pipe.generate_fashion_variation]
-PipeImgGen = "Generate the fashion photo with variation applied"
+type = "PipeImgGen"
+definition = "Generate the fashion photo with variation applied"
 inputs = { imgg_prompt = "FashionGenerationPrompt" }
 output = "Image"
 nb_steps = 8
