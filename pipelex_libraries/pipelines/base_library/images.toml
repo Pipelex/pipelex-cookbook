@@ -5,11 +5,11 @@ definition = "Generic image-related domain"
 VisualDescription = "Visual description of something"
 
 [concept.ImgGenPrompt]
-Concept = "Prompt to generate an image"
+definition = "Prompt to generate an image"
 refines = "Text"
 
 [concept.Photo]
-Concept = "Photo"
+definition = "Photo"
 structure = "ImageContent"
 refines = "Image"
 
