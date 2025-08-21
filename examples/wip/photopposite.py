@@ -1,8 +1,7 @@
 import asyncio
-from pathlib import Path
 
 from pipelex import pretty_print
-from pipelex.core.stuff_content import ImageContent
+from pipelex.core.stuffs.stuff_content import ImageContent
 from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
@@ -28,7 +27,7 @@ async def generate_photopposite(image_url: str):
 
 
 # Start Pipelex
-Pipelex.make()
+Pipelex.make(relative_config_folder_path="../../pipelex_libraries", from_file=True)
 
 print(f"Using photo: {IMAGE_URL}")
 

@@ -37,7 +37,7 @@ async def retrieve_then_answer(text_path: str, question: str, client_instruction
 
 
 # Start Pipelex
-Pipelex.make()
+Pipelex.make(relative_config_folder_path="../../pipelex_libraries", from_file=True)
 
 # Run sample using asyncio
 evaluation_result = asyncio.run(

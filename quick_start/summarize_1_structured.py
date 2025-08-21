@@ -24,7 +24,7 @@ with open("assets/summarize/sample_text_1.txt", "r", encoding="utf-8") as f:
     text = f.read()
 
 # start Pipelex
-Pipelex.make()
+Pipelex.make(relative_config_folder_path="../pipelex_libraries", from_file=True)
 # run sample using asyncio
 summary = asyncio.run(summarize_with_structure(text))
 

@@ -66,7 +66,7 @@ python examples/fashion_variation.py
 import asyncio
 from pipelex.core.working_memory_factory import WorkingMemoryFactory
 from pipelex.pipeline.execute import execute_pipeline
-from pipelex.core.stuff_content import ImageContent
+from pipelex.core.stuffs.stuff_content import ImageContent
 
 async def generate_fashion_variation(image_url: str) -> ImageContent:
     # Create working memory with fashion photo

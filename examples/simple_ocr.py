@@ -1,7 +1,7 @@
 import asyncio
 
 from pipelex import pretty_print
-from pipelex.core.stuff_content import ListContent, PageContent, PDFContent
+from pipelex.core.stuffs.stuff_content import ListContent, PageContent, PDFContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
@@ -23,7 +23,7 @@ async def simple_ocr(pdf_url: str):
 
 
 # start Pipelex
-Pipelex.make()
+Pipelex.make(relative_config_folder_path="../pipelex_libraries", from_file=True)
 # run sample using asyncio
 page_content_list = asyncio.run(simple_ocr(pdf_url=PDF_URL))
 

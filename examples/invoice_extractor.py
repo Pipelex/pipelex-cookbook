@@ -1,7 +1,7 @@
 import asyncio
 
 from pipelex import pretty_print
-from pipelex.core.stuff_content import ListContent, PDFContent
+from pipelex.core.stuffs.stuff_content import ListContent, PDFContent
 from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
@@ -24,7 +24,7 @@ async def process_invoice(pdf_url: str) -> ListContent[Invoice]:
 
 
 # start Pipelex
-Pipelex.make()
+Pipelex.make(relative_config_folder_path="../pipelex_libraries", from_file=True)
 
 # run sample using asyncio
 expense_validations = asyncio.run(process_invoice(pdf_url=PDF_URL))

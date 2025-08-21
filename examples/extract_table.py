@@ -1,6 +1,6 @@
 import asyncio
 
-from pipelex.core.stuff_content import ImageContent
+from pipelex.core.stuffs.stuff_content import ImageContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
@@ -26,7 +26,7 @@ async def extract_table(table_screenshot: str) -> HtmlTable:
 
 
 # start Pipelex
-Pipelex.make()
+Pipelex.make(relative_config_folder_path="../pipelex_libraries", from_file=True)
 # run sample using asyncio
 html_table = asyncio.run(extract_table(IMAGE_URL))
 

@@ -2,8 +2,8 @@ import asyncio
 from typing import List
 
 from pipelex import pretty_print
-from pipelex.core.stuff_content import ImageContent, PageContent, PDFContent, TextAndImagesContent, TextContent
-from pipelex.core.working_memory import WorkingMemory
+from pipelex.core.memory.working_memory import WorkingMemory
+from pipelex.core.stuffs.stuff_content import ImageContent, PageContent, PDFContent, TextAndImagesContent, TextContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
@@ -58,7 +58,7 @@ async def extract_generic(pdf_url: str) -> TextAndImagesContent:
 
 
 # start Pipelex
-Pipelex.make()
+Pipelex.make(relative_config_folder_path="../pipelex_libraries", from_file=True)
 # run sample using asyncio
 markdown_and_images = asyncio.run(extract_generic(pdf_url=PDF_PATH))
 
