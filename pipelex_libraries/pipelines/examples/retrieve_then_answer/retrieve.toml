@@ -6,7 +6,8 @@ RetrievedExcerpt = "An excerpt from a text with its justification for being rele
 
 [pipe]
 [pipe.retrieve_excerpts]
-PipeLLM = "Find the most relevant excerpt in a text that answers a specific question"
+type = "PipeLLM"
+definition = "Find the most relevant excerpt in a text that answers a specific question"
 inputs = { text = "Text", question = "questions.Question" }
 output = "RetrievedExcerpt"
 llm = "llm_to_retrieve"

@@ -1,6 +1,6 @@
 import pytest
 from pipelex import pretty_print
-from pipelex.core.pipe_run_params import PipeRunMode
+from pipelex.core.pipes.pipe_run_params import PipeRunMode
 from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.file_utils import load_text_from_path

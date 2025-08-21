@@ -53,7 +53,7 @@ make cleanenv                 - Remove virtual env and lock files
 make cleanderived             - Remove extraneous compiled files, caches, logs, etc.
 make cleanlibraries           - Remove pipelex_libraries
 make cleanall                 - Remove all -> cleanenv + cleanderived + cleanlibraries
-make reinitbaselibrary        - Remove pipelex_libraries and init-libraries again
+make reinitbaselibrary        - Remove pipelex_libraries and make init libraries again
 make reinstall                - Reinstall dependencies
 
 make merge-check-ruff-lint    - Run ruff merge check without updating files
@@ -128,15 +128,15 @@ env: check-uv
 
 init: env
 	$(call PRINT_TITLE,"Running pipelex init")
-	$(VENV_PIPELEX) init-libraries
-	$(VENV_PIPELEX) init-config
+	$(VENV_PIPELEX) init libraries
+	$(VENV_PIPELEX) init config
 
 install: env
 	$(call PRINT_TITLE,"Installing dependencies")
 	@. $(VIRTUAL_ENV)/bin/activate && \
 	uv sync --all-extras && \
-	$(VENV_PIPELEX) init-libraries && \
-	$(VENV_PIPELEX) init-config && \
+	$(VENV_PIPELEX) init libraries && \
+	$(VENV_PIPELEX) init config && \
 	echo "Installed Pipelex cookbook dependencies in ${VIRTUAL_ENV} and initialized Pipelex libraries";
 
 lock: env

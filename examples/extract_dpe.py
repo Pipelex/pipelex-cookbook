@@ -1,6 +1,7 @@
 import asyncio
 
-from pipelex.core.stuff_content import PDFContent
+from pipelex import pretty_print
+from pipelex.core.stuffs.stuff_content import PDFContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
@@ -27,6 +28,7 @@ async def extract_dpe(pdf_url: str) -> Dpe:
 Pipelex.make()
 # run sample using asyncio
 dpe = asyncio.run(extract_dpe(pdf_url=PDF_PATH))
+pretty_print(dpe, title="DPE")
 
 # output results
 output_dir = get_results_dir_path(sample_name=SAMPLE_NAME)

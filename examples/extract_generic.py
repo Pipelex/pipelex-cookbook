@@ -2,8 +2,8 @@ import asyncio
 from typing import List
 
 from pipelex import pretty_print
-from pipelex.core.stuff_content import ImageContent, PageContent, PDFContent, TextAndImagesContent, TextContent
-from pipelex.core.working_memory import WorkingMemory
+from pipelex.core.memory.working_memory import WorkingMemory
+from pipelex.core.stuffs.stuff_content import ImageContent, PageContent, PDFContent, TextAndImagesContent, TextContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 

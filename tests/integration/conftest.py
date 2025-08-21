@@ -12,8 +12,15 @@ from rich.traceback import Traceback
 def reset_pipelex_config_fixture():
     # Code to run before each test
     print("\n[magenta]pipelex setup[/magenta]")
+    pipelex_instance: pipelex.pipelex.Pipelex
     try:
-        pipelex_instance = pipelex.pipelex.Pipelex.make()
+        try:
+            pipelex_instance = pipelex.pipelex.Pipelex.get_instance()
+            pipelex_instance.teardown()
+        except Exception as e:
+            pipelex_instance = pipelex.pipelex.Pipelex.make(relative_config_folder_path="../../pipelex_libraries", from_file=True)
+            print(f"Error getting instance: {e}")
+
         config = get_config()
         pretty_print(config, title="Test config")
         assert isinstance(config, pipelex.config.PipelexConfig)
