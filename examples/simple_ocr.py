@@ -1,7 +1,7 @@
 import asyncio
 
 from pipelex import pretty_print
-from pipelex.core.stuff_content import ListContent, PageContent, PDFContent
+from pipelex.core.stuffs.stuff_content import ListContent, PageContent, PDFContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
@@ -13,7 +13,7 @@ PDF_URL = "assets/simple_ocr/illustrated_train_article.pdf"
 
 async def simple_ocr(pdf_url: str):
     pipe_output = await execute_pipeline(
-        pipe_code="extract_page_contents_from_pdf",
+        pipe_code="ocr_page_contents_from_pdf",
         input_memory={
             "ocr_input": PDFContent(url=pdf_url),
         },
@@ -24,6 +24,7 @@ async def simple_ocr(pdf_url: str):
 
 # start Pipelex
 Pipelex.make()
+
 # run sample using asyncio
 page_content_list = asyncio.run(simple_ocr(pdf_url=PDF_URL))
 

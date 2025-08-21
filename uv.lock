@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.10"
 resolution-markers = [
     "python_full_version >= '3.12'",
@@ -1679,7 +1679,7 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.6.10"
+version = "0.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -1704,13 +1704,14 @@ dependencies = [
     { name = "rich" },
     { name = "shortuuid" },
     { name = "toml" },
+    { name = "tomlkit" },
     { name = "typer" },
     { name = "typing-extensions" },
     { name = "yattag" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ee/5a/4ba12e0024811880c8ce5a3c389c991b294239322cc0c0cd9db78ad877bb/pipelex-0.6.10.tar.gz", hash = "sha256:055036c2b11e53ae484e7afc24010463a15cd93ecce9d7b28b76147ff0b04923", size = 189229, upload-time = "2025-08-03T01:55:13.695Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b9/3d/7ced91f4d48b5daf77849c3f944644a1d1985571e55f013eaed4e7b25589/pipelex-0.7.0.tar.gz", hash = "sha256:6405875b1be3a4b473fcf5d32b06557361c0bf6f2e12e828d12f27239cdb8e02", size = 206520, upload-time = "2025-08-21T08:26:08.428Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/40/43/c0c73bde454b2a1e9cd6f55f7fe733bf1d8115d4ca7fccc5e22132bcae6b/pipelex-0.6.10-py3-none-any.whl", hash = "sha256:8726a419d8d3bfb38be40db9e454fdb7a19f36b2d752acb56a1c3f77be7d2b5d", size = 308932, upload-time = "2025-08-03T01:55:11.857Z" },
+    { url = "https://files.pythonhosted.org/packages/99/53/7daa50ed96ec64358401ce2a58a8826760591f86530c32165c5e311a8910/pipelex-0.7.0-py3-none-any.whl", hash = "sha256:68d723e38f6211e35ae488a6a1b4d74af2ed8e5fc7496ded8415edb26ee23883", size = 334549, upload-time = "2025-08-21T08:26:06.859Z" },
 ]
 
 [package.optional-dependencies]
@@ -1733,7 +1734,7 @@ mistralai = [
 
 [[package]]
 name = "pipelex-cookbook"
-version = "0.2.8"
+version = "0.3.0"
 source = { virtual = "." }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -1772,7 +1773,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], specifier = "==0.6.10" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], specifier = "==0.7.0" },
     { name = "pyright", marker = "extra == 'dev'", specifier = "==1.1.398" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
@@ -2463,6 +2464,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/5b/b9/1ed31d167be802da0fc95020d04cd27b7d7065cc6fbefdd2f9186f60d7bd/tomli-2.2.1-cp313-cp313-win32.whl", hash = "sha256:d3f5614314d758649ab2ab3a62d4f2004c825922f9e370b29416484086b264ec", size = 98724, upload-time = "2024-11-27T22:38:32.837Z" },
     { url = "https://files.pythonhosted.org/packages/c7/32/b0963458706accd9afcfeb867c0f9175a741bf7b19cd424230714d722198/tomli-2.2.1-cp313-cp313-win_amd64.whl", hash = "sha256:a38aa0308e754b0e3c67e344754dff64999ff9b513e691d0e786265c93583c69", size = 109383, upload-time = "2024-11-27T22:38:34.455Z" },
     { url = "https://files.pythonhosted.org/packages/6e/c2/61d3e0f47e2b74ef40a68b9e6ad5984f6241a942f7cd3bbfbdbd03861ea9/tomli-2.2.1-py3-none-any.whl", hash = "sha256:cb55c73c5f4408779d0cf3eef9f762b9c9f147a77de7b258bef0a5628adc85cc", size = 14257, upload-time = "2024-11-27T22:38:35.385Z" },
+]
+
+[[package]]
+name = "tomlkit"
+version = "0.13.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/cc/18/0bbf3884e9eaa38819ebe46a7bd25dcd56b67434402b66a58c4b8e552575/tomlkit-0.13.3.tar.gz", hash = "sha256:430cf247ee57df2b94ee3fbe588e71d362a941ebb545dec29b53961d61add2a1", size = 185207, upload-time = "2025-06-05T07:13:44.947Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bd/75/8539d011f6be8e29f339c42e633aae3cb73bffa95dd0f9adec09b9c58e85/tomlkit-0.13.3-py3-none-any.whl", hash = "sha256:c89c649d79ee40629a9fda55f8ace8c6a1b42deb912b2a8fd8d942ddadb606b0", size = 38901, upload-time = "2025-06-05T07:13:43.546Z" },
 ]
 
 [[package]]

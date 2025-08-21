@@ -6,12 +6,13 @@ system_prompt = "You are an expert at data tables and html syntax and you have a
 HtmlTable = "An HTML table"
 
 [concept.TableScreenshot]
-Concept = "A screenshot of a table (table in the sense of a data structure used to organize information in rows and columns)"
+definition = "A screenshot of a table (table in the sense of a data structure used to organize information in rows and columns)"
 refines = "Image"
 
 [pipe]
 [pipe.extract_html_table_from_image]
-PipeLLM = "Get an HTML table"
+type = "PipeLLM"
+definition = "Get an HTML table"
 inputs = { table_screenshot = "TableScreenshot" }
 output = "HtmlTable"
 llm = "llm_to_extract_tables"
@@ -27,7 +28,8 @@ Make sure you replicate the formatting (borders, text formatting, colors, text a
 """
 
 [pipe.review_html_table]
-PipeLLM = "Review an HTML table"
+type = "PipeLLM"
+definition = "Review an HTML table"
 inputs = { table_screenshot = "TableScreenshot", html_table = "HtmlTable" }
 output = "HtmlTable"
 llm = "llm_to_extract_tables"
@@ -44,7 +46,8 @@ Make sure you do not forget any text.
 
 
 [pipe.extract_html_table_and_review]
-PipeSequence = "Get an HTML table and review it"
+type = "PipeSequence"
+definition = "Get an HTML table and review it"
 inputs = { table_screenshot = "TableScreenshot" }
 output = "HtmlTable"
 steps = [
