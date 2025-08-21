@@ -481,7 +481,7 @@ So here are a few concrete examples of calls to execute_pipeline with various wa
 # Here we have a single input and it's an Image.
 # Because ImageContent is a native concept, we can use it directly as a value:
     pipe_output = await execute_pipeline(
-        pipe_code="fashion_variation_pipeline",
+        pipe_code="fashion_variation",
         input_memory={
             "fashion_photo": ImageContent(url=image_url),
         },
