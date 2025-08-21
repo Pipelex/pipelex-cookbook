@@ -1,7 +1,7 @@
 from typing import ClassVar
 
 from bs4 import BeautifulSoup
-from pipelex.core.stuff_content import StructuredContent
+from pipelex.core.stuffs.stuff_content import StructuredContent
 from pydantic import Field, model_validator
 from typing_extensions import Self
 

@@ -23,6 +23,7 @@ with open("assets/summarize/sample_text_3.txt", "r", encoding="utf-8") as f:
 
 # start Pipelex
 Pipelex.make()
+
 # run sample using asyncio
 summary_text = asyncio.run(summarize_by_steps(text))
 
