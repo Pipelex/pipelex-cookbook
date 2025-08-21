@@ -13,7 +13,8 @@ def reset_pipelex_config_fixture():
     # Code to run before each test
     print("\n[magenta]pipelex setup[/magenta]")
     try:
-        pipelex_instance = pipelex.pipelex.Pipelex.make()
+        pipelex_instance = pipelex.pipelex.Pipelex.make(relative_config_folder_path="../../pipelex_libraries", from_file=True)
+
         config = get_config()
         pretty_print(config, title="Test config")
         assert isinstance(config, pipelex.config.PipelexConfig)
@@ -25,3 +26,12 @@ def reset_pipelex_config_fixture():
     # Code to run after each test
     print("\n[magenta]pipelex teardown[/magenta]")
     pipelex_instance.teardown()
+
+
+@pytest.fixture(scope="function", autouse=True)
+def pretty():
+    # Code to run before each test
+    print("\n")
+    yield
+    # Code to run after each test
+    print("\n")

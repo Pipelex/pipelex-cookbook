@@ -77,8 +77,8 @@ from pipelex.config_pipelex import get_config
 
 from pipelex.core.pipe import PipeAbstract, update_job_metadata_for_pipe
 from pipelex.core.pipe_output import PipeOutput, PipeOutputType
-from pipelex.core.pipe_run_params import PipeRunParams
-from pipelex.core.pipe_run_params import PipeRunParams
+from pipelex.core.pipes.pipe_run_params import PipeRunParams
+from pipelex.core.pipes.pipe_run_params import PipeRunParams
 from pipelex.pipe_works.pipe_router_protocol import PipeRouterProtocol
 ```
 
