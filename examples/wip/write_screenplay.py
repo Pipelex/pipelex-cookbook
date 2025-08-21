@@ -27,7 +27,7 @@ async def generate_screenplay(pitch: str):
 
 
 # Start Pipelex
-Pipelex.make(relative_config_folder_path="../../pipelex_libraries", from_file=True)
+Pipelex.make()
 
 # Run the pipeline using asyncio
 screenplay = asyncio.run(generate_screenplay(pitch=PITCH))

@@ -36,7 +36,7 @@ async def main():
     print("=" * 60)
 
     # Initialize Pipelex
-    Pipelex.make(relative_config_folder_path="../pipelex_libraries", from_file=True)
+    Pipelex.make()
 
     try:
         # Generate the fashion variation

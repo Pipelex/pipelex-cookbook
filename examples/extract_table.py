@@ -26,7 +26,7 @@ async def extract_table(table_screenshot: str) -> HtmlTable:
 
 
 # start Pipelex
-Pipelex.make(relative_config_folder_path="../pipelex_libraries", from_file=True)
+Pipelex.make()
 # run sample using asyncio
 html_table = asyncio.run(extract_table(IMAGE_URL))
 

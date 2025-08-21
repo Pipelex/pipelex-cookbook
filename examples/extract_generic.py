@@ -58,7 +58,7 @@ async def extract_generic(pdf_url: str) -> TextAndImagesContent:
 
 
 # start Pipelex
-Pipelex.make(relative_config_folder_path="../pipelex_libraries", from_file=True)
+Pipelex.make()
 # run sample using asyncio
 markdown_and_images = asyncio.run(extract_generic(pdf_url=PDF_PATH))
 

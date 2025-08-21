@@ -33,7 +33,7 @@ async def optimize_tweet(draft_tweet: str, writing_style: str) -> OptimizedTweet
 
 
 # start Pipelex
-Pipelex.make(relative_config_folder_path="../../pipelex_libraries", from_file=True)
+Pipelex.make()
 
 
 # get sample data

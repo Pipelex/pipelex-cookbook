@@ -23,7 +23,8 @@ async def simple_ocr(pdf_url: str):
 
 
 # start Pipelex
-Pipelex.make(relative_config_folder_path="../pipelex_libraries", from_file=True)
+Pipelex.make()
+
 # run sample using asyncio
 page_content_list = asyncio.run(simple_ocr(pdf_url=PDF_URL))
 

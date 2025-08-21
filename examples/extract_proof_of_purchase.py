@@ -24,7 +24,7 @@ async def extract_proof_of_purchase(pdf_url: str) -> ProofOfPurchase:
 
 
 # start Pipelex
-Pipelex.make(relative_config_folder_path="../pipelex_libraries", from_file=True)
+Pipelex.make()
 # run sample using asyncio
 proof_of_purchase = asyncio.run(extract_proof_of_purchase(pdf_url=PDF_PATH))
 

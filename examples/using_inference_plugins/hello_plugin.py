@@ -22,7 +22,7 @@ async def hello_plugin():
 
 
 # start Pipelex
-Pipelex.make(relative_config_folder_path="../../pipelex_libraries", from_file=True)
+Pipelex.make()
 # register external plugin
 get_inference_manager().set_llm_worker_from_external_plugin(
     llm_handle="llm_plugin_example_using_openai",

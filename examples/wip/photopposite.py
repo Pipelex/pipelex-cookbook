@@ -27,7 +27,7 @@ async def generate_photopposite(image_url: str):
 
 
 # Start Pipelex
-Pipelex.make(relative_config_folder_path="../../pipelex_libraries", from_file=True)
+Pipelex.make()
 
 print(f"Using photo: {IMAGE_URL}")
 

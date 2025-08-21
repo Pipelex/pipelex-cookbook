@@ -34,7 +34,7 @@ async def write_discord_newsletter(discord_extract_path: str) -> str:
 
 
 # start Pipelex
-Pipelex.make(relative_config_folder_path="../../pipelex_libraries", from_file=True)
+Pipelex.make()
 
 # run sample using asyncio
 html_newsletter = asyncio.run(write_discord_newsletter(discord_extract_path=DISCORD_EXTRACT_PATH))

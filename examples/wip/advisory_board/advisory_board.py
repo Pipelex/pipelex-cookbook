@@ -58,7 +58,7 @@ async def run_advisory_orchestrator(problem_description: str) -> Tuple[Strategic
 
 
 # Start Pipelex
-Pipelex.make(relative_config_folder_path="../../../pipelex_libraries", from_file=True)
+Pipelex.make()
 
 # Run the advisory orchestrator
 strategic_report, strategic_report_markdown = asyncio.run(run_advisory_orchestrator(SAMPLE_BUSINESS_PROBLEM))

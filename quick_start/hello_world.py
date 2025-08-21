@@ -19,6 +19,6 @@ async def hello_world():
 
 
 # start Pipelex
-Pipelex.make(relative_config_folder_path="../pipelex_libraries", from_file=True)
+Pipelex.make()
 # run sample using asyncio
 asyncio.run(hello_world())

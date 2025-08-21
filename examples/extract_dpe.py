@@ -25,7 +25,7 @@ async def extract_dpe(pdf_url: str) -> Dpe:
 
 
 # start Pipelex
-Pipelex.make(relative_config_folder_path="../pipelex_libraries", from_file=True)
+Pipelex.make()
 # run sample using asyncio
 dpe = asyncio.run(extract_dpe(pdf_url=PDF_PATH))
 pretty_print(dpe, title="DPE")
