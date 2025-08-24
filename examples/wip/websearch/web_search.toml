@@ -1,0 +1,110 @@
+domain = "web_search"
+definition = "Web search agent that performs web searches and generates comprehensive responses incorporating search results"
+
+[concept]
+WebSearchQuery = "A web search query with configuration"
+WebSearchResult = "A single web search result"
+WebSearchResponse = "Response from web search with results and analysis"
+WebSearchAgentResponse = "Final response from the web search agent"
+
+[pipe]
+
+#################################################################
+# Web Search Pipeline
+#################################################################
+
+[pipe.perform_web_search]
+PipeFunc = "Perform web search using the web_search module"
+inputs = { query = "WebSearchQuery" }
+output = "native.Text"
+function = "web_search_pipeline.perform_web_search"
+
+[pipe.parse_search_results]
+PipeLLM = "Parse and structure web search results"
+inputs = { search_output = "native.Text", query = "WebSearchQuery" }
+output = "WebSearchResponse"
+system_prompt = "You are a web search result parser. Extract and structure information from web search results."
+prompt_template = """
+Parse the following web search results and extract structured information.
+
+Original Query: $query.query_text
+Search Type: $query.search_type
+Number of Results Requested: $query.num_results
+
+Web Search Results:
+@search_output
+
+Instructions:
+1. Extract the title, URL, domain, and main content for each result
+2. Identify if there are dates or source information available
+3. Create a structured response with all the search results
+4. Provide a summary of what was found
+5. Generate a comprehensive response that incorporates the search results
+
+Parse the results and return structured data.
+"""
+
+[pipe.generate_agent_response]
+PipeLLM = "Generate comprehensive agent response incorporating web search results"
+inputs = { user_query = "native.Text", search_response = "WebSearchResponse" }
+output = "WebSearchAgentResponse"
+system_prompt = "You are a helpful web search agent. Provide comprehensive answers based on web search results while being transparent about sources."
+prompt_template = """
+Generate a comprehensive response based on web search results.
+
+User Query: $user_query
+
+Web Search Results:
+@search_response
+
+Instructions:
+1. Analyze the user's query and the web search results
+2. Provide a comprehensive answer that directly addresses the query
+3. Incorporate relevant information from the search results
+4. Cite specific sources and URLs used
+5. Assess your confidence level based on the quality and relevance of results
+6. Be transparent about limitations if the search results don't fully answer the query
+7. Provide a summary of the key findings from the web search
+
+Generate a well-structured response that includes:
+- A comprehensive answer to the user's query
+- Summary of web search findings
+- List of sources used
+- Confidence level assessment
+"""
+
+#################################################################
+# Complete Web Search Agent Pipeline
+#################################################################
+
+[pipe.web_search_agent]
+PipeSequence = "Complete web search agent pipeline: search, parse, and generate response"
+inputs = { user_query = "native.Text" }
+output = "WebSearchAgentResponse"
+steps = [
+    { pipe = "create_search_query", result = "query" },
+    { pipe = "perform_web_search", result = "search_output" },
+    { pipe = "parse_search_results", result = "search_response" },
+    { pipe = "generate_agent_response", result = "final_response" }
+]
+
+[pipe.create_search_query]
+PipeLLM = "Create a web search query from user input"
+inputs = { user_query = "native.Text" }
+output = "WebSearchQuery"
+system_prompt = "You are a query optimization system. Convert user questions into effective web search queries."
+prompt_template = """
+Convert the user's question into an effective web search query.
+
+User Question: $user_query
+
+Instructions:
+1. Extract the key search terms from the user's question
+2. Create a focused, specific search query that will return relevant results
+3. Determine if this should be a general search or news search
+4. Set appropriate number of results (default to 3 for top results)
+5. Ensure the query is clear and specific enough to get good results
+
+Create an optimized web search query.
+"""
+

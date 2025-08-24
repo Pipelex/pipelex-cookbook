@@ -24,6 +24,7 @@ The folder wip contains work in progress. The pipelines in this folder are not s
   extracting text and images from each page.
 - `retrieve_then_answer.py` showcases a RAG (Retrieval-Augmented Generation) pipeline
   that first retrieves relevant information and then answers questions about documents.
+- `web_search.py` showcases a powerful websearch-augmented agent
 
 ## Running the Examples
 
