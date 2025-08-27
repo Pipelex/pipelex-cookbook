@@ -22,12 +22,11 @@ key_differences = "Key differences from the original"
 
 [concept.ImagePrompt]
 definition = "Detailed prompt for generating an image"
-refines = "images.ImgGenPrompt"
 
 [pipe.gen_photopposite]
 type = "PipeSequence"
 definition = "Analyze photo and generate its opposite"
-inputs = { photo = "native.Image" }
+inputs = { photo = "images.Photo" }
 output = "images.Photo"
 steps = [
     { pipe = "analyze_features", result = "feature_analysis" },

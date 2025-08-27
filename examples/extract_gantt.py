@@ -18,7 +18,7 @@ async def extract_gantt(image_url: str) -> GanttChart:
         pipe_code="extract_gantt_by_steps",
         input_memory={
             "gantt_chart_image": {
-                "concept": "gantt.GanttImage",
+                "concept": "gantt.GanttChartImage",
                 "content": ImageContent(url=image_url),
             }
         },
