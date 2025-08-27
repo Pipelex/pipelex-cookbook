@@ -20,7 +20,7 @@ StrategicReport = "Final comprehensive strategic report with unified recommendat
 type = "PipeSequence"
 definition = "Master orchestrator that processes business problems through multi-board consultation"
 inputs = { user_input = "Text" }
-output = "StrategicReport"
+output = "presentation.MarkdownReport"
 steps = [
     { pipe = "classify_business_problem", result = "business_problem" },
     { pipe = "select_advisory_boards", result = "selected_advisory_boards" },
