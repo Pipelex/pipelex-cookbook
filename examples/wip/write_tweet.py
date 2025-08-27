@@ -17,7 +17,7 @@ async def optimize_tweet(draft_tweet: str, writing_style: str) -> OptimizedTweet
         pipe_code="optimize_tweet_sequence",
         input_memory={
             "draft_tweet": {
-                "concept": "tweet.DraftTweet",
+                "concept": "tech_tweet.DraftTweet",
                 "content": draft_tweet,
             },
             "writing_style": {
@@ -96,8 +96,7 @@ optimized_tweet = asyncio.run(
 get_report_delegate().generate_report()
 
 # output results
-print(optimized_tweet.text)
-pretty_print(optimized_tweet.text, title="Optimized Tweet")
+pretty_print(optimized_tweet, title="Optimized Tweet")
 
 # Generate pipeline flowchart
 get_pipeline_tracker().output_flowchart()
