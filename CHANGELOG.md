@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.3.2] - 2025-08-27
+
+- Bump `pipelex` to `v0.8.1`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+
 ## [v0.3.1] - 2025-08-27
 
 - Bump `pipelex` to `v0.8.0`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
