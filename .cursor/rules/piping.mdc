@@ -5,7 +5,7 @@ alwaysApply: false
 ---
 Rules to write pipes:
 
-- To write the pipes toml, check out:
+- To write the pipes in the .plx files, check out:
 [pipes.mdc](mdc:.cursor/rules/pipes.mdc)
 
 - To write the structure classes for concepts used in pipes with structured generations, check out:

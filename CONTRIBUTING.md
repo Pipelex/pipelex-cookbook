@@ -1,7 +1,7 @@
 # Contributing to **Pipelex Cookbook**
 
 Thank you for sharing your pipeline!  
-This repository exists to showcase **working examples**. The most valuable contribution you can make is a **TOML pipeline (or a small set of them) that others can clone, run, and learn from.**
+This repository exists to showcase **working examples**. The most valuable contribution you can make is a **PLX pipeline (or a small set of them) that others can clone, run, and learn from.**
 
 ---
 
@@ -31,7 +31,7 @@ Bug-fixes to existing examples are welcome, but the core Pipelex library lives i
 pipelex-cookbook/
 ├── examples/             # Official, curated demos
 └── quick_start/          # Quick start examples
-└── pipelex_libraries/pipelines/<topic>/your_pipe.toml
+└── pipelex_libraries/pipelines/<topic>/your_pipe.plx
 
 ```
 
@@ -54,7 +54,7 @@ Choose or create a **topic folder** (`finance`, `games`, …) that best fits you
 ## Local Sanity Check
 
 ```bash
-# Validate TOML schema and I/O shapes
+# Validate PLX schema and I/O shapes
 make validate  # wraps `pipelex validate all`
 ```
 
