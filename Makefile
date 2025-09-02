@@ -151,7 +151,7 @@ update: env
 
 validate: env
 	$(call PRINT_TITLE,"Running setup sequence")
-	$(VENV_PIPELEX) validate
+	$(VENV_PIPELEX) validate all
 
 ##############################################################################################
 ############################      Cleaning                        ############################
