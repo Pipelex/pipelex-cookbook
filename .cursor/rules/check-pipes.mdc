@@ -9,7 +9,7 @@ When you modify the pipeline .toml files and/or the structures in the *.py files
 
 Do the following:
 
-1- Run `pipelex validate`
+1- Run `pipelex validate all`
 2- Fetch logs from the console
 3- Fix linting or validation issues
 

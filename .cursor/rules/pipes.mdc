@@ -6,7 +6,7 @@ alwaysApply: false
 # Pipeline Guide
 
 - Always first write your "plan" in natural langage, then transcribe it in pipelex.
-- Always run `pipelex validate` before finishing a task. It will ensure the pipe is runnable
+- Always run `pipelex validate all` before finishing a task. It will ensure the pipe is runnable
 
 # Pipeline Structure Guide
 
@@ -78,4 +78,4 @@ When building a pipeline:
 
 # Important tip
 
-Always run the cli `pipelex validate` when you are finished writing pipelines: This checks for errors. If there are errors, iterate.
+Always run the cli `pipelex validate all` when you are finished writing pipelines: This checks for errors. If there are errors, iterate.
