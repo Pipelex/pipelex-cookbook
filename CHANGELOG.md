@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.4.0] - 2025-09-02
+
+- Bump `pipelex` to `v0.9.0`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+- Changed all the files extension from `.toml` to `.plx`. Need to use pipelex extension.
+
 ## [v0.3.2] - 2025-08-27
 
 - Bump `pipelex` to `v0.8.1`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)

@@ -10,7 +10,7 @@ PipeBlueprint = "Details enabling to create a pipe"
 
 [concept.PipelexBundleBlueprint]
 definition = "Details enabling to create a pipeline"
-structure = "PipelexBundleBlueprintStuff"
+structure = "PipelexBundleBlueprint"
 
 [pipe]
 [pipe.build_blueprint]
@@ -51,7 +51,6 @@ definition = "Generate a pipeline blueprint from natural language requirements"
 inputs = { build_pipeline_rules = "Text", pipeline_draft = "Text", pipeline_name = "Text", domain = "Text", requirements = "Text" }
 output = "PipelexBundleBlueprint"
 llm = "llm_to_pipelex"
-# structuring_method = "preliminary_text"
 prompt_template = """
 You are a Pipelex pipeline architect. Build a structured pipeline blueprint from the provided pipeline draft text.
 
