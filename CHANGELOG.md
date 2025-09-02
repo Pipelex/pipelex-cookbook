@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.4.1] - 2025-09-02
+
+- Update cursor rules with `PLX` extension naming
+
 ## [v0.4.0] - 2025-09-02
 
 - Bump `pipelex` to `v0.9.0`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)

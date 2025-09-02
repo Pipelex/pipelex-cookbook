@@ -7,7 +7,7 @@ This python 3.11 repo named pipelex-cookbook has several packages placed at the 
 
 - `examples` -> official examples of using pipelex
 - `quick_start` -> very simple pipelines to get your hands on pipelex
-- `pipelex_libraries` -> pipelines defined using the Pipelex language (.toml and .py files)
+- `pipelex_libraries` -> pipelines defined using the Pipelex language (.plx and .py files)
 - `utils` -> utilities and helpers
 - `tests`
 
