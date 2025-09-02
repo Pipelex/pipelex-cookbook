@@ -1,7 +1,6 @@
 import pipelex.config
 import pipelex.pipelex
 import pytest
-from pipelex import pretty_print
 from pipelex.config import get_config
 from rich import print
 from rich.console import Console
@@ -15,7 +14,6 @@ def reset_pipelex_config_fixture():
     try:
         pipelex_instance = pipelex.pipelex.Pipelex.make(relative_config_folder_path="../../pipelex_libraries", from_file=True)
         config = get_config()
-        pretty_print(config, title="Test config")
         assert isinstance(config, pipelex.config.PipelexConfig)
         assert config.project_name == "pipelex-cookbook"
     except Exception as exc:
