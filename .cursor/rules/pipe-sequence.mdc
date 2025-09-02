@@ -56,4 +56,4 @@ The result of a batched step will be a `ListContent` containing the outputs from
 
 # Important tip
 
-Always run the cli `pipelex validate` when you are finished writing pipelines: This checks for errors. If there are errors, iterate.
+Always run the cli `pipelex validate all` when you are finished writing pipelines: This checks for errors. If there are errors, iterate.
