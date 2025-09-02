@@ -10,7 +10,7 @@ This repository exists to showcase **working examples**. The most valuable contr
 | ✅ Do | 🚫 Don’t |
 |-------|---------|
 | Put new code files under `examples/wip` paths | Add custom code to `examples/` (reserved for curated demos) |
-| Run `pipelex validate` before committing | Hard-code API keys or secrets |
+| Run `pipelex validate all` before committing | Hard-code API keys or secrets |
 
 ---
 
@@ -55,7 +55,7 @@ Choose or create a **topic folder** (`finance`, `games`, …) that best fits you
 
 ```bash
 # Validate TOML schema and I/O shapes
-make validate  # wraps `pipelex validate`
+make validate  # wraps `pipelex validate all`
 ```
 
 ---

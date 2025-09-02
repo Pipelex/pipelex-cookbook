@@ -3,7 +3,10 @@ definition = "Generic image-related domain"
 
 [concept]
 VisualDescription = "Visual description of something"
-ImgGenPrompt = "Prompt to generate an image"
+
+[concept.ImgGenPrompt]
+definition = "Prompt to generate an image"
+refines = "Text"
 
 [concept.Photo]
 definition = "Photo"
@@ -22,6 +25,7 @@ inputs = { image = "Image" }
 output = "VisualDescription"
 system_prompt = "You are a very good observer."
 llm = "llm_to_describe_img"
+structuring_method = "preliminary_text"
 prompt_template = """
 Describe the provided image in great detail.
 """
