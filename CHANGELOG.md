@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.4.2] - 2025-09-03
+
+- README link to [Pipelex IDE extension](https://open-vsx.org/extension/Pipelex/pipelex)
+
 ## [v0.4.1] - 2025-09-02
 
 - Update cursor rules with `PLX` extension naming
