@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.4.3] - 2025-09-06
+
+### Added
+
+ - Better support for BlackboxAI IDE
+ - VS Code extensions recommendations file with Pipelex, Ruff, and MyPy extensions
+ - File association for .plx files in VS Code settings
+ - Bump `pipelex` to `v0.9.3`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+
 ## [v0.4.2] - 2025-09-03
 
 - README link to [Pipelex IDE extension](https://open-vsx.org/extension/Pipelex/pipelex)
