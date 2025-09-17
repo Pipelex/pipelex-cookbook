@@ -232,6 +232,7 @@ If you simply need to refine another native concept, construct it like this:
 [concept.Landscape]
 refines = "Image"
 ```
+
 Only create a Python structure class when you need to add specific fields:
 
 ```python
