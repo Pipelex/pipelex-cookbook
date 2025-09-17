@@ -1,8 +1,0 @@
-
-llm_external_handles = ["llm_plugin_example_using_openai"]
-
-[llm_presets]
-
-llm_for_writing_analysis = { llm_handle = "claude-4-opus", temperature = 0.5 }
-llm_for_social_post_writing = { llm_handle = "claude-4-opus", temperature = 0.5 }
-

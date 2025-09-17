@@ -1,12 +1,12 @@
 import asyncio
 import json
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Dict, List, Optional, Type, cast
 
 import httpx
 from pipelex.cogt.exceptions import LLMCompletionError
 from pipelex.cogt.llm.llm_job import LLMJob
 from pipelex.cogt.llm.llm_worker_abstract import LLMWorkerAbstract
-from pipelex.cogt.llm.token_category import NbTokensByCategoryDict, TokenCategory
+from pipelex.cogt.usage.token_category import NbTokensByCategoryDict, TokenCategory
 from pipelex.reporting.reporting_protocol import ReportingProtocol
 from pipelex.tools.environment import get_required_env
 from pipelex.tools.exceptions import CredentialsError
@@ -83,7 +83,7 @@ class LLMPluginExampleUsingOpenAI(LLMWorkerAbstract):
         json_response = response.json()
         if not isinstance(json_response, dict):
             raise LLMCompletionError(f"Invalid response from OpenAI: {json_response}")
-        dict_response: Dict[str, Any] = json_response
+        dict_response: Dict[str, Any] = cast(Dict[str, Any], json_response)
         return dict_response
 
     def _update_token_usage(self, llm_job: LLMJob, response_data: Dict[str, Any]) -> None:

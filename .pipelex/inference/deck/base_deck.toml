@@ -2,22 +2,19 @@
 # LLM Deck base
 
 ####################################################################################################
-# LLM Handles
+# Aliases
 ####################################################################################################
 
-llm_external_handles = []
-
-# Match a llm_handle with either just and llm_name
-# or a complete blueprint including llm_version (defaulting to "latest") and llm_platform_choice (defaulting to "default").
-[llm_handles]
-gpt-4o-2024-11-20 = { llm_name = "gpt-4o", llm_version = "2024-11-20" }
+[aliases]
 base-claude = "claude-4-sonnet"
 base-gpt = "gpt-5"
+base-gemini = "gemini-2.5-flash"
+base-mistral = "mistral-medium"
 
 best-gpt = "gpt-5"
-best-claude = "claude-4-1-opus"
+best-claude = "claude-4.1-opus"
 best-gemini = "gemini-2.5-pro"
-best-mistral = "mistral-large"
+best-mistral = "mistral-medium"
 best-grok = "grok-3"
 
 cheap_llm_for_text = "gpt-4o-mini"
@@ -26,6 +23,8 @@ cheap_llm_for_object = "gpt-4o-mini"
 base_llm_for_text = "gpt-4o-mini"
 base_llm_for_object = "gpt-4o-mini"
 
+llm_to_engineer = ["claude-4.1-opus", "gemini-2.5-pro"]
+llm_for_large_codebase = ["gemini-2.5-pro", "claude-4-sonnet", "gpt-5"]
 
 ####################################################################################################
 # LLM Presets
@@ -47,9 +46,12 @@ llm_for_testing_gen_object = { llm_handle = "base_llm_for_object", temperature =
 ####################################################################################################
 # LLM Presets — Specific skills
 
+# Cheap llm
+llm_cheap = { llm_handle = "base-gemini", temperature = 0.1 }
+
 # Generation skills
 llm_for_factual_writing = { llm_handle = "base-gpt", temperature = 0.1 }
-llm_for_creative_writing = { llm_handle = "best-claude", temperature = 0.9 }
+llm_for_creative_writing = { llm_handle = "claude-4-sonnet", temperature = 0.9 }
 
 # Reasoning skills
 llm_to_reason_short = { llm_handle = "base-claude", temperature = 0.5, max_tokens = 500 }
@@ -80,7 +82,6 @@ llm_to_extract_invoice = { llm_handle = "claude-3-7-sonnet", temperature = 0.1 }
 llm_to_extract_invoice_from_scan = { llm_handle = "best-claude", temperature = 0.5 }
 llm_to_extract_legal_terms = { llm_handle = "best-claude", temperature = 0.1 }
 llm_to_extract_tables = { llm_handle = "best-claude", temperature = 0.1 }
-
 
 ####################################################################################################
 # LLM Choices
