@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.5.1] - 2025-09-17
+
+- Cleanup env example
+
 ## [v0.5.0] - 2025-09-17
 
 - Bump `pipelex` to `v0.10.1`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
