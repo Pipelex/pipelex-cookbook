@@ -3,6 +3,7 @@ from pipelex.tools.environment import get_optional_env
 
 
 @pytest.mark.dry_runnable
+@pytest.mark.gha_disabled
 class TestExamples:
     def test_extract_dpe(self):
         import examples.extract_dpe  # noqa: F401
