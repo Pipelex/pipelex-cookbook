@@ -1,11 +1,19 @@
 ---
 alwaysApply: true
 ---
+
+# Coding standards:
+
+- DO NOT code too much. DO the strict minimum so that it works, its clear and straightforward.
+- DO not hallucinate: If you don't have an answer, say that you need more information, and ask a question.
+
 # Pipeline Guide
 
 - Always first write your "plan" in natural langage, then transcribe it in pipelex.
 - You should ALWAYS RUN the terminal command `make validate` when you are writing a `.plx` file. It will ensure the pipe is runnable. If not, iterate.
 - Please use POSIX standard for files. (enmpty lines, no trailing whitespaces, etc.)
+- First establish a plan to solve the problem, then transcribe it in pipelex. If you need to use mutliple steps pipeline, do it.
+extract_cv_info
 
 # Pipeline Structure Guide
 
@@ -127,17 +135,21 @@ from pipelex.core.stuffs.stuff_content import StructuredContent
 
 # IMPORTANT: THE CLASS MUST BE A SUBCLASS OF StructuredContent
 class YourModel(StructuredContent): # Always be a subclass of StructuredContent
+    """Brief model description."""  # Keep docstrings minimal - they appear in LLM prompts. Include only relevant information needed for the inference
+    
     # Required fields
     field1: str
     field2: int
 
     # Optional fields with defaults
-    field3: Optional[str] = Field(None, "Description of field3")
+    field3: Optional[str] = None  # Avoid verbose Field descriptions: Include only relevant information needed for the inference
     field4: List[str] = Field(default_factory=list)
 
     # Date fields should remove timezone
     date_field: Optional[datetime] = None
 ```
+
+**CRITICAL**: Keep descriptions and docstrings minimal in StructuredContent classes. These are automatically included in LLM prompts, so verbose descriptions bloat context and increase costs. Only include essential information.
 ## Usage
 
 Structures are meant to indicate what class to use for a particular Concept. In general they use the same name as the concept.
@@ -149,7 +161,8 @@ Structure classes defined within `pipelex_libraries/pipelines/` are automaticall
 
 - Respect Pydantic v2 standards
 - Use type hints for all fields
-- Use `Field` declaration and write the description
+- Keep docstrings and Field descriptions minimal - they appear in LLM prompts
+- Only use Field() when needed for default_factory or validation, not for descriptions
 
 
 ## Pipe Controllers and Pipe Operator
@@ -427,6 +440,10 @@ Be sure to make the proper choice of prefix for each insertion.
 **DO NOT write "$topic" alone in an isolated line.**
 **DO write things like "Write an essay about $topic" included in an actual sentence.**
 
+Important:
+The structure of the output concept will be automatically injected in the prompt template.
+Therefore, do NOT inclure fields descriptions in the prompt template.
+
 # Example to execute a pipeline
 
 ```python
@@ -468,14 +485,15 @@ gantt_chart = asyncio.run(extract_gantt(IMAGE_URL))
 get_report_delegate().generate_report()
 # output results
 pretty_print(gantt_chart, title="Gantt Chart")
-get_pipeline_tracker().output_flowchart()
 ```
 
 The input memory is a dictionary of key-value pairs, where the key is the name of the input variable and the value provides details to make it a stuff object. The relevant definitions are:
+
 ```python
 StuffContentOrData = Dict[str, Any] | StuffContent | List[Any] | str
 ImplicitMemory = Dict[str, StuffContentOrData]
 ```
+
 As you can seen, we made it so different ways can be used to define that stuff using structured content or data.
 
 So here are a few concrete examples of calls to execute_pipeline with various ways to set up the input memory:
@@ -538,5 +556,18 @@ So here are a few concrete examples of calls to execute_pipeline with various wa
 ```
 
 ALWAYS RUN `make validate` when you are finished writing pipelines: This checks for errors. If there are errors, iterate until it works.
-Then, create an example file to run the pipeline in the `examples` folder.
+Then, ALWAYS create a Python execution file to demonstrate how to use the pipeline.
 But don't write documentation unless asked explicitly to.
+
+# Pipe Base Library
+
+Pipelex already holds în a base library pipelines that you can reuse. 
+- `ocr_page_contents_from_pdf`: This is an OCR pipe, that has as `inputs = { ocr_input = "PDF" }` and `output = "Page"`. 
+- `generate_image`: Generate an image, `inputs = { prompt = "ImgGenPrompt" }`, `output = "Image"`
+
+VERY IMPORTANT:
+- Do NOT do too much. DO NOT do more than you are asked to do.
+- DO NOT add doc strings to BaseModels excepts if necessary information is added. Same for the descriptions of the fields.
+- You can use a PipeFunc to combine BaseModels into a new Output structure concept.
+- Always run `make cc` before finishing the pipeline.
+- When writing the example python file to run the pipeline, be straightforward, DO NOT add any extra code, useless prints etc
