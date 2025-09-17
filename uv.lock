@@ -1735,7 +1735,7 @@ mistralai = [
 
 [[package]]
 name = "pipelex-cookbook"
-version = "0.4.3"
+version = "0.4.4"
 source = { virtual = "." }
 dependencies = [
     { name = "beautifulsoup4" },

@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.4.4] - 2025-09-17
+
+- Fix template in pipelex_libraries
+
 ## [v0.4.3] - 2025-09-06
 
 ### Added
