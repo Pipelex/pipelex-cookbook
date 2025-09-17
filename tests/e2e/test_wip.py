@@ -3,7 +3,6 @@ from pipelex.exceptions import PipeLibraryPipeNotFoundError
 
 
 @pytest.mark.dry_runnable
-@pytest.mark.gha_disabled
 class TestWip:
     def test_write_tweet(self):
         import examples.wip.write_tweet  # noqa: F401
