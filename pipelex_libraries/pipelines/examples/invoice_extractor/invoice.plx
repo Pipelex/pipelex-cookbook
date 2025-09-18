@@ -21,7 +21,7 @@ definition = "Extract page contents from an image"
 inputs = { ocr_input = "PDF" }
 output = "Page"
 page_views = true
-ocr_handle = "mistral/mistral-ocr-latest"
+ocr_model = "mistral-ocr"
 
 [pipe.extract_invoice]
 type = "PipeSequence"

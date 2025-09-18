@@ -375,7 +375,7 @@ type = "PipeOcr"
 definition = "extract the information"
 inputs = { ocr_input = "PDF" } # or { ocr_input = "Image" } if its an image. This is the only input
 output = "Page"
-ocr_handle = "mistral/mistral-ocr-latest"
+ocr_model = "mistral-ocr"
 ```
 
 The input ALWAYS HAS TO BE `ocr_input` and the value is either of concept `Image` or `Pdf`.
