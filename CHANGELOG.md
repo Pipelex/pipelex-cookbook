@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.5.2] - 2025-09-18
+
+- Bump `pipelex` to `v0.10.2`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+- Remove ugly code from `conftest.py` for unit test env var placeholders, now uses the proper fixture defined in `pipelex.test_extras.shared_pytest_plugins`
+
 ## [v0.5.1] - 2025-09-17
 
 - Cleanup env example

@@ -1679,8 +1679,8 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.10.1"
-source = { registry = "https://pypi.org/simple" }
+version = "0.10.2"
+source = { editable = "../pipelex" }
 dependencies = [
     { name = "aiofiles" },
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
@@ -1710,10 +1710,6 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "yattag" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/79/d8/8668d283ca4bc9436e047d4742289eadaa2aef8041516da1e1b614693e79/pipelex-0.10.1.tar.gz", hash = "sha256:2fe3f707141542aa33d28b882ad1d7e3ece090565def7329980147a20572b5b4", size = 218358, upload-time = "2025-09-17T14:05:13.803Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/6a/0d/bc8fac77ecffa6785548105f83c35262f3517e363e943af187b571397178/pipelex-0.10.1-py3-none-any.whl", hash = "sha256:defb928f23ba1b0e642a48ba53a81ad077c8affdc8591592fed07f74d7a363a1", size = 355635, upload-time = "2025-09-17T14:05:11.66Z" },
-]
 
 [package.optional-dependencies]
 anthropic = [
@@ -1733,9 +1729,71 @@ mistralai = [
     { name = "mistralai" },
 ]
 
+[package.metadata]
+requires-dist = [
+    { name = "aioboto3", marker = "extra == 'bedrock'", specifier = ">=13.4.0" },
+    { name = "aiofiles", specifier = ">=23.2.1" },
+    { name = "anthropic", marker = "extra == 'anthropic'", specifier = ">=0.49.0" },
+    { name = "backports-strenum", marker = "python_full_version < '3.11'", specifier = ">=1.3.0" },
+    { name = "boto3", marker = "extra == 'bedrock'", specifier = ">=1.34.131" },
+    { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
+    { name = "cocode", marker = "extra == 'dev'", specifier = "==0.1.2" },
+    { name = "fal-client", marker = "extra == 'fal'", specifier = ">=0.4.1" },
+    { name = "filetype", specifier = ">=1.2.0" },
+    { name = "google-auth-oauthlib", marker = "extra == 'google'", specifier = ">=1.2.1" },
+    { name = "httpx", specifier = ">=0.27.0" },
+    { name = "instructor", specifier = ">=1.8.3,<1.10.0" },
+    { name = "jinja2", specifier = ">=3.1.4" },
+    { name = "json2html", specifier = ">=1.3.0" },
+    { name = "kajson", specifier = "==0.3.0" },
+    { name = "markdown", specifier = ">=3.6" },
+    { name = "mistralai", marker = "extra == 'mistralai'", specifier = "==1.5.2" },
+    { name = "mkdocs", marker = "extra == 'docs'", specifier = "==1.6.1" },
+    { name = "mkdocs-glightbox", marker = "extra == 'docs'", specifier = "==0.4.0" },
+    { name = "mkdocs-material", marker = "extra == 'docs'", specifier = "==9.6.14" },
+    { name = "mkdocs-meta-manager", marker = "extra == 'docs'", specifier = "==1.1.0" },
+    { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
+    { name = "networkx", specifier = ">=3.4.2" },
+    { name = "openai", specifier = ">=1.60.1" },
+    { name = "openpyxl", specifier = ">=3.1.5" },
+    { name = "pandas", specifier = ">=2.2.3" },
+    { name = "pandas-stubs", marker = "extra == 'dev'", specifier = ">=2.2.3.241126" },
+    { name = "pillow", specifier = ">=11.2.1" },
+    { name = "polyfactory", specifier = ">=2.21.0" },
+    { name = "pydantic", specifier = "==2.10.6" },
+    { name = "pypdfium2", specifier = ">=4.30.0,!=4.30.1" },
+    { name = "pyright", marker = "extra == 'dev'", specifier = "==1.1.398" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
+    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
+    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=6.1.1" },
+    { name = "pytest-mock", marker = "extra == 'dev'", specifier = ">=3.14.0" },
+    { name = "pytest-sugar", marker = "extra == 'dev'", specifier = ">=1.0.0" },
+    { name = "pytest-xdist", marker = "extra == 'dev'", specifier = ">=3.6.1" },
+    { name = "python-dotenv", specifier = ">=1.0.1" },
+    { name = "pyyaml", specifier = ">=6.0.2" },
+    { name = "rich", specifier = ">=13.8.1" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.6.8" },
+    { name = "shortuuid", specifier = ">=1.0.13" },
+    { name = "toml", specifier = ">=0.10.2" },
+    { name = "tomlkit", specifier = ">=0.13.2" },
+    { name = "typer", specifier = ">=0.16.0" },
+    { name = "types-aioboto3", extras = ["bedrock", "bedrock-runtime"], marker = "extra == 'dev'", specifier = ">=13.4.0" },
+    { name = "types-aiofiles", marker = "extra == 'dev'", specifier = ">=24.1.0.20240626" },
+    { name = "types-beautifulsoup4", marker = "extra == 'dev'", specifier = ">=4.12.0.20240907" },
+    { name = "types-markdown", marker = "extra == 'dev'", specifier = ">=3.6.0.20240316" },
+    { name = "types-networkx", marker = "extra == 'dev'", specifier = ">=3.3.0.20241020" },
+    { name = "types-openpyxl", marker = "extra == 'dev'", specifier = ">=3.1.5.20250306" },
+    { name = "types-pyyaml", marker = "extra == 'dev'", specifier = ">=6.0.12.20250326" },
+    { name = "types-requests", marker = "extra == 'dev'", specifier = ">=2.32.0.2024091" },
+    { name = "types-toml", marker = "extra == 'dev'", specifier = ">=0.10.8.20240310" },
+    { name = "typing-extensions", specifier = ">=4.13.2" },
+    { name = "yattag", specifier = ">=1.15.2" },
+]
+provides-extras = ["anthropic", "bedrock", "fal", "google", "mistralai", "docs", "dev"]
+
 [[package]]
 name = "pipelex-cookbook"
-version = "0.5.0"
+version = "0.5.1"
 source = { virtual = "." }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -1774,7 +1832,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], specifier = "==0.10.1" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "bedrock", "fal"], editable = "../pipelex" },
     { name = "pyright", marker = "extra == 'dev'", specifier = "==1.1.398" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
