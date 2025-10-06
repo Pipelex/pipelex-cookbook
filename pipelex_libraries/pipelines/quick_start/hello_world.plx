@@ -1,12 +1,12 @@
 
 
 domain = "quick_start"
-definition = "Discovering Pipelex"
+description = "Discovering Pipelex"
 
 [pipe]
 [pipe.hello_world]
 type = "PipeLLM"
-definition = "Write text about Hello World."
+description = "Write text about Hello World."
 output = "Text"
 llm = { llm_handle = "gpt-4o-mini", temperature = 0.9, max_tokens = "auto" }
 prompt = """

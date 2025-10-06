@@ -1,5 +1,5 @@
 domain = "retrieve"
-definition = "The domain for retrieving relevant excerpts from text"
+description = "The domain for retrieving relevant excerpts from text"
 
 [concept]
 RetrievedExcerpt = "An excerpt from a text with its justification for being relevant to a question"
@@ -7,7 +7,7 @@ RetrievedExcerpt = "An excerpt from a text with its justification for being rele
 [pipe]
 [pipe.retrieve_excerpts]
 type = "PipeLLM"
-definition = "Find the most relevant excerpt in a text that answers a specific question"
+description = "Find the most relevant excerpt in a text that answers a specific question"
 inputs = { text = "Text", question = "answer.Question" }
 output = "RetrievedExcerpt"
 llm = "llm_to_retrieve"

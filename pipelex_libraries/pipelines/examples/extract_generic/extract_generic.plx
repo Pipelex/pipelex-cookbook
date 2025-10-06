@@ -3,7 +3,7 @@ domain = "extract_generic"
 [pipe]
 [pipe.power_extractor]
 type = "PipeSequence"
-definition = "Update page content with markdown"
+description = "Update page content with markdown"
 inputs = { ocr_input = "PDF" }
 output = "Text"
 steps = [
@@ -13,7 +13,7 @@ steps = [
 
 [pipe.write_markdown_from_page_content]
 type = "PipeLLM"
-definition = "Write markdown from page content"
+description = "Write markdown from page content"
 inputs = { "page_content.page_view" = "Image", page_content = "Page" }
 output = "Text"
 llm = "llm_for_img_to_text"

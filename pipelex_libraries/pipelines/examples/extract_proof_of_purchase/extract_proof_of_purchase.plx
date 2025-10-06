@@ -6,7 +6,7 @@ ProofOfPurchase = "Elements from a proof of purchase"
 [pipe]
 [pipe.power_extractor_proof_of_purchase]
 type = "PipeSequence"
-definition = "Update page content with markdown"
+description = "Update page content with markdown"
 inputs = { ocr_input = "PDF" }
 output = "ProofOfPurchase"
 steps = [
@@ -16,7 +16,7 @@ steps = [
 
 [pipe.write_markdown_from_page_content_proof_of_purchase]
 type = "PipeLLM"
-definition = "Write markdown from page content"
+description = "Write markdown from page content"
 inputs = { "page_content.page_view" = "Image", page_content = "Page" }
 output = "ProofOfPurchase"
 llm = "llm_for_img_to_text"

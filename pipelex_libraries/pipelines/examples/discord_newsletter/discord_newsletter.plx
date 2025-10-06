@@ -1,5 +1,5 @@
 domain = "discord_newsletter"
-definition = "Create newsletters from Discord channel content by summarizing messages and organizing them according to newsletter format"
+description = "Create newsletters from Discord channel content by summarizing messages and organizing them according to newsletter format"
 
 [concept]
 DiscordChannelUpdate = "A Discord channel with its messages for newsletter generation"
@@ -8,7 +8,7 @@ HtmlNewsletter = "The final newsletter content in html format with organized cha
 
 [pipe.write_discord_newsletter]
 type = "PipeSequence"
-definition = "Create a newsletter from Discord articles by summarizing channels and organizing content"
+description = "Create a newsletter from Discord articles by summarizing channels and organizing content"
 inputs = { discord_channel_updates = "DiscordChannelUpdate" }
 output = "HtmlNewsletter"
 steps = [
@@ -20,7 +20,7 @@ steps = [
 
 [pipe.summarize_discord_channel_update]
 type = "PipeCondition"
-definition = "Select the appropriate summary pipe based on the channel name"
+description = "Select the appropriate summary pipe based on the channel name"
 inputs = { discord_channel_update = "DiscordChannelUpdate" }
 output = "ChannelSummary"
 expression = "discord_channel_update.name"
@@ -29,7 +29,7 @@ default_pipe_code = "summarize_discord_channel_update_general"
 
 [pipe.summarize_discord_channel_update_for_new_members]
 type = "PipeLLM"
-definition = "Summarize the new member announcements"
+description = "Summarize the new member announcements"
 inputs = { discord_channel_update = "DiscordChannelUpdate" }
 output = "ChannelSummary"
 system_prompt = "You are a newsletter editor who creates engaging summaries of Discord channel content. You extract key information, preserve important links, and write in a clear, concise style suitable for newsletter readers."
@@ -44,7 +44,7 @@ Summarize with one bullet point for each new member
 
 [pipe.summarize_discord_channel_update_general]
 type = "PipeLLM"
-definition = "Summarize a Discord channel's messages into newsletter-friendly content"
+description = "Summarize a Discord channel's messages into newsletter-friendly content"
 inputs = { discord_channel_update = "DiscordChannelUpdate" }
 output = "ChannelSummary"
 system_prompt = "You are a newsletter editor who creates engaging summaries of Discord channel content. You extract key information, preserve important links, and write in a clear, concise style suitable for newsletter readers."
@@ -63,7 +63,7 @@ Make sure to preserve the channel name and position from the input for proper or
 
 [pipe.write_weekly_summary]
 type = "PipeLLM"
-definition = "Combine channel summaries into a short summary of the week's Share channel content (200 characters)"
+description = "Combine channel summaries into a short summary of the week's Share channel content (200 characters)"
 inputs = { channel_summaries = "ChannelSummary" }
 output = "Text"
 prompt_template = """
@@ -78,7 +78,7 @@ Keep it short: 200 characters.
 
 [pipe.format_html_newsletter]
 type = "PipeJinja2"
-definition = "Combine weekly and channel summaries into a complete newsletter following specific formatting requirements"
+description = "Combine weekly and channel summaries into a complete newsletter following specific formatting requirements"
 inputs = { weekly_summary = "Text", channel_summaries = "ChannelSummary" }
 output = "HtmlNewsletter"
 template_category = "html"

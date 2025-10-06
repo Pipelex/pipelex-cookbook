@@ -1,5 +1,5 @@
 domain = "gantt"
-definition = "The domain for gantt charts"
+description = "The domain for gantt charts"
 system_prompt = "You are an expert in gantt charts, you know all the different tricks, forms, traps"
 
 [concept]
@@ -10,13 +10,13 @@ GanttChart = "A gantt chart transcript fully detailing the contents of the chart
 GanttTranscript = "A gantt chart transcript fully detailing the contents of the chart in markdown format"
 
 [concept.GanttChartImage]
-definition = "A gantt chart detailing a project timeline"
+description = "A gantt chart detailing a project timeline"
 refines = "Image"
 
 [pipe]
 [pipe.extract_gantt_by_steps]
 type = "PipeSequence"
-definition = "Extract all details from a gantt chart"
+description = "Extract all details from a gantt chart"
 inputs = { gantt_chart_image = "GanttChartImage" }
 output = "GanttChart"
 steps = [
@@ -28,7 +28,7 @@ steps = [
 
 [pipe.extract_gantt_timescale]
 type = "PipeLLM"
-definition = "Describe the timescale of a gantt chart"
+description = "Describe the timescale of a gantt chart"
 inputs = { gantt_chart_image = "GanttChartImage" }
 output = "GanttTimescaleDescription"
 llm = "llm_to_extract_diagram"
@@ -39,7 +39,7 @@ Please analyze the timescale: what is the smallest unit detailed in the time sca
 
 [pipe.extract_gantt_task_names]
 type = "PipeLLM"
-definition = "List all the tasks"
+description = "List all the tasks"
 inputs = { gantt_chart_image = "GanttChartImage" }
 output = "GanttTaskName"
 llm = "llm_to_extract_diagram"
@@ -51,7 +51,7 @@ Please analyse the image and list all the task names.
 
 [pipe.extract_details_of_task]
 type = "PipeLLM"
-definition = "Extract the precise dates of the task, start_date and end_date"
+description = "Extract the precise dates of the task, start_date and end_date"
 inputs = { gantt_chart_image = "GanttChartImage", gantt_timescale = "GanttTimescaleDescription", gantt_task_name = "GanttTaskName" }
 output = "GanttTaskDetails"
 structuring_method = "preliminary_text"
@@ -71,7 +71,7 @@ Here is the name of the task you have to extract the dates for:
 
 [pipe.gather_in_a_gantt_chart]
 type = "PipeLLM"
-definition = "Gather all the tasks in a gantt chart"
+description = "Gather all the tasks in a gantt chart"
 inputs = { details_of_all_tasks = "GanttTaskDetails" }
 output = "GanttChart"
 prompt_template = """
@@ -87,7 +87,7 @@ Here are the task details:
 
 [pipe.transcript_gantt_direct]
 type = "PipeLLM"
-definition = "Extract all details from a gantt chart"
+description = "Extract all details from a gantt chart"
 inputs = { image = "GanttChartImage" }
 output = "GanttTranscript"
 llm = "llm_to_extract_diagram"

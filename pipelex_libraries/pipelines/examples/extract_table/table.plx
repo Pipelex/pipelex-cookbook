@@ -1,18 +1,18 @@
 domain = "tables"
-definition = "Extracting tables from images"
+description = "Extracting tables from images"
 system_prompt = "You are an expert at data tables and html syntax and you have a strong attention to details."
 
 [concept]
 HtmlTable = "An HTML table"
 
 [concept.TableScreenshot]
-definition = "A screenshot of a table (table in the sense of a data structure used to organize information in rows and columns)"
+description = "A screenshot of a table (table in the sense of a data structure used to organize information in rows and columns)"
 refines = "Image"
 
 [pipe]
 [pipe.extract_html_table_from_image]
 type = "PipeLLM"
-definition = "Get an HTML table"
+description = "Get an HTML table"
 inputs = { table_screenshot = "TableScreenshot" }
 output = "HtmlTable"
 llm = "llm_to_extract_tables"
@@ -29,7 +29,7 @@ Make sure you replicate the formatting (borders, text formatting, colors, text a
 
 [pipe.review_html_table]
 type = "PipeLLM"
-definition = "Review an HTML table"
+description = "Review an HTML table"
 inputs = { table_screenshot = "TableScreenshot", html_table = "HtmlTable" }
 output = "HtmlTable"
 llm = "llm_to_extract_tables"
@@ -47,7 +47,7 @@ Make sure you do not forget any text.
 
 [pipe.extract_html_table_and_review]
 type = "PipeSequence"
-definition = "Get an HTML table and review it"
+description = "Get an HTML table and review it"
 inputs = { table_screenshot = "TableScreenshot" }
 output = "HtmlTable"
 steps = [

@@ -5,7 +5,7 @@ MarkdownReport = "A report in markdown format"
 
 [pipe.present_as_markdown]
 type = "PipeLLM"
-definition = "Present information as markdown"
+description = "Present information as markdown"
 inputs = { strategic_report = "Anything" }
 output = "MarkdownReport"
 system_prompt = """

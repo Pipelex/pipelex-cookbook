@@ -1,7 +1,7 @@
 
 
 domain = "example_1"
-definition = "Summarize text using LLMs."
+description = "Summarize text using LLMs."
 system_prompt = "You are a helpful assistant that summarizes text."
 
 [concept]
@@ -10,7 +10,7 @@ Explanation = "A text that explains something."
 [pipe]
 [pipe.summarize_text_difficulty_1]
 type = "PipeLLM"
-definition = "Summarize text."
+description = "Summarize text."
 inputs = { text = "example_1.Explanation" }
 output = "Text"
 llm = { llm_handle = "gpt-4o-mini", temperature = 0.1, max_tokens = "auto" }

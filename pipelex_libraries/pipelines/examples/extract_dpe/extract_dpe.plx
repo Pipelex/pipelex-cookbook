@@ -1,5 +1,5 @@
 domain = "power_extractor"
-definition = "The domain for power extractor"
+description = "The domain for power extractor"
 
 [concept]
 Dpe = "A diagnostic of the energy performance of a building"
@@ -7,7 +7,7 @@ Dpe = "A diagnostic of the energy performance of a building"
 [pipe]
 [pipe.power_extractor_dpe]
 type = "PipeSequence"
-definition = "Update page content with markdown"
+description = "Update page content with markdown"
 inputs = { ocr_input = "PDF" }
 output = "Dpe"
 steps = [
@@ -17,7 +17,7 @@ steps = [
 
 [pipe.write_markdown_from_page_content_dpe]
 type = "PipeLLM"
-definition = "Write markdown from page content of a 'Diagnostic de Performance Energetique'"
+description = "Write markdown from page content of a 'Diagnostic de Performance Energetique'"
 inputs = { "page_content.page_view" = "Image", page_content = "Page" }
 output = "Dpe"
 llm = "llm_for_img_to_text"

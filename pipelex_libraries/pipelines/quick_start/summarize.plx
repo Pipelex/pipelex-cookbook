@@ -1,7 +1,7 @@
 
 
 domain = "summarize"
-definition = "Example of summarizing text by topics."
+description = "Example of summarizing text by topics."
 system_prompt = "You are an expert at summarizing text."
 
 [concept] ####### Concept definitions ############################
@@ -13,7 +13,7 @@ StructuredSummary = "A summary with a structured output."
 
 [pipe.summarize_with_structure]
 type = "PipeLLM"
-definition = "Summarize text."
+description = "Summarize text."
 inputs = { text = "Text" }
 output = "StructuredSummary"
 prompt_template = """
@@ -27,7 +27,7 @@ Please provide only the summary, with no additional text or explanations.
 
 [pipe.summarize_by_steps]
 type = "PipeSequence"
-definition = "Summarize text by steps: extract topics, summarize for each topic, summarize from summaries."
+description = "Summarize text by steps: extract topics, summarize for each topic, summarize from summaries."
 inputs = { text = "Text" }
 output = "Summary"
 steps = [
@@ -38,7 +38,7 @@ steps = [
 
 [pipe.extract_topics]
 type = "PipeLLM"
-definition = "Extract the topics from a dense text."
+description = "Extract the topics from a dense text."
 inputs = { text = "Text" }
 output = "Topic"
 multiple_output = true
@@ -52,7 +52,7 @@ Please provide only the main topics, with no additional text or explanations.
 
 [pipe.summarize_topic]
 type = "PipeLLM"
-definition = "Summarize a dense text with of focus on a specific topic."
+description = "Summarize a dense text with of focus on a specific topic."
 inputs = { text = "Text", topic = "Topic" }
 output = "Summary"
 prompt_template = """
@@ -66,7 +66,7 @@ Your summary should not be longer than 2 sentences.
 
 [pipe.summarize_from_summaries]
 type = "PipeLLM"
-definition = "Summarize text from summarized topics."
+description = "Summarize text from summarized topics."
 inputs = { summarized_topics = "Summary" }
 output = "Summary"
 prompt_template = """

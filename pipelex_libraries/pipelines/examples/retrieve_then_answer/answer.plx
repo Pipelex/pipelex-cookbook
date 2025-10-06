@@ -1,5 +1,5 @@
 domain = "answer"
-definition = "The domain for questions and answers"
+description = "The domain for questions and answers"
 
 [concept]
 Answer = "An answer to a question"
@@ -9,7 +9,7 @@ EnrichedQuestion = "An enriched question"
 [pipe]
 [pipe.retrieve_then_answer]
 type = "PipeSequence"
-definition = "Answer a question, given the target type and the excerpts neeeded to answer it"
+description = "Answer a question, given the target type and the excerpts neeeded to answer it"
 inputs = { question = "answer.Question", text = "Text", client_instructions = "Text" }
 output = "Dynamic"
 steps = [
@@ -21,7 +21,7 @@ steps = [
 
 [pipe.answer_question]
 type = "PipeSequence"
-definition = "Answer the question in a dynamically specified format"
+description = "Answer the question in a dynamically specified format"
 inputs = { enriched_question = "EnrichedQuestion", client_instructions = "Text", context = "Text", excerpts = "retrieve.RetrievedExcerpt" }
 output = "Dynamic"
 steps = [
@@ -31,7 +31,7 @@ steps = [
 
 [pipe.write_context_of_text]
 type = "PipeLLM"
-definition = "Write the context of a sample of text"
+description = "Write the context of a sample of text"
 inputs = { text = "Text" }
 output = "Text"
 prompt_template = """
@@ -44,7 +44,7 @@ The goal is to quickly understand the type of ducument by just reding this conte
 
 [pipe.enrich_question]
 type = "PipeLLM"
-definition = "Get an enriched question"
+description = "Get an enriched question"
 inputs = { question = "answer.Question", client_instructions = "Text", context = "Text" }
 output = "EnrichedQuestion"
 llm = "llm_to_enrich"
@@ -73,7 +73,7 @@ Here are some rules that you absolutely must follow:
 
 [pipe.pre_answer_question]
 type = "PipeLLM"
-definition = "Answer the question in a dynamically specified format"
+description = "Answer the question in a dynamically specified format"
 inputs = { enriched_question = "EnrichedQuestion", excerpts = "retrieve.RetrievedExcerpt", context = "Text", client_instructions = "Text" }
 output = "Dynamic"
 llm = "llm_to_answer"
@@ -113,7 +113,7 @@ Here is the fields format of the answer you must output:
 
 [pipe.cleanse_answer]
 type = "PipeLLM"
-definition = "Clean the answer"
+description = "Clean the answer"
 inputs = { answer = "Dynamic" }
 output = "Dynamic"
 structuring_method = "preliminary_text"

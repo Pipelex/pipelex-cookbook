@@ -1,5 +1,5 @@
 domain = "advisory_orchestrator"
-definition = "Master Advisory Orchestrator system for complex business problem solving through multi-board consultation"
+description = "Master Advisory Orchestrator system for complex business problem solving through multi-board consultation"
 
 ####################################################################################################
 # Concepts
@@ -18,7 +18,7 @@ StrategicReport = "Final comprehensive strategic report with unified recommendat
 
 [pipe.master_advisory_orchestrator]
 type = "PipeSequence"
-definition = "Master orchestrator that processes business problems through multi-board consultation"
+description = "Master orchestrator that processes business problems through multi-board consultation"
 inputs = { user_input = "Text" }
 output = "presentation.MarkdownReport"
 steps = [
@@ -32,7 +32,7 @@ steps = [
 
 [pipe.classify_business_problem]
 type = "PipeLLM"
-definition = "Analyze and classify the business problem into structured format"
+description = "Analyze and classify the business problem into structured format"
 inputs = { user_input = "Text" }
 output = "BusinessProblem"
 system_prompt = "You are a business analysis expert who specializes in problem classification and structuring."
@@ -55,7 +55,7 @@ Structure this as a BusinessProblem with all the required fields filled out.
 
 [pipe.select_advisory_boards]
 type = "PipeLLM"
-definition = "Select the most relevant advisory boards for the business problem"
+description = "Select the most relevant advisory boards for the business problem"
 inputs = { business_problem = "BusinessProblem" }
 output = "AdvisoryBoard"
 multiple_output = true
@@ -92,7 +92,7 @@ For each selected board, provide:
 
 [pipe.consult_board]
 type = "PipeLLM"
-definition = "Consult an advisory board based on the business problem and selection"
+description = "Consult an advisory board based on the business problem and selection"
 inputs = { business_problem = "BusinessProblem", advisory_board = "AdvisoryBoard" }
 output = "BoardResponse"
 multiple_output = true
@@ -124,7 +124,7 @@ Your response should:
 
 [pipe.analyze_board_responses]
 type = "PipeLLM"
-definition = "Analyze all board responses to identify consensus, conflicts, and insights"
+description = "Analyze all board responses to identify consensus, conflicts, and insights"
 inputs = { board_consultations = "BoardResponse" }
 output = "ResponseAnalysis"
 system_prompt = "You are a strategic analysis expert who specializes in synthesizing multiple expert opinions and identifying patterns, consensus, and conflicts."
@@ -148,7 +148,7 @@ For conflicts, identify the core tension and suggest decision frameworks for res
 
 [pipe.generate_strategic_report]
 type = "PipeLLM"
-definition = "Generate comprehensive strategic report synthesizing all insights"
+description = "Generate comprehensive strategic report synthesizing all insights"
 inputs = { business_problem = "BusinessProblem", selected_advisory_boards = "AdvisoryBoard", board_consultations = "BoardResponse", response_analysis = "ResponseAnalysis" }
 output = "StrategicReport"
 system_prompt = "You are a senior strategy consultant who specializes in creating comprehensive strategic reports that synthesize complex multi-stakeholder input into actionable recommendations."

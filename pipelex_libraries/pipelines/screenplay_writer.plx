@@ -1,5 +1,5 @@
 domain = "screenplay"
-definition = "A pipeline for generating screenplays from pitches"
+description = "A pipeline for generating screenplays from pitches"
 
 [concept]
 Pitch = "A pitch for a screenplay"
@@ -18,7 +18,7 @@ FormattedScreenplay = "A screenplay formatted according to industry standards"
 
 [pipe.analyze_pitch]
 type = "PipeLLM"
-definition = "Analyze and expand the pitch with character ideas and synopsis"
+description = "Analyze and expand the pitch with character ideas and synopsis"
 inputs = { pitch = "Pitch" }
 output = "DetailedPitch"
 system_prompt = """
@@ -39,7 +39,7 @@ Create a response that includes:
 
 [pipe.create_characters]
 type = "PipeLLM"
-definition = "Create detailed character profiles"
+description = "Create detailed character profiles"
 inputs = { detailed_pitch = "DetailedPitch" }
 output = "CharacterList"
 system_prompt = """
@@ -54,7 +54,7 @@ Create detailed character profiles based on these character ideas:
 
 [pipe.create_chapters]
 type = "PipeLLM"
-definition = "Create chapters with brief descriptions"
+description = "Create chapters with brief descriptions"
 inputs = { detailed_pitch = "DetailedPitch" }
 output = "ChapterList"
 system_prompt = """
@@ -76,7 +76,7 @@ Create 4 chapters that tell this story. For each chapter:
 
 [pipe.create_scene_outline]
 type = "PipeLLM"
-definition = "Create a basic outline for a scene"
+description = "Create a basic outline for a scene"
 inputs = { chapter = "Chapter", characters = "CharacterList", detailed_pitch = "DetailedPitch" }
 output = "Scene"
 system_prompt = """
@@ -107,7 +107,7 @@ Create a scene outline with:
 
 [pipe.develop_scene_content]
 type = "PipeLLM"
-definition = "Develop the scene's content with detailed action and dialogue"
+description = "Develop the scene's content with detailed action and dialogue"
 inputs = { scene = "Scene", characters = "CharacterList" }
 output = "Scene"
 system_prompt = """
@@ -135,7 +135,7 @@ Create detailed content that:
 
 # [pipe.format_chapter]
 # type = "PipeSequence"
-# definition = "Format the scene according to screenplay standards"
+# description = "Format the scene according to screenplay standards"
 # output = "FormattedScene"
 # steps = [
 #     { pipe = "format_scene", batch_over = "scenes", batch_as = "scene", result = "formatted_scenes" }
@@ -143,7 +143,7 @@ Create detailed content that:
 
 # [pipe.format_scene]
 # type = "PipeLLM"
-# definition = "Format the scene according to screenplay standards"
+# description = "Format the scene according to screenplay standards"
 # inputs = { scene = "Scene" }
 # output = "FormattedScene"
 # system_prompt = """
@@ -167,7 +167,7 @@ Create detailed content that:
 
 # [pipe.create_formatted_screenplay]
 # type = "PipeSequence"
-# definition = "Create a properly formatted screenplay"
+# description = "Create a properly formatted screenplay"
 # output = "FormattedScreenplay"
 # steps = [
 #     { pipe = "format_chapter", batch_over = "chapters", batch_as = "chapter", result = "formatted_scenes" }
@@ -175,7 +175,7 @@ Create detailed content that:
 
 # [pipe.create_initial_scenes]
 # type = "PipeLLM"
-# definition = "Create initial scene list for a chapter"
+# description = "Create initial scene list for a chapter"
 # inputs = { chapter = "Chapter" }
 # output = "Scene"
 # multiple_output = true
@@ -199,7 +199,7 @@ Create detailed content that:
 
 # [pipe.create_scene_sequence]
 # type = "PipeSequence"
-# definition = "Create and develop a single scene"
+# description = "Create and develop a single scene"
 # inputs = { chapter = "Chapter", characters = "CharacterList", detailed_pitch = "DetailedPitch" }
 # output = "Scene"
 # steps = [
@@ -209,7 +209,7 @@ Create detailed content that:
 
 # [pipe.create_scenes_sequence]
 # type = "PipeSequence"
-# definition = "Create all scenes for a chapter sequentially"
+# description = "Create all scenes for a chapter sequentially"
 # inputs = { chapter = "Chapter", characters = "CharacterList", detailed_pitch = "DetailedPitch" }
 # output = "Chapter"
 # steps = [
@@ -219,7 +219,7 @@ Create detailed content that:
 
 # [pipe.generate_screenplay]
 # type = "PipeSequence"
-# definition = "Generate a complete screenplay from a pitch"
+# description = "Generate a complete screenplay from a pitch"
 # inputs = { pitch = "Pitch", chapter = "Chapter" }
 # output = "FormattedScreenplay"
 # steps = [
