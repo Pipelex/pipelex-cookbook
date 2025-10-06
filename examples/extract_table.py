@@ -1,6 +1,6 @@
 import asyncio
 
-from pipelex.core.stuffs.stuff_content import ImageContent
+from pipelex.core.stuffs.image_content import ImageContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
