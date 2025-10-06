@@ -7,7 +7,7 @@ ProofOfPurchase = "Elements from a proof of purchase"
 [pipe.power_extractor_proof_of_purchase]
 type = "PipeSequence"
 description = "Update page content with markdown"
-inputs = { ocr_input = "PDF" }
+inputs = { document = "PDF" }
 output = "ProofOfPurchase"
 steps = [
     { pipe = "ocr_page_contents_and_views_from_pdf", result = "page_contents" },                                                                            # Located in the base library, in the domain "documents"

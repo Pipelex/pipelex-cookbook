@@ -4,7 +4,7 @@ domain = "extract_generic"
 [pipe.power_extractor]
 type = "PipeSequence"
 description = "Update page content with markdown"
-inputs = { ocr_input = "PDF" }
+inputs = { document = "PDF" }
 output = "Text"
 steps = [
     { pipe = "ocr_page_contents_and_views_from_pdf", result = "page_contents" },

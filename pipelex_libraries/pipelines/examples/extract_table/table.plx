@@ -18,7 +18,7 @@ output = "HtmlTable"
 llm = "llm_to_extract_tables"
 llm_to_structure = "llm_to_extract_tables"
 prompt_template = """
-You are given an image which is a view of a table, taken from a PDF document.
+You are given an image which is a view of a table, taken from a PDF document: $table_screenshot.
 Your goal is to extract the table from the image **in html**.
 
 Make sure you do not forget any text.
@@ -35,7 +35,7 @@ output = "HtmlTable"
 llm = "llm_to_extract_tables"
 llm_to_structure = "llm_to_extract_tables"
 prompt_template = """
-Your role is to correct an html_table to make sure that it matches the one in the provided image.
+Your role is to correct an html_table to make sure that it matches the one in the provided image: $table_screenshot.
 
 @html_table
 

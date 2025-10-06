@@ -8,7 +8,7 @@ InvoiceDetails = "The category of the invoice"
 [pipe.process_invoice]
 type = "PipeSequence"
 description = "Process relevant information from an invoice"
-inputs = { ocr_input = "PDF" }
+inputs = { document = "PDF" }
 output = "Invoice"
 steps = [
     { pipe = "extract_text_from_image", result = "invoice_pages" },
@@ -18,10 +18,10 @@ steps = [
 [pipe.extract_text_from_image]
 type = "PipeOcr"
 description = "Extract page contents from an image"
-inputs = { ocr_input = "PDF" }
+inputs = { document = "PDF" }
 output = "Page"
 page_views = true
-ocr_model = "mistral-ocr"
+ocr = "base_ocr_mistral"
 
 [pipe.extract_invoice]
 type = "PipeSequence"

@@ -8,7 +8,7 @@ Dpe = "A diagnostic of the energy performance of a building"
 [pipe.power_extractor_dpe]
 type = "PipeSequence"
 description = "Update page content with markdown"
-inputs = { ocr_input = "PDF" }
+inputs = { document = "PDF" }
 output = "Dpe"
 steps = [
     { pipe = "ocr_page_contents_and_views_from_pdf", result = "page_contents" },                                                # Located in the base library, in the domain "documents"

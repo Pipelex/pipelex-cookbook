@@ -24,8 +24,8 @@ description = "Select the appropriate summary pipe based on the channel name"
 inputs = { discord_channel_update = "DiscordChannelUpdate" }
 output = "ChannelSummary"
 expression = "discord_channel_update.name"
-pipe_map = { "Introduce-Yourself" = "summarize_discord_channel_update_for_new_members" }
-default_pipe_code = "summarize_discord_channel_update_general"
+outcomes = { "Introduce-Yourself" = "summarize_discord_channel_update_for_new_members" }
+default_outcome = "summarize_discord_channel_update_general"
 
 [pipe.summarize_discord_channel_update_for_new_members]
 type = "PipeLLM"
@@ -77,7 +77,7 @@ Keep it short: 200 characters.
 """
 
 [pipe.format_html_newsletter]
-type = "PipeJinja2"
+type = "PipeCompose"
 description = "Combine weekly and channel summaries into a complete newsletter following specific formatting requirements"
 inputs = { weekly_summary = "Text", channel_summaries = "ChannelSummary" }
 output = "HtmlNewsletter"
