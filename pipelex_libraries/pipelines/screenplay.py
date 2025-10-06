@@ -1,6 +1,7 @@
 from typing import List, Optional
 
-from pipelex.core.stuffs.stuff_content import ListContent, StructuredContent
+from pipelex.core.stuffs.list_content import ListContent
+from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
 
 

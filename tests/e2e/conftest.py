@@ -2,7 +2,7 @@ import os
 
 import pipelex.pipelex
 import pytest
-from pipelex.core.pipes.pipe_run_params import FORCE_DRY_RUN_MODE_ENV_KEY, PipeRunMode
+from pipelex.pipe_run.pipe_run_params import FORCE_DRY_RUN_MODE_ENV_KEY, PipeRunMode
 from rich import print
 
 

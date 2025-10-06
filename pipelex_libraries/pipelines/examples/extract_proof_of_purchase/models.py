@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from pipelex.core.stuffs.stuff_content import StructuredContent
+from pipelex.core.stuffs.structured_content import StructuredContent
 
 
 class Products(StructuredContent):

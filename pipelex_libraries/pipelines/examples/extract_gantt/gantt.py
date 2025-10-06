@@ -1,7 +1,9 @@
 from datetime import datetime
 from typing import List, Literal, Optional
 
-from pipelex.core.stuffs.stuff_content import ListContent, StructuredContent, TextContent
+from pipelex.core.stuffs.list_content import ListContent
+from pipelex.core.stuffs.structured_content import StructuredContent
+from pipelex.core.stuffs.text_content import TextContent
 from pydantic import field_validator
 
 

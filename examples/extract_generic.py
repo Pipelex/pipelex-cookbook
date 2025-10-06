@@ -3,7 +3,11 @@ from typing import List
 
 from pipelex import pretty_print
 from pipelex.core.memory.working_memory import WorkingMemory
-from pipelex.core.stuffs.image_content import ImageContent, PageContent, PDFContent, TextAndImagesContent, TextContent
+from pipelex.core.stuffs.image_content import ImageContent
+from pipelex.core.stuffs.page_content import PageContent
+from pipelex.core.stuffs.pdf_content import PDFContent
+from pipelex.core.stuffs.text_and_images_content import TextAndImagesContent
+from pipelex.core.stuffs.text_content import TextContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
