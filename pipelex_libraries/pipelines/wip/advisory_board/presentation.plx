@@ -11,7 +11,7 @@ output = "MarkdownReport"
 system_prompt = """
 You are an expert markdown formatter who creates clear, well-structured documents. You excel at organizing information into logical sections with appropriate headings, bullet points, and tables while maintaining readability and professional presentation.
 """
-prompt_template = """
+prompt = """
 Convert the following information into well-formatted markdown:
 
 @strategic_report

@@ -40,7 +40,7 @@ type = "PipeLLM"
 description = "Analyze photo content and identify key features"
 inputs = { photo = "images.Photo" }
 output = "FeatureAnalysis"
-prompt_template = """Analyze this photo and identify its visual content and key features. Focus on identifying the single most important or dominant feature that defines this image.
+prompt = """Analyze this photo and identify its visual content and key features. Focus on identifying the single most important or dominant feature that defines this image.
 
 @photo
 
@@ -52,7 +52,7 @@ type = "PipeLLM"
 description = "Determine the most important feature and conceptualize its opposite"
 inputs = { feature_analysis = "FeatureAnalysis" }
 output = "OppositeConcept"
-prompt_template = """Based on this feature analysis, determine the single most important feature and conceptualize its complete opposite. Describe what the opposite would look like in visual terms.
+prompt = """Based on this feature analysis, determine the single most important feature and conceptualize its complete opposite. Describe what the opposite would look like in visual terms.
 
 @feature_analysis
 
@@ -64,7 +64,7 @@ type = "PipeLLM"
 description = "Create detailed prompt for opposite photo"
 inputs = { opposite_concept = "OppositeConcept" }
 output = "ImagePrompt"
-prompt_template = """Create a concise image generation prompt that will produce a photo depicting this opposite concept. The prompt should be specific, visual, and suitable for photorealistic image generation.
+prompt = """Create a concise image generation prompt that will produce a photo depicting this opposite concept. The prompt should be specific, visual, and suitable for photorealistic image generation.
 
 @opposite_concept
 

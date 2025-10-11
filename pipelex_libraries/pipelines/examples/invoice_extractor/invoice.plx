@@ -16,12 +16,12 @@ steps = [
 ]
 
 [pipe.extract_text_from_image]
-type = "PipeOcr"
+type = "PipeExtract"
 description = "Extract page contents from an image"
 inputs = { document = "PDF" }
 output = "Page"
 page_views = true
-ocr = "base_ocr_mistral"
+model = "base_ocr_mistral"
 
 [pipe.extract_invoice]
 type = "PipeSequence"
@@ -38,7 +38,7 @@ type = "PipeLLM"
 description = "Analyze the invoice"
 inputs = { "invoice_page.page_view" = "Image", invoice_page = "Page" }
 output = "InvoiceDetails"
-prompt_template = """
+prompt = """
 Analyze this invoice:
 
 @invoice_page.text_and_images.text.text
@@ -49,8 +49,8 @@ type = "PipeLLM"
 description = "Extract invoice information from an invoice text transcript"
 inputs = { "invoice_page.page_view" = "Image", invoice_details = "InvoiceDetails", invoice_page = "Page" }
 output = "Invoice"
-llm = "llm_to_extract_invoice"
-prompt_template = """
+model = "llm_to_extract_invoice"
+prompt = """
 Extract invoice information from this invoice:
 
 The category of this invoice is: $invoice_details.category.

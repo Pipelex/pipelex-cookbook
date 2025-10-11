@@ -8,7 +8,7 @@ description = "Using an LLM Plugin"
 type = "PipeLLM"
 description = "Write text about Hello World."
 output = "Text"
-llm = { llm_handle = "llm_plugin_example_using_openai", temperature = 0.5 }
+model = { model = "llm_plugin_example_using_openai", temperature = 0.5 }
 prompt = """
 Write a haiku about Hello World.
 """

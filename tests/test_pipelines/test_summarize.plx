@@ -15,7 +15,7 @@ type = "PipeLLM"
 description = "Summarize text."
 inputs = { text = "Text" }
 output = "StructuredSummary"
-prompt_template = """
+prompt = """
 You are given a text.
 Your task is to summarize it accurately.
 
@@ -41,7 +41,7 @@ description = "Extract the topics from a dense text."
 inputs = { text = "Text" }
 output = "Topic"
 multiple_output = true
-prompt_template = """
+prompt = """
 You are given a large text.
 Your task is to extract the main topics from the text.
 @text
@@ -54,7 +54,7 @@ type = "PipeLLM"
 description = "Summarize a dense text with of focus on a specific topic."
 inputs = { text = "Text", topic = "Topic" }
 output = "Summary"
-prompt_template = """
+prompt = """
 Your goal is to summarize everything related to $topic in the provided text:
 
 @text
@@ -68,7 +68,7 @@ type = "PipeLLM"
 description = "Summarize text from summarized topics."
 inputs = { summarized_topics = "Summary" }
 output = "Summary"
-prompt_template = """
+prompt = """
 You are given a list of summaries that cover different topics from a large text.
 
 Your task is to generate an overall summary of the text based on the provided summaries, avoiding any repetitions.

@@ -34,7 +34,7 @@ type = "PipeLLM"
 description = "Write the context of a sample of text"
 inputs = { text = "Text" }
 output = "Text"
-prompt_template = """
+prompt = """
 Your task is to write the context of a text.
 This context should be maximum of 30 words.
 The goal is to quickly understand the type of ducument by just reding this context.
@@ -47,8 +47,8 @@ type = "PipeLLM"
 description = "Get an enriched question"
 inputs = { question = "answer.Question", client_instructions = "Text", context = "Text" }
 output = "EnrichedQuestion"
-llm = "llm_to_enrich"
-prompt_template = """
+model = "llm_to_enrich"
+prompt = """
 Your task is to reformulate a form field or a question into a question for a LLM.
 This question will need an answer from a text.
 
@@ -76,9 +76,9 @@ type = "PipeLLM"
 description = "Answer the question in a dynamically specified format"
 inputs = { enriched_question = "EnrichedQuestion", excerpts = "retrieve.RetrievedExcerpt", context = "Text", client_instructions = "Text" }
 output = "Dynamic"
-llm = "llm_to_answer"
+model = "llm_to_answer"
 structuring_method = "preliminary_text"
-prompt_template = """
+prompt = """
 Your task is to answer a question based on excerpts previously retrieved from a text.
 To help you, your assistant has already enriched the question and extracted the most relevant excerpts{% if client_instructions %},
 and provided you with some hints or guidelines from the customer{% endif %}.
@@ -117,7 +117,7 @@ description = "Clean the answer"
 inputs = { answer = "Dynamic" }
 output = "Dynamic"
 structuring_method = "preliminary_text"
-prompt_template = """
+prompt = """
 You are helping to clean answers that were generated from analyzing document excerpts to answer specific questions.
 
 @answer

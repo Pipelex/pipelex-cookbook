@@ -36,7 +36,7 @@ description = "Analyze and classify the business problem into structured format"
 inputs = { user_input = "Text" }
 output = "BusinessProblem"
 system_prompt = "You are a business analysis expert who specializes in problem classification and structuring."
-prompt_template = """
+prompt = """
 Analyze the following business challenge and structure it into a comprehensive problem definition:
 
 @user_input
@@ -78,7 +78,7 @@ Available Advisory Boards:
 - Data Science & Analytics Board (Data strategy and analytics)
 - Legal & Compliance Advisory Board (Legal and regulatory compliance)
 - Security & Risk Management Advisory Board (Security and risk mitigation)"""
-prompt_template = """
+prompt = """
 Based on the following business problem, select 5-10 most relevant advisory boards:
 
 @business_problem
@@ -97,7 +97,7 @@ inputs = { business_problem = "BusinessProblem", advisory_board = "AdvisoryBoard
 output = "BoardResponse"
 multiple_output = true
 system_prompt = "Based on the selected boards, provide responses from each relevant board's perspective."
-prompt_template = """
+prompt = """
 Based on the following business problem and selected advisory board, provide board response:
 
 Business Problem:
@@ -128,7 +128,7 @@ description = "Analyze all board responses to identify consensus, conflicts, and
 inputs = { board_consultations = "BoardResponse" }
 output = "ResponseAnalysis"
 system_prompt = "You are a strategic analysis expert who specializes in synthesizing multiple expert opinions and identifying patterns, consensus, and conflicts."
-prompt_template = """
+prompt = """
 Analyze the following advisory board responses to identify patterns and insights:
 
 All Board Responses:
@@ -152,7 +152,7 @@ description = "Generate comprehensive strategic report synthesizing all insights
 inputs = { business_problem = "BusinessProblem", selected_advisory_boards = "AdvisoryBoard", board_consultations = "BoardResponse", response_analysis = "ResponseAnalysis" }
 output = "StrategicReport"
 system_prompt = "You are a senior strategy consultant who specializes in creating comprehensive strategic reports that synthesize complex multi-stakeholder input into actionable recommendations."
-prompt_template = """
+prompt = """
 Create a comprehensive strategic report based on the following inputs:
 
 Original Problem:

@@ -11,7 +11,7 @@ description = "Update page content with markdown"
 inputs = { document = "PDF" }
 output = "Dpe"
 steps = [
-    { pipe = "ocr_page_contents_and_views_from_pdf", result = "page_contents" },                                                # Located in the base library, in the domain "documents"
+    { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },                                                # Located in the base library, in the domain "documents"
     { pipe = "write_markdown_from_page_content_dpe", batch_over = "page_contents", batch_as = "page_content", result = "dpe" },
 ]
 
@@ -20,10 +20,10 @@ type = "PipeLLM"
 description = "Write markdown from page content of a 'Diagnostic de Performance Energetique'"
 inputs = { "page_content.page_view" = "Image", page_content = "Page" }
 output = "Dpe"
-llm = "llm_for_img_to_text"
+model = "llm_for_img_to_text"
 structuring_method = "preliminary_text"
 system_prompt = """You are a multimodal LLM, expert at converting images into perfect markdown."""
-prompt_template = """
+prompt = """
 You are given an image of a French 'Diagnostic de Performance Energetique'.
 Your role is to convert the image into perfect markdown.
 

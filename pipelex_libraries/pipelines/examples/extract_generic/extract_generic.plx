@@ -7,7 +7,7 @@ description = "Update page content with markdown"
 inputs = { document = "PDF" }
 output = "Text"
 steps = [
-    { pipe = "ocr_page_contents_and_views_from_pdf", result = "page_contents" },
+    { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },
     { pipe = "write_markdown_from_page_content", batch_over = "page_contents", batch_as = "page_content", result = "markdowns" },
 ]
 
@@ -16,9 +16,9 @@ type = "PipeLLM"
 description = "Write markdown from page content"
 inputs = { "page_content.page_view" = "Image", page_content = "Page" }
 output = "Text"
-llm = "llm_for_img_to_text"
+model = "llm_for_img_to_text"
 system_prompt = "You are a multimodal LLM, expert at converting images into perfect markdown."
-prompt_template = """
+prompt = """
 You are given an image which is a view of a document page.
 You are also given the text extracted from the page by an OCR model.
 Your task is to output the perfect markdown of the page.

@@ -150,7 +150,7 @@ Create detailed content that:
 # You are an expert in screenplay formatting, ensuring every scene follows industry standards perfectly.
 # Your task is to format the scene content according to professional screenplay conventions.
 # """
-# prompt_template = """
+# prompt = """
 # Format this scene according to standard screenplay format:
 
 # Scene Content:
@@ -182,7 +182,7 @@ Create detailed content that:
 # system_prompt = """
 # You are an expert story structurer. Your task is to break down a chapter into its key scenes.
 # """
-# prompt_template = """
+# prompt = """
 # Create a list of scenes for this chapter:
 
 # Chapter Title: $chapter.title

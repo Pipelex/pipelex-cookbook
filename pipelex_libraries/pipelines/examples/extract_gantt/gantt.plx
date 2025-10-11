@@ -31,8 +31,8 @@ type = "PipeLLM"
 description = "Describe the timescale of a gantt chart"
 inputs = { gantt_chart_image = "GanttChartImage" }
 output = "GanttTimescaleDescription"
-llm = "llm_to_extract_diagram"
-prompt_template = """
+model = "llm_to_extract_diagram"
+prompt = """
 I am sharing an image of a Gantt chart: $gantt_chart_image.
 Please analyze the timescale: what is the smallest unit detailed in the time scale?
 """
@@ -42,9 +42,9 @@ type = "PipeLLM"
 description = "List all the tasks"
 inputs = { gantt_chart_image = "GanttChartImage" }
 output = "GanttTaskName"
-llm = "llm_to_extract_diagram"
+model = "llm_to_extract_diagram"
 multiple_output = true
-prompt_template = """
+prompt = """
 I am sharing an image of a Gantt chart: $gantt_chart_image.
 Please analyse the image and list all the task names.
 """
@@ -55,8 +55,8 @@ description = "Extract the precise dates of the task, start_date and end_date"
 inputs = { gantt_chart_image = "GanttChartImage", gantt_timescale = "GanttTimescaleDescription", gantt_task_name = "GanttTaskName" }
 output = "GanttTaskDetails"
 structuring_method = "preliminary_text"
-llm = "llm_to_extract_diagram"
-prompt_template = """
+model = "llm_to_extract_diagram"
+prompt = """
 I am sharing an image of a Gantt chart: $gantt_chart_image.
 Please analyse the image and for a given task name (and only this task), extract the information of the task, if relevant.
 
@@ -74,7 +74,7 @@ type = "PipeLLM"
 description = "Gather all the tasks in a gantt chart"
 inputs = { details_of_all_tasks = "GanttTaskDetails" }
 output = "GanttChart"
-prompt_template = """
+prompt = """
 Now you will receive all the necessary information to build a gantt chart.
 
 Here are the task details:
@@ -90,8 +90,8 @@ type = "PipeLLM"
 description = "Extract all details from a gantt chart"
 inputs = { image = "GanttChartImage" }
 output = "GanttTranscript"
-llm = "llm_to_extract_diagram"
-prompt_template = """
+model = "llm_to_extract_diagram"
+prompt = """
 # **Task:** You are provided with an image depicting a planning or timeline: $image.
 Your objective is to produce a clear, comprehensive, and detailed description of the planning or timeline, focusing on its structure, events, and key details.
 

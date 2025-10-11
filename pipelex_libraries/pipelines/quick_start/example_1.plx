@@ -13,8 +13,8 @@ type = "PipeLLM"
 description = "Summarize text."
 inputs = { text = "example_1.Explanation" }
 output = "Text"
-llm = { llm_handle = "gpt-4o-mini", temperature = 0.1, max_tokens = "auto" }
-prompt_template = """
+model = { model = "gpt-4o-mini", temperature = 0.1, max_tokens = "auto" }
+prompt = """
 You are given a text.
 Your task is to summarize it accurately.
 Your answer should take 2 sentences maximum.

@@ -563,7 +563,7 @@ But don't write documentation unless asked explicitly to.
 # Pipe Base Library
 
 Pipelex already holds în a base library pipelines that you can reuse. 
-- `ocr_page_contents_from_pdf`: This is an OCR pipe, that has as `inputs = { document = "PDF" }` and `output = "Page"`. 
+- `extract_page_contents_from_pdf`: This is an OCR pipe, that has as `inputs = { document = "PDF" }` and `output = "Page"`. 
 - `generate_image`: Generate an image, `inputs = { prompt = "ImgGenPrompt" }`, `output = "Image"`
 
 VERY IMPORTANT:
