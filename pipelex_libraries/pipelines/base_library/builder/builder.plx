@@ -35,8 +35,8 @@ type = "PipeLLM"
 description = "Turn the brief into a DomainInformation object."
 inputs = { brief = "UserBrief" }
 output = "DomainInformation"
-llm = "llm_to_engineer"
-prompt_template = """
+model = "llm_to_engineer"
+prompt = """
 Name and define the domain of this process:
 @brief
 
@@ -51,8 +51,8 @@ type = "PipeLLM"
 description = "Turn the brief into a pseudo-code plan describing controllers, pipes, their inputs/outputs."
 inputs = { brief = "UserBrief" }
 output = "PlanDraft"
-llm = "llm_to_engineer"
-prompt_template = """
+model = "llm_to_engineer"
+prompt = """
 Return a draft of a plan that narrates the pipeline as pseudo-steps (no code):
 - Explicitly indicate when you are running things in sequence,
   or in parallel (several independant steps in parallel),
@@ -80,7 +80,7 @@ Available pipe operators:
 - PipeImgGen: A pipe that uses an AI model to generate an image.
   VERY IMPORTANT: IF YOU DECIDE TO CREATE A PipeImgGen, YOU ALSO HAVE TO CREATE A PIPELLM THAT WILL WRITE THE PROMPT, AND THAT NEEDS TO PRECEED THE PIPEIMGEN, based on the necessary elements.
   That means that in the MAIN pipeline, the prompt MUST NOT be considered as an input. It should be the output of a step that generates the prompt.
-- PipeOcr: A pipe that uses an OCR technology to extract text from an image or a pdf.
+- PipeExtract: A pipe that uses an OCR technology to extract text from an image or a pdf.
   VERY IMPORTANT: THE INPUT OF THE PIPEOCR MUST BE either an image or a pdf or a concept which refines one of them.
 
 
@@ -99,9 +99,9 @@ type = "PipeLLM"
 description = "Interpret the draft of a plan to create an AI pipeline, and define the needed concepts."
 inputs = { plan_draft = "PlanDraft", brief = "UserBrief" }
 output = "ConceptDrafts"
-llm = "llm_to_engineer"
-prompt_template = """
-We are working on writing an AI pipeleine to fulfill this brief:
+model = "llm_to_engineer"
+prompt = """
+We are working on writing an AI pipeline to fulfill this brief:
 @brief
 
 We have already written a plan for the pipeline. It's built using pipes, each with its own inputs (one or more) and output (single).
@@ -145,11 +145,11 @@ description = "Structure the concept definitions."
 inputs = { concept_drafts = "ConceptDrafts", brief = "UserBrief" }
 output = "concept.ConceptSpec"
 multiple_output = true
-llm = "llm_to_engineer"
+model = "llm_to_engineer"
 system_prompt = """
 You are an expert at data extraction and json formatting.
 """
-prompt_template = """
+prompt = """
 You are on a big journey to construct a pipeline, and this is one of the steps. 
 Here is the overalle mission of the user:
 @brief
@@ -164,12 +164,12 @@ description = "Write the pipe signatures for the plan."
 inputs = { plan_draft = "PlanDraft", brief = "UserBrief", concept_specs = "concept.ConceptSpec" }
 output = "pipe_design.PipeSignature"
 multiple_output = true
-llm = "llm_to_engineer"
+model = "llm_to_engineer"
 system_prompt = """
 You are a Senior engineer, very well versed in creating pipelines.
 You are very thorough about naming stuff, structured and rigorous in your planning.
 """
-prompt_template = """
+prompt = """
 Your job is to structure the required PipeSignatures for defining a pipeline which has already been drafted.
 
 @brief
@@ -206,7 +206,7 @@ Available pipe operators:
 - PipeImgGen: A pipe that uses an AI model to generate an image.
   VERY IMPORTANT: IF YOU DECIDE TO CREATE A PipeImgGen, YOU ALSO HAVE TO CREATE A PIPELLM THAT WILL WRITE THE PROMPT, AND THAT NEEDS TO PRECEED THE PIPEIMGEN, based on the necessary elements.
   That means that in the MAIN pipeline, the prompt MUST NOT be considered as an input. It should be the output of a step that generates the prompt.
-- PipeOcr: A pipe that extracts text from an image or a pdf. PipeOcr must have a exactly one input which must be either an `Image` or a `PDF`.
+- PipeExtract: A pipe that extracts text from an image or a pdf. PipeExtract must have a exactly one input which must be either an `Image` or a `PDF`.
 
 Be smart about splitting the workflow into steps (sequence or parallel):
 - You can use an LLM to extract or analyze several things at the same time, they can be output as a single concept which will be structured with attributes etc.

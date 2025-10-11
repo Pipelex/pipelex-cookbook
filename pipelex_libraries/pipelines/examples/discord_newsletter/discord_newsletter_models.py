@@ -2,6 +2,7 @@ from typing import List
 
 import markdown
 from pipelex.core.stuffs.structured_content import StructuredContent
+from pipelex.tools.typing.pydantic_utils import empty_list_factory_of
 from pipelex.types import StrEnum
 from pydantic import Field, field_validator
 
@@ -26,8 +27,8 @@ class DiscordMessage(StructuredContent):
 
     author: str = Field(..., description="Author of the message")
     content: str = Field(..., description="Content of the message")
-    attachments: List[Attachment] = Field(default_factory=list, description="List of message attachments")
-    embeds: List[Embed] = Field(default_factory=list, description="List of message embeds")
+    attachments: List[Attachment] = Field(default_factory=empty_list_factory_of(Attachment), description="List of message attachments")
+    embeds: List[Embed] = Field(default_factory=empty_list_factory_of(Embed), description="List of message embeds")
     link: str = Field(..., description="Link to the message")
 
 
@@ -36,7 +37,7 @@ class DiscordChannelUpdate(StructuredContent):
 
     name: str = Field(..., description="Name of the Discord channel")
     position: int = Field(..., description="Position of the channel")
-    messages: List[DiscordMessage] = Field(default_factory=list, description="List of messages in the channel")
+    messages: List[DiscordMessage] = Field(default_factory=empty_list_factory_of(DiscordMessage), description="List of messages in the channel")
 
 
 class ChannelCategory(StrEnum):

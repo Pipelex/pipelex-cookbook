@@ -1,5 +1,5 @@
 
 [llm.presets]
 
-llm_for_writing_analysis = { llm_handle = "base-claude", temperature = 0.1 }
-llm_for_social_post_writing = { llm_handle = "base-claude", temperature = 0.9 }
+llm_for_writing_analysis = { model = "base-claude", temperature = 0.1 }
+llm_for_social_post_writing = { model = "base-claude", temperature = 0.9 }

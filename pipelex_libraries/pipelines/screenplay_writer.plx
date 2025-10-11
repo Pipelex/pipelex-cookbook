@@ -25,7 +25,7 @@ system_prompt = """
 You are an expert story analyst and screenwriter. Your task is to analyze a pitch and expand it with more details,
 including character ideas and a synopsis.
 """
-prompt_template = """
+prompt = """
 Analyze this pitch and expand it with more details:
 
 @pitch
@@ -46,7 +46,7 @@ system_prompt = """
 You are an expert character designer with experience in creating rich, complex characters.
 Your task is to create detailed character profiles based on the character ideas in the pitch.
 """
-prompt_template = """
+prompt = """
 Create detailed character profiles based on these character ideas:
 
 @detailed_pitch.character_ideas
@@ -61,7 +61,7 @@ system_prompt = """
 You are an expert story structurer. Your task is to break down the story into chapters,
 each with a clear purpose and progression.
 """
-prompt_template = """
+prompt = """
 Based on this detailed pitch:
 
 Original Pitch: $detailed_pitch.original_pitch
@@ -83,7 +83,7 @@ system_prompt = """
 You are an expert screenwriter with experience in crafting compelling scenes.
 Your task is to create a basic outline for a scene that fits within the chapter's narrative.
 """
-prompt_template = """
+prompt = """
 Create a scene outline for scene #@ in this chapter:
 
 Chapter Title: $chapter.title
@@ -114,7 +114,7 @@ system_prompt = """
 You are an expert screenwriter specializing in rich character interactions and engaging dialogue.
 Your task is to develop the scene's content with detailed action and meaningful dialogue.
 """
-prompt_template = """
+prompt = """
 Develop this scene outline into full content:
 
 Scene Title: $scene.title

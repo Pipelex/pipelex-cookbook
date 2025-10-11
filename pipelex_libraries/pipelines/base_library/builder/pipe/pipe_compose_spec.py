@@ -1,9 +1,10 @@
 from typing import Literal
 
+from pipelex.cogt.templating.template_blueprint import TemplateBlueprint
+from pipelex.cogt.templating.template_category import TemplateCategory
+from pipelex.cogt.templating.templating_style import TagStyle, TemplatingStyle, TextFormat
 from pipelex.libraries.pipelines.builder.pipe.pipe_signature import PipeSpec
 from pipelex.pipe_operators.compose.pipe_compose_blueprint import PipeComposeBlueprint
-from pipelex.tools.templating.jinja2_template_category import Jinja2TemplateCategory
-from pipelex.tools.templating.templating_models import PromptingStyle, TagStyle, TextFormat
 from pipelex.types import StrEnum
 from pydantic import Field, field_validator
 from pydantic.json_schema import SkipJsonSchema
@@ -51,32 +52,32 @@ class TargetFormat(StrEnum):
                 return TextFormat.PLAIN
 
     @property
-    def prompting_style(self) -> PromptingStyle:
-        return PromptingStyle(tag_style=self.tag_style, text_format=self.text_format)
+    def templating_style(self) -> TemplatingStyle:
+        return TemplatingStyle(tag_style=self.tag_style, text_format=self.text_format)
 
     @property
-    def template_category(self) -> Jinja2TemplateCategory:
+    def category(self) -> TemplateCategory:
         match self:
             case TargetFormat.PLAIN:
-                return Jinja2TemplateCategory.MARKDOWN
+                return TemplateCategory.MARKDOWN
             case TargetFormat.MARKDOWN:
-                return Jinja2TemplateCategory.MARKDOWN
+                return TemplateCategory.MARKDOWN
             case TargetFormat.HTML:
-                return Jinja2TemplateCategory.HTML
+                return TemplateCategory.HTML
             case TargetFormat.JSON:
-                return Jinja2TemplateCategory.HTML
+                return TemplateCategory.HTML
             case TargetFormat.SPREADSHEET:
-                return Jinja2TemplateCategory.HTML
+                return TemplateCategory.HTML
             case TargetFormat.MERMAID:
-                return Jinja2TemplateCategory.MERMAID
+                return TemplateCategory.MERMAID
 
 
 class PipeComposeSpec(PipeSpec):
     """PipeComposeSpec defines a templating operation based on a Jinja2 template."""
 
     type: SkipJsonSchema[Literal["PipeCompose"]] = "PipeCompose"
-    category: SkipJsonSchema[Literal["PipeOperator"]] = "PipeOperator"
-    jinja2: str | None = Field(default=None, description="Jinja2 template string")
+    pipe_category: SkipJsonSchema[Literal["PipeOperator"]] = "PipeOperator"
+    template: str = Field(description="Jinja2 template string")
     target_format: TargetFormat | str = Field(description="Target format for the output")
 
     @field_validator("target_format", mode="before")
@@ -89,18 +90,21 @@ class PipeComposeSpec(PipeSpec):
         base_blueprint = super().to_blueprint()
 
         target_format = TargetFormat(self.target_format)
-        prompting_style = target_format.prompting_style
-        template_category = target_format.template_category
+        templating_style = target_format.templating_style
+        category = target_format.category
+
+        template_blueprint = TemplateBlueprint(
+            template=self.template,
+            templating_style=templating_style,
+            category=category,
+            extra_context=None,
+        )
 
         return PipeComposeBlueprint(
             description=base_blueprint.description,
             inputs=base_blueprint.inputs,
             output=base_blueprint.output,
             type=self.type,
-            category=self.category,
-            jinja2_name=None,
-            jinja2=self.jinja2,
-            prompting_style=prompting_style,
-            template_category=template_category,
-            extra_context=None,
+            pipe_category=self.pipe_category,
+            template=template_blueprint,
         )

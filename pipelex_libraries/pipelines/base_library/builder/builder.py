@@ -32,10 +32,10 @@ from pipelex.libraries.pipelines.builder.concept.concept_spec import ConceptSpec
 from pipelex.libraries.pipelines.builder.pipe.pipe_batch_spec import PipeBatchSpec
 from pipelex.libraries.pipelines.builder.pipe.pipe_compose_spec import PipeComposeSpec
 from pipelex.libraries.pipelines.builder.pipe.pipe_condition_spec import PipeConditionSpec
+from pipelex.libraries.pipelines.builder.pipe.pipe_extract_spec import PipeExtractSpec
 from pipelex.libraries.pipelines.builder.pipe.pipe_func_spec import PipeFuncSpec
-from pipelex.libraries.pipelines.builder.pipe.pipe_img_spec import PipeImgGenSpec
+from pipelex.libraries.pipelines.builder.pipe.pipe_img_gen_spec import PipeImgGenSpec
 from pipelex.libraries.pipelines.builder.pipe.pipe_llm_spec import PipeLLMSpec
-from pipelex.libraries.pipelines.builder.pipe.pipe_ocr_spec import PipeOcrSpec
 from pipelex.libraries.pipelines.builder.pipe.pipe_parallel_spec import PipeParallelSpec
 from pipelex.libraries.pipelines.builder.pipe.pipe_sequence_spec import PipeSequenceSpec
 from pipelex.libraries.pipelines.builder.pipe.pipe_signature import PipeSpec
@@ -57,7 +57,7 @@ PipeSpecUnion = Annotated[
     | PipeImgGenSpec
     | PipeComposeSpec
     | PipeLLMSpec
-    | PipeOcrSpec
+    | PipeExtractSpec
     | PipeBatchSpec
     | PipeConditionSpec
     | PipeParallelSpec
@@ -171,7 +171,7 @@ def _convert_pipe_spec(pipe_spec: PipeSpecUnion) -> PipeSpecUnion:
         "PipeImgGen": PipeImgGenSpec,
         "PipeCompose": PipeComposeSpec,
         "PipeLLM": PipeLLMSpec,
-        "PipeOcr": PipeOcrSpec,
+        "PipeExtract": PipeExtractSpec,
         "PipeBatch": PipeBatchSpec,
         "PipeCondition": PipeConditionSpec,
         "PipeParallel": PipeParallelSpec,
@@ -295,7 +295,7 @@ async def validate_bundle_spec(pipelex_bundle_spec: PipelexBundleSpec):
         "PipeImgGen": PipeImgGenSpec,
         "PipeCompose": PipeComposeSpec,
         "PipeLLM": PipeLLMSpec,
-        "PipeOcr": PipeOcrSpec,
+        "PipeExtract": PipeExtractSpec,
         "PipeBatch": PipeBatchSpec,
         "PipeCondition": PipeConditionSpec,
         "PipeParallel": PipeParallelSpec,
