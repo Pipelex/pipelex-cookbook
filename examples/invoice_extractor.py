@@ -6,7 +6,6 @@ from pipelex.core.stuffs.pdf_content import PDFContent
 from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
-
 from pipelex_libraries.pipelines.examples.invoice_extractor.invoice import Invoice
 
 SAMPLE_NAME = "invoice_extractor"
