@@ -4,6 +4,7 @@ from pipelex import pretty_print
 from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
+
 from pipelex_libraries.pipelines.quick_start.summarize import StructuredSummary
 
 

@@ -5,6 +5,7 @@ from pipelex.core.stuffs.image_content import ImageContent
 from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
+
 from pipelex_libraries.pipelines.examples.extract_gantt.gantt import GanttChart
 
 SAMPLE_NAME = "extract_gantt"

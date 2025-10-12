@@ -3,8 +3,8 @@ import asyncio
 from pipelex.core.stuffs.image_content import ImageContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
-from pipelex_libraries.pipelines.examples.extract_table.table import HtmlTable
 
+from pipelex_libraries.pipelines.examples.extract_table.table import HtmlTable
 from utils.results_utils import output_result
 
 SAMPLE_NAME = "extract_table"
