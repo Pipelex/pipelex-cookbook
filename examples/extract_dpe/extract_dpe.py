@@ -5,7 +5,7 @@ from pipelex.core.stuffs.pdf_content import PDFContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
-from pipelex_libraries.pipelines.examples.extract_dpe.extract_dpe import Dpe
+from examples.extract_dpe.extract_dpe_struct import Dpe
 from utils.results_utils import get_results_dir_path
 
 SAMPLE_NAME = "pdf_power_extractor_dpe"

@@ -7,7 +7,7 @@ from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.json_utils import load_json_list_from_path
 
-from pipelex_libraries.pipelines.examples.discord_newsletter.discord_newsletter_models import DiscordChannelUpdate
+from examples.wip.discord_newsletter.discord_newsletter_struct import DiscordChannelUpdate
 from utils.results_utils import output_result
 
 SAMPLE_NAME = "discord_newsletter"

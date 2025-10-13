@@ -17,7 +17,7 @@ async def generate_photopposite(image_url: str):
         pipe_code="gen_photopposite",
         input_memory={
             "photo": {
-                "concept": "native.Image",
+                "concept": "Image",
                 "content": ImageContent(url=image_url),
             }
         },
