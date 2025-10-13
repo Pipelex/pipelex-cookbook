@@ -6,12 +6,13 @@ from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
+from examples.wip.write_tweet.tech_tweet import OptimizedTweet
 from utils.input_utils import optional_sample_text_from_path
 
 SAMPLE_NAME = "write_tweet"
 
 
-async def optimize_tweet(draft_tweet: str, writing_style: str) -> str:
+async def optimize_tweet(draft_tweet: str, writing_style: str) -> OptimizedTweet:
     pipe_output = await execute_pipeline(
         pipe_code="optimize_tweet_sequence",
         input_memory={
@@ -27,7 +28,7 @@ async def optimize_tweet(draft_tweet: str, writing_style: str) -> str:
     )
 
     # Get the optimized tweet
-    optimized_tweet = pipe_output.main_stuff_as_str
+    optimized_tweet = pipe_output.main_stuff_as(content_type=OptimizedTweet)
     return optimized_tweet
 
 

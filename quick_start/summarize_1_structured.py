@@ -5,7 +5,7 @@ from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
-from pipelex_libraries.pipelines.quick_start.summarize import StructuredSummary
+from quick_start.pipelines.summarize_struct import StructuredSummary
 
 
 async def summarize_with_structure(text: str) -> StructuredSummary:

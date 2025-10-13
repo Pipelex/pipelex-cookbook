@@ -5,7 +5,7 @@ from pipelex.core.stuffs.pdf_content import PDFContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
-from pipelex_libraries.pipelines.examples.extract_proof_of_purchase.models import ProofOfPurchase
+from examples.extract_proof_of_purchase.models import ProofOfPurchase
 from utils.results_utils import get_results_dir_path
 
 SAMPLE_NAME = "pdf_power_extractor_proof_of_purchase"

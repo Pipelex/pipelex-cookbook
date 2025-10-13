@@ -9,4 +9,4 @@ class TestWip:
 
     @pytest.mark.xfail(raises=PipeLibraryPipeNotFoundError, reason="Requires new upcoming features to complete the pipeline")
     def test_write_screenplay(self):
-        import examples.wip.write_screenplay  # noqa: F401
+        import examples.wip.screenplay.write_screenplay  # noqa: F401

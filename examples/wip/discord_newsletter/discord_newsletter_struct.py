@@ -54,7 +54,7 @@ class ChannelSummary(StructuredContent):
 
     channel_name: str = Field(..., description="Name of the Discord channel")
     position: int = Field(..., description="Position of the channel for ordering")
-    summary_items: List[str] = Field(..., description="Well-written summaries of the channel's activity")
+    summary_items: List[str] = Field(default_factory=empty_list_factory_of(str), description="Well-written summaries of the channel's activity")
 
     @field_validator("channel_name", mode="before")
     @classmethod

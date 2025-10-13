@@ -69,4 +69,4 @@ markdown_and_images = asyncio.run(extract_generic(pdf_url=PDF_PATH))
 # output results
 pretty_print(markdown_and_images)
 output_dir = get_results_dir_path(sample_name=SAMPLE_NAME)
-markdown_and_images.save_to_directory(directory=output_dir)
+# markdown_and_images.save_to_directory(directory=output_dir)

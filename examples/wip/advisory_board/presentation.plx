@@ -6,7 +6,7 @@ MarkdownReport = "A report in markdown format"
 [pipe.present_as_markdown]
 type = "PipeLLM"
 description = "Present information as markdown"
-inputs = { strategic_report = "Anything" }
+inputs = { strategic_report = "Text" }
 output = "MarkdownReport"
 system_prompt = """
 You are an expert markdown formatter who creates clear, well-structured documents. You excel at organizing information into logical sections with appropriate headings, bullet points, and tables while maintaining readability and professional presentation.

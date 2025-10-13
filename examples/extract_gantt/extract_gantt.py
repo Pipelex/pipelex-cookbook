@@ -6,7 +6,7 @@ from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
-from pipelex_libraries.pipelines.examples.extract_gantt.gantt import GanttChart
+from examples.extract_gantt.gantt_struct import GanttChart
 
 SAMPLE_NAME = "extract_gantt"
 IMAGE_URL = "assets/gantt/gantt_tree_house.png"
