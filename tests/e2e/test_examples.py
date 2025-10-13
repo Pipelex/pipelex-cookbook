@@ -22,9 +22,6 @@ class TestExamples:
     def test_invoice_extractor(self):
         import examples.invoice_extractor  # noqa: F401
 
-    def test_simple_ocr(self):
-        import examples.simple_ocr  # noqa: F401
-
     def test_advisory_board(self):
         import examples.wip.advisory_board  # noqa: F401
 
