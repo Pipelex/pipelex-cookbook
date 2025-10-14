@@ -6,7 +6,7 @@ from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
-from pipelex_libraries.pipelines.wip.advisory_board.advisory_orchestrator import StrategicReport
+from examples.wip.advisory_board.advisory_orchestrator import StrategicReport
 from utils.results_utils import output_result
 
 SAMPLE_NAME = "advisory_orchestrator"

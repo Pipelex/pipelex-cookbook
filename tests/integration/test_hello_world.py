@@ -1,5 +1,5 @@
 import pytest
-from pipelex.core.pipes.pipe_run_params import PipeRunMode
+from pipelex.pipe_run.pipe_run_params import PipeRunMode
 from pipelex.pipeline.execute import execute_pipeline
 
 

@@ -1,0 +1,39 @@
+domain = "extract_proof_of_purchase"
+
+[concept]
+ProofOfPurchase = "Elements from a proof of purchase"
+
+[pipe]
+[pipe.power_extractor_proof_of_purchase]
+type = "PipeSequence"
+description = "Update page content with markdown"
+inputs = { document = "PDF" }
+output = "ProofOfPurchase"
+steps = [
+    { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },                                                                            # Located in the base library, in the domain "documents"
+    { pipe = "write_markdown_from_page_content_proof_of_purchase", batch_over = "page_contents", batch_as = "page_content", result = "proof_of_purchase" },
+]
+
+[pipe.write_markdown_from_page_content_proof_of_purchase]
+type = "PipeLLM"
+description = "Write markdown from page content"
+inputs = { "page_content.page_view" = "Image", page_content = "Page" }
+output = "ProofOfPurchase"
+model = "llm_for_img_to_text"
+structuring_method = "preliminary_text"
+system_prompt = """You are a multimodal LLM, expert at converting images into perfect markdown."""
+prompt = """
+You are given an image of a proof of purchase.
+Your role is to convert the image into perfect markdown.
+
+To help you do so, you are given the text extracted from the page by an OCR model.
+@page_content.text_and_images.text.text
+
+- Ensure you collect every title, number, and currency from the proof of purchase.
+- Pay attention to the text alignment, it might have been misaligned by the OCR.
+- The OCR extraction may be highly incomplete. It is your job to complete the text and add the missing information using the image.
+- Output only the markdown, nothing else. No need for "```markdown" or "```".
+- You can use HTML if it helps you.
+- You can use tables if it is relevant.
+"""
+
