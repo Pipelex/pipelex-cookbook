@@ -172,6 +172,7 @@ markers = [
     "dry_runnable: tests that can be run in dry-run mode",
 ]
 minversion = "8.0"
+pythonpath = ["."]
 xfail_strict = true
 
 [tool.ruff]
