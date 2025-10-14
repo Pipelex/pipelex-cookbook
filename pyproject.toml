@@ -18,7 +18,7 @@ classifiers = [
 
 dependencies = [
     "beautifulsoup4==4.13.4",
-    "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal] @ git+https://github.com/Pipelex/pipelex.git@docs/Update-docs-and-Migrations",
+    "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal] @ git+https://github.com/Pipelex/pipelex.git@release/v0.12.0",
 ]
 
 [project.optional-dependencies]
