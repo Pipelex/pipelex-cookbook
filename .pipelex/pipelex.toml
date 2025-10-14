@@ -1,4 +1,3 @@
-
 [pipelex.log_config]
 default_log_level = "INFO"
 
@@ -6,11 +5,11 @@ default_log_level = "INFO"
 pipelex = "INFO"
 
 [cogt.llm_config]
-is_dump_text_prompts_enabled = true
+# is_dump_text_prompts_enabled = true
 # is_dump_response_text_enabled = true
 
 [cogt.llm_config.instructor_config]
-is_dump_kwargs_enabled = true
+# is_dump_kwargs_enabled = true
 # is_dump_response_enabled = true
 # is_dump_error_enabled = true
 
@@ -19,6 +18,6 @@ observer_dir = "results/observer"
 
 [pipelex.feature_config]
 # WIP/Experimental feature flags
-is_pipeline_tracking_enabled = false
-is_activity_tracking_enabled = false
+# is_pipeline_tracking_enabled = true
+# is_activity_tracking_enabled = true
 is_reporting_enabled = true

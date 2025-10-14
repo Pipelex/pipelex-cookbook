@@ -9,7 +9,7 @@ api_key = "${AZURE_API_KEY}"
 api_version = "${AZURE_API_VERSION}"
 
 [bedrock]
-enabled = true
+enabled = false
 aws_region = "${AWS_REGION}"
 
 [google]
@@ -27,12 +27,12 @@ enabled = false
 api_key = "${OPENAI_API_KEY}"
 
 [anthropic]
-enabled = true
+enabled = false
 api_key = "${ANTHROPIC_API_KEY}"
 claude_4_tokens_limit = 8192
 
 [mistral]
-enabled = true
+enabled = false
 api_key = "${MISTRAL_API_KEY}"
 
 [xai]
@@ -50,8 +50,9 @@ endpoint = "https://api.blackbox.ai/v1"
 api_key = "${BLACKBOX_API_KEY}"
 
 [fal]
-enabled = true
+enabled = false
 api_key = "${FAL_API_KEY}"
 
 [internal] # software-only backend, runs internally, without AI
 enabled = true
+
