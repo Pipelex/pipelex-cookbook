@@ -8,8 +8,8 @@ from pipelex.cogt.llm.llm_job import LLMJob
 from pipelex.cogt.llm.llm_worker_abstract import LLMWorkerAbstract
 from pipelex.cogt.usage.token_category import NbTokensByCategoryDict, TokenCategory
 from pipelex.reporting.reporting_protocol import ReportingProtocol
-from pipelex.tools.environment import get_required_env
-from pipelex.tools.exceptions import CredentialsError
+from pipelex.system.environment import get_required_env
+from pipelex.system.exceptions import CredentialsError
 from pipelex.tools.typing.pydantic_utils import BaseModelTypeVar, format_pydantic_validation_error
 from pydantic import ValidationError
 from typing_extensions import override

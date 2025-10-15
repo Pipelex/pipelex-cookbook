@@ -51,9 +51,7 @@ make mypy                     - Check types with mypy
 
 make cleanenv                 - Remove virtual env and lock files
 make cleanderived             - Remove extraneous compiled files, caches, logs, etc.
-make cleanlibraries           - Remove pipelex_libraries
-make cleanall                 - Remove all -> cleanenv + cleanderived + cleanlibraries
-make reinitbaselibrary        - Remove pipelex_libraries and make init libraries again
+make cleanall                 - Remove all -> cleanenv + cleanderived
 make reinstall                - Reinstall dependencies
 
 make merge-check-ruff-lint    - Run ruff merge check without updating files
@@ -74,6 +72,7 @@ make test-quiet               - Run unit tests without prints (no inference)
 make tq                       - Shorthand -> test-quiet
 make test-with-prints         - Run tests with prints (no inference)
 make tp                       - Shorthand -> test-with-prints
+make tb                       - Shorthand -> `make test-with-prints TEST=test_boot`
 make test-inference           - Run unit tests only for inference (with prints)
 make ti                       - Shorthand -> test-inference
 
@@ -93,7 +92,7 @@ export HELP
 .PHONY: \
 	all help env lock install update build \
 	format lint pyright mypy \
-	cleanderived cleanenv cleanlibraries cleanall \
+	cleanderived cleanenv cleanall \
 	test test-xdist t test-quiet tq test-with-prints tp test-inference ti \
 	codex-tests gha-tests \
 	run-all-tests run-manual-trigger-gha-tests run-gha_disabled-tests \
@@ -128,14 +127,12 @@ env: check-uv
 
 init: env
 	$(call PRINT_TITLE,"Running pipelex init")
-	$(VENV_PIPELEX) init libraries
 	$(VENV_PIPELEX) init config
 
 install: env
 	$(call PRINT_TITLE,"Installing dependencies")
 	@. $(VIRTUAL_ENV)/bin/activate && \
 	uv sync --all-extras && \
-	$(VENV_PIPELEX) init libraries && \
 	$(VENV_PIPELEX) init config && \
 	echo "Installed Pipelex cookbook dependencies in ${VIRTUAL_ENV} and initialized Pipelex libraries";
 
@@ -182,24 +179,13 @@ cleanlock:
 	@find . -name 'requirements.lock' -delete && \
 	echo "Cleaned up uv lock file";
 
-cleanbaselibrary:
-	$(call PRINT_TITLE,"Erasing derived files and directories")
-	@find . -type d -wholename './pipelex_libraries/pipelines/base_library' -exec rm -rf {} + && \
-	echo "Cleaned up pipelex base library";
-
-reinitbaselibrary: cleanbaselibrary init
-	@echo "Reinitialized pipelex base library";
-
 reinstall: cleanenv cleanlock install
 	@echo "Reinstalled dependencies";
 
 ri: reinstall
 	@echo "> done: ri = reinstall"
 
-rl: reinitbaselibrary
-	@echo "> done: rl = reinitlibraries"
-
-cleanall: cleanderived cleanenv cleanlibraries
+cleanall: cleanderived cleanenv
 	@echo "Cleaned up all derived files and directories";
 
 ##########################################################################################
@@ -275,6 +261,11 @@ test-with-prints: env
 
 tp: test-with-prints
 	@echo "> done: tp = test-with-prints"
+
+tb: env
+	$(call PRINT_TITLE,"Unit testing a simple boot")
+	@echo "• Running unit test test_boot"
+	$(VENV_PYTEST) -s -m $(USUAL_PYTEST_MARKERS) -k "test_boot" $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,)));
 
 test-inference: env
 	$(call PRINT_TITLE,"Unit testing")
@@ -352,10 +343,6 @@ check-TODOs: env
 ##########################################################################################
 ### SHORTHANDS
 ##########################################################################################
-
-check-unused-imports: env
-	$(call PRINT_TITLE,"Checking for unused imports without fixing")
-	$(VENV_RUFF) check --select=F401 --no-fix .
 
 c: init format lint pyright mypy
 	@echo "> done: c = check"
