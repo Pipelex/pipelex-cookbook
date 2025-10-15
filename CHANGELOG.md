@@ -1,5 +1,44 @@
 # Changelog
 
+## [v0.6.0] - 2025-10-15
+
+- Bump `pipelex` to `v0.12.0`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+
+### Breaking Changes
+ - **Architecture**: Removed centralized `pipelex_libraries/` directory system in favor of automatic discovery throughout the project
+ - **API**: Renamed operators (`PipeOCR` → `PipeExtract`, `PipeJinja2` → `PipeCompose`)
+ - **Terminology**: Comprehensive OCR → Extract rebrand across codebase (fields, configs, imports, test markers)
+ - **PipeCondition**: Renamed `pipe_map` → `outcomes` and `default_pipe_code` → `default_outcome` (now required)
+ - **PipeLLM**: Images must now be explicitly tagged in prompts using `$` or `@` prefixes
+ - **Pipelex.make()**: Removed all config path parameters (uses automatic discovery)
+ - **Fields**: Standardized naming across all pipe types (`definition` → `description`, `prompt_template` → `prompt`, `llm`/`img_gen`/`ocr_model` → `model`)
+ - **Configuration**: Namespace changes (`[llm_presets]` → `[llm.presets]`, `[presets.ocr]` → `[presets.extract]`)
+ - **Import paths**: `pipelex.pipe_works` → `pipelex.pipe_run`, `pipelex.core.stuffs.stuff_content` split into per-type modules, `pipelex.cogt.ocr` → `pipelex.cogt.extract`
+
+### Added
+ - **Developer Tools**: Comprehensive rule files for Python standards, running and writing Pipelex pipelines
+ - **Pipeline Features**: Inline structure definitions in .plx files using TOML syntax, `@pipe_func()` decorator for custom functions
+ - **Discovery**: Automatic pipeline and structure class discovery (no special directories required)
+ - **Backends**: FAL (image generation), Google Gemini API, and internal backend configurations
+ - **Models**: `claude-4.5-sonnet`, `gemini-2.5-pro/flash/flash-lite`, `gpt-image-1`
+ - **Presets**: Image generation presets (base/best/fast-img-gen), extract presets, `llm_to_write`
+ - **Routing**: `pipelex_first` routing profile (replaces `all_pipelex`)
+ - **Aliases**: `smart_llm` (with fallbacks), `cheap-gpt`, `cheap_llm_for_vision`
+ - **Configuration**: Observer, logging with package-level controls, and instructor debugging sections in pipelex.toml
+ - **Documentation**: Migration guide, BLACKBOX_RULES.md for Blackbox AI
+
+### Changed
+ - **Models**: Updated `base-claude` alias to `claude-4.5-sonnet`
+ - **Examples**: Reorganized into subdirectories, moved quick_start to examples/_quick_start
+ - **Dependencies**: Updated pyproject.toml to use pipelex from git, pyright >=1.1.405
+ - **Configuration**: Enhanced backend TOML files with headers and categorized model sections
+ - **Flexibility**: PipeExtract inputs can now be named anything (not just `ocr_input`)
+
+### Removed
+ - **CLI**: `pipelex init libraries` command and related Makefile targets
+ - **Legacy models**: `claude-3.5-sonnet`, `claude-3.5-sonnet-v2`
+ - **Dependencies**: `types-requests`, `types-toml`
+
 ## [v0.5.2] - 2025-09-18
 
 - Bump `pipelex` to `v0.10.2`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
