@@ -23,7 +23,7 @@ async def write_discord_newsletter(discord_extract_path: str) -> str:
     ]
     pipe_output = await execute_pipeline(
         pipe_code="write_discord_newsletter",
-        input_memory={
+        inputs={
             "discord_channel_updates": discord_channel_updates,
         },
     )

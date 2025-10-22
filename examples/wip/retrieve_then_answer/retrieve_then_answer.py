@@ -23,7 +23,7 @@ async def retrieve_then_answer(text_path: str, question: str, client_instruction
     pipe_output = await execute_pipeline(
         pipe_code="retrieve_then_answer",
         dynamic_output_concept_code="contracts.Fees",
-        input_memory={
+        inputs={
             "text": load_text_from_path(path=text_path),
             "question": {
                 "concept": "answer.Question",

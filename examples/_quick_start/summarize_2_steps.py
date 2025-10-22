@@ -9,7 +9,7 @@ from pipelex.pipeline.execute import execute_pipeline
 async def summarize_by_steps(text: str):
     pipe_output = await execute_pipeline(
         pipe_code="summarize_by_steps",
-        input_memory={
+        inputs={
             "text": text,
         },
     )

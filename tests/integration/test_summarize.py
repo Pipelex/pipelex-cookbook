@@ -23,7 +23,7 @@ class TestSummarize:
         text = load_text_from_path(file_path)
         pipe_output = await execute_pipeline(
             pipe_code="test_summarize_by_steps",
-            input_memory={
+            inputs={
                 "text": text,
             },
             pipe_run_mode=pipe_run_mode,

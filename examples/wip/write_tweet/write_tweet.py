@@ -14,7 +14,7 @@ SAMPLE_NAME = "write_tweet"
 async def optimize_tweet(draft_tweet: str, writing_style: str) -> str:
     pipe_output = await execute_pipeline(
         pipe_code="optimize_tweet_sequence",
-        input_memory={
+        inputs={
             "draft_tweet": {
                 "concept": "tech_tweet.DraftTweet",
                 "content": draft_tweet,

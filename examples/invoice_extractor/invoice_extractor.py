@@ -16,7 +16,7 @@ PDF_URL = "assets/invoice_extractor/invoice_1.pdf"
 async def process_invoice(pdf_url: str) -> ListContent[Invoice]:
     pipe_output = await execute_pipeline(
         pipe_code="process_invoice",
-        input_memory={
+        inputs={
             "document": PDFContent(url=pdf_url),
         },
     )

@@ -15,7 +15,7 @@ PDF_PATH = "assets/extract_proof_of_purchase/restaurant_invoice.pdf"
 async def extract_proof_of_purchase(pdf_url: str) -> ProofOfPurchase:
     pipe_output = await execute_pipeline(
         pipe_code="power_extractor_proof_of_purchase",
-        input_memory={
+        inputs={
             "document": PDFContent(url=pdf_url),
         },
     )

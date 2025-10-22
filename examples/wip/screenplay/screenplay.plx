@@ -177,8 +177,7 @@ Create detailed content that:
 # type = "PipeLLM"
 # description = "Create initial scene list for a chapter"
 # inputs = { chapter = "Chapter" }
-# output = "Scene"
-# multiple_output = true
+# output = "Scene[]"
 # system_prompt = """
 # You are an expert story structurer. Your task is to break down a chapter into its key scenes.
 # """

@@ -41,9 +41,8 @@ Please analyze the timescale: what is the smallest unit detailed in the time sca
 type = "PipeLLM"
 description = "List all the tasks"
 inputs = { gantt_chart_image = "GanttChartImage" }
-output = "GanttTaskName"
+output = "GanttTaskName[]"
 model = "llm_to_extract_diagram"
-multiple_output = true
 prompt = """
 I am sharing an image of a Gantt chart: $gantt_chart_image.
 Please analyse the image and list all the task names.

@@ -57,8 +57,7 @@ Structure this as a BusinessProblem with all the required fields filled out.
 type = "PipeLLM"
 description = "Select the most relevant advisory boards for the business problem"
 inputs = { business_problem = "BusinessProblem" }
-output = "AdvisoryBoard"
-multiple_output = true
+output = "AdvisoryBoard[]"
 system_prompt = """You are an expert in organizational structure and advisory board composition. You know all available advisory boards and their expertise areas.
 
 Available Advisory Boards:
@@ -94,8 +93,7 @@ For each selected board, provide:
 type = "PipeLLM"
 description = "Consult an advisory board based on the business problem and selection"
 inputs = { business_problem = "BusinessProblem", advisory_board = "AdvisoryBoard" }
-output = "BoardResponse"
-multiple_output = true
+output = "BoardResponse[]"
 system_prompt = "Based on the selected boards, provide responses from each relevant board's perspective."
 prompt = """
 Based on the following business problem and selected advisory board, provide board response:

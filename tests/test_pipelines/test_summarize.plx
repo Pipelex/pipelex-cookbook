@@ -39,8 +39,7 @@ steps = [
 type = "PipeLLM"
 description = "Extract the topics from a dense text."
 inputs = { text = "Text" }
-output = "Topic"
-multiple_output = true
+output = "Topic[]"
 prompt = """
 You are given a large text.
 Your task is to extract the main topics from the text.
