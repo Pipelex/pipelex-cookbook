@@ -1,5 +1,24 @@
 # Changelog
 
+## [v0.7.0] - 2025-10-21
+
+### Added
+ - **New multiplicity syntax for pipeline inputs/outputs**: Use `[]` for variable items, `[N]` for fixed count, or no brackets for single items in `.plx` files (e.g., `output = "Idea[]"` or `output = "Image[3]"`)
+
+### Changed
+ - **[BREAKING]** `execute_pipeline` function parameter renamed from `input_memory` to `inputs`
+ - **Internal naming**: `ImplicitMemory` type hint renamed to `PipelineInputs`; `llm_to_reason` configuration renamed to `llm_for_complex_reasoning`
+ - **Documentation**: Updated all docs (`.cursor/rules`, `.github/copilot-instructions.md`, etc.) to reflect new multiplicity syntax and `inputs` parameter
+
+### Fixed
+ - **Dependency pinning**: `pipelex` dependency now pinned to version `0.13.0` instead of tracking git repository
+
+### Removed
+ - **Deprecated parameters**: `nb_output` and `multiple_output` keys removed from all example `.plx` files (replaced by new multiplicity syntax)
+
+### Deprecated
+ - .plx` keys `nb_output` and `multiple_output` for `PipeLLM` and `PipeImgGen` (use new bracket notation on `output` key instead)
+
 ## [v0.6.0] - 2025-10-15
 
 - Bump `pipelex` to `v0.12.0`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)

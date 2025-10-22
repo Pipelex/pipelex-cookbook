@@ -11,7 +11,7 @@ from examples._quick_start.summarize_struct import StructuredSummary
 async def summarize_with_structure(text: str) -> StructuredSummary:
     pipe_output = await execute_pipeline(
         pipe_code="summarize_with_structure",
-        input_memory={
+        inputs={
             "text": text,
         },
     )

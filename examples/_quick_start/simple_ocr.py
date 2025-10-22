@@ -16,7 +16,7 @@ PDF_URL = "assets/simple_ocr/illustrated_train_article.pdf"
 async def simple_ocr(pdf_url: str) -> ListContent[PageContent]:
     pipe_output = await execute_pipeline(
         pipe_code="extract_page_contents_from_pdf",
-        input_memory={
+        inputs={
             "document": PDFContent(url=pdf_url),
         },
     )

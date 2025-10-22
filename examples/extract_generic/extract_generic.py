@@ -52,7 +52,7 @@ def merge_markdown_and_images(working_memory: WorkingMemory) -> TextAndImagesCon
 async def extract_generic(pdf_url: str) -> TextAndImagesContent:
     pipe_output = await execute_pipeline(
         pipe_code="power_extractor",
-        input_memory={
+        inputs={
             "document": PDFContent(url=pdf_url),
         },
     )

@@ -16,7 +16,7 @@ async def generate_screenplay(pitch: str):
 
     pipe_output = await execute_pipeline(
         pipe_code="generate_screenplay",
-        input_memory={
+        inputs={
             "pitch": {
                 "concept": "screenplay.Pitch",
                 "content": pitch,

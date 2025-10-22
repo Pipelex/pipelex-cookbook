@@ -46,7 +46,7 @@ async def run_advisory_orchestrator(problem_description: str) -> Tuple[Strategic
 
     pipe_output = await execute_pipeline(
         pipe_code="master_advisory_orchestrator",
-        input_memory={
+        inputs={
             "user_input": problem_description,
         },
     )

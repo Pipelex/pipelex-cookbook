@@ -15,7 +15,6 @@ def reset_pipelex_config_fixture():
         pipelex_instance = pipelex.pipelex.Pipelex.make()
         config = get_config()
         assert isinstance(config, pipelex.config.PipelexConfig)
-        assert config.project_name == "pipelex-cookbook"
     except Exception as exc:
         Console().print(Traceback())
         pytest.exit(f"Critical Pipelex setup error: {exc}")

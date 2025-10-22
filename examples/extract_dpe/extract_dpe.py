@@ -15,7 +15,7 @@ PDF_PATH = "assets/extract_dpe/dpe_single_page.pdf"
 async def extract_dpe(pdf_url: str) -> Dpe:
     pipe_output = await execute_pipeline(
         pipe_code="power_extractor_dpe",
-        input_memory={
+        inputs={
             "document": PDFContent(url=pdf_url),
         },
     )

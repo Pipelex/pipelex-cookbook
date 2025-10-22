@@ -9,9 +9,8 @@ RetrievedExcerpt = "An excerpt from a text with its justification for being rele
 type = "PipeLLM"
 description = "Find the most relevant excerpt in a text that answers a specific question"
 inputs = { text = "Text", question = "answer.Question" }
-output = "RetrievedExcerpt"
+output = "RetrievedExcerpt[]"
 model = "llm_to_retrieve"
-multiple_output = true
 prompt = """
 Your task is to find all relevant excerpts from a text that contribute to answering a question.
 It might not contain the exact answer, but it should be relevant to the question.
