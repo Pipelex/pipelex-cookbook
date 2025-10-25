@@ -21,6 +21,10 @@ dependencies = [
     "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal]==0.13.1",
 ]
 
+
+[tool.uv.sources]
+pipelex = { path = "../pipelex", editable = true }
+
 [project.optional-dependencies]
 compat = ["backports.strenum>=1.3.0 ; python_version < '3.11'"]
 dev = [
