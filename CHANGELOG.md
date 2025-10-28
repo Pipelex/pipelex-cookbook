@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.8.1] - 2025-10-28
+
+### Fixed
+
+- Fix initialization and `.pipelex/` directory.
+
 ## [v0.8.0] - 2025-10-27
 
 - Bump `pipelex` to `v0.14.0`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
