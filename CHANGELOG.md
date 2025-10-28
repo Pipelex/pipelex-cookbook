@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.8.0] - 2025-10-27
+
+- Bump `pipelex` to `v0.14.0`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+
+### Added
+ - **Data Synthesis Pipeline Example** (`examples/synthesize`): Complete example demonstrating synthetic data generation from textual descriptions with multi-step workflow and batch processing using `batch_over`.
+ - **Dependency Management Commands**: New `Makefile` commands `export-requirements` (`er`) and `export-requirements-dev` (`erd`) using `uv` to generate locked requirements files for reproducible environments.
+ - **LLM Configuration**: New `llm_for_data_synthesis` deck entry in `.pipelex/inference/deck/cookbook.toml`.
+
+### Changed
+ - **Complete README Rewrite**: New CV-to-Job-Offer matching example with parallel PDF processing, step-by-step Quick Start guide, Mermaid flowchart visualization, updated CLI/Python instructions, repository layout documentation, and community/contribution sections.
+
 ## [v0.7.0] - 2025-10-21
 
 ### Added
