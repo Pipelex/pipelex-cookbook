@@ -33,10 +33,8 @@ Learn by doing with production-ready examples.</p>
 ```bash
 git clone https://github.com/Pipelex/pipelex-cookbook.git
 cd pipelex-cookbook
-pip install -r requirements.txt
+pip install .  # or uv sync
 ```
-
-This will create a virtual environment and install the Pipelex library with all dependencies using `uv`.
 
 ## 2. Get Your API Key (Free)
 
