@@ -1,7 +1,6 @@
 import asyncio
 
 from pipelex.core.stuffs.list_content import ListContent
-from pipelex.core.stuffs.text_content import TextContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.json_utils import load_json_dict_from_path
