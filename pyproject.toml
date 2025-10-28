@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "pipelex-cookbook"
 version = "0.8.1"
@@ -47,6 +51,9 @@ dev = [
 Homepage = "https://pipelex.com"
 Repository = "https://github.com/Pipelex/pipelex-cookbook"
 Documentation = "https://docs.pipelex.com/pages/cookbook-examples/"
+
+[tool.setuptools.packages.find]
+include = ["examples*", "utils*"]
 
 [tool.uv]
 required-version = ">=0.7.2"
