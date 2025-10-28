@@ -1,0 +1,9 @@
+{
+  "data_description": "# Student Profile: [Student Name]\n\n## Basic Info\n- **Current Performance**: [Struggling / Average / Advanced]\n\n## Learning Style\n- **Learns Best With**: [Visual examples / Step-by-step text / Hands-on practice / Videos]\n- **Pace**: [Needs more time / Normal / Fast learner]\n- **Complexity**: [Prefers simple explanations / Balanced / Likes deep details]\n\n## Background\n- **Strengths**: [subjects or topics they're good at]\n- **Needs Help With**: [areas where they struggle]\n- **Prior Knowledge**: [relevant topics they already know]\n\n## Interests\n- **Hobbies/Interests**: [e.g., soccer, video games, music]\n- **Career Goals**: [if any - e.g., engineer, doctor, undecided]\n\n## Preferences\n- **Example Style**: [Many real-world examples / Abstract concepts / Mix]\n- **Question Format**: [Multiple choice / Short answer / Open discussion]\n",
+  "nb_samples": {
+    "concept": "NbOfSamples",
+    "content": {
+      "number": 5
+    }
+  }
+}
