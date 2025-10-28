@@ -33,6 +33,13 @@ Learn by doing with production-ready examples.</p>
 ```bash
 git clone https://github.com/Pipelex/pipelex-cookbook.git
 cd pipelex-cookbook
+
+# Create and activate virtual environment
+python -m venv .venv
+# or python3 -m venv .venv
+source .venv/bin/activate
+
+# Install
 pip install .  # or uv sync
 ```
 
