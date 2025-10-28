@@ -1,6 +1,10 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "pipelex-cookbook"
-version = "0.8.0"
+version = "0.8.1"
 description = "Cookbook for Pipelex, the open-source declarative language that lets you define replicable, structured, composable LLM pipelines."
 authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
@@ -47,6 +51,9 @@ dev = [
 Homepage = "https://pipelex.com"
 Repository = "https://github.com/Pipelex/pipelex-cookbook"
 Documentation = "https://docs.pipelex.com/pages/cookbook-examples/"
+
+[tool.setuptools.packages.find]
+include = ["examples*", "utils*"]
 
 [tool.uv]
 required-version = ">=0.7.2"
