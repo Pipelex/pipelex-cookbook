@@ -42,6 +42,10 @@ make env                      - Create python virtual env
 make lock                     - Refresh uv.lock without updating anything
 make install                  - Create local virtualenv & install all dependencies
 make update                   - Upgrade dependencies via uv
+make export-requirements      - Export production requirements.txt (no dev dependencies)
+make export-requirements-dev  - Export requirements-dev.txt (all dependencies including dev)
+make er                       - Shorthand -> export-requirements
+make erd                      - Shorthand -> export-requirements-dev
 make validate                 - Run the setup sequence to validate the config and libraries
 
 make format                   - format with ruff format
@@ -91,6 +95,7 @@ export HELP
 
 .PHONY: \
 	all help env lock install update build \
+	export-requirements export-requirements-dev er erd \
 	format lint pyright mypy \
 	cleanderived cleanenv cleanall \
 	test test-xdist t test-quiet tq test-with-prints tp test-inference ti \
@@ -145,6 +150,22 @@ update: env
 	$(call PRINT_TITLE,"Updating all dependencies")
 	@uv lock --upgrade && \
 	echo "Updated dependencies in ${VIRTUAL_ENV}";
+
+export-requirements: env
+	$(call PRINT_TITLE,"Exporting production requirements")
+	@uv export --no-dev --output-file requirements.txt && \
+	echo "Exported production requirements to requirements.txt";
+
+export-requirements-dev: env
+	$(call PRINT_TITLE,"Exporting development requirements")
+	@uv export --all-extras --output-file requirements-dev.txt && \
+	echo "Exported all requirements (including dev) to requirements-dev.txt";
+
+er: export-requirements
+	@echo "> done: er = export-requirements"
+
+erd: export-requirements-dev
+	@echo "> done: erd = export-requirements-dev"
 
 validate: env
 	$(call PRINT_TITLE,"Running setup sequence")

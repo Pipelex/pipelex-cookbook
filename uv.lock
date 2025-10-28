@@ -239,6 +239,15 @@ wheels = [
 ]
 
 [[package]]
+name = "backoff"
+version = "2.2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/47/d7/5bbeb12c44d7c4f2fb5b56abce497eb5ed9f34d85701de869acedd602619/backoff-2.2.1.tar.gz", hash = "sha256:03f829f5bb1923180821643f8753b0502c3b682293992485b0eef2807afa5cba", size = 17001, upload-time = "2022-10-05T19:19:32.061Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/df/73/b6e24bd22e6720ca8ee9a85a0c4a2971af8497d8f3193fa05390cbd46e09/backoff-2.2.1-py3-none-any.whl", hash = "sha256:63579f9a0628e06278f7e47b7d7d5b6ce20dc65c5e96a6f3ca99a6adca0396e8", size = 15148, upload-time = "2022-10-05T19:19:30.546Z" },
+]
+
+[[package]]
 name = "backports-strenum"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1644,7 +1653,7 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.13.0"
+version = "0.14.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -1661,6 +1670,7 @@ dependencies = [
     { name = "openai" },
     { name = "pillow" },
     { name = "polyfactory" },
+    { name = "posthog" },
     { name = "pydantic" },
     { name = "pypdfium2" },
     { name = "python-dotenv" },
@@ -1673,9 +1683,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "yattag" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/66/16/6f680fa5f44e6414ec0a3ac1588f0c3b0187c743fb81d540d12f61fa66eb/pipelex-0.13.0.tar.gz", hash = "sha256:70abab4d8e27c768898e7037317e9f869677cf2e66ad542c4d5e04d6ead8d5c3", size = 300496, upload-time = "2025-10-21T23:56:53.053Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/dc/0b/df38c73af5cb5676d0b86fe0d4109509321cee3241f01fd579a00df82e20/pipelex-0.14.0.tar.gz", hash = "sha256:98de691a69208084e46f3ded16eb968edc76333ecfd4284c523f733da03b1c4c", size = 324683, upload-time = "2025-10-28T00:03:47.417Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ff/32/edb52bda84fc57e42579362d6260f3e3fda3f6c60e8c5e853b6ba946b358/pipelex-0.13.0-py3-none-any.whl", hash = "sha256:357fe4e5a61814deac3dd87de9c650f7a842ba81f8603d92a5097a688e5456bd", size = 477616, upload-time = "2025-10-21T23:56:51.543Z" },
+    { url = "https://files.pythonhosted.org/packages/36/44/fbe0d3efa97dab030b775754099de4240b3c9ce2741916ab895219a77460/pipelex-0.14.0-py3-none-any.whl", hash = "sha256:6193e82aa2d875283a37007551906f086d5864cf4f493d3caaa9260c3e918ed0", size = 508407, upload-time = "2025-10-28T00:03:45.343Z" },
 ]
 
 [package.optional-dependencies]
@@ -1739,7 +1749,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal"], specifier = "==0.13.0" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal"], specifier = "==0.14.0" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.405" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
@@ -1787,6 +1797,23 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/d1/c7/cc5a646fe3c87f84b5ea68aa8b5d51c7f5f7c9f7c88445fd0c1f3e8ac584/polyfactory-2.22.0.tar.gz", hash = "sha256:02f78f5ff34669e795984604ffc16d31ccd752512c7314fcf8608a5d4393f36f", size = 252368, upload-time = "2025-07-01T18:42:06.451Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/47/86/6fc6e5a3da4e11819eaa5ce335e64fc42f8c3ebad1e7d260caf36dd1c398/polyfactory-2.22.0-py3-none-any.whl", hash = "sha256:d278e705d8551e84a79f5628f848faa8661d7389981ca74a0f7e5f087060f953", size = 63348, upload-time = "2025-07-01T18:42:05.199Z" },
+]
+
+[[package]]
+name = "posthog"
+version = "6.7.10"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "backoff" },
+    { name = "distro" },
+    { name = "python-dateutil" },
+    { name = "requests" },
+    { name = "six" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9f/28/b81f52830efa1eb3e22b7b8c39ef60cf964dfc49b3d64ec060691b0d6df5/posthog-6.7.10.tar.gz", hash = "sha256:212512af756e7641e398bf36131ad589790a08cfa80c267895f46e0ec943e547", size = 120427, upload-time = "2025-10-24T13:50:50.565Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/af/c7/fdcd03a3eb71d968c6e8c20f0e011895086aac5d1502ae30b4c1345f8152/posthog-6.7.10-py3-none-any.whl", hash = "sha256:dc0a8dd8ddfa6f721f0066a4e3fb0062c2e19dce3b3ae8875d2a0984f9fd5d59", size = 138703, upload-time = "2025-10-24T13:50:49.285Z" },
 ]
 
 [[package]]

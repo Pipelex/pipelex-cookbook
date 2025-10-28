@@ -1,6 +1,6 @@
 [project]
 name = "pipelex-cookbook"
-version = "0.7.0"
+version = "0.8.0"
 description = "Cookbook for Pipelex, the open-source declarative language that lets you define replicable, structured, composable LLM pipelines."
 authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
@@ -18,7 +18,7 @@ classifiers = [
 
 dependencies = [
     "beautifulsoup4==4.13.4",
-    "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal]==0.13.0",
+    "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal]==0.14.0",
 ]
 
 [project.optional-dependencies]
@@ -83,7 +83,6 @@ reportAssignmentType = "error"
 reportAttributeAccessIssue = "error"
 reportCallInDefaultInitializer = true
 reportCallIssue = "error"
-reportConstantRedescription = "error"
 reportDeprecated = "error"
 reportDuplicateImport = "error"
 reportFunctionMemberAccess = "error"
@@ -125,7 +124,6 @@ reportPropertyTypeMismatch = true
 reportRedeclaration = "error"
 reportReturnType = "error"
 reportSelfClsParameterName = "error"
-reportShadowedImports = true
 reportTypeCommentUsage = "error"
 reportTypedDictNotRequiredAccess = "error"
 reportUnboundVariable = "error"
