@@ -1505,7 +1505,7 @@ wheels = [
 
 [[package]]
 name = "openai"
-version = "1.93.0"
+version = "1.109.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -1517,9 +1517,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e4/d7/e91c6a9cf71726420cddf539852ee4c29176ebb716a702d9118d0409fd8e/openai-1.93.0.tar.gz", hash = "sha256:988f31ade95e1ff0585af11cc5a64510225e4f5cd392698c675d0a9265b8e337", size = 486573, upload-time = "2025-06-27T21:21:39.421Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c6/a1/a303104dc55fc546a3f6914c842d3da471c64eec92043aef8f652eb6c524/openai-1.109.1.tar.gz", hash = "sha256:d173ed8dbca665892a6db099b4a2dfac624f94d20a93f46eb0b56aae940ed869", size = 564133, upload-time = "2025-09-24T13:00:53.075Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/64/46/a10d9df4673df56f71201d129ba1cb19eaff3366d08c8664d61a7df52e65/openai-1.93.0-py3-none-any.whl", hash = "sha256:3d746fe5498f0dd72e0d9ab706f26c91c0f646bf7459e5629af8ba7c9dbdf090", size = 755038, upload-time = "2025-06-27T21:21:37.532Z" },
+    { url = "https://files.pythonhosted.org/packages/1d/2a/7dd3d207ec669cacc1f186fd856a0f61dbc255d24f6fdc1a6715d6051b0f/openai-1.109.1-py3-none-any.whl", hash = "sha256:6bcaf57086cf59159b8e27447e4e7dd019db5d29a438072fbd49c290c7e65315", size = 948627, upload-time = "2025-09-24T13:00:50.754Z" },
 ]
 
 [[package]]
@@ -1653,7 +1653,7 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.14.0"
+version = "0.15.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -1683,9 +1683,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "yattag" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/dc/0b/df38c73af5cb5676d0b86fe0d4109509321cee3241f01fd579a00df82e20/pipelex-0.14.0.tar.gz", hash = "sha256:98de691a69208084e46f3ded16eb968edc76333ecfd4284c523f733da03b1c4c", size = 324683, upload-time = "2025-10-28T00:03:47.417Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/03/eb/88f3022f2335b08c66fb156c6dab3320f2c482c29884c919ca2e9131cbf1/pipelex-0.15.1.tar.gz", hash = "sha256:f3b461cd9f60c8c8740a7c4a999f3b93680b96c2fe2d32b0b1c1b0b218daac61", size = 339211, upload-time = "2025-11-07T17:04:10.005Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/36/44/fbe0d3efa97dab030b775754099de4240b3c9ce2741916ab895219a77460/pipelex-0.14.0-py3-none-any.whl", hash = "sha256:6193e82aa2d875283a37007551906f086d5864cf4f493d3caaa9260c3e918ed0", size = 508407, upload-time = "2025-10-28T00:03:45.343Z" },
+    { url = "https://files.pythonhosted.org/packages/44/cd/fe7157cb473ccc475847a06172afafd8d229d675572612ffa2c0db0264e9/pipelex-0.15.1-py3-none-any.whl", hash = "sha256:a6b98bf6f4d07c1268010fafb82f710655ff2b1429f20131bc3276d09db74831", size = 531133, upload-time = "2025-11-07T17:04:08.041Z" },
 ]
 
 [package.optional-dependencies]
@@ -1749,7 +1749,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal"], specifier = "==0.14.0" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal"], specifier = "==0.15.1" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.405" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3.3" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },

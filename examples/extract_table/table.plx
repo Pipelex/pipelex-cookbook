@@ -15,8 +15,8 @@ type = "PipeLLM"
 description = "Get an HTML table"
 inputs = { table_screenshot = "TableScreenshot" }
 output = "HtmlTable"
-model = "llm_to_extract_tables"
-model_to_structure = "llm_to_extract_tables"
+model = "llm_for_table_to_text"
+model_to_structure = "llm_for_table_to_text"
 prompt = """
 You are given an image which is a view of a table, taken from a PDF document: $table_screenshot.
 Your goal is to extract the table from the image **in html**.
@@ -32,8 +32,8 @@ type = "PipeLLM"
 description = "Review an HTML table"
 inputs = { table_screenshot = "TableScreenshot", html_table = "HtmlTable" }
 output = "HtmlTable"
-model = "llm_to_extract_tables"
-model_to_structure = "llm_to_extract_tables"
+model = "llm_for_table_to_text"
+model_to_structure = "llm_for_table_to_text"
 prompt = """
 Your role is to correct an html_table to make sure that it matches the one in the provided image: $table_screenshot.
 

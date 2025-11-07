@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pipelex-cookbook"
 version = "0.8.1"
-description = "Cookbook for Pipelex, the open-source declarative language that lets you define replicable, structured, composable LLM pipelines."
+description = "Cookbook for Pipelex, the open standard for repeatable AI workflows. Write business logic, not API calls."
 authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
 license = "MIT"
@@ -22,7 +22,7 @@ classifiers = [
 
 dependencies = [
     "beautifulsoup4==4.13.4",
-    "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal]==0.14.0",
+    "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal]==0.15.2",
 ]
 
 [project.optional-dependencies]
