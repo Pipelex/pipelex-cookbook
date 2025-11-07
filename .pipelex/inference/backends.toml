@@ -52,7 +52,7 @@ claude_4_tokens_limit = 8192
 
 [mistral]
 display_name = "Mistral AI"
-enabled = false
+enabled = true
 api_key = "${MISTRAL_API_KEY}"
 
 [xai]
@@ -73,7 +73,7 @@ api_key = "${BLACKBOX_API_KEY}"
 
 [fal]
 display_name = "FAL"
-enabled = false
+enabled = true
 api_key = "${FAL_API_KEY}"
 
 [internal] # software-only backend, runs internally, without AI

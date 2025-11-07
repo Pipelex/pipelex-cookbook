@@ -1,8 +1,13 @@
 <!-- BEGIN_PIPELEX_RULES -->
+# Pipelex Rules
+
 ## Guide to write or edit pipelines using the Pipelex language in .plx files
 
 - Always first write your "plan" in natural language, then transcribe it in pipelex.
-- You should ALWAYS RUN the terminal command `make validate` when you are writing or editing a `.plx` file. It will ensure the pipe is runnable. If not, iterate.
+- You should ALWAYS RUN validation when you are writing or editing a `.plx` file. It will ensure the pipe is runnable. If not, iterate.
+  - For a specific file: `pipelex validate path_to_file.plx`
+  - For all pipelines: `pipelex validate all`
+  - **IMPORTANT**: Ensure the Python virtual environment is activated before running `pipelex` commands. For standard installations, the venv is named `.venv` - always check that first. The commands will not work without proper venv activation.
 - Please use POSIX standard for files. (empty lines, no trailing whitespaces, etc.)
 
 ### Pipeline File Naming
@@ -122,16 +127,16 @@ For concepts with structured fields, define them inline using TOML syntax:
 description = "A commercial document issued by a seller to a buyer"
 
 [concept.Invoice.structure]
-invoice_number = "The unique invoice identifier"
+invoice_number = "The unique invoice identifier" # This will be optional by default
 issue_date = { type = "date", description = "The date the invoice was issued", required = true }
 total_amount = { type = "number", description = "The total invoice amount", required = true }
-vendor_name = "The name of the vendor"
-line_items = { type = "list", item_type = "text", description = "List of items", required = false }
+vendor_name = "The name of the vendor" # This will be optional by default
+line_items = { type = "list", item_type = "text", description = "List of items" }
 ```
 
 **Supported inline field types:** `text`, `integer`, `boolean`, `number`, `date`, `list`, `dict`
 
-**Field properties:** `type`, `description`, `required` (default: true), `default_value`, `choices`, `item_type` (for lists), `key_type` and `value_type` (for dicts)
+**Field properties:** `type`, `description`, `required` (default: false), `default_value`, `choices`, `item_type` (for lists), `key_type` and `value_type` (for dicts)
 
 **Simple syntax** (creates required text field):
 ```plx
@@ -140,7 +145,7 @@ field_name = "Field description"
 
 **Detailed syntax** (with explicit properties):
 ```plx
-field_name = { type = "text", description = "Field description", required = false, default_value = "default" }
+field_name = { type = "text", description = "Field description", default_value = "default" }
 ```
 
 **3. Python StructuredContent Class (For Advanced Features)**
@@ -815,7 +820,7 @@ Presets are meant to record the choice of an llm with its hyper parameters (temp
 
 Examples:
 ```toml
-llm_for_complex_reasoning = { model = "base-claude", temperature = 1 }
+llm_to_engineer = { model = "base-claude", temperature = 1 }
 llm_to_extract_invoice = { model = "claude-3-7-sonnet", temperature = 0.1, max_tokens = "auto" }
 ```
 
@@ -844,11 +849,30 @@ You can override the predefined llm presets by setting them in `.pipelex/inferen
 
 ---
 
-ALWAYS RUN `make validate` when you are finished writing pipelines: This checks for errors. If there are errors, iterate until it works.
+ALWAYS RUN validation when you are finished writing pipelines: This checks for errors. If there are errors, iterate until it works.
+- For a specific bundle/file: `pipelex validate path_to_file.plx`
+- For all pipelines: `pipelex validate all`
+- Remember: Ensure your Python virtual environment is activated (typically `.venv` for standard installations) before running `pipelex` commands.
+
 Then, create an example file to run the pipeline in the `examples` folder.
 But don't write documentation unless asked explicitly to.
 
 ## Guide to execute a pipeline and write example code
+
+### Prerequisites: Virtual Environment
+
+**CRITICAL**: Before running any `pipelex` commands or `pytest`, you MUST activate the appropriate Python virtual environment. Without proper venv activation, these commands will not work.
+
+For standard installations, the virtual environment is named `.venv`. Always check this first:
+
+```bash
+## Activate the virtual environment (standard installation)
+source .venv/bin/activate  # On macOS/Linux
+## or
+.venv\Scripts\activate  # On Windows
+```
+
+If your installation uses a different venv name or location, activate that one instead. All subsequent `pipelex` and `pytest` commands assume the venv is active.
 
 ### Example to execute a pipeline with text output
 
@@ -899,7 +923,7 @@ async def extract_gantt(image_url: str) -> GanttChart:
     # Run the pipe
     pipe_output = await execute_pipeline(
         pipe_code="extract_gantt_by_steps",
-        input_memory={
+        inputs={
             "gantt_chart_image": {
                 "concept": "gantt.GanttImage",
                 "content": ImageContent(url=image_url),
@@ -938,7 +962,7 @@ So here are a few concrete examples of calls to execute_pipeline with various wa
 ## If you assign a string, by default it will be considered as a TextContent.
     pipe_output = await execute_pipeline(
         pipe_code="master_advisory_orchestrator",
-        input_memory={
+        inputs={
             "user_input": problem_description,
         },
     )
@@ -948,7 +972,7 @@ So here are a few concrete examples of calls to execute_pipeline with various wa
 ## the system knows what content it corresponds to:
     pipe_output = await execute_pipeline(
         pipe_code="power_extractor_dpe",
-        input_memory={
+        inputs={
             "document": PDFContent(url=pdf_url),
         },
     )
@@ -957,7 +981,7 @@ So here are a few concrete examples of calls to execute_pipeline with various wa
 ## Because ImageContent is a native concept, we can use it directly as a value:
     pipe_output = await execute_pipeline(
         pipe_code="fashion_variation_pipeline",
-        input_memory={
+        inputs={
             "fashion_photo": ImageContent(url=image_url),
         },
     )
@@ -967,7 +991,7 @@ So here are a few concrete examples of calls to execute_pipeline with various wa
 ## so we must provide it using a dict with the concept and the content:
     pipe_output = await execute_pipeline(
         pipe_code="extract_gantt_by_steps",
-        input_memory={
+        inputs={
             "gantt_chart_image": {
                 "concept": "gantt.GanttImage",
                 "content": ImageContent(url=image_url),
@@ -979,7 +1003,7 @@ So here are a few concrete examples of calls to execute_pipeline with various wa
     pipe_output = await execute_pipeline(
         pipe_code="retrieve_then_answer",
         dynamic_output_concept_code="contracts.Fees",
-        input_memory={
+        inputs={
             "text": load_text_from_path(path=text_path),
             "question": {
                 "concept": "answer.Question",
@@ -1123,7 +1147,7 @@ Presets are meant to record the choice of an llm with its hyper parameters (temp
 
 Examples:
 ```toml
-llm_for_complex_reasoning = { model = "base-claude", temperature = 1 }
+llm_to_engineer = { model = "base-claude", temperature = 1 }
 llm_to_extract_invoice = { model = "claude-3-7-sonnet", temperature = 0.1, max_tokens = "auto" }
 ```
 

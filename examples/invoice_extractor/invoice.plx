@@ -49,7 +49,7 @@ type = "PipeLLM"
 description = "Extract invoice information from an invoice text transcript"
 inputs = { "invoice_page.page_view" = "Image", invoice_details = "InvoiceDetails", invoice_page = "Page" }
 output = "Invoice"
-model = "llm_to_extract_invoice"
+model = "llm_for_img_to_text"
 prompt = """
 Extract invoice information from this invoice:
 
