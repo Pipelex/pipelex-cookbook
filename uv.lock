@@ -1378,6 +1378,19 @@ wheels = [
 ]
 
 [[package]]
+name = "openapi-httpx-client"
+version = "0.4.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "httpx" },
+    { name = "pyyaml" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f5/6f/a6adbb463aa71a0a1c1ce4c0e49b94215f8b885982fa970343a5d094825f/openapi_httpx_client-0.4.3.tar.gz", hash = "sha256:062f68056b679a3cb04a0b86f304388e58980acb4d335903dc595d5286a75367", size = 8594, upload-time = "2025-10-30T03:04:10.738Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fa/d0/cf7c7963e384ba2aa83c50b842a9667d86934e22b25d2c7ceb9dd2ce88b6/openapi_httpx_client-0.4.3-py3-none-any.whl", hash = "sha256:24219a9d2052f03fdb6561bad5005c2dd31bfae706935798b30cd49e6e8607da", size = 9006, upload-time = "2025-10-30T03:04:09.63Z" },
+]
+
+[[package]]
 name = "packaging"
 version = "25.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1558,7 +1571,7 @@ mistralai = [
 
 [[package]]
 name = "pipelex-cookbook"
-version = "0.9.0"
+version = "0.9.1"
 source = { editable = "." }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -1572,6 +1585,7 @@ compat = [
 dev = [
     { name = "boto3-stubs" },
     { name = "mypy" },
+    { name = "openapi-httpx-client" },
     { name = "pyright" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
@@ -1595,6 +1609,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
+    { name = "openapi-httpx-client", marker = "extra == 'dev'", specifier = "==0.4.3" },
     { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal"], specifier = "==0.15.4" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.405" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=0.9.1" },
