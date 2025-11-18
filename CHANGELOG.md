@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.9.3] - 2025-11-18
+
+- Bump `pipelex` to `v0.15.7` to fix `pipelex doctor`
+
 ## [v0.9.2] - 2025-11-18
 
 - Bump `pipelex` to `v0.15.6`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)

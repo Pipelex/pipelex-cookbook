@@ -1,6 +1,6 @@
 [project]
 name = "pipelex-cookbook"
-version = "0.9.2"
+version = "0.9.3"
 description = "Cookbook for Pipelex, the open standard for repeatable AI workflows. Write business logic, not API calls."
 authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
@@ -18,7 +18,7 @@ classifiers = [
 
 dependencies = [
     "beautifulsoup4==4.13.4",
-    "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal]==0.15.6",
+    "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal]==0.15.7",
 ]
 
 [project.optional-dependencies]
