@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.9.2] - 2025-11-18
+
+- Bump `pipelex` to `v0.15.6`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+- Bump `pytest` to `v9.0.1` (fix typo in `pyproject.toml`)
+
 ## [v0.9.1] - 2025-11-13
 
 - Bump `pipelex` to `v0.15.4`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)

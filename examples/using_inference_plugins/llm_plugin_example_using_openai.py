@@ -62,6 +62,11 @@ class LLMPluginExampleUsingOpenAI(LLMWorkerAbstract):
     def is_gen_object_supported(self) -> bool:
         return True
 
+    @property
+    @override
+    def is_vision_supported(self) -> bool:
+        return True
+
     def _make_messages(self, llm_job: LLMJob) -> List[Dict[str, str]]:
         """Build OpenAI messages format from LLMJob"""
         messages: List[Dict[str, str]] = []
