@@ -1,4 +1,5 @@
 import json
+from typing import List
 from urllib.parse import urlparse
 
 import requests
@@ -8,7 +9,7 @@ from pipelex.core.stuffs.list_content import ListContent
 from pipelex.core.stuffs.text_content import TextContent
 from pipelex.system.registries.func_registry import pipe_func
 
-from examples.openapi_automation.models import *
+from examples.openapi_automation.models import FunctionChoice, FunctionDetails, FunctionInfo, OpenAPISpec, ParameterDetail, RequestDetails
 
 
 @pipe_func()
@@ -100,7 +101,7 @@ async def invoke_function_api_backend(working_memory: WorkingMemory) -> TextCont
 
     except requests.exceptions.RequestException as e:
         error_msg = f"Request failed: {str(e)}"
-        if hasattr(e, 'response') and e.response is not None:
+        if hasattr(e, "response") and e.response is not None:
             error_msg += f"\nStatus code: {e.response.status_code}"
             error_msg += f"\nResponse: {e.response.text}"
         print(error_msg)
@@ -227,9 +228,7 @@ async def extract_available_functions(
                 # Get description from summary or description field
                 description = operation.get("summary") or operation.get("description")
 
-                functions.append(
-                    FunctionInfo(function_name=operation_id, description=description)
-                )
+                functions.append(FunctionInfo(function_name=operation_id, description=description))
 
     # Convert to ListContent with FunctionInfo items
     return ListContent(items=functions)
