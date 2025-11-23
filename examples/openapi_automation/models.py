@@ -92,7 +92,7 @@ class FunctionDetails(StructuredContent):
     http_method: str = Field(description="HTTP method (GET, POST, PUT, DELETE, etc.)")
     path: str = Field(description="API endpoint path")
     description: Optional[str] = Field(default=None, description="Operation description")
-    parameters: List[ParameterDetail] = Field(default_factory=list, description="List of parameters")
+    parameters: List[ParameterDetail] = Field(default_factory=list, description="List of parameters")  # type: ignore[reportUnknownVariableType]
     request_body_required: bool = Field(default=False, description="Whether a request body is required")
     request_body_schema: Optional[Dict[str, Any]] = Field(default=None, description="Request body schema if applicable")
     tags: Optional[List[str]] = Field(default=None, description="Operation tags")

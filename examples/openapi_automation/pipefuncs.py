@@ -1,5 +1,5 @@
 import json
-from typing import List
+from typing import Any, List
 from urllib.parse import urlparse
 
 import requests
@@ -19,15 +19,15 @@ async def invoke_function_api_backend(working_memory: WorkingMemory) -> TextCont
     Builds and performs the actual HTTP request using the requests library.
     """
     # Get the base URL from the OpenAPI spec
-    openapi_url = working_memory.get_stuff_as_text("openapi_url").text.strip()
-    request_details = working_memory.get_stuff_as("request_details", RequestDetails)
+    openapi_url: str = working_memory.get_stuff_as_text("openapi_url").text.strip()
+    request_details: RequestDetails = working_memory.get_stuff_as("request_details", RequestDetails)
 
     # Get the base URL from the OpenAPI spec
-    response = requests.get(url=openapi_url)
-    spec_data = response.json()
+    response: requests.Response = requests.get(url=openapi_url)
+    spec_data: dict[str, Any] = response.json()
 
     # Extract base URL from servers
-    base_url = None
+    base_url: str | None = None
     if "servers" in spec_data and len(spec_data["servers"]) > 0:
         base_url = spec_data["servers"][0].get("url", "")
 
@@ -48,28 +48,28 @@ async def invoke_function_api_backend(working_memory: WorkingMemory) -> TextCont
     print(f"  Host: {parsed_url.hostname}")
     print(f"  Port: {parsed_url.port if parsed_url.port else 'default'}")
     # Build the full URL with path parameters
-    url_path = request_details.path
+    url_path: str = request_details.path
     if request_details.path_parameters:
         for param_name, param_value in request_details.path_parameters.items():
             url_path = url_path.replace(f"{{{param_name}}}", str(param_value))
 
-    full_url = f"{base_url.rstrip('/')}/{url_path.lstrip('/')}"
+    full_url: str = f"{base_url.rstrip('/')}/{url_path.lstrip('/')}"
 
     # Prepare request components
-    headers = {}
+    headers: dict[str, Any] = {}
     if request_details.header_parameters:
         headers.update(request_details.header_parameters)
 
-    cookies = {}
+    cookies: dict[str, Any] = {}
     if request_details.cookie_parameters:
         cookies.update(request_details.cookie_parameters)
 
-    params = {}
+    params: dict[str, Any] = {}
     if request_details.query_parameters:
         params.update(request_details.query_parameters)
 
     # Prepare request body
-    json_body = None
+    json_body: dict[str, Any] | None = None
     if request_details.request_body:
         json_body = request_details.request_body
 
@@ -80,7 +80,7 @@ async def invoke_function_api_backend(working_memory: WorkingMemory) -> TextCont
     print(f"Body: {json_body}")
 
     try:
-        http_response = requests.request(
+        http_response: requests.Response = requests.request(
             method=request_details.http_method,
             url=full_url,
             params=params if params else None,
@@ -94,13 +94,13 @@ async def invoke_function_api_backend(working_memory: WorkingMemory) -> TextCont
 
         # Try to parse JSON response, fallback to text
         try:
-            result = http_response.json()
+            result: Any = http_response.json()
             return TextContent(text=json.dumps(result, indent=2))
         except json.JSONDecodeError:
             return TextContent(text=http_response.text)
 
     except requests.exceptions.RequestException as e:
-        error_msg = f"Request failed: {str(e)}"
+        error_msg: str = f"Request failed: {str(e)}"
         if hasattr(e, "response") and e.response is not None:
             error_msg += f"\nStatus code: {e.response.status_code}"
             error_msg += f"\nResponse: {e.response.text}"
@@ -110,20 +110,20 @@ async def invoke_function_api_backend(working_memory: WorkingMemory) -> TextCont
 
 @pipe_func()
 async def obtain_openapi_spec(working_memory: WorkingMemory) -> TextContent:
-    openapi_url = working_memory.get_stuff_as_text("openapi_url").text.strip()
-    response = requests.get(url=openapi_url)
-    spec_data = response.json()
+    openapi_url: str = working_memory.get_stuff_as_text("openapi_url").text.strip()
+    response: requests.Response = requests.get(url=openapi_url)
+    spec_data: dict[str, Any] = response.json()
 
-    api = OpenAPIClient(definition=openapi_url)
+    api: OpenAPIClient = OpenAPIClient(definition=openapi_url)
 
     # Use the async client with context manager
-    async with api.AsyncClient() as client:
+    async with api.AsyncClient() as client:  # type: ignore[reportUnknownMemberType]
         # Build detailed function signatures from OpenAPI spec
-        functions_detail = []
+        functions_detail: list[str] = []
 
         # Parse the OpenAPI spec to extract function signatures
         if "paths" in spec_data:
-            for path, methods in spec_data["paths"].items():
+            for _path, methods in spec_data["paths"].items():
                 for method, operation in methods.items():
                     if method.lower() not in [
                         "get",
@@ -136,17 +136,17 @@ async def obtain_openapi_spec(working_memory: WorkingMemory) -> TextContent:
                     ]:
                         continue
 
-                    operation_id = operation.get("operationId")
+                    operation_id: str | None = operation.get("operationId")
                     if not operation_id:
                         continue
 
-                    params = []
+                    params: list[str] = []
 
                     # Extract parameters
                     if "parameters" in operation:
                         for param in operation["parameters"]:
-                            param_name = param.get("name", "unknown")
-                            param_required = param.get("required", False)
+                            param_name: str = param.get("name", "unknown")
+                            param_required: bool = param.get("required", False)
 
                             if param_required:
                                 params.append(f"{param_name}")
@@ -157,16 +157,17 @@ async def obtain_openapi_spec(working_memory: WorkingMemory) -> TextContent:
                     if "requestBody" in operation:
                         params.append("body=" + json.dumps(operation["requestBody"]))
 
-                    params_str = ", ".join(params) if params else ""
+                    params_str: str = ", ".join(params) if params else ""
                     functions_detail.append(f"{operation_id}({params_str})")
 
         # Fallback: just list function names
         if not functions_detail:
-            for func_name in client.functions.keys():
+            func_name: str
+            for func_name in client.functions.keys():  # type: ignore[reportUnknownMemberType, reportUnknownVariableType]
                 functions_detail.append(f"{func_name}(**kwargs)")
 
-        functions_text = "\n".join(functions_detail)
-        spec = f"\n\nAvailable functions:\n{functions_text}"
+        functions_text: str = "\n".join(functions_detail)
+        spec: str = f"\n\nAvailable functions:\n{functions_text}"
 
     return TextContent(text=spec)
 
@@ -179,13 +180,13 @@ async def obtain_openapi_model(working_memory: WorkingMemory) -> OpenAPISpec:
     Returns:
         OpenAPISpec: Structured representation of the OpenAPI specification
     """
-    openapi_url = working_memory.get_stuff_as_text("openapi_url").text.strip()
-    response = requests.get(url=openapi_url)
-    spec_data = response.json()
+    openapi_url: str = working_memory.get_stuff_as_text("openapi_url").text.strip()
+    response: requests.Response = requests.get(url=openapi_url)
+    spec_data: dict[str, Any] = response.json()
 
     # Parse the raw JSON into our Pydantic model
     # The model will validate and structure the data
-    openapi_spec = OpenAPISpec(**spec_data)
+    openapi_spec: OpenAPISpec = OpenAPISpec(**spec_data)
 
     return openapi_spec
 
@@ -200,15 +201,15 @@ async def extract_available_functions(
     Returns:
         ListContent: List of FunctionInfo objects with function_name and description
     """
-    openapi_url = working_memory.get_stuff_as_text("openapi_url").text.strip()
-    response = requests.get(url=openapi_url)
-    spec_data = response.json()
+    openapi_url: str = working_memory.get_stuff_as_text("openapi_url").text.strip()
+    response: requests.Response = requests.get(url=openapi_url)
+    spec_data: dict[str, Any] = response.json()
 
     functions: List[FunctionInfo] = []
 
     # Parse the OpenAPI spec to extract function names and descriptions
     if "paths" in spec_data:
-        for path, methods in spec_data["paths"].items():
+        for _path, methods in spec_data["paths"].items():
             for method, operation in methods.items():
                 if method.lower() not in [
                     "get",
@@ -221,12 +222,12 @@ async def extract_available_functions(
                 ]:
                     continue
 
-                operation_id = operation.get("operationId")
+                operation_id: str | None = operation.get("operationId")
                 if not operation_id:
                     continue
 
                 # Get description from summary or description field
-                description = operation.get("summary") or operation.get("description")
+                description: str | None = operation.get("summary") or operation.get("description")
 
                 functions.append(FunctionInfo(function_name=operation_id, description=description))
 
@@ -244,9 +245,9 @@ async def get_function_details(working_memory: WorkingMemory) -> FunctionDetails
         FunctionDetails: Complete details needed to make the API request
     """
     # Get the structured OpenAPISpec from working memory
-    openapi_spec = working_memory.get_stuff_as("openapi_spec", OpenAPISpec)
-    function_choice = working_memory.get_stuff_as("function_choice", FunctionChoice)
-    function_name = function_choice.function_name
+    openapi_spec: OpenAPISpec = working_memory.get_stuff_as("openapi_spec", OpenAPISpec)
+    function_choice: FunctionChoice = working_memory.get_stuff_as("function_choice", FunctionChoice)
+    function_name: str = function_choice.function_name
 
     # Search for the function in the OpenAPI spec
     for path, path_item in openapi_spec.paths.items():
@@ -261,8 +262,8 @@ async def get_function_details(working_memory: WorkingMemory) -> FunctionDetails
                 # Extract parameters from the structured model
                 if operation.parameters:
                     for param in operation.parameters:
-                        param_type = None
-                        param_default = None
+                        param_type: str | None = None
+                        param_default: Any = None
                         if param.schema_:
                             param_type = param.schema_.get("type")
                             param_default = param.schema_.get("default")
@@ -279,17 +280,17 @@ async def get_function_details(working_memory: WorkingMemory) -> FunctionDetails
                         )
 
                 # Extract request body information
-                request_body_required = False
-                request_body_schema = None
+                request_body_required: bool = False
+                request_body_schema: Any = None
                 if operation.requestBody:
                     request_body_required = operation.requestBody.required or False
                     request_body_schema = operation.requestBody.content
 
                 # Get description (prefer summary over description)
-                description = operation.summary or operation.description
+                description: str | None = operation.summary or operation.description
 
                 # Get tags
-                tags = operation.tags
+                tags: list[str] | None = operation.tags
 
                 return FunctionDetails(
                     function_name=function_name,
