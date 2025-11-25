@@ -41,7 +41,7 @@ api_key = "${BLACKBOX_API_KEY}"
 
 [fal]
 display_name = "FAL"
-enabled = false
+enabled = true
 api_key = "${FAL_API_KEY}"
 
 [google]
@@ -57,7 +57,7 @@ api_key = "${GROQ_API_KEY}"
 
 [mistral]
 display_name = "Mistral AI"
-enabled = false
+enabled = true
 api_key = "${MISTRAL_API_KEY}"
 
 [ollama]

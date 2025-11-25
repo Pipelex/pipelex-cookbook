@@ -17,7 +17,7 @@ async def extract_table(table_screenshot: str) -> HtmlTable:
         inputs={
             "table_screenshot": {
                 "concept": "tables.TableScreenshot",
-                "content": ImageContent(url=table_screenshot),
+                "content": {"url": table_screenshot},
             }
         },
     )
