@@ -19,7 +19,7 @@ steps = [
 type = "PipeExtract"
 description = "Extract page contents from an image"
 inputs = { document = "PDF" }
-output = "Page"
+output = "Page[]"
 page_views = true
 model = "extract_text_from_visuals"
 
