@@ -24,6 +24,7 @@
 model_type = "llm"
 sdk = "mistral"
 prompting_target = "mistral"
+structure_method = "instructor/mistral_tools"
 
 ################################################################################
 # LANGUAGE MODELS
@@ -129,7 +130,7 @@ outputs = ["text", "structured"]
 costs = { input = 0.4, output = 2.0 }
 
 ################################################################################
-# OCR MODELS
+# EXTRACTION MODELS
 ################################################################################
 
 # --- OCR Models ---------------------------------------------------------------
@@ -140,4 +141,3 @@ max_tokens = 131072
 inputs = ["pdf", "image"]
 outputs = ["pages"]
 costs = { input = 0.4, output = 2.0 }
-

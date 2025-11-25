@@ -24,6 +24,7 @@
 model_type = "llm"
 sdk = "openai"
 prompting_target = "openai"
+structure_method = "instructor/openai_tools"
 
 ################################################################################
 # LANGUAGE MODELS
@@ -156,6 +157,13 @@ outputs = ["text"]
 costs = { input = 1.25, output = 10.0 }
 constraints = ["temperature_must_be_1"]
 
+# --- GPT-5.1 Series -------------------------------------------------------------
+["gpt-5.1"]
+model_id = "gpt-5.1"
+inputs = ["text", "images"]
+outputs = ["text", "structured"]
+costs = { input = 1.25, output = 10.0 }
+
 ################################################################################
 # IMAGE GENERATION MODELS
 ################################################################################
@@ -167,4 +175,3 @@ model_id = "gpt-image-1"
 inputs = ["text"]
 outputs = ["image"]
 costs = { input = 0.04, output = 0.0 }
-
