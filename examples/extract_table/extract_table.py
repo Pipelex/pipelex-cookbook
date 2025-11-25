@@ -1,6 +1,5 @@
 import asyncio
 
-from pipelex.core.stuffs.image_content import ImageContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
@@ -8,7 +7,7 @@ from examples.extract_table.table import HtmlTable
 from utils.results_utils import output_result
 
 SAMPLE_NAME = "extract_table"
-IMAGE_URL = "assets/extract_table/table_1.png"
+IMAGE_URL = "https://pipelex-web.s3.us-west-2.amazonaws.com/cookbook/table_1.png"
 
 
 async def extract_table(table_screenshot: str) -> HtmlTable:
