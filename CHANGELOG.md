@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.9.4] - 2025-11-26
+
+- Bump `pipelex` to `v0.16.0`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+
+### Fixed
+
+- Changed URL of images from local urls to remote urls (public s3).
+
 ## [v0.9.3] - 2025-11-18
 
 - Bump `pipelex` to `v0.15.7` to fix `pipelex doctor`
