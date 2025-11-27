@@ -14,7 +14,7 @@ TextAndImagesContent = "A content that comprises text and images where the text 
 type = "PipeExtract"
 description = "Extract page contents from a PDF document"
 inputs = { document = "PDF" }
-output = "Page"
+output = "Page[]"
 page_images = true
 page_views = false
 
@@ -22,7 +22,7 @@ page_views = false
 type = "PipeExtract"
 description = "Extract page contents from a PDF document as well as full page views"
 inputs = { document = "PDF" }
-output = "Page"
+output = "Page[]"
 page_images = true
 page_views = true
 

@@ -1,7 +1,6 @@
 import asyncio
 
 from pipelex import pretty_print
-from pipelex.core.stuffs.image_content import ImageContent
 from pipelex.hub import get_pipeline_tracker, get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
@@ -9,7 +8,7 @@ from pipelex.pipeline.execute import execute_pipeline
 from examples.extract_gantt.gantt_struct import GanttChart
 
 SAMPLE_NAME = "extract_gantt"
-IMAGE_URL = "assets/gantt/gantt_tree_house.png"
+IMAGE_URL = "https://pipelex-web.s3.us-west-2.amazonaws.com/cookbook/gantt_tree_house.png"
 
 
 async def extract_gantt(image_url: str) -> GanttChart:
@@ -19,7 +18,7 @@ async def extract_gantt(image_url: str) -> GanttChart:
         inputs={
             "gantt_chart_image": {
                 "concept": "gantt.GanttChartImage",
-                "content": ImageContent(url=image_url),
+                "content": {"url": image_url},
             }
         },
     )
