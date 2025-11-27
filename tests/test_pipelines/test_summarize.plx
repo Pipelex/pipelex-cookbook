@@ -6,6 +6,7 @@ system_prompt = "You are an expert at summarizing text."
 
 [concept] ####### Concept definitions ############################
 Topic = "A topic a text deals with."
+StructuredSummary = "A summary with a structured output."
 Summary = "A concise rewriting of a dense text."
 
 [pipe] ####### Pipe definitions ##################################

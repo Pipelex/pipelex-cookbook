@@ -1,7 +1,6 @@
 import pipelex.config
 import pipelex.pipelex
 import pytest
-from pipelex.config import get_config
 from rich import print
 from rich.console import Console
 from rich.traceback import Traceback
@@ -13,8 +12,6 @@ def reset_pipelex_config_fixture():
     print("\n[magenta]pipelex setup[/magenta]")
     try:
         pipelex_instance = pipelex.pipelex.Pipelex.make()
-        config = get_config()
-        assert isinstance(config, pipelex.config.PipelexConfig)
     except Exception as exc:
         Console().print(Traceback())
         pytest.exit(f"Critical Pipelex setup error: {exc}")

@@ -1,5 +1,5 @@
 <!-- BEGIN_PIPELEX_RULES -->
-# Pipelex Rules
+# Pipelex Coding Rules
 
 ## Guide to write or edit pipelines using the Pipelex language in .plx files
 
@@ -41,10 +41,10 @@ ConceptName = "Description of the concept"
 - Use PascalCase for concept names
 - Never use plurals (no "Stories", use "Story") - lists are handled implicitly by Pipelex
 - Avoid circumstantial adjectives (no "LargeText", use "Text") - focus on the essence of what the concept represents
-- Don't redefine native concepts (Text, Image, PDF, TextAndImages, Number, Page)
+- Don't redefine native concepts (Text, Image, PDF, TextAndImages, Number, Page, JSON)
 
 **Native Concepts:**
-Pipelex provides built-in native concepts: `Text`, `Image`, `PDF`, `TextAndImages`, `Number`, `Page`. Use these directly or refine them when appropriate.
+Pipelex provides built-in native concepts: `Text`, `Image`, `PDF`, `TextAndImages`, `Number`, `Page`, `JSON`. Use these directly or refine them when appropriate.
 
 **Refining Native Concepts:**
 To create a concept that specializes a native concept without adding fields:
@@ -72,7 +72,7 @@ output = "ConceptName"
 The pipes will all have at least this base definition. 
 - `inputs`: Dictionary of key being the variable used in the prompts, and the value being the ConceptName. It should ALSO LIST THE INPUTS OF THE INTERMEDIATE STEPS (if PipeSequence) or of the conditional pipes (if PipeCondition).
 So If you have this error:
-`StaticValidationError: missing_input_variable • domain='expense_validator' • pipe='validate_expense' • 
+`PipeValidationError: missing_input_variable • domain='expense_validator' • pipe='validate_expense' • 
 variable='['invoice']'``
 That means that the pipe validate_expense is missing the input `invoice` because one of the subpipe is needing it.
 
@@ -859,21 +859,6 @@ But don't write documentation unless asked explicitly to.
 
 ## Guide to execute a pipeline and write example code
 
-### Prerequisites: Virtual Environment
-
-**CRITICAL**: Before running any `pipelex` commands or `pytest`, you MUST activate the appropriate Python virtual environment. Without proper venv activation, these commands will not work.
-
-For standard installations, the virtual environment is named `.venv`. Always check this first:
-
-```bash
-## Activate the virtual environment (standard installation)
-source .venv/bin/activate  # On macOS/Linux
-## or
-.venv\Scripts\activate  # On Windows
-```
-
-If your installation uses a different venv name or location, activate that one instead. All subsequent `pipelex` and `pytest` commands assume the venv is active.
-
 ### Example to execute a pipeline with text output
 
 ```python
@@ -1148,7 +1133,7 @@ Presets are meant to record the choice of an llm with its hyper parameters (temp
 Examples:
 ```toml
 llm_to_engineer = { model = "base-claude", temperature = 1 }
-llm_to_extract_invoice = { model = "claude-3-7-sonnet", temperature = 0.1, max_tokens = "auto" }
+llm_to_extract_invoice = { model = "claude-4.5-sonnet", temperature = 0.1, max_tokens = "auto" }
 ```
 
 The interest is that these presets can be used to set the LLM choice in a PipeLLM, like this:

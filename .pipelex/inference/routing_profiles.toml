@@ -45,9 +45,8 @@ fallback_order = [
 "gemini-*" = "pipelex_inference"
 
 [profiles.pipelex_first.optional_routes] # Each optional route is considered only if its backend is available
-"*-sdxl" = "blackboxai"
-"flux-*" = "blackboxai"
-"nano-banana" = "blackboxai"
+"*-sdxl" = "fal"
+"flux-*" = "fal"
 "gpt-image-1" = "openai"
 "mistral-ocr" = "mistral"
 
@@ -75,6 +74,10 @@ default = "fal"
 description = "Use Google GenAI backend for all its supported models"
 default = "google"
 
+[profiles.all_groq]
+description = "Use groq backend for all its supported models"
+default = "groq"
+
 [profiles.all_mistral]
 description = "Use Mistral backend for all its supported models"
 default = "mistral"
@@ -87,9 +90,9 @@ default = "ollama"
 description = "Use OpenAI backend for all its supported models"
 default = "openai"
 
-[profiles.all_vertexai]
-description = "Use Vertex AI backend for all its supported models"
-default = "vertexai"
+[profiles.all_pipelex_inference]
+description = "Use Pipelex Inference backend for all its supported models"
+default = "pipelex_inference"
 
 [profiles.all_xai]
 description = "Use xAI backend for all its supported models"
