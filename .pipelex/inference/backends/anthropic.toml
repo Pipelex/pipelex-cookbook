@@ -24,6 +24,7 @@
 model_type = "llm"
 sdk = "anthropic"
 prompting_target = "anthropic"
+structure_method = "instructor/anthropic_tools"
 
 ################################################################################
 # LANGUAGE MODELS
@@ -89,3 +90,19 @@ inputs = ["text", "images"]
 outputs = ["text", "structured"]
 max_prompt_images = 100
 costs = { input = 3.0, output = 15.0 }
+
+["claude-4.5-haiku"]
+model_id = "claude-haiku-4-5-20251001"
+max_tokens = 64000
+inputs = ["text", "images"]
+outputs = ["text", "structured"]
+max_prompt_images = 100
+costs = { input = 1.0, output = 5.0 }
+
+["claude-4.5-opus"]
+model_id = "claude-opus-4-5-20251101"
+max_tokens = 32000
+inputs = ["text", "images"]
+outputs = ["text", "structured"]
+max_prompt_images = 100
+costs = { input = 5.0, output = 25.0 }

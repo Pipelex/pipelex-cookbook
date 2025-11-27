@@ -74,7 +74,18 @@ python examples/invoice_extractor/invoice_extractor.py
 python examples/_quick_start/summarize_2_steps.py
 ```
 
-## 4. Generate Your Own Workflow
+## 4. Known Limitations
+
+### Third-Party API Requirements
+
+Some Pipelex pipes currently require additional API keys beyond the Pipelex Inference backend:
+
+- **OCR (PipeExtract)**: Currently uses Mistral for document extraction. You'll need a [Mistral API key](https://console.mistral.ai/) to use `PipeExtract` operations for extracting text and images from PDFs and images.
+- **Image Generation (PipeImgGen)**: Currently uses FAL for image generation. You'll need a [FAL API key](https://fal.ai/dashboard/keys) to use `PipeImgGen` operations for generating images.
+
+**Note:** These dependencies are temporary and will be addressed in future updates. We're working on adding support for multiple providers and local alternatives. Check our [roadmap](https://github.com/Pipelex/pipelex/issues/473) for planned improvements.
+
+## 5. Generate Your Own Workflow
 
 Create a complete AI workflow with a single command:
 
@@ -296,7 +307,7 @@ Pipelex.make()
 asyncio.run(run_pipeline())
 ```
 
-## 5. Iterate with AI Assistance
+## 6. Iterate with AI Assistance
 
 Install AI assistant rules to easily modify your pipelines:
 

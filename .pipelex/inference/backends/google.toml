@@ -24,6 +24,7 @@
 model_type = "llm"
 sdk = "google"
 prompting_target = "gemini"
+structure_method = "instructor/genai_tools"
 
 ################################################################################
 # LANGUAGE MODELS
@@ -58,3 +59,11 @@ inputs = ["text", "images"]
 outputs = ["text", "structured"]
 max_prompt_images = 3000
 costs = { input = 0.10, output = 0.40 }
+
+# --- Gemini 3.0 Series ----------------------------------------
+["gemini-3.0-pro"]
+model_id = "gemini-3-pro-preview"
+inputs = ["text", "images"]
+outputs = ["text", "structured"]
+max_prompt_images = 3000
+costs = { input = 2, output = 12.0 }
