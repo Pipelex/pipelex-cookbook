@@ -2,7 +2,7 @@
 
 ## [v0.9.4] - 2025-11-26
 
-- Bump `pipelex` to `v0.16.0`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+- Bump `pipelex` to `v0.17.0`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
 
 ### Fixed
 
