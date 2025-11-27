@@ -114,7 +114,7 @@ Here is the fields format of the answer you must output:
 [pipe.cleanse_answer]
 type = "PipeLLM"
 description = "Clean the answer"
-inputs = { answer = "Dynamic" }
+inputs = { answer = "Anything" }
 output = "Dynamic"
 structuring_method = "preliminary_text"
 prompt = """
