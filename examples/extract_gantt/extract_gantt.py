@@ -6,6 +6,7 @@ from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
 from examples.extract_gantt.gantt_struct import GanttChart
+from utils.results_utils import output_result
 
 SAMPLE_NAME = "extract_gantt"
 IMAGE_URL = "https://pipelex-web.s3.us-west-2.amazonaws.com/cookbook/gantt_tree_house.png"
@@ -35,6 +36,6 @@ gantt_chart = asyncio.run(extract_gantt(IMAGE_URL))
 
 # Display cost report (tokens used and cost)
 get_report_delegate().generate_report()
+
 # output results
-pretty_print(gantt_chart, title="Gantt Chart")
-get_pipeline_tracker().output_flowchart()
+output_result(SAMPLE_NAME, "Gantt Chart", "gantt_chart.json", gantt_chart.rendered_json())
