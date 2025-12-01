@@ -8,6 +8,7 @@ from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
 from examples.invoice_extractor.invoice import Invoice
+from utils.results_utils import output_result
 
 SAMPLE_NAME = "invoice_extractor"
 PDF_URL = "assets/invoice_extractor/invoice_1.pdf"
@@ -30,11 +31,11 @@ Pipelex.make()
 # run sample using asyncio
 expense_validations = asyncio.run(process_invoice(pdf_url=PDF_URL))
 
-# Print results
-pretty_print(expense_validations, title="Expense validations")
-
 # Print the cost reporting
 get_report_delegate().generate_report()
 
 # Print the flowchart url of the pipeline.
 get_pipeline_tracker().output_flowchart()
+
+# Output the results
+output_result(SAMPLE_NAME, "Invoice Extractor", "invoice_extractor.json", expense_validations.rendered_json())

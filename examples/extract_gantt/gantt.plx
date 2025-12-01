@@ -53,7 +53,6 @@ type = "PipeLLM"
 description = "Extract the precise dates of the task, start_date and end_date"
 inputs = { gantt_chart_image = "GanttChartImage", gantt_timescale = "GanttTimescaleDescription", gantt_task_name = "GanttTaskName" }
 output = "GanttTaskDetails"
-structuring_method = "preliminary_text"
 model = "llm_for_diagram_to_text"
 prompt = """
 I am sharing an image of a Gantt chart: $gantt_chart_image.
