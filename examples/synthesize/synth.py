@@ -20,15 +20,14 @@ async def run_generate_synthetic_data_samples() -> ListContent[Sample]:
     return pipe_output.main_stuff_as_list(item_type=Sample)
 
 
-# Initialize Pipelex
-Pipelex.make()
+# start Pipelex
+with Pipelex.make():
+    # Run the pipeline
+    samples = asyncio.run(run_generate_synthetic_data_samples())
 
-# Run the pipeline
-samples = asyncio.run(run_generate_synthetic_data_samples())
-
-output_result(
-    sample_name=SAMPLE_NAME,
-    title="Synthetic data",
-    file_name="synthetic_data.json",
-    content=samples.rendered_json(),
-)
+    output_result(
+        sample_name=SAMPLE_NAME,
+        title="Synthetic data",
+        file_name="synthetic_data.json",
+        content=samples.rendered_json(),
+    )

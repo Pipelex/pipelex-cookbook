@@ -7,7 +7,7 @@ from pipelex.pipeline.execute import execute_pipeline
 from pipelex.system.runtime import IntegrationMode
 
 from examples.extract_dpe.extract_dpe_struct import Dpe
-from utils.results_utils import get_results_dir_path, output_result
+from utils.results_utils import output_result
 
 SAMPLE_NAME = "pdf_power_extractor_dpe"
 PDF_PATH = "assets/extract_dpe/dpe_single_page.pdf"

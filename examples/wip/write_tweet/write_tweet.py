@@ -31,10 +31,6 @@ async def optimize_tweet(draft_tweet: str, writing_style: str) -> str:
     return optimized_tweet
 
 
-# start Pipelex
-Pipelex.make()
-
-
 # get sample data
 SAMPLE_DRAFT_TWEET = """
 Local high school basketball star Maria Rodriguez was the talk of Division I scouts - 6'2", averaging 28 points per game, with offers from Duke, Stanford, and UConn all on the table. Her single mother worked three jobs to keep them afloat, and a full ride scholarship seemed like their golden ticket out of poverty.
@@ -82,20 +78,21 @@ What $20 decision are you avoiding right now? 👇
 """
 writing_style = optional_sample_text_from_path(filename="writing_style.md") or SAMPLE_WRITING_STYLE
 
-
-# run sample using asyncio
-optimized_tweet = asyncio.run(
-    optimize_tweet(
-        draft_tweet=draft_tweet,
-        writing_style=writing_style,
+# start Pipelex
+with Pipelex.make():
+    # run sample using asyncio
+    optimized_tweet = asyncio.run(
+        optimize_tweet(
+            draft_tweet=draft_tweet,
+            writing_style=writing_style,
+        )
     )
-)
 
-# Display cost report (tokens used and cost)
-get_report_delegate().generate_report()
+    # Display cost report (tokens used and cost)
+    get_report_delegate().generate_report()
 
-# output results
-pretty_print(optimized_tweet, title="Optimized Tweet")
+    # output results
+    pretty_print(optimized_tweet, title="Optimized Tweet")
 
-# Generate pipeline flowchart
-get_pipeline_tracker().output_flowchart()
+    # Generate pipeline flowchart
+    get_pipeline_tracker().output_flowchart()

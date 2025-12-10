@@ -57,25 +57,24 @@ async def run_advisory_orchestrator(problem_description: str) -> Tuple[Strategic
     return strategic_report, strategic_report_markdown
 
 
-# Start Pipelex
-Pipelex.make()
+# start Pipelex
+with Pipelex.make():
+    # Run the advisory orchestrator
+    strategic_report, strategic_report_markdown = asyncio.run(run_advisory_orchestrator(SAMPLE_BUSINESS_PROBLEM))
 
-# Run the advisory orchestrator
-strategic_report, strategic_report_markdown = asyncio.run(run_advisory_orchestrator(SAMPLE_BUSINESS_PROBLEM))
+    # Display the strategic report
+    pretty_print(strategic_report, title="Master Advisory Orchestrator - Strategic Report (json)")
+    pretty_print(strategic_report_markdown, title="Master Advisory Orchestrator - Strategic Report (markdown)")
 
-# Display the strategic report
-pretty_print(strategic_report, title="Master Advisory Orchestrator - Strategic Report (json)")
-pretty_print(strategic_report_markdown, title="Master Advisory Orchestrator - Strategic Report (markdown)")
+    # Display cost report (tokens used and cost)
+    get_report_delegate().generate_report()
 
-# Display cost report (tokens used and cost)
-get_report_delegate().generate_report()
+    # Output pipeline flowchart
+    get_pipeline_tracker().output_flowchart()
 
-# Output pipeline flowchart
-get_pipeline_tracker().output_flowchart()
-
-output_result(
-    sample_name=SAMPLE_NAME,
-    title="Master Advisory Orchestrator - Strategic Report (markdown)",
-    file_name="strategic_report.md",
-    content=strategic_report_markdown,
-)
+    output_result(
+        sample_name=SAMPLE_NAME,
+        title="Master Advisory Orchestrator - Strategic Report (markdown)",
+        file_name="strategic_report.md",
+        content=strategic_report_markdown,
+    )

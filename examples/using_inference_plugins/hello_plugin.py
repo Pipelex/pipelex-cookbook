@@ -1,10 +1,9 @@
 import asyncio
 
 from pipelex import pretty_print
-from pipelex.hub import get_inference_manager, get_report_delegate
+from pipelex.hub import get_inference_manager
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
-from pipelex.system.environment import set_env
 
 from examples.using_inference_plugins.llm_plugin_example_using_openai import LLMPluginExampleUsingOpenAI
 
@@ -23,12 +22,11 @@ async def hello_plugin():
 
 
 # start Pipelex
-Pipelex.make()
-
-# register external plugin
-get_inference_manager().set_llm_worker_from_external_plugin(
-    llm_handle="llm_plugin_example_using_openai",
-    llm_worker_class=LLMPluginExampleUsingOpenAI,
-)
-# run sample using asyncio
-asyncio.run(hello_plugin())
+with Pipelex.make():
+    # register external plugin
+    get_inference_manager().set_llm_worker_from_external_plugin(
+        llm_handle="llm_plugin_example_using_openai",
+        llm_worker_class=LLMPluginExampleUsingOpenAI,
+    )
+    # run sample using asyncio
+    asyncio.run(hello_plugin())

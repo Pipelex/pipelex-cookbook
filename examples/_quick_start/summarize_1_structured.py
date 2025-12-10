@@ -24,13 +24,12 @@ with open("assets/summarize/sample_text_1.txt", "r", encoding="utf-8") as f:
     text = f.read()
 
 # start Pipelex
-Pipelex.make()
+with Pipelex.make():
+    # run sample using asyncio
+    summary = asyncio.run(summarize_with_structure(text))
 
-# run sample using asyncio
-summary = asyncio.run(summarize_with_structure(text))
+    # Display cost report (tokens used and cost)
+    get_report_delegate().generate_report()
 
-# Display cost report (tokens used and cost)
-get_report_delegate().generate_report()
-
-# output results
-pretty_print(summary, title="Structured summary")
+    # output results
+    pretty_print(summary, title="Structured summary")

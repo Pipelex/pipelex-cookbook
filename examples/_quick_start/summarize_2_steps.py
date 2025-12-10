@@ -22,14 +22,13 @@ with open("assets/summarize/sample_text_3.txt", "r", encoding="utf-8") as f:
     text = f.read()
 
 # start Pipelex
-Pipelex.make()
+with Pipelex.make():
+    # run sample using asyncio
+    summary_text = asyncio.run(summarize_by_steps(text))
 
-# run sample using asyncio
-summary_text = asyncio.run(summarize_by_steps(text))
+    # Display cost report (tokens used and cost)
+    get_report_delegate().generate_report()
+    # output results
+    pretty_print(summary_text, title="Summarized by steps")
 
-# Display cost report (tokens used and cost)
-get_report_delegate().generate_report()
-# output results
-pretty_print(summary_text, title="Summarized by steps")
-
-get_pipeline_tracker().output_flowchart()
+    get_pipeline_tracker().output_flowchart()

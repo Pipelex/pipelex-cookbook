@@ -1,7 +1,6 @@
 import asyncio
 
-from pipelex import pretty_print
-from pipelex.hub import get_pipeline_tracker, get_report_delegate
+from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
@@ -29,13 +28,12 @@ async def extract_gantt(image_url: str) -> GanttChart:
 
 
 # start Pipelex
-Pipelex.make()
+with Pipelex.make():
+    # run sample using asyncio
+    gantt_chart = asyncio.run(extract_gantt(IMAGE_URL))
 
-# run sample using asyncio
-gantt_chart = asyncio.run(extract_gantt(IMAGE_URL))
+    # Display cost report (tokens used and cost)
+    get_report_delegate().generate_report()
 
-# Display cost report (tokens used and cost)
-get_report_delegate().generate_report()
-
-# output results
-output_result(SAMPLE_NAME, "Gantt Chart", "gantt_chart.json", gantt_chart.rendered_json())
+    # output results
+    output_result(SAMPLE_NAME, "Gantt Chart", "gantt_chart.json", gantt_chart.rendered_json())

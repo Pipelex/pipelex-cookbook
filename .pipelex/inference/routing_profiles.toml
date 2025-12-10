@@ -132,7 +132,14 @@ description = "Example routing profile using specific models"
 [profiles.pipelex_gateway_first]
 description = "Use Pipelex Inference backend for all its supported models"
 default = "pipelex_gateway"
-fallback_order = ["pipelex_gateway", "azure_openai", "bedrock", "blackboxai", "mistral", "fal"]
+fallback_order = [
+    "pipelex_gateway",
+    "azure_openai",
+    "bedrock",
+    "blackboxai",
+    "mistral",
+    "fal",
+]
 
 [profiles.pipelex_gateway_first.routes]
 # Pattern matching: "model-pattern" = "backend-name"
@@ -146,4 +153,3 @@ fallback_order = ["pipelex_gateway", "azure_openai", "bedrock", "blackboxai", "m
 "flux-*" = "fal"
 "gpt-image-1" = "openai"
 "mistral-ocr" = "mistral"
-

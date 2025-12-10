@@ -26,17 +26,16 @@ async def generate_screenplay(pitch: str):
     pretty_print(pipe_output, title="Pipe Output")
 
 
-# Start Pipelex
-Pipelex.make()
+# start Pipelex
+with Pipelex.make():
+    # Run the pipeline using asyncio
+    screenplay = asyncio.run(generate_screenplay(pitch=PITCH))
 
-# Run the pipeline using asyncio
-screenplay = asyncio.run(generate_screenplay(pitch=PITCH))
+    # Display cost report (tokens used and cost)
+    get_report_delegate().generate_report()
 
-# Display cost report (tokens used and cost)
-get_report_delegate().generate_report()
+    # Output results
+    pretty_print(screenplay, title="Generated Screenplay")
 
-# Output results
-pretty_print(screenplay, title="Generated Screenplay")
-
-# Generate pipeline flowchart
-get_pipeline_tracker().output_flowchart()
+    # Generate pipeline flowchart
+    get_pipeline_tracker().output_flowchart()

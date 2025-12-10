@@ -34,19 +34,18 @@ async def write_discord_newsletter(discord_extract_path: str) -> str:
 
 
 # start Pipelex
-Pipelex.make()
+with Pipelex.make():
+    # run sample using asyncio
+    html_newsletter = asyncio.run(write_discord_newsletter(discord_extract_path=DISCORD_EXTRACT_PATH))
 
-# run sample using asyncio
-html_newsletter = asyncio.run(write_discord_newsletter(discord_extract_path=DISCORD_EXTRACT_PATH))
-
-# Display cost report (tokens used and cost)
-get_report_delegate().generate_report()
-# output results
-pretty_print(html_newsletter, title="Discord Newsletter")
-output_result(
-    sample_name=SAMPLE_NAME,
-    title="Discord Newsletter",
-    file_name="discord_newsletter.html",
-    content=html_newsletter,
-)
-get_pipeline_tracker().output_flowchart()
+    # Display cost report (tokens used and cost)
+    get_report_delegate().generate_report()
+    # output results
+    pretty_print(html_newsletter, title="Discord Newsletter")
+    output_result(
+        sample_name=SAMPLE_NAME,
+        title="Discord Newsletter",
+        file_name="discord_newsletter.html",
+        content=html_newsletter,
+    )
+    get_pipeline_tracker().output_flowchart()
