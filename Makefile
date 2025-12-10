@@ -63,7 +63,6 @@ make merge-check-ruff-format  - Run ruff merge check without updating files
 make merge-check-mypy         - Run mypy merge check without updating files
 make merge-check-pyright	  - Run pyright merge check without updating files
 
-make rl                       - Shorthand -> reinitlibraries
 make ri                       - Shorthand -> reinstall
 make v                        - Shorthand -> validate
 make init                     - Run pipelex init
