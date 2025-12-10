@@ -35,3 +35,6 @@ pipelex_super.toml
 
 gcp_credentials.json
 .pipelex/pipelex_service.toml
+
+# macOS
+.DS_Store
