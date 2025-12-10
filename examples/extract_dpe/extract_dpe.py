@@ -4,7 +4,6 @@ from pipelex import pretty_print
 from pipelex.core.stuffs.pdf_content import PDFContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
-from pipelex.system.runtime import IntegrationMode
 
 from examples.extract_dpe.extract_dpe_struct import Dpe
 from utils.results_utils import output_result
@@ -26,7 +25,7 @@ async def extract_dpe(pdf_url: str) -> Dpe:
 
 
 # start Pipelex
-with Pipelex.make(integration_mode=IntegrationMode.CLI) as pipelex:
+with Pipelex.make():
     # run sample using asyncio
     dpe = asyncio.run(extract_dpe(pdf_url=PDF_PATH))
     pretty_print(dpe, title="DPE")
