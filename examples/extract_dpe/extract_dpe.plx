@@ -7,7 +7,7 @@ Dpe = "A diagnostic of the energy performance of a building"
 [pipe]
 [pipe.power_extractor_dpe]
 type = "PipeSequence"
-description = "Update page content with markdown"
+description = "Extract DPE details from a PDF document"
 inputs = { document = "PDF" }
 output = "Dpe"
 steps = [

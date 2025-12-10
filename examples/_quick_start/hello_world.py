@@ -19,6 +19,5 @@ async def hello_world():
 
 
 # start Pipelex
-Pipelex.make()
-# run sample using asyncio
-asyncio.run(hello_world())
+with Pipelex.make() as pipelex:
+    asyncio.run(hello_world())
