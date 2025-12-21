@@ -5,7 +5,7 @@ domain = "extract_generic"
 type = "PipeSequence"
 description = "Update page content with markdown"
 inputs = { document = "PDF" }
-output = "Text"
+output = "Text[]"
 steps = [
     { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },
     { pipe = "write_markdown_from_page_content", batch_over = "page_contents", batch_as = "page_content", result = "markdowns" },

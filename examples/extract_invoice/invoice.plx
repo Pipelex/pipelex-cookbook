@@ -9,7 +9,7 @@ InvoiceDetails = "The category of the invoice"
 type = "PipeSequence"
 description = "Process relevant information from an invoice"
 inputs = { document = "PDF" }
-output = "Invoice"
+output = "Invoice[]"
 steps = [
     { pipe = "extract_text_from_image", result = "invoice_pages" },
     { pipe = "extract_invoice", batch_over = "invoice_pages", batch_as = "invoice_page", result = "invoice" },

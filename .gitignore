@@ -38,3 +38,5 @@ gcp_credentials.json
 
 # macOS
 .DS_Store
+
+.pipelex/telemetry_override.toml

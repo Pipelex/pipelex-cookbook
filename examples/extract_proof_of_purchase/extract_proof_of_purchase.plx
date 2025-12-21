@@ -8,7 +8,7 @@ ProofOfPurchase = "Elements from a proof of purchase"
 type = "PipeSequence"
 description = "Update page content with markdown"
 inputs = { document = "PDF" }
-output = "ProofOfPurchase"
+output = "ProofOfPurchase[]"
 steps = [
     { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },                                                                            # Located in the base library, in the domain "documents"
     { pipe = "write_markdown_from_page_content_proof_of_purchase", batch_over = "page_contents", batch_as = "page_content", result = "proof_of_purchase" },

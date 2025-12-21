@@ -9,7 +9,7 @@ Dpe = "A diagnostic of the energy performance of a building"
 type = "PipeSequence"
 description = "Extract DPE details from a PDF document"
 inputs = { document = "PDF" }
-output = "Dpe"
+output = "Dpe[]"
 steps = [
     { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },                                                # Located in the base library, in the domain "documents"
     { pipe = "write_markdown_from_page_content_dpe", batch_over = "page_contents", batch_as = "page_content", result = "dpe" },
