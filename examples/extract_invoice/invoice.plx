@@ -41,6 +41,8 @@ output = "InvoiceDetails"
 prompt = """
 Analyze this invoice:
 
+@invoice_page.page_view
+
 @invoice_page.text_and_images.text.text
 """
 
@@ -52,6 +54,8 @@ output = "Invoice"
 model = "llm_for_img_to_text"
 prompt = """
 Extract invoice information from this invoice:
+
+@invoice_page.page_view
 
 The category of this invoice is: $invoice_details.category.
 

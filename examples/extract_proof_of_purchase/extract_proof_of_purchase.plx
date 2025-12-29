@@ -24,6 +24,7 @@ structuring_method = "preliminary_text"
 system_prompt = """You are a multimodal LLM, expert at converting images into perfect markdown."""
 prompt = """
 You are given an image of a proof of purchase.
+@page_content.page_view
 Your role is to convert the image into perfect markdown.
 
 To help you do so, you are given the text extracted from the page by an OCR model.
