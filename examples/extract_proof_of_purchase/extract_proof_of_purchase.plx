@@ -8,7 +8,7 @@ ProofOfPurchase = "Elements from a proof of purchase"
 type = "PipeSequence"
 description = "Update page content with markdown"
 inputs = { document = "PDF" }
-output = "ProofOfPurchase"
+output = "ProofOfPurchase[]"
 steps = [
     { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },                                                                            # Located in the base library, in the domain "documents"
     { pipe = "write_markdown_from_page_content_proof_of_purchase", batch_over = "page_contents", batch_as = "page_content", result = "proof_of_purchase" },
@@ -23,7 +23,7 @@ model = "llm_for_img_to_text"
 structuring_method = "preliminary_text"
 system_prompt = """You are a multimodal LLM, expert at converting images into perfect markdown."""
 prompt = """
-You are given an image of a proof of purchase.
+You are given an image of a proof of purchase: $page_content.page_view
 Your role is to convert the image into perfect markdown.
 
 To help you do so, you are given the text extracted from the page by an OCR model.

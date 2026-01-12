@@ -1,7 +1,7 @@
 import asyncio
 
 from pipelex import pretty_print
-from pipelex.core.stuffs.pdf_content import PDFContent
+from pipelex.core.stuffs.document_content import DocumentContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
@@ -16,11 +16,16 @@ async def extract_dpe(pdf_url: str) -> Dpe:
     pipe_output = await execute_pipeline(
         pipe_code="power_extractor_dpe",
         inputs={
-            "document": PDFContent(url=pdf_url),
+            "document": DocumentContent(url=pdf_url),
         },
     )
     working_memory = pipe_output.working_memory
     dpe: Dpe = working_memory.get_list_stuff_first_item_as(name="dpe", item_type=Dpe)
+    pretty_print(dpe, title="DPE")
+
+    # output results
+    output_result(SAMPLE_NAME, "DPE", "dpe.json", dpe.rendered_json())
+
     return dpe
 
 
@@ -28,7 +33,3 @@ async def extract_dpe(pdf_url: str) -> Dpe:
 with Pipelex.make():
     # run sample using asyncio
     dpe = asyncio.run(extract_dpe(pdf_url=PDF_PATH))
-    pretty_print(dpe, title="DPE")
-
-    # output results
-    output_result(SAMPLE_NAME, "DPE", "dpe.json", dpe.rendered_json())

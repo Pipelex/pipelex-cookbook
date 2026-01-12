@@ -11,7 +11,7 @@ def reset_pipelex_config_fixture():
     # Code to run before each test
     print("\n[magenta]pipelex setup[/magenta]")
     try:
-        pipelex_instance = pipelex.pipelex.Pipelex.make()
+        pipelex_instance = pipelex.pipelex.Pipelex.make(library_dirs=["examples", "tests/test_pipelines"])
     except Exception as exc:
         Console().print(Traceback())
         pytest.exit(f"Critical Pipelex setup error: {exc}")

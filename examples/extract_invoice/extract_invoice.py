@@ -1,8 +1,8 @@
 import asyncio
 
+from pipelex.core.stuffs.document_content import DocumentContent
 from pipelex.core.stuffs.list_content import ListContent
-from pipelex.core.stuffs.pdf_content import PDFContent
-from pipelex.hub import get_pipeline_tracker, get_report_delegate
+from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
@@ -17,7 +17,7 @@ async def process_invoice(pdf_url: str) -> ListContent[Invoice]:
     pipe_output = await execute_pipeline(
         pipe_code="process_invoice",
         inputs={
-            "document": PDFContent(url=pdf_url),
+            "document": DocumentContent(url=pdf_url),
         },
     )
 
@@ -33,7 +33,6 @@ with Pipelex.make():
     get_report_delegate().generate_report()
 
     # Print the flowchart url of the pipeline.
-    get_pipeline_tracker().output_flowchart()
 
     # Output the results
     output_result(SAMPLE_NAME, "Invoice Extractor", "invoice_extractor.json", expense_validations.rendered_json())

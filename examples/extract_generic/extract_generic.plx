@@ -5,7 +5,7 @@ domain = "extract_generic"
 type = "PipeSequence"
 description = "Update page content with markdown"
 inputs = { document = "PDF" }
-output = "Text"
+output = "Text[]"
 steps = [
     { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },
     { pipe = "write_markdown_from_page_content", batch_over = "page_contents", batch_as = "page_content", result = "markdowns" },
@@ -19,7 +19,7 @@ output = "Text"
 model = "llm_for_img_to_text"
 system_prompt = "You are a multimodal LLM, expert at converting images into perfect markdown."
 prompt = """
-You are given an image which is a view of a document page.
+You are given an image which is a view of a document page: $page_content.page_view
 You are also given the text extracted from the page by an OCR model.
 Your task is to output the perfect markdown of the page.
 

@@ -6,7 +6,7 @@ VIRTUAL_ENV := $(CURDIR)/.venv
 PROJECT_NAME := $(shell grep '^name = ' pyproject.toml | sed -E 's/name = "(.*)"/\1/')
 
 # The "?" is used to make the variable optional, so that it can be overridden by the user.
-PYTHON_VERSION ?= 3.11
+PYTHON_VERSION ?= 3.13
 VENV_PYTHON := $(VIRTUAL_ENV)/bin/python
 VENV_PYTEST := $(VIRTUAL_ENV)/bin/pytest
 VENV_RUFF := $(VIRTUAL_ENV)/bin/ruff
@@ -65,7 +65,6 @@ make merge-check-pyright	  - Run pyright merge check without updating files
 
 make ri                       - Shorthand -> reinstall
 make v                        - Shorthand -> validate
-make init                     - Run pipelex init
 make codex-tests              - Run tests for Codex (exit on first failure) (no inference, no codex_disabled)
 make gha-tests		          - Run tests for github actions (exit on first failure) (no inference, no gha_disabled)
 make test                     - Run unit tests (no inference)
@@ -128,10 +127,6 @@ env: check-uv
 	else \
 		echo "Python virtual env already exists in \`${VIRTUAL_ENV}\`"; \
 	fi
-
-init: env
-	$(call PRINT_TITLE,"Running pipelex init")
-	$(VENV_PIPELEX) init config
 
 install: env
 	$(call PRINT_TITLE,"Installing dependencies")
@@ -362,16 +357,16 @@ check-TODOs: env
 ### SHORTHANDS
 ##########################################################################################
 
-c: init format lint pyright mypy
+c: format lint pyright mypy
 	@echo "> done: c = check"
 
-cc: init cleanderived c
+cc: cleanderived c
 	@echo "> done: cc = cleanderived check"
 
-check: init cleanderived check-unused-imports c
+check: cleanderived check-unused-imports c
 	@echo "> done: check"
 
-v: init validate
+v: validate
 	@echo "> done: v = validate"
 
 li: lock install

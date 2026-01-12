@@ -2,7 +2,7 @@ import asyncio
 from typing import List
 
 from pipelex import pretty_print
-from pipelex.hub import get_pipeline_tracker, get_report_delegate
+from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.json_utils import load_json_list_from_path
@@ -48,4 +48,3 @@ with Pipelex.make():
         file_name="discord_newsletter.html",
         content=html_newsletter,
     )
-    get_pipeline_tracker().output_flowchart()

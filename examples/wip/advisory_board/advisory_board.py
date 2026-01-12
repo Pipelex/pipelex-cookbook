@@ -2,7 +2,7 @@ import asyncio
 from typing import Tuple
 
 from pipelex import pretty_print
-from pipelex.hub import get_pipeline_tracker, get_report_delegate
+from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
@@ -70,7 +70,6 @@ with Pipelex.make():
     get_report_delegate().generate_report()
 
     # Output pipeline flowchart
-    get_pipeline_tracker().output_flowchart()
 
     output_result(
         sample_name=SAMPLE_NAME,

@@ -1,7 +1,7 @@
 import asyncio
 
 from pipelex import pretty_print
-from pipelex.hub import get_pipeline_tracker, get_report_delegate
+from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
@@ -38,4 +38,3 @@ with Pipelex.make():
     pretty_print(screenplay, title="Generated Screenplay")
 
     # Generate pipeline flowchart
-    get_pipeline_tracker().output_flowchart()

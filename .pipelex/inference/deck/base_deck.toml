@@ -108,7 +108,11 @@ cheap_llm_for_creativity = [
 ]
 
 # --- Waterfalls for Extracts ---------------------------------------------------------------------
-pdf_text_extractor = ["mistral-ocr", "pypdfium2-extract-text"]
+pdf_text_extractor = [
+    "azure-document-intelligence",
+    "mistral-ocr",
+    "pypdfium2-extract-pdf",
+]
 image_text_extractor = ["mistral-ocr"]
 
 ####################################################################################################
@@ -169,11 +173,11 @@ for_object = "cheap_llm_for_structured"
 ####################################################################################################
 
 [extract]
-choice_default = "extract_text_from_visuals"
+choice_default = "extract_ocr_from_document"
 
 [extract.presets]
-extract_text_from_visuals = { model = "mistral-ocr", max_nb_images = 100, image_min_size = 50 }
-extract_text_from_pdf = { model = "pypdfium2-extract-text", max_nb_images = 100, image_min_size = 50 }
+extract_ocr_from_document = { model = "azure-document-intelligence", max_nb_images = 100, image_min_size = 50 }
+extract_basic_from_pdf = { model = "pypdfium2-extract-pdf", max_nb_images = 100, image_min_size = 50 }
 
 ####################################################################################################
 # Image Generation Presets
@@ -196,5 +200,3 @@ img_gen_for_diagram = { model = "base-img-gen", quality = "medium", guidance_sca
 img_gen_for_mockup = { model = "base-img-gen", quality = "medium", guidance_scale = 6.5, is_moderated = true, safety_tolerance = 3 }
 img_gen_for_product = { model = "best-img-gen", quality = "high", guidance_scale = 8.5, is_moderated = true, safety_tolerance = 2 }
 img_gen_for_testing = { model = "fast-img-gen", nb_steps = 4, guidance_scale = 4.0, is_moderated = true, safety_tolerance = 4 }
-
-# img_gen_for_testing = { model = "nano-banana" }

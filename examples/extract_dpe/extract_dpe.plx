@@ -2,6 +2,7 @@ domain = "power_extractor"
 description = "The domain for power extractor"
 
 [concept]
+MarkdownFromDpeDocumentPage = "A markdown extracted from a DPE document"
 Dpe = "A diagnostic of the energy performance of a building"
 
 [pipe]
@@ -12,14 +13,15 @@ inputs = { document = "PDF" }
 output = "Dpe"
 steps = [
     { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },                                                # Located in the base library, in the domain "documents"
-    { pipe = "write_markdown_from_page_content_dpe", batch_over = "page_contents", batch_as = "page_content", result = "dpe" },
+    { pipe = "write_markdown_from_page_content_dpe", batch_over = "page_contents", batch_as = "page_content", result = "dpe_pages" },
+    { pipe = "conclude_dpe", result = "dpe" },
 ]
 
 [pipe.write_markdown_from_page_content_dpe]
 type = "PipeLLM"
 description = "Write markdown from page content of a 'Diagnostic de Performance Energetique'"
 inputs = { "page_content.page_view" = "Image", page_content = "Page" }
-output = "Dpe"
+output = "MarkdownFromDpeDocumentPage"
 model = "llm_for_img_to_text"
 structuring_method = "preliminary_text"
 system_prompt = """You are a multimodal LLM, expert at converting images into perfect markdown."""
@@ -40,3 +42,13 @@ To help you do so, you are given the text extracted from the page by an OCR mode
 - You can use tables if it is relevant.
 """
 
+[pipe.conclude_dpe]
+type = "PipeLLM"
+description = "Conclude the DPE from the markdown extracted from the document"
+inputs = { dpe_pages = "MarkdownFromDpeDocumentPage[]" }
+output = "Dpe"
+prompt = """
+You are given somemarkdown extracted from a DPE document.
+Your role is to conclude reagrding the DPE from the markdown:
+@dpe_pages
+"""

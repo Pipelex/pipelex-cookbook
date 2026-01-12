@@ -45,10 +45,6 @@ class SourcedAnswer(StructuredContent, Generic[T]):
 
         return self
 
-    @override
-    def render_spreadsheet(self) -> str:
-        return str(self.answer)
-
 
 class Fees(SourcedAnswer[Any]):
     class Value(StrEnum):
@@ -83,14 +79,3 @@ class Fees(SourcedAnswer[Any]):
             if self.fee_type == self.Value.PERCENTAGE and self.fee_currency:
                 raise ValueError("Currency should not be set when fee type is PERCENTAGE")
         return self
-
-    @override
-    def render_spreadsheet(self) -> str:
-        if self.not_applicable:
-            return BaseAnswer.NOT_APPLICABLE.value
-        elif self.indeterminate:
-            return BaseAnswer.INDETERMINATE.value
-        if self.fee_type == self.Value.PERCENTAGE:
-            return f"{self.answer}"
-        else:
-            return f"{self.answer} {self.fee_currency.value if self.fee_currency else 'Unknown'}"

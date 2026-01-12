@@ -3,9 +3,9 @@ from typing import List
 
 from pipelex import pretty_print
 from pipelex.core.memory.working_memory import WorkingMemory
+from pipelex.core.stuffs.document_content import DocumentContent
 from pipelex.core.stuffs.image_content import ImageContent
 from pipelex.core.stuffs.page_content import PageContent
-from pipelex.core.stuffs.pdf_content import PDFContent
 from pipelex.core.stuffs.text_and_images_content import TextAndImagesContent
 from pipelex.core.stuffs.text_content import TextContent
 from pipelex.pipelex import Pipelex
@@ -53,7 +53,7 @@ async def extract_generic(pdf_url: str) -> TextAndImagesContent:
     pipe_output = await execute_pipeline(
         pipe_code="power_extractor",
         inputs={
-            "document": PDFContent(url=pdf_url),
+            "document": DocumentContent(url=pdf_url),
         },
     )
     working_memory = pipe_output.working_memory
