@@ -13,6 +13,7 @@ from examples.using_inference_plugins import hello_plugin
 from examples.wip.advisory_board import advisory_board
 
 
+@pytest.mark.inference
 @pytest.mark.dry_runnable
 class TestExamples:
     def test_extract_dpe(self):
