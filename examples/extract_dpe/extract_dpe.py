@@ -20,7 +20,7 @@ async def extract_dpe(pdf_url: str) -> Dpe:
         },
     )
     working_memory = pipe_output.working_memory
-    dpe: Dpe = working_memory.get_list_stuff_first_item_as(name="dpe", item_type=Dpe)
+    dpe: Dpe = working_memory.main_stuff_as(content_type=Dpe)
     pretty_print(dpe, title="DPE")
 
     # output results
@@ -30,6 +30,6 @@ async def extract_dpe(pdf_url: str) -> Dpe:
 
 
 if __name__ == "__main__":
-    with Pipelex.make():
+    with Pipelex.make(library_dirs=["examples"]):
         # run sample using asyncio
         dpe = asyncio.run(extract_dpe(pdf_url=PDF_PATH))
