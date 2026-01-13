@@ -25,17 +25,17 @@ async def simple_ocr(pdf_url: str) -> ListContent[PageContent]:
     return page_content_list
 
 
-# start Pipelex
-with Pipelex.make():
-    # run sample using asyncio
-    page_content_list = asyncio.run(simple_ocr(pdf_url=PDF_URL))
+if __name__ == "__main__":
+    with Pipelex.make():
+        # run sample using asyncio
+        page_content_list = asyncio.run(simple_ocr(pdf_url=PDF_URL))
 
-    # output results
-    output_dir = get_results_dir_path(sample_name=SAMPLE_NAME)
-    for page_index, page_content in enumerate(page_content_list.items):
-        if page_text := page_content.text_and_images.text:
-            directory_for_page = f"{output_dir}/page_{page_index}"
-            save_text_to_path(page_text.text, directory_for_page)
+        # output results
+        output_dir = get_results_dir_path(sample_name=SAMPLE_NAME)
+        for page_index, page_content in enumerate(page_content_list.items):
+            if page_text := page_content.text_and_images.text:
+                directory_for_page = f"{output_dir}/page_{page_index}"
+                save_text_to_path(page_text.text, directory_for_page)
 
-    # output results
-    pretty_print(f"Saved {len(page_content_list.items)} pages to {output_dir}")
+        # output results
+        pretty_print(f"Saved {len(page_content_list.items)} pages to {output_dir}")

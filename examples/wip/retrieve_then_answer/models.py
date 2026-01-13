@@ -3,7 +3,7 @@ from typing import Any, Generic, List, Literal, Optional, TypeVar, Union
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pipelex.types import StrEnum
 from pydantic import Field, model_validator
-from typing_extensions import Self, override
+from typing_extensions import Self
 
 T = TypeVar("T")
 

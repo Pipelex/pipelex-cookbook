@@ -24,15 +24,15 @@ async def extract_table(table_screenshot: str) -> HtmlTable:
     return html_table
 
 
-# start Pipelex
-with Pipelex.make():
-    # run sample using asyncio
-    html_table = asyncio.run(extract_table(IMAGE_URL))
+if __name__ == "__main__":
+    with Pipelex.make():
+        # run sample using asyncio
+        html_table = asyncio.run(extract_table(IMAGE_URL))
 
-    # output results
-    output_result(
-        sample_name=SAMPLE_NAME,
-        title="HTML Table extracted",
-        file_name="extracted_table.html",
-        content=html_table.inner_html_table,
-    )
+        # output results
+        output_result(
+            sample_name=SAMPLE_NAME,
+            title="HTML Table extracted",
+            file_name="extracted_table.html",
+            content=html_table.inner_html_table,
+        )

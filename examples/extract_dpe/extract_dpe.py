@@ -29,7 +29,7 @@ async def extract_dpe(pdf_url: str) -> Dpe:
     return dpe
 
 
-# start Pipelex
-with Pipelex.make():
-    # run sample using asyncio
-    dpe = asyncio.run(extract_dpe(pdf_url=PDF_PATH))
+if __name__ == "__main__":
+    with Pipelex.make():
+        # run sample using asyncio
+        dpe = asyncio.run(extract_dpe(pdf_url=PDF_PATH))

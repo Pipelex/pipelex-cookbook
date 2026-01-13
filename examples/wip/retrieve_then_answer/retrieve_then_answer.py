@@ -36,21 +36,21 @@ async def retrieve_then_answer(text_path: str, question: str, client_instruction
     return pipe_output
 
 
-# start Pipelex
-with Pipelex.make():
-    # Run sample using asyncio
-    evaluation_result = asyncio.run(
-        retrieve_then_answer(
-            text_path=TEXT_PATH,
-            question=QUESTION,
-            client_instructions=CLIENT_INSTRUCTIONS,
+if __name__ == "__main__":
+    with Pipelex.make():
+        # Run sample using asyncio
+        evaluation_result = asyncio.run(
+            retrieve_then_answer(
+                text_path=TEXT_PATH,
+                question=QUESTION,
+                client_instructions=CLIENT_INSTRUCTIONS,
+            )
         )
-    )
 
-    # Print results
-    pretty_print(evaluation_result, title="Purchase Document Evaluation")
+        # Print results
+        pretty_print(evaluation_result, title="Purchase Document Evaluation")
 
-    # Print the cost reporting
-    get_report_delegate().generate_report()
+        # Print the cost reporting
+        get_report_delegate().generate_report()
 
-    # Print the flowchart url of the pipeline
+        # Print the flowchart url of the pipeline

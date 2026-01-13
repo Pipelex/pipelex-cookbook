@@ -18,7 +18,7 @@ output = "HtmlTable"
 model = "llm_for_table_to_text"
 model_to_structure = "llm_for_table_to_text"
 prompt = """
-You are given an image which is a view of a table, taken from a PDF document: $table_screenshot.
+You are given an image which is a view of a table, taken from a document: $table_screenshot.
 Your goal is to extract the table from the image **in html**.
 
 Make sure you do not forget any text.

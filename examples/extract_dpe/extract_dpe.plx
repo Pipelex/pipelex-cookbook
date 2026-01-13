@@ -8,8 +8,8 @@ Dpe = "A diagnostic of the energy performance of a building"
 [pipe]
 [pipe.power_extractor_dpe]
 type = "PipeSequence"
-description = "Extract DPE details from a PDF document"
-inputs = { document = "PDF" }
+description = "Extract DPE details from a document"
+inputs = { document = "Document" }
 output = "Dpe"
 steps = [
     { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },                                                # Located in the base library, in the domain "documents"

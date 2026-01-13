@@ -8,7 +8,7 @@ InvoiceDetails = "The category of the invoice"
 [pipe.process_invoice]
 type = "PipeSequence"
 description = "Process relevant information from an invoice"
-inputs = { document = "PDF" }
+inputs = { document = "Document" }
 output = "Invoice[]"
 steps = [
     { pipe = "extract_page_contents_and_views_from_pdf", result = "invoice_pages" },

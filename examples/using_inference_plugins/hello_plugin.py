@@ -21,12 +21,12 @@ async def hello_plugin():
     pretty_print(pipe_output, title="Pipelex output using an LLM Plugin")
 
 
-# start Pipelex
-with Pipelex.make():
-    # register external plugin
-    get_inference_manager().set_llm_worker_from_external_plugin(
-        llm_handle="llm_plugin_example_using_openai",
-        llm_worker_class=LLMPluginExampleUsingOpenAI,
-    )
-    # run sample using asyncio
-    asyncio.run(hello_plugin())
+if __name__ == "__main__":
+    with Pipelex.make():
+        # register external plugin
+        get_inference_manager().set_llm_worker_from_external_plugin(
+            llm_handle="llm_plugin_example_using_openai",
+            llm_worker_class=LLMPluginExampleUsingOpenAI,
+        )
+        # run sample using asyncio
+        asyncio.run(hello_plugin())

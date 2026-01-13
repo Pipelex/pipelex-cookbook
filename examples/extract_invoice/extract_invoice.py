@@ -24,15 +24,15 @@ async def process_invoice(pdf_url: str) -> ListContent[Invoice]:
     return pipe_output.main_stuff_as_list(item_type=Invoice)
 
 
-# start Pipelex
-with Pipelex.make():
-    # run sample using asyncio
-    expense_validations = asyncio.run(process_invoice(pdf_url=PDF_URL))
+if __name__ == "__main__":
+    with Pipelex.make():
+        # run sample using asyncio
+        expense_validations = asyncio.run(process_invoice(pdf_url=PDF_URL))
 
-    # Print the cost reporting
-    get_report_delegate().generate_report()
+        # Print the cost reporting
+        get_report_delegate().generate_report()
 
-    # Print the flowchart url of the pipeline.
+        # Print the flowchart url of the pipeline.
 
-    # Output the results
-    output_result(SAMPLE_NAME, "Invoice Extractor", "invoice_extractor.json", expense_validations.rendered_json())
+        # Output the results
+        output_result(SAMPLE_NAME, "Invoice Extractor", "invoice_extractor.json", expense_validations.rendered_json())
