@@ -9,7 +9,7 @@
 # =========================================================================================
 
 # Which profile to use (change this to switch routing)
-active = "pipelex_gateway_first"
+active = "pipelex_cookbook"
 
 # We recommend using the "pipelex_gateway_first" profile to get a head start with all models.
 # To use the Pipelex Gateway backend:
