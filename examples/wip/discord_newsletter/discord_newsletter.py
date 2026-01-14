@@ -41,6 +41,7 @@ if __name__ == "__main__":
 
         # Display cost report (tokens used and cost)
         get_report_delegate().generate_report()
+
         # output results
         pretty_print(html_newsletter, title="Discord Newsletter")
         output_result(

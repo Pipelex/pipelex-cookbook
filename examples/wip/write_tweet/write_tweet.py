@@ -94,5 +94,3 @@ if __name__ == "__main__":
 
         # output results
         pretty_print(optimized_tweet, title="Optimized Tweet")
-
-        # Generate pipeline flowchart
