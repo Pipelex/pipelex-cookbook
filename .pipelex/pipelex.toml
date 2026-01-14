@@ -18,7 +18,7 @@
 # - Logging levels and behavior
 # - Excluded directories for scanning
 # - LLM prompt dumping for debugging
-# - Feature flags for tracking and reporting
+# - Feature flags
 # - Observer and reporting output directories
 #
 # Documentation: https://docs.pipelex.com
@@ -29,7 +29,6 @@
 [pipelex.pipeline_execution_config]
 # Uncomment to disable conversion of data URLs to pipelex-storage:// URIs
 # is_normalize_data_urls_to_storage = false
-is_generate_graph = true
 
 [pipelex.pipeline_execution_config.graph_config.data_inclusion]
 # Uncomment to include stuff data in graph outputs:
@@ -125,7 +124,6 @@ error_stack_traces = true
 
 [pipelex.feature_config]
 # WIP/Experimental feature flags:
-# is_pipeline_tracking_enabled = false
 # is_reporting_enabled = true
 
 [pipelex.reporting_config]
