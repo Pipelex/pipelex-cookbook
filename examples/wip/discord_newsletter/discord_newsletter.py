@@ -7,6 +7,7 @@ from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.json_utils import load_json_list_from_path
 
+from examples.constants import LIBRARY_DIRS
 from examples.wip.discord_newsletter.discord_newsletter_struct import DiscordChannelUpdate
 from utils.results_utils import output_result
 
@@ -34,12 +35,13 @@ async def write_discord_newsletter(discord_extract_path: str) -> str:
 
 
 if __name__ == "__main__":
-    with Pipelex.make():
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
         # run sample using asyncio
         html_newsletter = asyncio.run(write_discord_newsletter(discord_extract_path=DISCORD_EXTRACT_PATH))
 
         # Display cost report (tokens used and cost)
         get_report_delegate().generate_report()
+
         # output results
         pretty_print(html_newsletter, title="Discord Newsletter")
         output_result(

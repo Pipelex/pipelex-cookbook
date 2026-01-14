@@ -5,6 +5,7 @@ from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.json_utils import load_json_dict_from_path
 
+from examples.constants import LIBRARY_DIRS
 from examples.synthesize.synth_struct import Sample
 from utils.results_utils import output_result
 
@@ -21,7 +22,7 @@ async def run_generate_synthetic_data_samples() -> ListContent[Sample]:
 
 
 if __name__ == "__main__":
-    with Pipelex.make():
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
         # Run the pipeline
         samples = asyncio.run(run_generate_synthetic_data_samples())
 

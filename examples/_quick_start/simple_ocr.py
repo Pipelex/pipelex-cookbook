@@ -8,6 +8,7 @@ from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.file_utils import save_text_to_path
 
+from examples.constants import LIBRARY_DIRS
 from utils.results_utils import get_results_dir_path
 
 SAMPLE_NAME = "simple_ocr"
@@ -26,7 +27,7 @@ async def simple_ocr(pdf_url: str) -> ListContent[PageContent]:
 
 
 if __name__ == "__main__":
-    with Pipelex.make():
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
         # run sample using asyncio
         page_content_list = asyncio.run(simple_ocr(pdf_url=PDF_URL))
 

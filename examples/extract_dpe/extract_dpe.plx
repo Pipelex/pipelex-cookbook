@@ -48,7 +48,7 @@ description = "Conclude the DPE from the markdown extracted from the document"
 inputs = { dpe_pages = "MarkdownFromDpeDocumentPage[]" }
 output = "Dpe"
 prompt = """
-You are given somemarkdown extracted from a DPE document.
-Your role is to conclude reagrding the DPE from the markdown:
+You are given some markdown extracted from a DPE document.
+Your role is to conclude regarding the DPE from the markdown:
 @dpe_pages
 """

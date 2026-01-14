@@ -5,10 +5,11 @@ from pipelex.core.stuffs.document_content import DocumentContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
+from examples.constants import LIBRARY_DIRS
 from examples.extract_dpe.extract_dpe_struct import Dpe
 from utils.results_utils import output_result
 
-SAMPLE_NAME = "pdf_power_extractor_dpe"
+SAMPLE_NAME = "extract_dpe"
 PDF_PATH = "assets/extract_dpe/dpe_single_page.pdf"
 
 
@@ -20,16 +21,21 @@ async def extract_dpe(pdf_url: str) -> Dpe:
         },
     )
     working_memory = pipe_output.working_memory
-    dpe: Dpe = working_memory.get_list_stuff_first_item_as(name="dpe", item_type=Dpe)
+    dpe: Dpe = working_memory.main_stuff_as(content_type=Dpe)
     pretty_print(dpe, title="DPE")
 
     # output results
-    output_result(SAMPLE_NAME, "DPE", "dpe.json", dpe.rendered_json())
+    output_result(
+        sample_name=SAMPLE_NAME,
+        title="DPE",
+        file_name="dpe.json",
+        content=dpe.rendered_json(),
+    )
 
     return dpe
 
 
 if __name__ == "__main__":
-    with Pipelex.make():
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
         # run sample using asyncio
         dpe = asyncio.run(extract_dpe(pdf_url=PDF_PATH))

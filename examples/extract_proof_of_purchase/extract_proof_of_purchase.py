@@ -5,8 +5,9 @@ from pipelex.core.stuffs.document_content import DocumentContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
+from examples.constants import LIBRARY_DIRS
 from examples.extract_proof_of_purchase.models import ProofOfPurchase
-from utils.results_utils import get_results_dir_path
+from utils.results_utils import get_results_dir_path, output_result
 
 SAMPLE_NAME = "pdf_power_extractor_proof_of_purchase"
 PDF_PATH = "assets/extract_proof_of_purchase/restaurant_invoice.pdf"
@@ -25,10 +26,14 @@ async def extract_proof_of_purchase(pdf_url: str) -> ProofOfPurchase:
 
 
 if __name__ == "__main__":
-    with Pipelex.make():
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
         # run sample using asyncio
         proof_of_purchase = asyncio.run(extract_proof_of_purchase(pdf_url=PDF_PATH))
         pretty_print(proof_of_purchase, title="Proof of Purchase")
 
-        # output results
-        output_dir = get_results_dir_path(sample_name=SAMPLE_NAME)
+        output_result(
+            sample_name=SAMPLE_NAME,
+            title="Proof of Purchase",
+            file_name="proof_of_purchase.json",
+            content=proof_of_purchase.rendered_json(),
+        )

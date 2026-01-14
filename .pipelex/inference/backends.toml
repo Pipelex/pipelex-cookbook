@@ -98,7 +98,7 @@ endpoint = "https://api.x.ai/v1"
 api_key = "${XAI_API_KEY}"
 
 [internal] # software-only backend, runs internally, without AI
-enabled = false
+enabled = true
 
 # Deprecated
 [pipelex_inference]
