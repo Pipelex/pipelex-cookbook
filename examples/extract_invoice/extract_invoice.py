@@ -25,7 +25,7 @@ async def process_invoice(pdf_url: str) -> ListContent[Invoice]:
 
 
 if __name__ == "__main__":
-    with Pipelex.make():
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
         # run sample using asyncio
         expense_validations = asyncio.run(process_invoice(pdf_url=PDF_URL))
 

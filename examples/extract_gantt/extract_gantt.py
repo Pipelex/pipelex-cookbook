@@ -28,7 +28,7 @@ async def extract_gantt(image_url: str) -> GanttChart:
 
 
 if __name__ == "__main__":
-    with Pipelex.make():
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
         # run sample using asyncio
         gantt_chart = asyncio.run(extract_gantt(IMAGE_URL))
 

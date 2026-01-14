@@ -26,7 +26,7 @@ async def simple_ocr(pdf_url: str) -> ListContent[PageContent]:
 
 
 if __name__ == "__main__":
-    with Pipelex.make():
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
         # run sample using asyncio
         page_content_list = asyncio.run(simple_ocr(pdf_url=PDF_URL))
 

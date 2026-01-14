@@ -27,7 +27,7 @@ async def generate_screenplay(pitch: str):
 
 
 if __name__ == "__main__":
-    with Pipelex.make():
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
         # Run the pipeline using asyncio
         screenplay = asyncio.run(generate_screenplay(pitch=PITCH))
 

@@ -21,7 +21,7 @@ async def run_generate_synthetic_data_samples() -> ListContent[Sample]:
 
 
 if __name__ == "__main__":
-    with Pipelex.make():
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
         # Run the pipeline
         samples = asyncio.run(run_generate_synthetic_data_samples())
 

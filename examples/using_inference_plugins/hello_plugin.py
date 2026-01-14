@@ -22,7 +22,7 @@ async def hello_plugin():
 
 
 if __name__ == "__main__":
-    with Pipelex.make():
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
         # register external plugin
         get_inference_manager().set_llm_worker_from_external_plugin(
             llm_handle="llm_plugin_example_using_openai",

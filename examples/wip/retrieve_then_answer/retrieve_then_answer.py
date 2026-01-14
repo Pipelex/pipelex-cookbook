@@ -37,7 +37,7 @@ async def retrieve_then_answer(text_path: str, question: str, client_instruction
 
 
 if __name__ == "__main__":
-    with Pipelex.make():
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
         # Run sample using asyncio
         evaluation_result = asyncio.run(
             retrieve_then_answer(

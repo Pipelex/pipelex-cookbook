@@ -25,7 +25,7 @@ async def extract_proof_of_purchase(pdf_url: str) -> ProofOfPurchase:
 
 
 if __name__ == "__main__":
-    with Pipelex.make():
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
         # run sample using asyncio
         proof_of_purchase = asyncio.run(extract_proof_of_purchase(pdf_url=PDF_PATH))
         pretty_print(proof_of_purchase, title="Proof of Purchase")

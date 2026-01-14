@@ -22,7 +22,7 @@ with open("assets/summarize/sample_text_3.txt", "r", encoding="utf-8") as f:
     text = f.read()
 
 if __name__ == "__main__":
-    with Pipelex.make():
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
         # run sample using asyncio
         summary_text = asyncio.run(summarize_by_steps(text))
 

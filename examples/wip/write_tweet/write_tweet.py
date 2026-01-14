@@ -79,7 +79,7 @@ What $20 decision are you avoiding right now? 👇
 writing_style = optional_sample_text_from_path(filename="writing_style.md") or SAMPLE_WRITING_STYLE
 
 if __name__ == "__main__":
-    with Pipelex.make():
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
         # run sample using asyncio
         optimized_tweet = asyncio.run(
             optimize_tweet(

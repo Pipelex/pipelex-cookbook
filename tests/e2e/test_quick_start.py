@@ -5,6 +5,7 @@ import pytest
 from examples._quick_start import hello_world, simple_ocr, summarize_1_structured, summarize_2_steps
 
 
+@pytest.mark.inference
 @pytest.mark.dry_runnable
 class TestQuickStart:
     def test_hello_world(self):

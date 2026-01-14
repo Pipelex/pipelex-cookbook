@@ -58,7 +58,7 @@ async def run_advisory_orchestrator(problem_description: str) -> Tuple[Strategic
 
 
 if __name__ == "__main__":
-    with Pipelex.make():
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
         # Run the advisory orchestrator
         strategic_report, strategic_report_markdown = asyncio.run(run_advisory_orchestrator(SAMPLE_BUSINESS_PROBLEM))
 

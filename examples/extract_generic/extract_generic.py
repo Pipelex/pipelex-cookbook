@@ -62,7 +62,7 @@ async def extract_generic(pdf_url: str) -> TextAndImagesContent:
 
 
 if __name__ == "__main__":
-    with Pipelex.make():
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
         # run sample using asyncio
         markdown_and_images = asyncio.run(extract_generic(pdf_url=PDF_PATH))
 
