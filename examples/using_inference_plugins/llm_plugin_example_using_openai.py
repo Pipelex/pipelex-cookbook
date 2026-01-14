@@ -49,7 +49,15 @@ class LLMPluginExampleUsingOpenAI(LLMWorkerAbstract):
         is no longer needed to properly close HTTP connections and free resources.
         """
         if self._client is not None and not self._client.is_closed:
-            asyncio.create_task(self._client.aclose())
+            try:
+                loop = asyncio.get_running_loop()
+                # If we're in an async context, schedule the close
+                loop.create_task(self._client.aclose())
+            except RuntimeError:
+                # No running loop - the client was created in a different event loop.
+                # Attempting to close it synchronously can cause issues with the
+                # underlying connections. We let the GC handle cleanup.
+                pass
             self._client = None
 
     @property
