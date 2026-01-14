@@ -3,11 +3,7 @@
 domain = "documents"
 description = "The domain of documents that can comprise pages, text, images, etc. in other formats"
 
-[concept]
-TextAndImagesContent = "A content that comprises text and images where the text can include local links to the images"
-
 [pipe]
-
 [pipe.extract_page_text_from_pdf]
 type = "PipeExtract"
 description = "Extract page text from a document"
