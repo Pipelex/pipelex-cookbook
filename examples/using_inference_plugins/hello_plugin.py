@@ -1,5 +1,4 @@
 import asyncio
-import sys
 
 from pipelex import pretty_print
 from pipelex.core.stuffs.stuff import Stuff

@@ -12,7 +12,7 @@ from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
 from examples.constants import LIBRARY_DIRS
-from utils.results_utils import get_results_dir_path, output_result
+from utils.results_utils import output_result
 
 SAMPLE_NAME = "extract_generic"
 PDF_PATH = "assets/extract_generic/fintech_article_with_text_in_images.pdf"

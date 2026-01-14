@@ -7,7 +7,7 @@ from pipelex.pipeline.execute import execute_pipeline
 
 from examples.constants import LIBRARY_DIRS
 from examples.extract_proof_of_purchase.models import ProofOfPurchase
-from utils.results_utils import get_results_dir_path, output_result
+from utils.results_utils import output_result
 
 SAMPLE_NAME = "pdf_power_extractor_proof_of_purchase"
 PDF_PATH = "assets/extract_proof_of_purchase/restaurant_invoice.pdf"

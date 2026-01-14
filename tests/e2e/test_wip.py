@@ -1,7 +1,6 @@
 import runpy
 
 import pytest
-from pipelex.exceptions import PipeNotFoundError
 
 from examples.wip.advisory_board import advisory_board
 from examples.wip.discord_newsletter import discord_newsletter
