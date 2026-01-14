@@ -5,6 +5,8 @@ from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
+from examples.constants import LIBRARY_DIRS
+
 
 async def summarize_by_steps(text: str):
     pipe_output = await execute_pipeline(

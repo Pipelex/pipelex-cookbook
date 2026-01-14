@@ -8,6 +8,7 @@ from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.file_utils import save_text_to_path
 
+from examples.constants import LIBRARY_DIRS
 from utils.results_utils import get_results_dir_path
 
 SAMPLE_NAME = "simple_ocr"

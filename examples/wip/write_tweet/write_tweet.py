@@ -6,6 +6,7 @@ from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
+from examples.constants import LIBRARY_DIRS
 from utils.input_utils import optional_sample_text_from_path
 
 SAMPLE_NAME = "write_tweet"

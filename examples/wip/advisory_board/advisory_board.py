@@ -6,6 +6,7 @@ from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
+from examples.constants import LIBRARY_DIRS
 from examples.wip.advisory_board.advisory_orchestrator import StrategicReport
 from utils.results_utils import output_result
 

@@ -6,6 +6,7 @@ from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
+from examples.constants import LIBRARY_DIRS
 from examples.extract_invoice.invoice import Invoice
 from utils.results_utils import output_result
 
@@ -32,7 +33,9 @@ if __name__ == "__main__":
         # Print the cost reporting
         get_report_delegate().generate_report()
 
-        # Print the flowchart url of the pipeline.
-
-        # Output the results
-        output_result(SAMPLE_NAME, "Invoice Extractor", "invoice_extractor.json", expense_validations.rendered_json())
+        output_result(
+            sample_name=SAMPLE_NAME,
+            title="Invoice Extractor",
+            file_name="invoice_extractor.json",
+            content=expense_validations.rendered_json(),
+        )

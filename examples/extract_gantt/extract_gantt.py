@@ -4,6 +4,7 @@ from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
+from examples.constants import LIBRARY_DIRS
 from examples.extract_gantt.gantt_struct import GanttChart
 from utils.results_utils import output_result
 
@@ -35,5 +36,9 @@ if __name__ == "__main__":
         # Display cost report (tokens used and cost)
         get_report_delegate().generate_report()
 
-        # output results
-        output_result(SAMPLE_NAME, "Gantt Chart", "gantt_chart.json", gantt_chart.rendered_json())
+        output_result(
+            sample_name=SAMPLE_NAME,
+            title="Gantt Chart",
+            file_name="gantt_chart.json",
+            content=gantt_chart.rendered_json(),
+        )

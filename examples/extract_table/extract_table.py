@@ -3,6 +3,7 @@ import asyncio
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
+from examples.constants import LIBRARY_DIRS
 from examples.extract_table.table import HtmlTable
 from utils.results_utils import output_result
 
@@ -29,7 +30,6 @@ if __name__ == "__main__":
         # run sample using asyncio
         html_table = asyncio.run(extract_table(IMAGE_URL))
 
-        # output results
         output_result(
             sample_name=SAMPLE_NAME,
             title="HTML Table extracted",

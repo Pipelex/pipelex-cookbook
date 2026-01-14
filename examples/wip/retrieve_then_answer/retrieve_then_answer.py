@@ -6,6 +6,8 @@ from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.file_utils import load_text_from_path
 
+from examples.constants import LIBRARY_DIRS
+
 TEXT_PATH = "assets/retrieve_then_answer/contract.txt"
 QUESTION = """
 What are the transaction fees for using the WebTech Solutions data processing platform,

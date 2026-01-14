@@ -5,6 +5,7 @@ from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.json_utils import load_json_dict_from_path
 
+from examples.constants import LIBRARY_DIRS
 from examples.synthesize.synth_struct import Sample
 from utils.results_utils import output_result
 

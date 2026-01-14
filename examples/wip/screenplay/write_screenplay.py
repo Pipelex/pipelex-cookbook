@@ -5,6 +5,8 @@ from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
+from examples.constants import LIBRARY_DIRS
+
 SAMPLE_NAME = "write_screenplay"
 PITCH = """
 A screenplay about a young woman who discovers she has the ability to see ghosts.
