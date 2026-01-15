@@ -10,7 +10,6 @@ from examples.extract_invoice import extract_invoice
 from examples.extract_proof_of_purchase import extract_proof_of_purchase
 from examples.extract_table import extract_table
 from examples.using_inference_plugins import hello_plugin
-from examples.wip.advisory_board import advisory_board
 
 
 @pytest.mark.inference
