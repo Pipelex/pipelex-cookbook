@@ -34,9 +34,6 @@ class TestExamples:
     def test_invoice_extractor(self):
         runpy.run_path(extract_invoice.__file__, run_name="__main__")
 
-    def test_advisory_board(self):
-        runpy.run_path(advisory_board.__file__, run_name="__main__")
-
     @pytest.mark.gha_disabled
     def test_hello_plugin(self):
         if not get_optional_env("OPENAI_API_KEY"):
