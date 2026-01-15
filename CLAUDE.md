@@ -23,10 +23,10 @@ A pipeline file has three main sections:
 
 #### Domain Statement
 ```plx
-domain = "domain_name"
+domain = "domain_code"
 description = "Description of the domain" # Optional
 ```
-Note: The domain name usually matches the plx filename for single-file domains. For multi-file domains, use the subdirectory name.
+Note: The domain code usually matches the plx filename for single-file domains. For multi-file domains, use the subdirectory name.
 
 #### Concept Definitions
 
@@ -62,7 +62,7 @@ For details on how to structure concepts with fields, see the "Structuring Model
 ### Pipe Base Definition
 
 ```plx
-[pipe.your_pipe_name]
+[pipe.your_pipe_code]
 type = "PipeLLM"
 description = "A description of what your pipe does"
 inputs = { input_1 = "ConceptName1", input_2 = "ConceptName2" }
@@ -471,7 +471,7 @@ The PipeExtract operator is used to extract text and images from an image or a P
 [pipe.extract_info]
 type = "PipeExtract"
 description = "extract the information"
-inputs = { document = "PDF" } # or { image = "Image" } if it's an image. This is the only input.
+inputs = { document = "Document" } # or { image = "Image" } if it's an image. This is the only input.
 output = "Page"
 ```
 
@@ -480,7 +480,7 @@ Using Extract Model Settings:
 [pipe.extract_with_model]
 type = "PipeExtract"
 description = "Extract with specific model"
-inputs = { document = "PDF" }
+inputs = { document = "Document" }
 output = "Page"
 model = "base_extract_mistral"  # Use predefined extract preset or model alias
 ```
@@ -588,15 +588,16 @@ $sales_rep.phone | $sales_rep.email
 """
 ```
 
-#### Key Parameters
+#### Key Parameters (Template Mode)
 
-- `template`: Inline template string (mutually exclusive with template_name)
+- `template`: Inline template string (mutually exclusive with template_name and construct)
 - `template_name`: Name of a predefined template (mutually exclusive with template)
 - `template_category`: Template type ("llm_prompt", "html", "markdown", "mermaid", etc.)
 - `templating_style`: Styling options for template rendering
 - `extra_context`: Additional context variables for template
 
 For more control, you can use a nested `template` section instead of the `template` field:
+
 - `template.template`: The template string
 - `template.category`: Template type
 - `template.templating_style`: Styling options
@@ -604,8 +605,142 @@ For more control, you can use a nested `template` section instead of the `templa
 #### Template Variables
 
 Use the same variable insertion rules as PipeLLM:
+
 - `@variable` for block insertion (multi-line content)
 - `$variable` for inline insertion (short text)
+
+#### Construct Mode (for StructuredContent Output)
+
+PipeCompose can also generate `StructuredContent` objects using the `construct` section. This mode composes field values from fixed values, variable references, templates, or nested structures.
+
+**When to use construct mode:**
+
+- You need to output a structured object (not just Text)
+- You want to deterministically compose fields from existing data
+- No LLM is needed - just data composition and templating
+
+##### Basic Construct Usage
+
+```plx
+[concept.SalesSummary]
+description = "A structured sales summary"
+
+[concept.SalesSummary.structure]
+report_title = { type = "text", description = "Title of the report" }
+customer_name = { type = "text", description = "Customer name" }
+deal_value = { type = "number", description = "Deal value" }
+summary_text = { type = "text", description = "Generated summary text" }
+
+[pipe.compose_summary]
+type = "PipeCompose"
+description = "Compose a sales summary from deal data"
+inputs = { deal = "Deal" }
+output = "SalesSummary"
+
+[pipe.compose_summary.construct]
+report_title = "Monthly Sales Report"
+customer_name = { from = "deal.customer_name" }
+deal_value = { from = "deal.amount" }
+summary_text = { template = "Deal worth $deal.amount with $deal.customer_name" }
+```
+
+##### Field Composition Methods
+
+There are four ways to define field values in a construct:
+
+**1. Fixed Value (literal)**
+
+Use a literal value directly:
+
+```plx
+[pipe.compose_report.construct]
+report_title = "Annual Report"
+report_year = 2024
+is_draft = false
+```
+
+**2. Variable Reference (`from`)**
+
+Get a value from working memory using a dotted path:
+
+```plx
+[pipe.compose_report.construct]
+customer_name = { from = "deal.customer_name" }
+total_amount = { from = "order.total" }
+street_address = { from = "customer.address.street" }
+```
+
+**3. Template (`template`)**
+
+Render a Jinja2 template with variable substitution:
+
+```plx
+[pipe.compose_report.construct]
+invoice_number = { template = "INV-$order.id" }
+summary = { template = "Deal worth $deal.amount with $deal.customer_name on {{ current_date }}" }
+```
+
+**4. Nested Construct**
+
+For nested structures, use a TOML subsection:
+
+```plx
+[pipe.compose_invoice.construct]
+invoice_number = { template = "INV-$order.id" }
+total = { from = "order.total_amount" }
+
+[pipe.compose_invoice.construct.billing_address]
+street = { from = "customer.address.street" }
+city = { from = "customer.address.city" }
+country = "France"
+```
+
+##### Complete Construct Example
+
+```plx
+domain = "invoicing"
+
+[concept.Address]
+description = "A postal address"
+
+[concept.Address.structure]
+street = { type = "text", description = "Street address" }
+city = { type = "text", description = "City name" }
+country = { type = "text", description = "Country name" }
+
+[concept.Invoice]
+description = "An invoice document"
+
+[concept.Invoice.structure]
+invoice_number = { type = "text", description = "Invoice number" }
+total = { type = "number", description = "Total amount" }
+
+[pipe.compose_invoice]
+type = "PipeCompose"
+description = "Compose an invoice from order and customer data"
+inputs = { order = "Order", customer = "Customer" }
+output = "Invoice"
+
+[pipe.compose_invoice.construct]
+invoice_number = { template = "INV-$order.id" }
+total = { from = "order.total_amount" }
+
+[pipe.compose_invoice.construct.billing_address]
+street = { from = "customer.address.street" }
+city = { from = "customer.address.city" }
+country = "France"
+```
+
+##### Key Parameters (Construct Mode)
+
+- `construct`: Dictionary mapping field names to their composition rules
+- Each field can be:
+  - A literal value (string, number, boolean)
+  - A dict with `from` key for variable reference
+  - A dict with `template` key for template rendering
+  - A nested dict for nested structures
+
+**Note:** You must use either `template` or `construct`, not both. They are mutually exclusive.
 
 ### PipeImgGen operator
 
@@ -952,13 +1087,13 @@ So here are a few concrete examples of calls to execute_pipeline with various wa
         },
     )
 
-## Here we have a single input and it's a PDF.
-## Because PDFContent is a native concept, we can use it directly as a value,
+## Here we have a single input and it's a document.
+## Because DocumentContent is a native concept, we can use it directly as a value,
 ## the system knows what content it corresponds to:
     pipe_output = await execute_pipeline(
         pipe_code="power_extractor_dpe",
         inputs={
-            "document": PDFContent(url=pdf_url),
+            "document": DocumentContent(url=pdf_url),
         },
     )
 
