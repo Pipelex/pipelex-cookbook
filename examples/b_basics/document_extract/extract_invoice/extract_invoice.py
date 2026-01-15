@@ -6,8 +6,8 @@ from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
+from examples.b_basics.document_extract.extract_invoice.invoice import Invoice
 from examples.constants import LIBRARY_DIRS
-from examples.extract_invoice.invoice import Invoice
 from utils.results_utils import output_result
 
 SAMPLE_NAME = "invoice_extractor"

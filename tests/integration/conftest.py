@@ -13,7 +13,7 @@ def reset_pipelex_config_fixture(request: pytest.FixtureRequest):
     print("\n[magenta]pipelex setup[/magenta]")
     try:
         pipelex_instance = pipelex.pipelex.Pipelex.make(
-            library_dirs=["examples", "tests/test_pipelines"],
+            library_dirs=["examples"],
             disable_inference=is_inference_disabled_in_pipelex(request),
         )
     except Exception as exc:

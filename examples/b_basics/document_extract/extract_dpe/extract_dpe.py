@@ -5,8 +5,8 @@ from pipelex.core.stuffs.document_content import DocumentContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
+from examples.b_basics.document_extract.extract_dpe.extract_dpe_struct import Dpe
 from examples.constants import LIBRARY_DIRS
-from examples.extract_dpe.extract_dpe_struct import Dpe
 from utils.results_utils import output_result
 
 SAMPLE_NAME = "extract_dpe"
