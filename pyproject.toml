@@ -24,8 +24,7 @@ dependencies = [
 
 
 [tool.uv.sources]
-# pipelex = { git = "https://github.com/Pipelex/pipelex.git", branch = "feature/Chicago" }
-pipelex = { git = "https://github.com/Pipelex/pipelex.git", rev = "fdcc656f5a560a30a6dad3c50b9c6c683416013a" }
+pipelex = { git = "https://github.com/Pipelex/pipelex.git", branch = "feature/Chicago" }
 
 
 [project.optional-dependencies]

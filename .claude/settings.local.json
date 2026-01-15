@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(source .venv/bin/activate)",
+      "Bash(python examples/a_quick_start/hello_world.py:*)",
+      "Bash(python:*)"
+    ]
+  }
+}
