@@ -11,9 +11,10 @@ from pipelex.core.stuffs.text_content import TextContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
-from utils.results_utils import get_results_dir_path
+from examples.constants import LIBRARY_DIRS
+from utils.results_utils import output_result
 
-SAMPLE_NAME = "pdf_power_extractor_generic"
+SAMPLE_NAME = "extract_generic"
 PDF_PATH = "assets/extract_generic/fintech_article_with_text_in_images.pdf"
 
 
@@ -61,12 +62,16 @@ async def extract_generic(pdf_url: str) -> TextAndImagesContent:
     return markdown_and_images
 
 
-# start Pipelex
-with Pipelex.make():
-    # run sample using asyncio
-    markdown_and_images = asyncio.run(extract_generic(pdf_url=PDF_PATH))
+if __name__ == "__main__":
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
+        # run sample using asyncio
+        markdown_and_images = asyncio.run(extract_generic(pdf_url=PDF_PATH))
 
-    # output results
-    pretty_print(markdown_and_images)
-    output_dir = get_results_dir_path(sample_name=SAMPLE_NAME)
-    # markdown_and_images.save_to_directory(directory=output_dir)
+        pretty_print(markdown_and_images, title="Generic Extraction")
+
+        output_result(
+            sample_name=SAMPLE_NAME,
+            title="Generic Extraction",
+            file_name="generic_extraction.json",
+            content=markdown_and_images.rendered_json(),
+        )

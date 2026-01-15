@@ -2367,7 +2367,7 @@ wheels = [
 [[package]]
 name = "pipelex"
 version = "0.17.3"
-source = { git = "https://github.com/Pipelex/pipelex.git?branch=feature%2FChicago#88f1cefb1901f0759e91b06a2ba2f580291a29f2" }
+source = { git = "https://github.com/Pipelex/pipelex.git?branch=feature%2FChicago#6c6301aeec180ffcf9ae2cc3cfa1af354004122d" }
 dependencies = [
     { name = "aiofiles" },
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },

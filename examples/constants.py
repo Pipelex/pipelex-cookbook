@@ -1,0 +1,1 @@
+LIBRARY_DIRS = ["examples"]

@@ -4,7 +4,7 @@ domain = "extract_generic"
 [pipe.power_extractor]
 type = "PipeSequence"
 description = "Update page content with markdown"
-inputs = { document = "PDF" }
+inputs = { document = "Document" }
 output = "Text[]"
 steps = [
     { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },

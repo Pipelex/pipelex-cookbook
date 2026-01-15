@@ -6,6 +6,7 @@ from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
+from examples.constants import LIBRARY_DIRS
 from utils.input_utils import optional_sample_text_from_path
 
 SAMPLE_NAME = "write_tweet"
@@ -78,20 +79,18 @@ What $20 decision are you avoiding right now? 👇
 """
 writing_style = optional_sample_text_from_path(filename="writing_style.md") or SAMPLE_WRITING_STYLE
 
-# start Pipelex
-with Pipelex.make():
-    # run sample using asyncio
-    optimized_tweet = asyncio.run(
-        optimize_tweet(
-            draft_tweet=draft_tweet,
-            writing_style=writing_style,
+if __name__ == "__main__":
+    with Pipelex.make(library_dirs=LIBRARY_DIRS):
+        # run sample using asyncio
+        optimized_tweet = asyncio.run(
+            optimize_tweet(
+                draft_tweet=draft_tweet,
+                writing_style=writing_style,
+            )
         )
-    )
 
-    # Display cost report (tokens used and cost)
-    get_report_delegate().generate_report()
+        # Display cost report (tokens used and cost)
+        get_report_delegate().generate_report()
 
-    # output results
-    pretty_print(optimized_tweet, title="Optimized Tweet")
-
-    # Generate pipeline flowchart
+        # output results
+        pretty_print(optimized_tweet, title="Optimized Tweet")
