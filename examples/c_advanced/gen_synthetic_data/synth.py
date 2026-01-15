@@ -5,15 +5,15 @@ from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 from pipelex.tools.misc.json_utils import load_json_dict_from_path
 
+from examples.c_advanced.gen_synthetic_data.synth_struct import Sample
 from examples.constants import LIBRARY_DIRS
-from examples.synthesize.synth_struct import Sample
 from utils.results_utils import output_result
 
 SAMPLE_NAME = "synthesize"
 
 
 async def run_generate_synthetic_data_samples() -> ListContent[Sample]:
-    inputs = load_json_dict_from_path("examples/synthesize/inputs.json")
+    inputs = load_json_dict_from_path("examples/c_advanced/gen_synthetic_data/inputs.json")
     pipe_output = await execute_pipeline(
         pipe_code="generate_synthetic_data_samples",
         inputs=inputs,

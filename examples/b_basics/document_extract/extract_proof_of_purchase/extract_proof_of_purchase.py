@@ -5,8 +5,8 @@ from pipelex.core.stuffs.document_content import DocumentContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
+from examples.b_basics.document_extract.extract_proof_of_purchase.models import ProofOfPurchase
 from examples.constants import LIBRARY_DIRS
-from examples.extract_proof_of_purchase.models import ProofOfPurchase
 from utils.results_utils import output_result
 
 SAMPLE_NAME = "pdf_power_extractor_proof_of_purchase"

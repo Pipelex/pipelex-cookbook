@@ -6,8 +6,8 @@ from pipelex.hub import get_inference_manager
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
+from examples.c_advanced.using_inference_plugins.llm_plugin_example_using_openai import LLMPluginExampleUsingOpenAI
 from examples.constants import LIBRARY_DIRS
-from examples.using_inference_plugins.llm_plugin_example_using_openai import LLMPluginExampleUsingOpenAI
 from utils.results_utils import output_result
 
 SAMPLE_NAME = "hello_plugin"

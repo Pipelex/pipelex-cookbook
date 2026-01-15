@@ -4,8 +4,8 @@ from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
+from examples.b_basics.document_extract.extract_gantt.gantt_struct import GanttChart
 from examples.constants import LIBRARY_DIRS
-from examples.extract_gantt.gantt_struct import GanttChart
 from utils.results_utils import output_result
 
 SAMPLE_NAME = "extract_gantt"

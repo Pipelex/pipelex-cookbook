@@ -5,7 +5,7 @@ from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
-from examples._quick_start.summarize_struct import StructuredSummary
+from examples.a_quick_start.summarize_struct import StructuredSummary
 from examples.constants import LIBRARY_DIRS
 
 

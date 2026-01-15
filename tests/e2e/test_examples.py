@@ -3,13 +3,13 @@ import runpy
 import pytest
 from pipelex.system.environment import get_optional_env
 
-from examples.extract_dpe import extract_dpe
-from examples.extract_gantt import extract_gantt
-from examples.extract_generic import extract_generic
-from examples.extract_invoice import extract_invoice
-from examples.extract_proof_of_purchase import extract_proof_of_purchase
-from examples.extract_table import extract_table
-from examples.using_inference_plugins import hello_plugin
+from examples.b_basics.document_extract.extract_dpe import extract_dpe
+from examples.b_basics.document_extract.extract_gantt import extract_gantt
+from examples.b_basics.document_extract.extract_generic import extract_generic
+from examples.b_basics.document_extract.extract_invoice import extract_invoice
+from examples.b_basics.document_extract.extract_proof_of_purchase import extract_proof_of_purchase
+from examples.b_basics.document_extract.extract_table import extract_table
+from examples.c_advanced.using_inference_plugins import hello_plugin
 
 
 @pytest.mark.inference

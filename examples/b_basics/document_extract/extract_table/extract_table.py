@@ -3,8 +3,8 @@ import asyncio
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 
+from examples.b_basics.document_extract.extract_table.table import HtmlTable
 from examples.constants import LIBRARY_DIRS
-from examples.extract_table.table import HtmlTable
 from utils.results_utils import output_result
 
 SAMPLE_NAME = "extract_table"

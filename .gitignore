@@ -40,3 +40,6 @@ gcp_credentials.json
 .DS_Store
 pipelex_override.toml
 telemetry_override.toml
+
+# Claude AI
+.claude
