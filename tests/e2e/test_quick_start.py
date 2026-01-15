@@ -2,7 +2,7 @@ import runpy
 
 import pytest
 
-from examples._quick_start import hello_world, simple_ocr, summarize_1_structured, summarize_2_steps
+from examples.a_quick_start import hello_world, simple_ocr, summarize_1_structured, summarize_2_steps
 
 
 @pytest.mark.inference
