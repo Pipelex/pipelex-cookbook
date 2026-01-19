@@ -53,7 +53,18 @@ To use AI models, you need an API key:
 
 See [Configure AI Providers](https://docs.pipelex.com/pages/setup/configure-ai-providers/) for details.
 
-## 3. Run Your First Example
+## 3. Learn Pipelex
+
+**New to Pipelex?** Follow the tutorial to learn step-by-step:
+
+| Tutorial | What you'll learn |
+|----------|-------------------|
+| [LLM Basics](./tutorial/easy/llm_basics/) | Make LLM calls, chain them together, format output |
+| [Structured Data](./tutorial/easy/structured_data/) | Extract structured objects from text and documents |
+
+**Already familiar?** Jump straight to the examples below.
+
+## 4. Run Examples
 
 Try the hello world example:
 
@@ -74,7 +85,7 @@ python examples/invoice_extractor/invoice_extractor.py
 python examples/_quick_start/summarize_2_steps.py
 ```
 
-## 4. Known Limitations
+## 5. Known Limitations
 
 ### Third-Party API Requirements
 
@@ -85,7 +96,7 @@ Some Pipelex pipes currently require additional API keys beyond the Pipelex Infe
 
 **Note:** These dependencies are temporary and will be addressed in future updates. We're working on adding support for multiple providers and local alternatives. Check our [roadmap](https://github.com/Pipelex/pipelex/issues/473) for planned improvements.
 
-## 5. Generate Your Own Workflow
+## 6. Generate Your Own Workflow
 
 Create a complete AI workflow with a single command:
 
@@ -307,7 +318,7 @@ Pipelex.make()
 asyncio.run(run_pipeline())
 ```
 
-## 6. Iterate with AI Assistance
+## 7. Iterate with AI Assistance
 
 Install AI assistant rules to easily modify your pipelines:
 
