@@ -6,16 +6,16 @@ Welcome to the Pipelex tutorials! Learn how to build AI pipelines step by step.
 
 ## Tutorials
 
-### [Easy](./easy/)
+### [Easy](./easy/README.md)
 
-1. **[LLM Basics](./easy/llm_basics/)** - Your first steps with Pipelex
-2. **[Structured Data](./easy/structured_data/)** - Get structured objects from LLMs
+1. **[LLM Basics](./easy/llm_basics/README.md)** - Your first steps with Pipelex
+2. **[Structured Data](./easy/structured_data/README.md)** - Get structured objects from LLMs
 
-### [Medium](./medium/)
+### [Medium](./medium/README.md)
 
-1. **[Model Configuration](./medium/)** - Control which LLM to use and how
-2. **[Batch Processing](./medium/)** - Process lists of items efficiently
-3. **[Parallel Execution](./medium/)** - Run independent tasks at the same time
+1. **[Model Configuration](./medium/README.md)** - Control which LLM to use and how
+2. **[Batch Processing](./medium/README.md)** - Process lists of items efficiently
+3. **[Parallel Execution](./medium/README.md)** - Run independent tasks at the same time
 
 ## Getting Started
 

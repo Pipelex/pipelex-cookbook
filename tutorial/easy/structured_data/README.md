@@ -2,8 +2,6 @@
 
 Learn how to get structured objects from LLMs and extract text from documents.
 
-> **Note**: The easiest way to create pipelines is with the [Pipe Builder](https://docs.pipelex.com/latest/home/9-tools/pipe-builder/). This tutorial teaches you the fundamentals by writing pipelines manually.
-
 ---
 
 ## 1. Structured Output

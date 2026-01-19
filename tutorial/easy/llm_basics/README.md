@@ -2,8 +2,6 @@
 
 Learn the fundamentals of Pipelex pipelines.
 
-> **Note**: The easiest way to create pipelines is with the [Pipe Builder](https://docs.pipelex.com/latest/home/9-tools/pipe-builder/). This tutorial teaches you the fundamentals by writing pipelines manually.
-
 ---
 
 ## 1. Hello World - Your First Pipeline
