@@ -1,9 +1,3 @@
-"""
-Hello World - Your first Pipelex pipeline
-
-Run this to see Pipelex in action!
-"""
-
 import asyncio
 
 from pipelex import pretty_print

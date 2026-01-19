@@ -1,11 +1,3 @@
-"""
-Document Q&A - Extract text from documents and answer questions
-
-This pipeline:
-1. Extracts text from a PDF using PipeExtract
-2. Answers a question about the document using PipeLLM
-"""
-
 import asyncio
 
 from pipelex import pretty_print

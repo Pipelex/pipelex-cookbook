@@ -1,11 +1,3 @@
-"""
-Chaining LLM Calls - Chain multiple LLM calls together
-
-This runs a PipeSequence that:
-1. Generates a story idea
-2. Expands it into an outline
-"""
-
 import asyncio
 
 from pipelex import pretty_print
