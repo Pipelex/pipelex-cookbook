@@ -8,10 +8,10 @@ LIBRARY_DIRS = ["tutorial"]
 
 
 async def main():
-    pipe_output = await execute_pipeline(pipe_code="tutorial_hello_world")
+    pipe_output = await execute_pipeline(pipe_code="create_poetry_collection")
     result = pipe_output.main_stuff_as_str
 
-    pretty_print(result, title="Hello World Result")
+    pretty_print(result, title="Poetry Collection (Generated in Parallel)")
 
 
 if __name__ == "__main__":

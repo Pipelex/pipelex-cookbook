@@ -4,7 +4,7 @@ description = "Chain multiple LLM calls together"
 [pipe]
 
 # First pipe: Generate a story idea
-[pipe.generate_idea]
+[pipe.chain_generate_idea]
 type = "PipeLLM"
 description = "Generate a creative story idea"
 output = "Text"
@@ -13,7 +13,7 @@ Generate a one-paragraph creative story idea about a robot learning to paint.
 """
 
 # Second pipe: Expand the story idea (uses result from first pipe)
-[pipe.expand_idea]
+[pipe.chain_expand_idea]
 type = "PipeLLM"
 description = "Expand a story idea into a detailed outline"
 inputs = { story_idea = "Text" }
@@ -32,6 +32,6 @@ type = "PipeSequence"
 description = "Generate a story idea then expand it"
 output = "Text"
 steps = [
-    { pipe = "generate_idea", result = "story_idea" },
-    { pipe = "expand_idea", result = "story_outline" },
+    { pipe = "chain_generate_idea", result = "story_idea" },
+    { pipe = "chain_expand_idea", result = "story_outline" },
 ]

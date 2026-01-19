@@ -16,7 +16,7 @@ LIBRARY_DIRS = ["tutorial"]
 
 
 async def main():
-    pipe_output = await execute_pipeline(pipe_code="generate_book_idea")
+    pipe_output = await execute_pipeline(pipe_code="struct_generate_book_idea")
     book_idea = pipe_output.main_stuff_as(content_type=BookIdea)
 
     pretty_print(f"Title: {book_idea.title}", title="Generated Book Idea")

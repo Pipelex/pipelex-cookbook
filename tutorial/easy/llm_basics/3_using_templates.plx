@@ -4,7 +4,7 @@ description = "Format output with templates"
 [pipe]
 
 # First pipe: Generate a story idea
-[pipe.generate_idea]
+[pipe.template_generate_idea]
 type = "PipeLLM"
 description = "Generate a creative story idea"
 output = "Text"
@@ -13,7 +13,7 @@ Generate a one-paragraph creative story idea about a robot learning to paint.
 """
 
 # Second pipe: Expand the story idea
-[pipe.expand_idea]
+[pipe.template_expand_idea]
 type = "PipeLLM"
 description = "Expand a story idea into a detailed outline"
 inputs = { story_idea = "Text" }
@@ -53,7 +53,7 @@ type = "PipeSequence"
 description = "Generate, expand, and format a story"
 output = "Text"
 steps = [
-    { pipe = "generate_idea", result = "story_idea" },
-    { pipe = "expand_idea", result = "story_outline" },
+    { pipe = "template_generate_idea", result = "story_idea" },
+    { pipe = "template_expand_idea", result = "story_outline" },
     { pipe = "format_document", result = "final_document" },
 ]

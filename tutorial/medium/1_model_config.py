@@ -8,10 +8,10 @@ LIBRARY_DIRS = ["tutorial"]
 
 
 async def main():
-    pipe_output = await execute_pipeline(pipe_code="tutorial_hello_world")
+    pipe_output = await execute_pipeline(pipe_code="compare_models")
     result = pipe_output.main_stuff_as_str
 
-    pretty_print(result, title="Hello World Result")
+    pretty_print(result, title="Model Configuration Comparison")
 
 
 if __name__ == "__main__":

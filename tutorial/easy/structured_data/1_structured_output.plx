@@ -16,7 +16,7 @@ target_audience = { type = "text", description = "Who this book is for" }
 [pipe]
 
 # Generate a structured book idea
-[pipe.generate_book_idea]
+[pipe.struct_generate_book_idea]
 type = "PipeLLM"
 description = "Generate a structured book idea"
 output = "BookIdea"

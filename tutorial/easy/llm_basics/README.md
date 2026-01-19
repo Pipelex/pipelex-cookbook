@@ -13,12 +13,12 @@ The simplest pipeline: an LLM that generates text.
 **File: `1_hello_world.plx`**
 
 ```plx
-domain = "hello_world"
+domain = "tutorial_hello_world"
 description = "Your first Pipelex pipeline"
 
 [pipe]
 
-[pipe.hello_world]
+[pipe.tutorial_hello_world]
 type = "PipeLLM"
 description = "Generate a creative story idea"
 output = "Text"
@@ -53,7 +53,7 @@ description = "Chain multiple LLM calls together"
 [pipe]
 
 # First pipe: Generate a story idea
-[pipe.generate_idea]
+[pipe.chain_generate_idea]
 type = "PipeLLM"
 description = "Generate a creative story idea"
 output = "Text"
@@ -62,7 +62,7 @@ Generate a one-paragraph creative story idea about a robot learning to paint.
 """
 
 # Second pipe: Expand the story idea (uses result from first pipe)
-[pipe.expand_idea]
+[pipe.chain_expand_idea]
 type = "PipeLLM"
 description = "Expand a story idea into a detailed outline"
 inputs = { story_idea = "Text" }
@@ -81,8 +81,8 @@ type = "PipeSequence"
 description = "Generate a story idea then expand it"
 output = "Text"
 steps = [
-    { pipe = "generate_idea", result = "story_idea" },
-    { pipe = "expand_idea", result = "story_outline" },
+    { pipe = "chain_generate_idea", result = "story_idea" },
+    { pipe = "chain_expand_idea", result = "story_outline" },
 ]
 ```
 
@@ -112,7 +112,7 @@ description = "Format output with templates"
 [pipe]
 
 # First pipe: Generate a story idea
-[pipe.generate_idea]
+[pipe.template_generate_idea]
 type = "PipeLLM"
 description = "Generate a creative story idea"
 output = "Text"
@@ -121,7 +121,7 @@ Generate a one-paragraph creative story idea about a robot learning to paint.
 """
 
 # Second pipe: Expand the story idea
-[pipe.expand_idea]
+[pipe.template_expand_idea]
 type = "PipeLLM"
 description = "Expand a story idea into a detailed outline"
 inputs = { story_idea = "Text" }
@@ -161,8 +161,8 @@ type = "PipeSequence"
 description = "Generate, expand, and format a story"
 output = "Text"
 steps = [
-    { pipe = "generate_idea", result = "story_idea" },
-    { pipe = "expand_idea", result = "story_outline" },
+    { pipe = "template_generate_idea", result = "story_idea" },
+    { pipe = "template_expand_idea", result = "story_outline" },
     { pipe = "format_document", result = "final_document" },
 ]
 ```

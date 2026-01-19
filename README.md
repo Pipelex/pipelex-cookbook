@@ -51,12 +51,15 @@ Want to bring your own API keys or use local models? See [Configure AI Providers
 
 ## 3. Learn Pipelex
 
-**New to Pipelex?** Follow the tutorial to learn step-by-step:
+**New to Pipelex?** Follow the tutorials to learn step-by-step:
 
-| Tutorial | What you'll learn |
-|----------|-------------------|
-| [LLM Basics](./tutorial/easy/llm_basics/) | Make LLM calls, chain them together, format output |
-| [Structured Data](./tutorial/easy/structured_data/) | Extract structured objects from text and documents |
+| Level | Tutorial | What you'll learn |
+|-------|----------|-------------------|
+| Easy | [LLM Basics](./tutorial/easy/llm_basics/) | Make LLM calls, chain them together, format output |
+| Easy | [Structured Data](./tutorial/easy/structured_data/) | Extract structured objects from text and documents |
+| Medium | [Model Configuration](./tutorial/medium/) | Control which LLM to use and configure temperature |
+| Medium | [Batch Processing](./tutorial/medium/) | Process lists of items efficiently |
+| Medium | [Parallel Execution](./tutorial/medium/) | Run independent tasks at the same time |
 
 **Already familiar?** Jump straight to the examples below.
 

@@ -16,7 +16,7 @@ target_audience = { type = "text", description = "Who this book is for" }
 [pipe]
 
 # First pipe: Generate a structured book idea
-[pipe.generate_book_idea]
+[pipe.fields_generate_book_idea]
 type = "PipeLLM"
 description = "Generate a structured book idea"
 output = "BookIdea"
@@ -45,6 +45,6 @@ type = "PipeSequence"
 description = "Generate a book idea then write a marketing pitch"
 output = "Text"
 steps = [
-    { pipe = "generate_book_idea", result = "book_idea" },
+    { pipe = "fields_generate_book_idea", result = "book_idea" },
     { pipe = "write_pitch", result = "marketing_pitch" },
 ]

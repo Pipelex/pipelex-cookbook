@@ -1,9 +1,9 @@
-domain = "hello_world"
+domain = "tutorial_hello_world"
 description = "Your first Pipelex pipeline"
 
 [pipe]
 
-[pipe.hello_world]
+[pipe.tutorial_hello_world]
 type = "PipeLLM"
 description = "Generate a creative story idea"
 output = "Text"
