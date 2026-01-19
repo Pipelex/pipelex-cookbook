@@ -1,8 +1,18 @@
 <div align="center">
   <a href="https://www.pipelex.com/"><img src="https://raw.githubusercontent.com/Pipelex/pipelex/main/.github/assets/logo.png" alt="Pipelex Logo" width="400" style="max-width: 100%; height: auto;"></a>
+  <br/>
+  <br/>
 
+  <!-- PRERELEASE_LINK -->
+  <a href="https://github.com/Pipelex/pipelex-cookbook/tree/feature/Chicago">
+    <img src="https://img.shields.io/badge/PRE--RELEASE-Chicago-ff6b35?style=for-the-badge&labelColor=1a1a2e" alt="Pre-release: Chicago">
+  </a>
+
+  <br/>
+  <br/>
   <h2 align="center">Pipelex Cookbook 📚</h2>
-  <p align="center">Examples, recipes, and best-practice pipelines for the <strong><a href="https://github.com/Pipelex/pipelex">Pipelex</a></strong> AI workflow framework.<br/>
+  <!-- PRERELEASE_LINK -->
+  <p align="center">Examples, recipes, and best-practice pipelines for the <strong><a href="https://github.com/Pipelex/pipelex/tree/pre-release/v0.18.0b1">Pipelex</a></strong> AI workflow framework.<br/>
 Learn by doing with production-ready examples.</p>
 
   <div>
@@ -20,7 +30,8 @@ Learn by doing with production-ready examples.</p>
     <a href="https://go.pipelex.com/discord"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
     <a href="https://www.youtube.com/@PipelexAI"><img src="https://img.shields.io/badge/YouTube-FF0000?logo=youtube&logoColor=white" alt="YouTube"></a>
     <a href="https://pipelex.com"><img src="https://img.shields.io/badge/Homepage-03bb95?logo=google-chrome&logoColor=white&style=flat" alt="Website"></a>
-    <a href="https://github.com/Pipelex/pipelex"><img src="https://img.shields.io/badge/Main_Repo-5a0dad?logo=github&logoColor=white&style=flat" alt="Main Repository"></a>
+<!-- PRERELEASE_LINK -->
+    <a href="https://github.com/Pipelex/pipelex/tree/pre-release/v0.18.0b1"><img src="https://img.shields.io/badge/Main_Repo-5a0dad?logo=github&logoColor=white&style=flat" alt="Main Repository"></a>
     <a href="https://docs.pipelex.com/"><img src="https://img.shields.io/badge/Docs-03bb95?logo=read-the-docs&logoColor=white&style=flat" alt="Documentation"></a>
     <br/> 
     <br/>
@@ -30,8 +41,10 @@ Learn by doing with production-ready examples.</p>
 
 ## 1. Clone and Install
 
+<!-- PRERELEASE_LINK -->
 ```bash
-git clone https://github.com/Pipelex/pipelex-cookbook.git
+# Clone Pipelex Cookbook from Pre-release branch "Chicago"
+git clone -b feature/Chicago https://github.com/Pipelex/pipelex-cookbook.git
 cd pipelex-cookbook
 
 # Create and activate virtual environment
@@ -68,20 +81,20 @@ Want to bring your own API keys or use local models? See [Configure AI Providers
 Try the hello world example:
 
 ```bash
-python examples/_quick_start/hello_world.py
+python examples/a_quick_start/hello_world.py
 ```
 
 Or explore other cookbook examples:
 
 ```bash
 # Extract data from a Gantt chart image
-python examples/extract_gantt/extract_gantt.py
+python examples/b_basics/document_extract/extract_gantt/extract_gantt.py
 
 # Extract and summarize invoice information
-python examples/invoice_extractor/invoice_extractor.py
+python examples/b_basics/document_extract/extract_invoice/extract_invoice.py
 
 # Multi-step text summarization
-python examples/_quick_start/summarize_2_steps.py
+python examples/a_quick_start/summarize_2_steps.py
 ```
 
 ## 5. Known Limitations
@@ -345,13 +358,19 @@ We **highly** recommend installing our extension for `.plx` files into your IDE.
 ```
 .
 ├── examples/                  # Production-ready examples
-│   ├── _quick_start/         # Getting started tutorials
-│   ├── extract_gantt/        # Extract structured data from Gantt charts
-│   ├── extract_dpe/          # Extract energy performance diagnostics
-│   ├── invoice_extractor/    # Invoice data extraction
-│   ├── extract_table/        # Table extraction from images
-│   ├── synthesize/           # Data synthesis examples
-│   └── wip/                  # Work in progress examples
+│   ├── a_quick_start/         # Getting started tutorials
+│   ├── b_basics/              # Core functionality examples
+│   │   └── document_extract/  # Document extraction examples
+│   │       ├── extract_dpe/
+│   │       ├── extract_gantt/
+│   │       ├── extract_generic/
+│   │       ├── extract_invoice/
+│   │       ├── extract_proof_of_purchase/
+│   │       └── extract_table/
+│   ├── c_advanced/            # Advanced features
+│   │   ├── gen_synthetic_data/
+│   │   └── using_inference_plugins/
+│   └── wip/                   # Work in progress examples
 ├── assets/                    # Sample data files for examples
 ├── tests/                     # Test suite for all examples
 └── utils/                     # Helper utilities
@@ -399,7 +418,8 @@ Each example includes:
 
 We ❤️ contributions! Before opening a pull request, please:
 
-1. **Read [`CONTRIBUTING.md`](CONTRIBUTING.md)** and the [main repository's contributing guide](https://github.com/Pipelex/pipelex/blob/main/CONTRIBUTING.md).
+<!-- PRERELEASE_LINK -->
+1. **Read [`CONTRIBUTING.md`](CONTRIBUTING.md)** and the [main repository's contributing guide](https://github.com/Pipelex/pipelex/blob/pre-release/v0.18.0b1/CONTRIBUTING.md).
 2. Add your file under **`examples/wip/<your-folder>`**; feel free to group related examples by topic.
 3. Include a short **README or docstring** at the top describing purpose, inputs, and expected outputs.
 4. Verify the pipeline runs locally with a free/open LLM preset when possible, to lower the entry barrier for reviewers.
