@@ -58,7 +58,7 @@ pip install .  # or uv sync
 
 ## 2. Get Your API Key (Free)
 
-Sign up at [app.pipelex.com](https://app.pipelex.com) to get **$20 free API credit** with access to **all models** (text, vision, OCR, image generation).
+Sign up at [app.pipelex.com](https://app.pipelex.com) to get **free API credits** with access to **all models** (text, vision, OCR, image generation).
 
 Want to bring your own API keys or use local models? See [Configure AI Providers](https://docs.pipelex.com/pages/setup/configure-ai-providers/).
 

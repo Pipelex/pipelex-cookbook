@@ -36,6 +36,8 @@ Generate a one-paragraph creative story idea about a robot learning to paint.
 python tutorial/easy/llm_basics/1_hello_world.py
 ```
 
+![Hello World Flow](../../../assets/tutorial_results/llm_basics.png)
+
 ---
 
 ## 2. Chaining LLM Calls
@@ -95,13 +97,66 @@ steps = [
 python tutorial/easy/llm_basics/2_chaining_llm_calls.py
 ```
 
+![Chaining LLM Calls Flow](../../../assets/tutorial_results/chaining_llm_calls.png)
+
 ---
 
-## 3. Using Templates
+## 3. Using Inputs
+
+What if you want to **pass data into your pipeline** from Python? Use `inputs`!
+
+**File: `3_using_inputs.plx`**
+
+```plx
+domain = "using_inputs"
+description = "Learn how to pass inputs to your pipeline"
+
+[pipe]
+
+# A pipe that takes an input and uses it
+[pipe.write_about_topic]
+type = "PipeLLM"
+description = "Write a short paragraph about a given topic"
+inputs = { topic = "Text" }
+output = "Text"
+prompt = """
+Write a short, engaging paragraph about the following topic:
+
+$topic
+
+Keep it under 100 words.
+"""
+```
+
+**What you need to know:**
+- `inputs = { topic = "Text" }` - Declare what inputs the pipe expects
+- `$topic` - Insert the input inline in the prompt
+- Pass inputs from Python using the `inputs` parameter
+
+**Python code:**
+```python
+pipe_output = await execute_pipeline(
+    pipe_code="write_about_topic",
+    inputs={
+        "topic": "The future of artificial intelligence",
+    },
+)
+```
+
+**Run it:**
+```bash
+python tutorial/easy/llm_basics/3_using_inputs.py
+```
+
+![Using Inputs Flow](../../../assets/tutorial_results/using_inputs.png)
+
+---
+
+## 4. Using Templates
 
 Want to **format the output** nicely? Use **PipeCompose**!
 
-**File: `3_using_templates.plx`**
+**File: `4_using_templates.plx`**
 
 ```plx
 domain = "using_templates"
@@ -172,8 +227,10 @@ steps = [
 
 **Run it:**
 ```bash
-python tutorial/easy/llm_basics/3_using_templates.py
+python tutorial/easy/llm_basics/4_using_templates.py
 ```
+
+![Using Templates Flow](../../../assets/tutorial_results/using_templates.png)
 
 ---
 

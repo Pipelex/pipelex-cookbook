@@ -29,7 +29,7 @@ uv pip install pipelex
 
 **2. Get your API key**
 
-Sign up at [app.pipelex.com](https://app.pipelex.com) to get **$20 free API credit** with access to all models.
+Sign up at [app.pipelex.com](https://app.pipelex.com) to get **free API credits** with access to all models.
 
 Add your key to `.env`:
 ```bash
