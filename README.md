@@ -71,20 +71,20 @@ See [Configure AI Providers](https://docs.pipelex.com/pages/setup/configure-ai-p
 Try the hello world example:
 
 ```bash
-python examples/_quick_start/hello_world.py
+python examples/a_quick_start/hello_world.py
 ```
 
 Or explore other cookbook examples:
 
 ```bash
 # Extract data from a Gantt chart image
-python examples/extract_gantt/extract_gantt.py
+python examples/b_basics/document_extract/extract_gantt/extract_gantt.py
 
 # Extract and summarize invoice information
-python examples/invoice_extractor/invoice_extractor.py
+python examples/b_basics/document_extract/extract_invoice/extract_invoice.py
 
 # Multi-step text summarization
-python examples/_quick_start/summarize_2_steps.py
+python examples/a_quick_start/summarize_2_steps.py
 ```
 
 ## 4. Known Limitations
@@ -348,13 +348,19 @@ We **highly** recommend installing our extension for `.plx` files into your IDE.
 ```
 .
 ├── examples/                  # Production-ready examples
-│   ├── _quick_start/         # Getting started tutorials
-│   ├── extract_gantt/        # Extract structured data from Gantt charts
-│   ├── extract_dpe/          # Extract energy performance diagnostics
-│   ├── invoice_extractor/    # Invoice data extraction
-│   ├── extract_table/        # Table extraction from images
-│   ├── synthesize/           # Data synthesis examples
-│   └── wip/                  # Work in progress examples
+│   ├── a_quick_start/         # Getting started tutorials
+│   ├── b_basics/              # Core functionality examples
+│   │   └── document_extract/  # Document extraction examples
+│   │       ├── extract_dpe/
+│   │       ├── extract_gantt/
+│   │       ├── extract_generic/
+│   │       ├── extract_invoice/
+│   │       ├── extract_proof_of_purchase/
+│   │       └── extract_table/
+│   ├── c_advanced/            # Advanced features
+│   │   ├── gen_synthetic_data/
+│   │   └── using_inference_plugins/
+│   └── wip/                   # Work in progress examples
 ├── assets/                    # Sample data files for examples
 ├── tests/                     # Test suite for all examples
 └── utils/                     # Helper utilities
