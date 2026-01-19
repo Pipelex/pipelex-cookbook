@@ -19,11 +19,24 @@ Welcome to the Pipelex tutorials! Learn how to build AI pipelines step by step.
 
 ## Getting Started
 
-1. Install Pipelex and dependencies
-2. Set up your `.env` file with API keys
-3. Activate your Python virtual environment
+**1. Install Pipelex**
 
-Run from the repository root:
+```bash
+pip install pipelex
+# or
+uv pip install pipelex
+```
+
+**2. Get your API key**
+
+Sign up at [app.pipelex.com](https://app.pipelex.com) to get **$20 free API credit** with access to all models.
+
+Add your key to `.env`:
+```bash
+PIPELEX_API_KEY=your_api_key_here
+```
+
+**3. Run your first tutorial**
 
 ```bash
 python tutorial/easy/llm_basics/1_hello_world.py
