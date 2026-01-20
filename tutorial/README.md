@@ -3,7 +3,7 @@
 Welcome to the Pipelex tutorials! Learn how to build AI pipelines step by step.
 
 
-> **Note**: The easiest way to create pipelines is with the <!-- PRERELEASE_LINK -->[Pipe Builder](https://docs.pipelex.com/0.18.0b1/home/9-tools/pipe-builder/). These tutorials teach you the fundamentals by writing pipelines manually.
+> **Note**: The easiest way to create pipelines is with the <!-- PRERELEASE_LINK -->[Pipe Builder](https://docs.pipelex.com/pre-release/home/9-tools/pipe-builder/). These tutorials teach you the fundamentals by writing pipelines manually.
 
 ## Tutorials
 

@@ -12,7 +12,7 @@
   <br/>
   <h2 align="center">Pipelex Cookbook 📚</h2>
   <!-- PRERELEASE_LINK -->
-  <p align="center">Examples, recipes, and best-practice pipelines for the <strong><a href="https://github.com/Pipelex/pipelex/tree/pre-release/v0.18.0b1">Pipelex</a></strong> AI workflow framework.<br/>
+  <p align="center">Examples, recipes, and best-practice pipelines for the <strong><a href="https://go.pipelex.com/pre-release">Pipelex</a></strong> AI workflow framework.<br/>
 Learn by doing with production-ready examples.</p>
 
   <div>
@@ -31,7 +31,7 @@ Learn by doing with production-ready examples.</p>
     <a href="https://www.youtube.com/@PipelexAI"><img src="https://img.shields.io/badge/YouTube-FF0000?logo=youtube&logoColor=white" alt="YouTube"></a>
     <a href="https://pipelex.com"><img src="https://img.shields.io/badge/Homepage-03bb95?logo=google-chrome&logoColor=white&style=flat" alt="Website"></a>
 <!-- PRERELEASE_LINK -->
-    <a href="https://github.com/Pipelex/pipelex/tree/pre-release/v0.18.0b1"><img src="https://img.shields.io/badge/Main_Repo-5a0dad?logo=github&logoColor=white&style=flat" alt="Main Repository"></a>
+    <a href="https://go.pipelex.com/pre-release"><img src="https://img.shields.io/badge/Main_Repo-5a0dad?logo=github&logoColor=white&style=flat" alt="Main Repository"></a>
     <a href="https://docs.pipelex.com/"><img src="https://img.shields.io/badge/Docs-03bb95?logo=read-the-docs&logoColor=white&style=flat" alt="Documentation"></a>
     <br/> 
     <br/>
@@ -423,8 +423,7 @@ Each example includes:
 
 We ❤️ contributions! Before opening a pull request, please:
 
-<!-- PRERELEASE_LINK -->
-1. **Read [`CONTRIBUTING.md`](CONTRIBUTING.md)** and the [main repository's contributing guide](https://github.com/Pipelex/pipelex/blob/pre-release/v0.18.0b1/CONTRIBUTING.md).
+1. **Read [`CONTRIBUTING.md`](CONTRIBUTING.md)** and the [main repository's contributing guide](https://github.com/Pipelex/pipelex/blob/main/CONTRIBUTING.md).
 2. Add your file under **`examples/wip/<your-folder>`**; feel free to group related examples by topic.
 3. Include a short **README or docstring** at the top describing purpose, inputs, and expected outputs.
 4. Verify the pipeline runs locally with a free/open LLM preset when possible, to lower the entry barrier for reviewers.
