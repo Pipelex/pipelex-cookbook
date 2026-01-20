@@ -33,7 +33,7 @@ Sign up at [app.pipelex.com](https://app.pipelex.com) to get **free API credits*
 
 Add your key to `.env`:
 ```bash
-PIPELEX_API_KEY=your_api_key_here
+PIPELEX_GATEWAY_API_KEY=your_api_key_here
 ```
 
 **3. Run your first tutorial**

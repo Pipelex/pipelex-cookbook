@@ -36,7 +36,9 @@ Generate a one-paragraph creative story idea about a robot learning to paint.
 python tutorial/easy/llm_basics/1_hello_world.py
 ```
 
-![Hello World Flow](../../../assets/tutorial_results/llm_basics.png)
+The flowchart shows one pipe producing a single output:
+
+<img src="../../../assets/tutorial_results/llm_basics.png" width="400">
 
 ---
 
@@ -97,7 +99,9 @@ steps = [
 python tutorial/easy/llm_basics/2_chaining_llm_calls.py
 ```
 
-![Chaining LLM Calls Flow](../../../assets/tutorial_results/chaining_llm_calls.png)
+The flowchart shows the first pipe producing an output, which becomes the input to the second pipe:
+
+<img src="../../../assets/tutorial_results/chaining_llm_calls.png" width="500">
 
 ---
 
@@ -148,7 +152,9 @@ pipe_output = await execute_pipeline(
 python tutorial/easy/llm_basics/3_using_inputs.py
 ```
 
-![Using Inputs Flow](../../../assets/tutorial_results/using_inputs.png)
+The flowchart shows an external input being passed into the pipe:
+
+<img src="../../../assets/tutorial_results/using_inputs.png" width="400">
 
 ---
 
@@ -230,7 +236,9 @@ steps = [
 python tutorial/easy/llm_basics/4_using_templates.py
 ```
 
-![Using Templates Flow](../../../assets/tutorial_results/using_templates.png)
+The flowchart shows three pipes chained together - two LLM pipes feeding into a compose pipe that formats the final output:
+
+<img src="../../../assets/tutorial_results/using_templates.png" width="600">
 
 ---
 
