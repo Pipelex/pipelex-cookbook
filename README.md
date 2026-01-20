@@ -58,15 +58,30 @@ pip install .  # or uv sync
 
 ## 2. Get Your API Key (Free)
 
-To use AI models, you need an API key:
+Sign up at [app.pipelex.com](https://app.pipelex.com) to get **free API credits** with access to **all models** (text, vision, OCR, image generation).
 
-- **Free Pipelex API Key**: Join our [Discord community](https://go.pipelex.com/discord) and request your **free API key** (no credit card required) in the [🔑・free-api-key](https://discord.com/channels/1369447918955921449/1418228010431025233) channel.
-- **Bring your own API keys**: OpenAI, Anthropic, Google, Mistral
-- **Local AI**: Ollama, vLLM, LM Studio, llama.cpp... any endpoint based on the OpenAI API or not, as you can plug-in your own non-standard APIs.
+Add your key to `.env`:
+```bash
+PIPELEX_GATEWAY_API_KEY=your_api_key_here
+```
 
-See [Configure AI Providers](https://docs.pipelex.com/pages/setup/configure-ai-providers/) for details.
+Want to bring your own API keys or use local models? See [Configure AI Providers](https://docs.pipelex.com/pages/setup/configure-ai-providers/).
 
-## 3. Run Your First Example
+## 3. Learn Pipelex
+
+**New to Pipelex?** Follow the tutorials to learn step-by-step:
+
+| Level | Tutorial | What you'll learn |
+|-------|----------|-------------------|
+| Easy | [LLM Basics](./tutorial/easy/llm_basics/) | Make LLM calls, chain them together, format output |
+| Easy | [Structured Data](./tutorial/easy/structured_data/) | Extract structured objects from text and documents |
+| Medium | [Model Configuration](./tutorial/medium/) | Control which LLM to use and configure temperature |
+| Medium | [Batch Processing](./tutorial/medium/) | Process lists of items efficiently |
+| Medium | [Parallel Execution](./tutorial/medium/) | Run independent tasks at the same time |
+
+**Already familiar?** Jump straight to the examples below.
+
+## 4. Run Examples
 
 Try the hello world example:
 
@@ -87,7 +102,7 @@ python examples/b_basics/document_extract/extract_invoice/extract_invoice.py
 python examples/a_quick_start/summarize_2_steps.py
 ```
 
-## 4. Known Limitations
+## 5. Known Limitations
 
 ### Third-Party API Requirements
 
@@ -98,7 +113,7 @@ Some Pipelex pipes currently require additional API keys beyond the Pipelex Infe
 
 **Note:** These dependencies are temporary and will be addressed in future updates. We're working on adding support for multiple providers and local alternatives. Check our [roadmap](https://github.com/Pipelex/pipelex/issues/473) for planned improvements.
 
-## 5. Generate Your Own Workflow
+## 6. Generate Your Own Workflow
 
 Create a complete AI workflow with a single command:
 
@@ -320,7 +335,7 @@ Pipelex.make()
 asyncio.run(run_pipeline())
 ```
 
-## 6. Iterate with AI Assistance
+## 7. Iterate with AI Assistance
 
 Install AI assistant rules to easily modify your pipelines:
 
