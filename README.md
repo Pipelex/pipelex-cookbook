@@ -60,6 +60,11 @@ pip install .  # or uv sync
 
 Sign up at [app.pipelex.com](https://app.pipelex.com) to get **free API credits** with access to **all models** (text, vision, OCR, image generation).
 
+Add your key to `.env`:
+```bash
+PIPELEX_GATEWAY_API_KEY=your_api_key_here
+```
+
 Want to bring your own API keys or use local models? See [Configure AI Providers](https://docs.pipelex.com/pages/setup/configure-ai-providers/).
 
 ## 3. Learn Pipelex
