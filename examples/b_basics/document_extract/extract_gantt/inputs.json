@@ -1,0 +1,8 @@
+{
+  "gantt_chart_image": {
+    "concept": "gantt.GanttChartImage",
+    "content": {
+      "url": "https://pipelex-web.s3.us-west-2.amazonaws.com/cookbook/gantt_tree_house.png"
+    }
+  }
+}

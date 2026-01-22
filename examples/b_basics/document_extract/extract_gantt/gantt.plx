@@ -1,17 +1,43 @@
 domain = "gantt"
 description = "The domain for gantt charts"
 system_prompt = "You are an expert in gantt charts, you know all the different tricks, forms, traps"
+main_pipe = "extract_gantt_by_steps"
 
 [concept]
-GanttTimescaleDescription = "Description of the timescale used in a specific gantt chart"
 GanttTaskName = "Names of a task in a gantt chart"
-GanttTaskDetails = "Task in a gantt chart"
-GanttChart = "A gantt chart transcript fully detailing the contents of the chart"
 GanttTranscript = "A gantt chart transcript fully detailing the contents of the chart in markdown format"
 
 [concept.GanttChartImage]
 description = "A gantt chart detailing a project timeline"
 refines = "Image"
+
+[concept.GanttTimescaleDescription]
+description = "Description of the timescale used in a specific gantt chart"
+
+[concept.GanttTimescaleDescription.structure]
+unit = { type = "text", description = "The smallest unit detailed in the time scale", choices = ["days", "weeks", "months", "years"], required = true }
+
+[concept.GanttTaskDetails]
+description = "Task in a gantt chart with its dates"
+
+[concept.GanttTaskDetails.structure]
+name = { type = "text", description = "The name of the task", required = true }
+start_date = { type = "date", description = "The start date of the task" }
+end_date = { type = "date", description = "The end date of the task" }
+
+[concept.Milestone]
+description = "A milestone in a gantt chart"
+
+[concept.Milestone.structure]
+name = { type = "text", description = "The name of the milestone", required = true }
+date = { type = "date", description = "The date of the milestone" }
+
+[concept.GanttChart]
+description = "A gantt chart transcript fully detailing the contents of the chart"
+
+[concept.GanttChart.structure]
+tasks = { type = "list", item_type = "concept", item_concept_ref = "gantt.GanttTaskDetails", description = "The list of tasks in the gantt chart" }
+milestones = { type = "list", item_type = "concept", item_concept_ref = "gantt.Milestone", description = "The list of milestones in the gantt chart" }
 
 [pipe]
 [pipe.extract_gantt_by_steps]
