@@ -1,4 +1,5 @@
 domain = "invoice_extraction"
+main_pipe = "process_invoice"
 
 [concept.InvoiceDetails]
 description = "Classification of the invoice type (formal bill vs simple receipt)"
