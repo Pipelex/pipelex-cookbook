@@ -1,6 +1,7 @@
 domain = "tables"
 description = "Extracting tables from images"
 system_prompt = "You are an expert at data tables and html syntax and you have a strong attention to details."
+main_pipe = "extract_html_table_and_review"
 
 [concept.HtmlTable]
 description = "An HTML table extracted from an image"
@@ -14,6 +15,16 @@ description = "A screenshot of a table (table in the sense of a data structure u
 refines = "Image"
 
 [pipe]
+[pipe.extract_html_table_and_review]
+type = "PipeSequence"
+description = "Get an HTML table and review it"
+inputs = { table_screenshot = "TableScreenshot" }
+output = "HtmlTable"
+steps = [
+    { pipe = "extract_html_table_from_image", result = "html_table" },
+    { pipe = "review_html_table", result = "reviewed_html_table" },
+]
+
 [pipe.extract_html_table_from_image]
 type = "PipeLLM"
 description = "Get an HTML table"
@@ -47,15 +58,3 @@ Pay attention to the text and formatting (color, borders, ...).
 Rewrite the entire html table with your potential corrections.
 Make sure you do not forget any text.
 """
-
-
-[pipe.extract_html_table_and_review]
-type = "PipeSequence"
-description = "Get an HTML table and review it"
-inputs = { table_screenshot = "TableScreenshot" }
-output = "HtmlTable"
-steps = [
-    { pipe = "extract_html_table_from_image", result = "html_table" },
-    { pipe = "review_html_table", result = "reviewed_html_table" },
-]
-
