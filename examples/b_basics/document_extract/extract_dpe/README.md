@@ -25,4 +25,4 @@ You can go further by generating the python structures and runner code out of th
 pipelex build runner examples/b_basics/document_extract/extract_dpe/bundle.plx
 ```
 
-This will create a new file in the `examples/b_basics/document_extract/extract_dpe/run_power_extractor_dpe.py` file, and a `structures` directory containing the python structures.
+This will create a new file `examples/b_basics/document_extract/extract_dpe/run_power_extractor_dpe.py` and a `structures` directory containing the python structures.
