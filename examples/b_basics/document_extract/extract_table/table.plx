@@ -2,8 +2,12 @@ domain = "tables"
 description = "Extracting tables from images"
 system_prompt = "You are an expert at data tables and html syntax and you have a strong attention to details."
 
-[concept]
-HtmlTable = "An HTML table"
+[concept.HtmlTable]
+description = "An HTML table extracted from an image"
+
+[concept.HtmlTable.structure]
+title = { type = "text", description = "The title of the table", required = true }
+inner_html_table = { type = "text", description = "The HTML content of the table", required = true }
 
 [concept.TableScreenshot]
 description = "A screenshot of a table (table in the sense of a data structure used to organize information in rows and columns)"

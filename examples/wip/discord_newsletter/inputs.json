@@ -1,0 +1,8 @@
+{
+  "discord_channel_updates": {
+    "concept": "discord_newsletter.DiscordChannelUpdate[]",
+    "content": {
+      "url": "assets/discord_newsletter/discord_extract.json"
+    }
+  }
+}

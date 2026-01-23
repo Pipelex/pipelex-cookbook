@@ -1,6 +1,22 @@
-# Advisory Board Orchestrator Example
+# Advisory Board Orchestrator
 
-This example demonstrates a sophisticated multi-advisory board consultation system that analyzes complex business problems by leveraging multiple domain expert perspectives.
+A sophisticated multi-advisory board consultation system that analyzes complex business problems by leveraging multiple domain expert perspectives.
+
+## Run the pipeline
+
+```bash
+pipelex run examples/wip/advisory_board/advisory_orchestrator.plx -i examples/wip/advisory_board/inputs.json
+```
+
+## Expected output
+
+![Expected output](expected_output.png)
+
+## Flowchart
+
+<!-- Pipeline flowchart will be added here -->
+
+---
 
 ## What it Does
 
@@ -11,31 +27,13 @@ The Advisory Board Orchestrator:
 4. **Synthesizes** all responses to identify consensus, conflicts, and unique insights
 5. **Generates** a comprehensive strategic report with actionable recommendations
 
-## How to Run
-
-```bash
-python examples/wip/advisory_board/advisory_board.py
-```
-
-The example includes a sample B2B SaaS customer retention problem, but you can modify the `SAMPLE_BUSINESS_PROBLEM` in the script to analyze your own business challenge.
-
 ## Key Features Demonstrated
 
 - **Complex Pipeline Orchestration**: Uses `PipeSequence` with multiple steps
 - **Batch Processing**: Consults multiple advisory boards in parallel using `batch_over`
-- **Structured Output**: Generates typed outputs using Pydantic models
+- **Structured Output**: Generates typed outputs using inline PLX structures
 - **Multi-Perspective Analysis**: Synthesizes diverse expert opinions
 - **Conflict Resolution**: Identifies and provides frameworks for resolving conflicting advice
-
-## Example Output
-
-The pipeline generates:
-- **Executive Summary** with top recommendations
-- **Consensus Analysis** showing areas of agreement
-- **Strategic Choices** highlighting areas requiring decisions
-- **Implementation Roadmap** with phased approach
-- **Risk Assessment** with mitigation strategies
-- **Success Metrics** for tracking progress
 
 ## Available Advisory Boards
 
@@ -48,4 +46,4 @@ The system can consult boards including:
 - Finance & Corporate Development
 - And 10+ more specialized boards
 
-Each board provides domain-specific analysis and recommendations based on their expertise area. 
+Each board provides domain-specific analysis and recommendations based on their expertise area.

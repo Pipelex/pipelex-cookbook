@@ -1,0 +1,8 @@
+{
+  "table_screenshot": {
+    "concept": "tables.TableScreenshot",
+    "content": {
+      "url": "https://pipelex-web.s3.us-west-2.amazonaws.com/cookbook/table_1.png"
+    }
+  }
+}

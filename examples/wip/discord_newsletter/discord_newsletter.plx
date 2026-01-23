@@ -1,9 +1,49 @@
 domain = "discord_newsletter"
 description = "Create newsletters from Discord channel content by summarizing messages and organizing them according to newsletter format"
 
+[concept.Attachment]
+description = "A Discord message attachment"
+
+[concept.Attachment.structure]
+name = { type = "text", description = "Name of the attachment file", required = true }
+url = { type = "text", description = "URL of the attachment", required = true }
+
+[concept.Embed]
+description = "A Discord message embed"
+
+[concept.Embed.structure]
+title = { type = "text", description = "Title of the embed", required = true }
+description = { type = "text", description = "Description of the embed content", required = true }
+type = { type = "text", description = "Type of the embed (e.g., article, video)", required = true }
+
+[concept.DiscordMessage]
+description = "A Discord message within a channel"
+
+[concept.DiscordMessage.structure]
+author = { type = "text", description = "Author of the message", required = true }
+content = { type = "text", description = "Content of the message", required = true }
+attachments = { type = "list", item_type = "concept", item_concept_ref = "discord_newsletter.Attachment", description = "List of message attachments" }
+embeds = { type = "list", item_type = "concept", item_concept_ref = "discord_newsletter.Embed", description = "List of message embeds" }
+link = { type = "text", description = "Link to the message", required = true }
+
+[concept.DiscordChannelUpdate]
+description = "A Discord channel with its messages for newsletter generation"
+
+[concept.DiscordChannelUpdate.structure]
+name = { type = "text", description = "Name of the Discord channel", required = true }
+position = { type = "integer", description = "Position of the channel", required = true }
+messages = { type = "list", item_type = "concept", item_concept_ref = "discord_newsletter.DiscordMessage", description = "List of messages in the channel" }
+
+[concept.ChannelSummary]
+description = "A summarized Discord channel for newsletter inclusion"
+
+[concept.ChannelSummary.structure]
+channel_name = { type = "text", description = "Name of the Discord channel", required = true }
+position = { type = "integer", description = "Position of the channel for ordering", required = true }
+summary_items = { type = "list", item_type = "text", description = "Well-written summaries of the channel's activity" }
+category = { type = "text", description = "Category of the channel", choices = ["Share", "Introduce Yourself", "Geographic Hubs", "Other"] }
+
 [concept]
-DiscordChannelUpdate = "A Discord channel with its messages for newsletter generation"
-ChannelSummary = "A summarized Discord channel for newsletter inclusion"
 HtmlNewsletter = "The final newsletter content in html format with organized channel summaries"
 
 [pipe.write_discord_newsletter]
@@ -39,7 +79,10 @@ Analyze this Discord channel update and create a newsletter-friendly summary.
 Channel Information:
 @discord_channel_update
 
-Summarize with one bullet point for each new member
+Summarize with one bullet point for each new member.
+
+Set the category to "Introduce Yourself" for this channel.
+Make sure to preserve the channel name and position from the input.
 """
 
 [pipe.summarize_discord_channel_update_general]
@@ -59,6 +102,11 @@ Generate one or more summary items: each one can correspond to a single message 
 Each summary item should be in plain text, no bullet points. You can make some parts **bold** to highlight important information.
 
 Make sure to preserve the channel name and position from the input for proper ordering in the newsletter.
+
+Set the category based on the channel name:
+- If the channel name starts with a flag emoji (regional indicator), set category to "Geographic Hubs"
+- If the channel name is "Introduce Yourself", set category to "Introduce Yourself"
+- Otherwise, set category to "Share"
 """
 
 [pipe.write_weekly_summary]
@@ -97,7 +145,7 @@ $weekly_summary
    <h2>🙌 New members</h2>
    <ul>
       {% for channel in introduce_channels %}
-         {% for item in channel.summary_items_as_html %}
+         {% for item in channel.summary_items %}
             <li>{{ item }}</li>
          {% endfor %}
       {% endfor %}
@@ -109,7 +157,7 @@ $weekly_summary
 {% if regular_channels %}
    {% for channel in regular_channels %}
    <h2>{{ channel.channel_name }}</h2>
-      {% for item in channel.summary_items_as_html %}
+      {% for item in channel.summary_items %}
          <p>{{ item }}</p>
       {% endfor %}
    {% endfor %}
@@ -121,7 +169,7 @@ $weekly_summary
    <h2>🌎 Geographic hubs</h2>
    {% for channel in geo_hubs %}
       <h3>{{ channel.channel_name }}</h3>
-      {% for item in channel.summary_items_as_html %}
+      {% for item in channel.summary_items %}
          <p>{{ item }}</p>
       {% endfor %}
    {% endfor %}

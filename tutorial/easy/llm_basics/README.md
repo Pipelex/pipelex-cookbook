@@ -33,7 +33,7 @@ Generate a one-paragraph creative story idea about a robot learning to paint.
 
 **Run it:**
 ```bash
-python tutorial/easy/llm_basics/1_hello_world.py
+pipelex run tutorial/easy/llm_basics/1_hello_world.plx
 ```
 
 The flowchart shows one pipe producing a single output:
@@ -96,7 +96,7 @@ steps = [
 
 **Run it:**
 ```bash
-python tutorial/easy/llm_basics/2_chaining_llm_calls.py
+pipelex run tutorial/easy/llm_basics/2_chaining_llm_calls.plx
 ```
 
 The flowchart shows the first pipe producing an output, which becomes the input to the second pipe:
@@ -107,7 +107,7 @@ The flowchart shows the first pipe producing an output, which becomes the input 
 
 ## 3. Using Inputs
 
-What if you want to **pass data into your pipeline** from Python? Use `inputs`!
+What if you want to **pass data into your pipeline**? Use `inputs`!
 
 **File: `3_using_inputs.plx`**
 
@@ -135,21 +135,18 @@ Keep it under 100 words.
 **What you need to know:**
 - `inputs = { topic = "Text" }` - Declare what inputs the pipe expects
 - `$topic` - Insert the input inline in the prompt
-- Pass inputs from Python using the `inputs` parameter
+- Pass inputs via a JSON file using the `-i` flag
 
-**Python code:**
-```python
-pipe_output = await execute_pipeline(
-    pipe_code="write_about_topic",
-    inputs={
-        "topic": "The future of artificial intelligence",
-    },
-)
+**inputs.json:**
+```json
+{
+  "topic": "The future of artificial intelligence"
+}
 ```
 
 **Run it:**
 ```bash
-python tutorial/easy/llm_basics/3_using_inputs.py
+pipelex run tutorial/easy/llm_basics/3_using_inputs.plx -i tutorial/easy/llm_basics/inputs.json
 ```
 
 The flowchart shows an external input being passed into the pipe:
@@ -233,7 +230,7 @@ steps = [
 
 **Run it:**
 ```bash
-python tutorial/easy/llm_basics/4_using_templates.py
+pipelex run tutorial/easy/llm_basics/4_using_templates.plx
 ```
 
 The flowchart shows three pipes chained together - two LLM pipes feeding into a compose pipe that formats the final output:

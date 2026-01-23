@@ -86,20 +86,20 @@ Want to bring your own API keys or use local models? See [Configure AI Providers
 Try the hello world example:
 
 ```bash
-python examples/a_quick_start/hello_world.py
+pipelex run examples/a_quick_start/hello_world.plx
 ```
 
 Or explore other cookbook examples:
 
 ```bash
 # Extract data from a Gantt chart image
-python examples/b_basics/document_extract/extract_gantt/extract_gantt.py
+pipelex run examples/b_basics/document_extract/extract_gantt/gantt.plx -i examples/b_basics/document_extract/extract_gantt/inputs.json
 
 # Extract and summarize invoice information
-python examples/b_basics/document_extract/extract_invoice/extract_invoice.py
+pipelex run examples/b_basics/document_extract/extract_invoice/invoice.plx -i examples/b_basics/document_extract/extract_invoice/inputs.json
 
 # Multi-step text summarization
-python examples/a_quick_start/summarize_2_steps.py
+pipelex run examples/a_quick_start/summarize.plx --pipe summarize_by_steps -i examples/a_quick_start/inputs.json
 ```
 
 ## 5. Known Limitations
@@ -407,9 +407,8 @@ The cookbook contains production-ready examples covering various use cases:
 
 Each example includes:
 - Complete `.plx` pipeline definition
-- Python execution script
+- `inputs.json` file with sample inputs
 - Sample input data in `assets/`
-- Structured output models where applicable
 
 ## 📖 Next Steps
 

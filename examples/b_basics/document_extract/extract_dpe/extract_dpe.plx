@@ -3,9 +3,28 @@ description = "The domain for power extractor"
 
 [concept]
 MarkdownFromDpeDocumentPage = "A markdown extracted from a DPE document"
-Dpe = "A diagnostic of the energy performance of a building"
+
+[concept.Dpe]
+description = "A diagnostic of the energy performance of a building"
+
+[concept.Dpe.structure]
+address = { type = "text", description = "The address of the building" }
+date_of_issue = { type = "date", description = "The date the DPE was issued" }
+date_of_expiration = { type = "date", description = "The expiration date of the DPE" }
+energy_efficiency_class = { type = "text", description = "The energy efficiency class", choices = ["A", "B", "C", "D", "E", "F", "G"] }
+per_year_per_m2_consumption = { type = "number", description = "Energy consumption per year per m2" }
+co2_emission_class = { type = "text", description = "The CO2 emission class", choices = ["A", "B", "C", "D", "E", "F", "G"] }
+per_year_per_m2_co2_emissions = { type = "number", description = "CO2 emissions per year per m2" }
+yearly_energy_costs = { type = "number", description = "Yearly energy costs" }
 
 [pipe]
+[pipe.extract_page_contents_and_views_from_pdf]
+type = "PipeExtract"
+description = "Extract page contents (text and images) from a document as well as full page views"
+inputs = { document = "Document" }
+output = "Page[]"
+max_page_images = 5
+page_views = true
 [pipe.power_extractor_dpe]
 type = "PipeSequence"
 description = "Extract DPE details from a document"

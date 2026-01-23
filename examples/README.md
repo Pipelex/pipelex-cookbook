@@ -1,8 +1,7 @@
 # Sample Pipelines to show off Pipelex capabilities
 
-The scripts in this folder demonstrate various Pipelex pipelines and capabilities. They
-rely on helper functions in `cookbook/utils` and write their results to the
-`results/examples/` directory.
+The pipelines in this folder demonstrate various Pipelex capabilities. Each example
+includes an `inputs.json` file with sample inputs that can be used to run the pipeline.
 
 ## Directory Structure
 
@@ -25,10 +24,8 @@ examples/
 
 ## Quick Start Examples (`a_quick_start/`)
 
-- `hello_world.py` - Your first Pipelex pipeline
-- `simple_ocr.py` - Basic OCR capabilities on PDF documents
-- `summarize_2_steps.py` - Multi-step text summarization
-- `summarize_1_structured.py` - Summarization with structured output
+- `hello_world.plx` - Your first Pipelex pipeline
+- `summarize.plx` - Multi-step text summarization with structured output
 
 ## Document Extraction Examples (`b_basics/document_extract/`)
 
@@ -42,7 +39,6 @@ examples/
 ## Advanced Examples (`c_advanced/`)
 
 - `gen_synthetic_data/` - Generate synthetic data based on schemas
-- `using_inference_plugins/` - Custom inference plugin integration
 
 ## Work in Progress (`wip/`)
 
@@ -50,22 +46,29 @@ The `wip/` folder contains experimental pipelines that are not yet stable.
 
 ## Running the Examples
 
-Run any example from the repository root:
+Run any example from the repository root using the CLI:
 
 ```bash
-# Quick start
-python examples/a_quick_start/hello_world.py
+# Quick start - Hello World (no inputs needed)
+pipelex run examples/a_quick_start/hello_world.plx
 
-# Document extraction
-python examples/b_basics/document_extract/extract_gantt/extract_gantt.py
-python examples/b_basics/document_extract/extract_invoice/extract_invoice.py
+# Quick start - Summarization with inputs
+pipelex run examples/a_quick_start/summarize.plx --pipe summarize_with_structure -i examples/a_quick_start/inputs.json
 
-# Advanced features
-python examples/c_advanced/gen_synthetic_data/synth.py
+# Document extraction - Gantt chart
+pipelex run examples/b_basics/document_extract/extract_gantt/gantt.plx -i examples/b_basics/document_extract/extract_gantt/inputs.json
+
+# Document extraction - Invoice
+pipelex run examples/b_basics/document_extract/extract_invoice/invoice.plx -i examples/b_basics/document_extract/extract_invoice/inputs.json
+
+# Document extraction - Table
+pipelex run examples/b_basics/document_extract/extract_table/table.plx -i examples/b_basics/document_extract/extract_table/inputs.json
+
+# Advanced features - Synthetic data generation
+pipelex run examples/c_advanced/gen_synthetic_data/synth.plx -i examples/c_advanced/gen_synthetic_data/inputs.json
 ```
 
-Each example includes detailed comments explaining the pipeline construction and configuration.
-Results will be saved in the `results/examples/` directory for inspection.
+Results will be saved as JSON files in the current directory (or specify `-o path/to/output.json`).
 
 ## Prerequisites
 

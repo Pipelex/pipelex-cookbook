@@ -1,7 +1,24 @@
 domain = "extract_proof_of_purchase"
 
-[concept]
-ProofOfPurchase = "Elements from a proof of purchase"
+[concept.Product]
+description = "A product in a proof of purchase"
+
+[concept.Product.structure]
+name = { type = "text", description = "Name of the product" }
+quantity = { type = "integer", description = "Quantity purchased" }
+unit_price = { type = "number", description = "Unit price of the product" }
+total_price = { type = "number", description = "Total price for this product" }
+
+[concept.ProofOfPurchase]
+description = "Elements from a proof of purchase"
+
+[concept.ProofOfPurchase.structure]
+date_of_purchase = { type = "date", description = "Date of the purchase" }
+amount_paid = { type = "number", description = "Total amount paid" }
+currency = { type = "text", description = "Currency used for the purchase" }
+payment_method = { type = "text", description = "Method of payment used" }
+purchase_number = { type = "text", description = "Purchase or receipt number" }
+products = { type = "list", item_type = "concept", item_concept_ref = "extract_proof_of_purchase.Product", description = "List of products purchased" }
 
 [pipe]
 [pipe.power_extractor_proof_of_purchase]

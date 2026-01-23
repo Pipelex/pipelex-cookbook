@@ -49,7 +49,7 @@ prompt = "Write a creative haiku."
 
 **Run it:**
 ```bash
-python tutorial/medium/1_model_config.py
+pipelex run tutorial/medium/1_model_config.plx
 ```
 
 ---
@@ -92,7 +92,7 @@ steps = [
 
 **Run it:**
 ```bash
-python tutorial/medium/2_batch_processing.py
+pipelex run tutorial/medium/2_batch_processing.plx
 ```
 
 ---
@@ -132,7 +132,7 @@ add_each_output = true
 
 **Run it:**
 ```bash
-python tutorial/medium/3_parallel_execution.py
+pipelex run tutorial/medium/3_parallel_execution.plx
 ```
 
 ---

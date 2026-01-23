@@ -20,6 +20,20 @@ refines = "Number"
 [concept.Sample]
 description = "A complete synthetic data record representing a student profile."
 
+[concept.Sample.structure]
+student_name = { type = "text", description = "The name of the student", required = true }
+current_performance = { type = "text", description = "The student's current performance level", choices = ["Struggling", "Average", "Advanced"], required = true }
+learns_best_with = { type = "text", description = "The learning modality that works best for this student", choices = ["Visual examples", "Step-by-step text", "Hands-on practice", "Videos"], required = true }
+pace = { type = "text", description = "The student's learning pace", choices = ["Needs more time", "Normal", "Fast learner"], required = true }
+complexity = { type = "text", description = "The level of complexity the student prefers", choices = ["Prefers simple explanations", "Balanced", "Likes deep details"], required = true }
+strengths = { type = "text", description = "Subjects or topics the student is good at", required = true }
+needs_help_with = { type = "text", description = "Areas where the student struggles", required = true }
+prior_knowledge = { type = "text", description = "Relevant topics the student already knows", required = true }
+hobbies_interests = { type = "text", description = "The student's hobbies and interests", required = true }
+career_goals = { type = "text", description = "The student's career aspirations", required = true }
+example_style = { type = "text", description = "The student's preferred example style", choices = ["Many real-world examples", "Abstract concepts", "Mix"], required = true }
+question_format = { type = "text", description = "The student's preferred question format", choices = ["Multiple choice", "Short answer", "Open discussion"], required = true }
+
 [pipe.generate_synthetic_data_samples]
 type = "PipeSequence"
 description = """

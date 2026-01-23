@@ -45,7 +45,7 @@ Generate a creative book idea. Provide a compelling title, genre, synopsis, and 
 
 **Run it:**
 ```bash
-python tutorial/easy/structured_data/1_structured_output.py
+pipelex run tutorial/easy/structured_data/1_structured_output.plx
 ```
 
 ---
@@ -115,7 +115,7 @@ steps = [
 
 **Run it:**
 ```bash
-python tutorial/easy/structured_data/2_using_object_fields.py
+pipelex run tutorial/easy/structured_data/2_using_object_fields.plx
 ```
 
 ---
@@ -186,7 +186,7 @@ steps = [
 
 **Run it:**
 ```bash
-python tutorial/easy/structured_data/3_document_qa.py
+pipelex run tutorial/easy/structured_data/3_document_qa.plx -i tutorial/easy/structured_data/inputs.json
 ```
 
 ---

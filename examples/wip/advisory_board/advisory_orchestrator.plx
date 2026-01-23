@@ -5,12 +5,115 @@ description = "Master Advisory Orchestrator system for complex business problem 
 # Concepts
 ####################################################################################################
 
-[concept]
-BusinessProblem = "A structured representation of a business challenge requiring strategic guidance"
-AdvisoryBoard = "An expert advisory board with specific domain expertise"
-BoardResponse = "Response from an individual advisory board with recommendations"
-ResponseAnalysis = "Analysis of all board responses identifying consensus and conflicts"
-StrategicReport = "Final comprehensive strategic report with unified recommendations"
+[concept.BusinessProblem]
+description = "A structured representation of a business challenge requiring strategic guidance"
+
+[concept.BusinessProblem.structure]
+problem_statement = { type = "text", description = "Clear statement of the business challenge", required = true }
+context = { type = "text", description = "Relevant business context and background", required = true }
+constraints = { type = "list", item_type = "text", description = "Known limitations and constraints" }
+goals = { type = "list", item_type = "text", description = "Desired outcomes and objectives" }
+category = { type = "text", description = "Primary category of the problem", choices = ["product_launch", "scaling", "technical", "financial", "operational", "strategic", "marketing", "general"], required = true }
+urgency = { type = "text", description = "Timeline urgency (immediate, short-term, long-term)", required = true }
+stakeholders = { type = "list", item_type = "text", description = "Key stakeholders involved" }
+
+[concept.AdvisoryBoard]
+description = "An expert advisory board with specific domain expertise"
+
+[concept.AdvisoryBoard.structure]
+name = { type = "text", description = "Name of the advisory board", required = true }
+expertise = { type = "text", description = "Domain expertise and perspective", required = true }
+relevance_score = { type = "number", description = "Relevance score for the problem (0-10)", required = true }
+selection_rationale = { type = "text", description = "Why this board was selected", required = true }
+
+[concept.ConsensusItem]
+description = "A consensus recommendation from multiple advisory boards"
+
+[concept.ConsensusItem.structure]
+recommendation = { type = "text", description = "The consensus recommendation", required = true }
+supporting_boards = { type = "list", item_type = "text", description = "Boards that support this recommendation", required = true }
+confidence_score = { type = "number", description = "Confidence score (1-10)", required = true }
+priority = { type = "text", description = "Priority level (high, medium, low)", required = true }
+
+[concept.ConflictItem]
+description = "An area of conflicting advice between advisory boards"
+
+[concept.ConflictItem.structure]
+issue = { type = "text", description = "The conflicting issue", required = true }
+board_a_position = { type = "text", description = "Position of first board", required = true }
+board_b_position = { type = "text", description = "Position of second board", required = true }
+core_tension = { type = "text", description = "Root cause of the disagreement", required = true }
+decision_framework = { type = "text", description = "Framework for making the decision", required = true }
+compromise_option = { type = "text", description = "Potential middle ground solution" }
+
+[concept.BoardResponse]
+description = "Response from an individual advisory board with recommendations"
+
+[concept.ResponseAnalysis]
+description = "Analysis of all board responses identifying consensus and conflicts"
+
+[concept.ResponseAnalysis.structure]
+consensus_items = { type = "list", item_type = "concept", item_concept_ref = "advisory_orchestrator.ConsensusItem", description = "Areas of consensus across boards", required = true }
+conflicts = { type = "list", item_type = "concept", item_concept_ref = "advisory_orchestrator.ConflictItem", description = "Areas of conflicting advice", required = true }
+unique_insights = { type = "list", item_type = "text", description = "Unique perspectives from individual boards", required = true }
+dependencies = { type = "list", item_type = "text", description = "Cross-functional dependencies identified", required = true }
+resource_overlaps = { type = "list", item_type = "text", description = "Competing resource requirements", required = true }
+
+[concept.ImplementationPhase]
+description = "A phase in the implementation roadmap"
+
+[concept.ImplementationPhase.structure]
+phase_name = { type = "text", description = "Name of the implementation phase", required = true }
+timeline = { type = "text", description = "Timeline for this phase", required = true }
+actions = { type = "list", item_type = "text", description = "Specific actions to take", required = true }
+lead_responsibility = { type = "list", item_type = "text", description = "Who leads each action", required = true }
+deliverables = { type = "list", item_type = "text", description = "Expected deliverables", required = true }
+
+[concept.RiskItem]
+description = "A risk item with mitigation strategy"
+
+[concept.RiskItem.structure]
+risk = { type = "text", description = "Description of the risk", required = true }
+severity = { type = "text", description = "Risk severity (high, medium, low)", required = true }
+mitigation = { type = "text", description = "Mitigation strategy", required = true }
+owner = { type = "text", description = "Who owns the risk mitigation", required = true }
+
+[concept.SuccessMetric]
+description = "A success metric for measuring outcomes"
+
+[concept.SuccessMetric.structure]
+metric = { type = "text", description = "The success metric", required = true }
+target = { type = "text", description = "Target value or outcome", required = true }
+measurement_method = { type = "text", description = "How to measure this metric", required = true }
+review_frequency = { type = "text", description = "How often to review", required = true }
+
+[concept.ResourceRequirement]
+description = "A resource requirement for implementation"
+
+[concept.ResourceRequirement.structure]
+category = { type = "text", description = "Resource category (budget, personnel, technology)", required = true }
+description = { type = "text", description = "Detailed description of the requirement", required = true }
+quantity = { type = "text", description = "Quantity or amount needed", required = true }
+timeline = { type = "text", description = "When this resource is needed", required = true }
+
+[concept.StrategicReport]
+description = "Final comprehensive strategic report with unified recommendations"
+
+[concept.StrategicReport.structure]
+executive_summary = { type = "text", description = "Executive summary of the analysis", required = true }
+problem_statement = { type = "text", description = "Restated problem statement", required = true }
+boards_consulted = { type = "list", item_type = "text", description = "List of advisory boards consulted", required = true }
+top_consensus_recommendations = { type = "list", item_type = "text", description = "Top 3 consensus recommendations", required = true }
+critical_decision_points = { type = "list", item_type = "text", description = "Areas requiring leadership choice", required = true }
+consensus_recommendations = { type = "list", item_type = "concept", item_concept_ref = "advisory_orchestrator.ConsensusItem", description = "High consensus recommendations", required = true }
+strategic_choices = { type = "list", item_type = "concept", item_concept_ref = "advisory_orchestrator.ConflictItem", description = "Strategic choices requiring decisions", required = true }
+domain_insights = { type = "dict", key_type = "text", value_type = "text", description = "Key insights by domain", required = true }
+implementation_phases = { type = "list", item_type = "concept", item_concept_ref = "advisory_orchestrator.ImplementationPhase", description = "Phased implementation roadmap", required = true }
+risks = { type = "list", item_type = "concept", item_concept_ref = "advisory_orchestrator.RiskItem", description = "Risk assessment and mitigation", required = true }
+resource_requirements = { type = "list", item_type = "concept", item_concept_ref = "advisory_orchestrator.ResourceRequirement", description = "Resource requirements summary", required = true }
+success_metrics = { type = "list", item_type = "concept", item_concept_ref = "advisory_orchestrator.SuccessMetric", description = "Success metrics dashboard", required = true }
+next_steps = { type = "list", item_type = "text", description = "Immediate next steps", required = true }
+review_schedule = { type = "text", description = "Recommended review and assessment schedule", required = true }
 
 ####################################################################################################
 # Pipes

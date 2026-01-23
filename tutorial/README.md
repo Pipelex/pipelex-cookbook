@@ -40,5 +40,5 @@ PIPELEX_GATEWAY_API_KEY=your_api_key_here
 **3. Run your first tutorial**
 
 ```bash
-python tutorial/easy/llm_basics/1_hello_world.py
+pipelex run tutorial/easy/llm_basics/1_hello_world.plx
 ```
