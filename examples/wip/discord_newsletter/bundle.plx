@@ -46,6 +46,7 @@ category = { type = "text", description = "Category of the channel", choices = [
 [concept]
 HtmlNewsletter = "The final newsletter content in html format with organized channel summaries"
 
+[pipe]
 [pipe.write_discord_newsletter]
 type = "PipeSequence"
 description = "Create a newsletter from Discord articles by summarizing channels and organizing content"
@@ -56,7 +57,6 @@ steps = [
    { pipe = "write_weekly_summary", result = "weekly_summary" },
    { pipe = "format_html_newsletter", result = "html_newsletter" },
 ]
-
 
 [pipe.summarize_discord_channel_update]
 type = "PipeCondition"
