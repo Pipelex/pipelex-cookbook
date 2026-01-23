@@ -17,7 +17,7 @@ pipelex run examples/b_basics/document_extract/extract_dpe/extract_dpe.plx -i ex
 ![Expected output](expected_output.png)
 
 
-## GO further
+## Go further
 
 You can go further by generating the python structures and runner code out of this bundle in order to add validation functions to the python BaseModel. 
 
