@@ -1,4 +1,5 @@
 domain = "extract_generic"
+main_pipe = "power_extractor"
 
 [pipe]
 [pipe.power_extractor]

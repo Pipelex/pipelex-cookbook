@@ -17,14 +17,6 @@ per_year_per_m2_co2_emissions = { type = "number", description = "CO2 emissions 
 yearly_energy_costs = { type = "number", description = "Yearly energy costs" }
 
 [pipe]
-[pipe.extract_page_contents_and_views_from_pdf]
-type = "PipeExtract"
-description = "Extract page contents (text and images) from a document as well as full page views"
-inputs = { document = "Document" }
-output = "Page[]"
-max_page_images = 5
-page_views = true
-
 [pipe.power_extractor_dpe]
 type = "PipeSequence"
 description = "Extract DPE details from a document"
