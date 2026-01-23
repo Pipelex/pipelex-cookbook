@@ -17,7 +17,6 @@ abstract = { type = "text", description = "Abstract of the summary 1 short sente
 main_concepts = { type = "list", item_type = "text", description = "Array of main concepts tackled in the text" }
 
 [pipe] ####### Pipe definitions ##################################
-
 [pipe.summarize_with_structure]
 type = "PipeLLM"
 description = "Summarize text."

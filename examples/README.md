@@ -56,16 +56,16 @@ pipelex run examples/a_quick_start/hello_world.plx
 pipelex run examples/a_quick_start/summarize.plx --pipe summarize_with_structure -i examples/a_quick_start/inputs.json
 
 # Document extraction - Gantt chart
-pipelex run examples/b_basics/document_extract/extract_gantt/gantt.plx -i examples/b_basics/document_extract/extract_gantt/inputs.json
+pipelex run examples/b_basics/document_extract/extract_gantt/bundle.plx -i examples/b_basics/document_extract/extract_gantt/inputs.json
 
 # Document extraction - Invoice
-pipelex run examples/b_basics/document_extract/extract_invoice/invoice.plx -i examples/b_basics/document_extract/extract_invoice/inputs.json
+pipelex run examples/b_basics/document_extract/extract_invoice/bundle.plx -i examples/b_basics/document_extract/extract_invoice/inputs.json
 
 # Document extraction - Table
-pipelex run examples/b_basics/document_extract/extract_table/table.plx -i examples/b_basics/document_extract/extract_table/inputs.json
+pipelex run examples/b_basics/document_extract/extract_table/bundle.plx -i examples/b_basics/document_extract/extract_table/inputs.json
 
 # Advanced features - Synthetic data generation
-pipelex run examples/c_advanced/gen_synthetic_data/synth.plx -i examples/c_advanced/gen_synthetic_data/inputs.json
+pipelex run examples/c_advanced/gen_synthetic_data/bundle.plx -i examples/c_advanced/gen_synthetic_data/inputs.json
 ```
 
 Results will be saved as JSON files in the current directory (or specify `-o path/to/output.json`).

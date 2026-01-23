@@ -5,13 +5,24 @@ Generic document extraction pipeline for various document types.
 ## Run the pipeline
 
 ```bash
-pipelex run examples/b_basics/document_extract/extract_generic/extract_generic.plx --inputs examples/b_basics/document_extract/extract_generic/inputs.json
+pipelex run examples/b_basics/document_extract/extract_generic/bundle.plx -i examples/b_basics/document_extract/extract_generic/inputs.json
 ```
+
+## Flowchart
+
+![Flowchart](flowchart.png)
 
 ## Expected output
 
 ![Expected output](expected_output.png)
 
-## Flowchart
 
-<!-- Pipeline flowchart will be added here -->
+## Go further
+
+You can go further by generating the python structures and runner code out of this bundle in order to add validation functions to the python BaseModel.
+
+```bash
+pipelex build runner examples/b_basics/document_extract/extract_generic/bundle.plx
+```
+
+This will create a new file `examples/b_basics/document_extract/extract_generic/run_power_extractor.py` and a `structures` directory containing the python structures.

@@ -12,13 +12,13 @@ A minimal pipeline that generates text.
 pipelex run examples/a_quick_start/hello_world.plx
 ```
 
-### Expected output
-
-![Expected output](expected_output.png)
-
 ### Flowchart
 
-<!-- Pipeline flowchart will be added here -->
+![Flowchart](flowchart_hello_world.png)
+
+### Expected output
+
+![Expected output](expected_output_hello_world.png)
 
 ---
 
@@ -36,10 +36,21 @@ pipelex run examples/a_quick_start/summarize.plx --pipe summarize_with_structure
 pipelex run examples/a_quick_start/summarize.plx --pipe summarize_by_steps -i examples/a_quick_start/inputs.json
 ```
 
-### Expected output
-
-![Expected output](expected_output.png)
-
 ### Flowchart
 
-<!-- Pipeline flowchart will be added here -->
+![Flowchart](flowchart_summarize.png)
+
+### Expected output
+
+![Expected output](expected_output_summarize.png)
+
+
+### Go further
+
+You can go further by generating the python structures and runner code out of this bundle in order to add validation functions to the python BaseModel.
+
+```bash
+pipelex build runner examples/a_quick_start/summarize.plx --pipe summarize_with_structure
+```
+
+This will create a new file `examples/a_quick_start/run_summarize_with_structure.py` and a `structures` directory containing the python structures.
