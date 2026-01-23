@@ -1,4 +1,5 @@
 domain = "extract_proof_of_purchase"
+main_pipe = "power_extractor_proof_of_purchase"
 
 [concept.Product]
 description = "A product in a proof of purchase"
