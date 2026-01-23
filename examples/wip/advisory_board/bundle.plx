@@ -1,5 +1,6 @@
 domain = "advisory_orchestrator"
 description = "Master Advisory Orchestrator system for complex business problem solving through multi-board consultation"
+main_pipe = "master_advisory_orchestrator"
 
 ####################################################################################################
 # Concepts

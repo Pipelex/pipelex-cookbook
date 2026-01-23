@@ -5,7 +5,7 @@ A sophisticated multi-advisory board consultation system that analyzes complex b
 ## Run the pipeline
 
 ```bash
-pipelex run examples/wip/advisory_board/bundle.plx -i examples/wip/advisory_board/inputs.json
+pipelex run examples/wip/advisory_board/bundle.plx -i examples/wip/advisory_board/inputs.json -L examples/wip/advisory_board
 ```
 
 ## Flowchart
@@ -22,7 +22,7 @@ pipelex run examples/wip/advisory_board/bundle.plx -i examples/wip/advisory_boar
 You can go further by generating the python structures and runner code out of this bundle in order to add validation functions to the python BaseModel.
 
 ```bash
-pipelex build runner examples/wip/advisory_board/bundle.plx
+pipelex build runner examples/wip/advisory_board/bundle.plx -L examples/wip/advisory_board 
 ```
 
 This will create a new file `examples/wip/advisory_board/run_master_advisory_orchestrator.py` and a `structures` directory containing the python structures.
