@@ -1,5 +1,6 @@
 domain = "power_extractor"
 description = "The domain for power extractor"
+main_pipe = "power_extractor_dpe"
 
 [concept]
 [concept.Dpe]
