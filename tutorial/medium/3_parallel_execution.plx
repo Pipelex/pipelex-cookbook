@@ -1,5 +1,6 @@
 domain = "parallel_execution"
 description = "Learn how to run pipes in parallel"
+main_pipe = "create_poetry_collection"
 
 [pipe]
 

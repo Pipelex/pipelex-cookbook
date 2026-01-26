@@ -1,5 +1,6 @@
 domain = "using_templates"
 description = "Format output with templates"
+main_pipe = "create_story_document"
 
 [pipe]
 

@@ -1,5 +1,6 @@
 domain = "model_config"
 description = "Learn how to configure LLM models"
+main_pipe = "compare_models"
 
 [pipe]
 

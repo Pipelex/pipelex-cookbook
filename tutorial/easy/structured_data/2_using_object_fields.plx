@@ -1,5 +1,6 @@
 domain = "using_object_fields"
 description = "Use specific fields from structured objects"
+main_pipe = "generate_and_pitch"
 
 [concept]
 

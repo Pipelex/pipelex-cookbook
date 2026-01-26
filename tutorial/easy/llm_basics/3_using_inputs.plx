@@ -1,5 +1,6 @@
 domain = "using_inputs"
 description = "Learn how to pass inputs to your pipeline"
+main_pipe = "write_about_topic"
 
 [pipe]
 

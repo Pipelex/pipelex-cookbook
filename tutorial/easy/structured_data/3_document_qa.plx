@@ -1,5 +1,6 @@
 domain = "document_qa"
 description = "Extract text from documents and answer questions"
+main_pipe = "document_qa"
 
 [concept]
 
