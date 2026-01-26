@@ -1,5 +1,6 @@
 domain = "discord_newsletter"
 description = "Create newsletters from Discord channel content by summarizing messages and organizing them according to newsletter format"
+main_pipe = "write_discord_newsletter"
 
 [concept.Attachment]
 description = "A Discord message attachment"

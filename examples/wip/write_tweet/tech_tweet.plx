@@ -1,5 +1,6 @@
 domain = "tech_tweet"
 description = "A pipeline for optimizing tech tweets using Twitter/X best practices"
+main_pipe = "optimize_tweet_sequence"
 
 [concept]
 DraftTweet = "A draft version of a tech tweet that needs optimization"
