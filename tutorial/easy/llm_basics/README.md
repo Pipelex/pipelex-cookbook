@@ -13,6 +13,7 @@ The simplest pipeline: an LLM that generates text.
 ```plx
 domain = "tutorial_hello_world"
 description = "Your first Pipelex pipeline"
+main_pipe = "tutorial_hello_world"
 
 [pipe]
 
@@ -26,7 +27,8 @@ Generate a one-paragraph creative story idea about a robot learning to paint.
 ```
 
 **What you need to know:**
-- `domain` - A name for your pipeline file
+- `domain` - A unique name for your pipeline file
+- `main_pipe` - Which pipe to run by default (required when CLI doesn't specify a pipe)
 - `type = "PipeLLM"` - This pipe calls an LLM
 - `output = "Text"` - The output is plain text
 - `prompt` - The instructions for the LLM
@@ -51,6 +53,7 @@ What if you want to run **two LLM calls in sequence**? Use **PipeSequence**!
 ```plx
 domain = "chaining_llm_calls"
 description = "Chain multiple LLM calls together"
+main_pipe = "generate_and_expand"
 
 [pipe]
 
@@ -114,6 +117,7 @@ What if you want to **pass data into your pipeline**? Use `inputs`!
 ```plx
 domain = "using_inputs"
 description = "Learn how to pass inputs to your pipeline"
+main_pipe = "write_about_topic"
 
 [pipe]
 
@@ -164,6 +168,7 @@ Want to **format the output** nicely? Use **PipeCompose**!
 ```plx
 domain = "using_templates"
 description = "Format output with templates"
+main_pipe = "create_story_document"
 
 [pipe]
 

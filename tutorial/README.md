@@ -42,3 +42,10 @@ PIPELEX_GATEWAY_API_KEY=your_api_key_here
 ```bash
 pipelex run tutorial/easy/llm_basics/1_hello_world.plx
 ```
+
+## Key Concepts
+
+Every `.plx` pipeline file needs:
+- `domain` - A unique name for your pipeline
+- `main_pipe` - Which pipe to run by default (required when CLI doesn't specify a pipe)
+- `[pipe]` section with your pipe definitions

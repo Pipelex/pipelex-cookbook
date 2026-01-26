@@ -13,6 +13,7 @@ Instead of plain text, get a **structured object** with specific fields.
 ```plx
 domain = "structured_output"
 description = "Get structured data from LLMs"
+main_pipe = "struct_generate_book_idea"
 
 [concept]
 
@@ -29,7 +30,7 @@ target_audience = { type = "text", description = "Who this book is for" }
 [pipe]
 
 # Generate a structured book idea
-[pipe.generate_book_idea]
+[pipe.struct_generate_book_idea]
 type = "PipeLLM"
 description = "Generate a structured book idea"
 output = "BookIdea"
@@ -59,6 +60,7 @@ Access **specific fields** from a structured object in your prompts.
 ```plx
 domain = "using_object_fields"
 description = "Use specific fields from structured objects"
+main_pipe = "generate_and_pitch"
 
 [concept]
 
@@ -75,7 +77,7 @@ target_audience = { type = "text", description = "Who this book is for" }
 [pipe]
 
 # First pipe: Generate a structured book idea
-[pipe.generate_book_idea]
+[pipe.fields_generate_book_idea]
 type = "PipeLLM"
 description = "Generate a structured book idea"
 output = "BookIdea"
@@ -104,7 +106,7 @@ type = "PipeSequence"
 description = "Generate a book idea then write a marketing pitch"
 output = "Text"
 steps = [
-    { pipe = "generate_book_idea", result = "book_idea" },
+    { pipe = "fields_generate_book_idea", result = "book_idea" },
     { pipe = "write_pitch", result = "marketing_pitch" },
 ]
 ```
@@ -129,6 +131,7 @@ Extract text from a **PDF** and answer questions about it.
 ```plx
 domain = "document_qa"
 description = "Extract text from documents and answer questions"
+main_pipe = "document_qa"
 
 [concept]
 
@@ -184,6 +187,24 @@ steps = [
 - `Document` - A built-in type for PDF files
 - `Page[]` - A list of pages extracted from the document
 
+**inputs.json:**
+
+For native types like `Document`, you need to wrap the content with a `concept` key:
+
+```json
+{
+  "document": {
+    "concept": "native.Document",
+    "content": {
+      "url": "assets/simple_ocr/illustrated_train_article.pdf"
+    }
+  },
+  "question": "What is the main topic of this document?"
+}
+```
+
+> **Note:** Simple text inputs can be passed directly (like `"question": "..."`), but native types like `Document` and `Image` require the `concept` wrapper format.
+
 **Run it:**
 ```bash
 pipelex run tutorial/easy/structured_data/3_document_qa.plx -i tutorial/easy/structured_data/inputs.json
@@ -199,7 +220,9 @@ pipelex run tutorial/easy/structured_data/3_document_qa.plx -i tutorial/easy/str
 | `$obj.field` | Access a specific field from an object |
 | `PipeExtract` | Extract text from PDFs and images |
 
-**Congratulations!** You've completed the tutorials. You now know how to:
+**Congratulations!** You've completed the easy tutorials. You now know how to:
 - Make LLM calls and chain them together
 - Get structured data from LLMs
 - Extract and process documents
+
+**Next:** Learn about [Model Configuration, Batch Processing, and Parallel Execution](../../medium/)!

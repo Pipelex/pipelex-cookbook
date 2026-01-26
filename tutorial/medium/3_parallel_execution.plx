@@ -41,10 +41,10 @@ parallels = [
 ]
 add_each_output = true
 
-# Format the results
+# Combine the parallel results into a single output
 [pipe.format_poems]
 type = "PipeCompose"
-description = "Format all poems"
+description = "Combine all poems into a collection"
 inputs = { haiku = "Text", limerick = "Text", sonnet = "Text" }
 output = "Text"
 template = """
@@ -60,7 +60,7 @@ $limerick
 $sonnet
 """
 
-# Main pipeline: parallel generation + formatting
+# Main pipeline: run parallel, then combine
 [pipe.create_poetry_collection]
 type = "PipeSequence"
 description = "Create a collection of poems using parallel execution"
