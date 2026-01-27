@@ -144,7 +144,7 @@ Keep it under 100 words.
 **inputs.json:**
 ```json
 {
-  "topic": "The future of artificial intelligence"
+  "topic": "Photosynthesis"
 }
 ```
 
