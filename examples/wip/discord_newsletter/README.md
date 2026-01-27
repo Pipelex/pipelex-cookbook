@@ -2,6 +2,10 @@
 
 Create newsletters from Discord channel content by summarizing messages and organizing them.
 
+## Prerequisites
+
+Before running this example, ensure you have set up your environment. See the [Clone and Install](../../../README.md#1-clone-and-install) section in the main README.
+
 ## Run the pipeline
 
 ```bash

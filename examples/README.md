@@ -72,6 +72,8 @@ Results will be saved as JSON files in the current directory (or specify `-o pat
 
 ## Prerequisites
 
-Make sure you have installed all required dependencies and have the necessary API keys
-configured for any LLM or OCR services used in the examples. Refer to the main README
-for setup instructions.
+Before running these examples, make sure you have:
+1. Created and activated a virtual environment
+2. Installed the dependencies
+
+See the [Clone and Install](../README.md#1-clone-and-install) section in the main README for setup instructions.

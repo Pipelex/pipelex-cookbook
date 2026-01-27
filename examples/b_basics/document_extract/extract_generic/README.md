@@ -2,6 +2,10 @@
 
 Generic document extraction pipeline for various document types.
 
+## Prerequisites
+
+Before running this example, ensure you have set up your environment. See the [Clone and Install](../../../../README.md#1-clone-and-install) section in the main README.
+
 ## Run the pipeline
 
 ```bash

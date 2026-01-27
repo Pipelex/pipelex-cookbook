@@ -2,6 +2,10 @@
 
 This folder contains simple pipelines that demonstrate the basics of running Pipelex.
 
+## Prerequisites
+
+Before running these examples, ensure you have set up your environment. See the [Clone and Install](../../README.md#1-clone-and-install) section in the main README.
+
 ## Hello World
 
 A minimal pipeline that generates text.

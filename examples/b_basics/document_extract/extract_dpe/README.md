@@ -1,6 +1,10 @@
 # Extract DPE (Diagnostic de Performance Énergétique)
 
-Extract energy performance diagnostic information from French DPE documents which is a PDF file. 
+Extract energy performance diagnostic information from French DPE documents which is a PDF file.
+
+## Prerequisites
+
+Before running this example, ensure you have set up your environment. See the [Clone and Install](../../../../README.md#1-clone-and-install) section in the main README.
 
 ## Run the pipeline
 

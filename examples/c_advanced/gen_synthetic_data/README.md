@@ -2,6 +2,10 @@
 
 Generate synthetic student profile data based on a schema description.
 
+## Prerequisites
+
+Before running this example, ensure you have set up your environment. See the [Clone and Install](../../../README.md#1-clone-and-install) section in the main README.
+
 ## Run the pipeline
 
 ```bash
