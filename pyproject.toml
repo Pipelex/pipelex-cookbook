@@ -23,7 +23,7 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-pipelex = { git = "https://github.com/Pipelex/pipelex.git", rev = "2e9cfab" }
+pipelex = { git = "https://github.com/Pipelex/pipelex.git", rev = "69f105371e75870117fc94c8d285cd61d88c97bc" }
 
 [project.optional-dependencies]
 compat = ["backports.strenum>=1.3.0 ; python_version < '3.11'"]

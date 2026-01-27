@@ -6,12 +6,10 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 import asyncio
 
-
-from structures.discord_newsletter__discord_channel_update import DiscordChannelUpdate
-from structures.discord_newsletter__html_newsletter import HtmlNewsletter
-
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
+from structures.discord_newsletter__discord_channel_update import DiscordChannelUpdate
+from structures.discord_newsletter__html_newsletter import HtmlNewsletter
 
 
 async def run_write_discord_newsletter() -> HtmlNewsletter:
@@ -19,9 +17,9 @@ async def run_write_discord_newsletter() -> HtmlNewsletter:
         pipe_code="write_discord_newsletter",
         inputs={
             "discord_channel_updates": {
-            "concept": "discord_newsletter.DiscordChannelUpdate",
-            "content": [DiscordChannelUpdate(name="name_value", position=0, messages=["DiscordMessage()"])],
-        },
+                "concept": "discord_newsletter.DiscordChannelUpdate",
+                "content": [DiscordChannelUpdate(name="name_value", position=0, messages=["DiscordMessage()"])],
+            },
         },
     )
     return pipe_output.main_stuff_as(content_type=HtmlNewsletter)

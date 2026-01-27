@@ -11,12 +11,12 @@ To regenerate: pipelex build structures <target_directory>
 """
 
 from enum import Enum
+from typing import Any, Dict, List, Literal, Optional
+
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pipelex.core.stuffs.text_content import TextContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
 class HtmlNewsletter(TextContent):
     """The final newsletter content in html format with organized channel summaries"""
-

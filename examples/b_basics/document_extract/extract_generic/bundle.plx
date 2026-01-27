@@ -17,7 +17,7 @@ type = "PipeLLM"
 description = "Write markdown from page content"
 inputs = { "page_content.page_view" = "Image", page_content = "Page" }
 output = "Text"
-model = "llm_for_img_to_text"
+model = "$vision"
 system_prompt = "You are a multimodal LLM, expert at converting images into perfect markdown."
 prompt = """
 You are given an image which is a view of a document page: $page_content.page_view

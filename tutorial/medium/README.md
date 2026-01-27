@@ -43,7 +43,7 @@ Write a creative haiku about coding.
 type = "PipeLLM"
 description = "Generate text using a preset"
 output = "Text"
-model = "llm_for_creative_writing"
+model = "$writing-creative"
 prompt = """
 Write a creative haiku about coding.
 """
@@ -74,7 +74,7 @@ $default_result
 ## 2. Custom Settings (temperature = 0.9)
 $custom_result
 
-## 3. Preset (llm_for_creative_writing)
+## 3. Preset (writing-creative)
 $preset_result
 """
 ```

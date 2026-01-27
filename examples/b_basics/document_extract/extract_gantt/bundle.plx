@@ -57,7 +57,7 @@ type = "PipeLLM"
 description = "Describe the timescale of a gantt chart"
 inputs = { gantt_chart_image = "GanttChartImage" }
 output = "GanttTimescaleDescription"
-model = "llm_for_diagram_to_text"
+model = "$vision-diagram"
 prompt = """
 I am sharing an image of a Gantt chart: $gantt_chart_image.
 Please analyze the timescale: what is the smallest unit detailed in the time scale?
@@ -68,7 +68,7 @@ type = "PipeLLM"
 description = "List all the tasks"
 inputs = { gantt_chart_image = "GanttChartImage" }
 output = "GanttTaskName[]"
-model = "llm_for_diagram_to_text"
+model = "$vision-diagram"
 prompt = """
 I am sharing an image of a Gantt chart: $gantt_chart_image.
 Please analyse the image and list all the task names.
@@ -79,7 +79,7 @@ type = "PipeLLM"
 description = "Extract the precise dates of the task, start_date and end_date"
 inputs = { gantt_chart_image = "GanttChartImage", gantt_timescale = "GanttTimescaleDescription", gantt_task_name = "GanttTaskName" }
 output = "GanttTaskDetails"
-model = "llm_for_diagram_to_text"
+model = "$vision-diagram"
 prompt = """
 I am sharing an image of a Gantt chart: $gantt_chart_image.
 Please analyse the image and for a given task name (and only this task), extract the information of the task, if relevant.
@@ -114,7 +114,7 @@ type = "PipeLLM"
 description = "Extract all details from a gantt chart"
 inputs = { image = "GanttChartImage" }
 output = "GanttTranscript"
-model = "llm_for_diagram_to_text"
+model = "$vision-diagram"
 prompt = """
 # **Task:** You are provided with an image depicting a planning or timeline: $image.
 Your objective is to produce a clear, comprehensive, and detailed description of the planning or timeline, focusing on its structure, events, and key details.

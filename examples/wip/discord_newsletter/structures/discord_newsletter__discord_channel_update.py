@@ -11,10 +11,12 @@ To regenerate: pipelex build structures <target_directory>
 """
 
 from enum import Enum
-from examples.wip.discord_newsletter.structures.discord_newsletter__discord_message import DiscordMessage
+from typing import Any, Dict, List, Literal, Optional
+
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
+
+from examples.wip.discord_newsletter.structures.discord_newsletter__discord_message import DiscordMessage
 
 
 class DiscordChannelUpdate(StructuredContent):

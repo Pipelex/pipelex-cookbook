@@ -11,9 +11,10 @@ To regenerate: pipelex build structures <target_directory>
 """
 
 from enum import Enum
+from typing import Any, Dict, List, Literal, Optional
+
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
 class ChannelSummary(StructuredContent):
@@ -22,4 +23,4 @@ class ChannelSummary(StructuredContent):
     channel_name: str = Field(..., description="Name of the Discord channel")
     position: int = Field(..., description="Position of the channel for ordering")
     summary_items: List[str] = Field(..., description="Well-written summaries of the channel's activity")
-    category: Literal['Share', 'Introduce Yourself', 'Geographic Hubs', 'Other'] = Field(..., description="Category of the channel")
+    category: Literal["Share", "Introduce Yourself", "Geographic Hubs", "Other"] = Field(..., description="Category of the channel")

@@ -2794,7 +2794,7 @@ wheels = [
 [[package]]
 name = "pipelex"
 version = "0.18.0b2"
-source = { git = "https://github.com/Pipelex/pipelex.git?rev=2e9cfab#2e9cfab833575365f95946172464852da453ffe5" }
+source = { git = "https://github.com/Pipelex/pipelex.git?rev=69f105371e75870117fc94c8d285cd61d88c97bc#69f105371e75870117fc94c8d285cd61d88c97bc" }
 dependencies = [
     { name = "aiofiles" },
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
@@ -2892,7 +2892,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal", "docling"], git = "https://github.com/Pipelex/pipelex.git?rev=2e9cfab" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal", "docling"], git = "https://github.com/Pipelex/pipelex.git?rev=69f105371e75870117fc94c8d285cd61d88c97bc" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.405" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.1" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },

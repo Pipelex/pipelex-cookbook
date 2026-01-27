@@ -53,7 +53,7 @@ Analyzes the data description and generates a comprehensive list of real-world s
 """
 inputs = { data_description = "DataDescription", nb_samples = "NbOfSamples" }
 output = "SampleCaseCharacterization[]"
-model = "llm_for_data_synthesis"
+model = "$synthesizing-data"
 system_prompt = """
 You are an expert at analyzing data requirements and identifying comprehensive sample cases for synthetic data generation. Your task is to generate a list of SampleCaseCharacterization structured objects that cover diverse real-world scenarios, including common cases, edge cases, and important variations.
 """
@@ -80,7 +80,7 @@ Creates a detailed synthetic data sample for a single sample case. Takes the ori
 """
 inputs = { data_description = "DataDescription", case_characterization = "SampleCaseCharacterization" }
 output = "Sample"
-model = "llm_for_data_synthesis"
+model = "$synthesizing-data"
 system_prompt = """
 You are a synthetic data generator. Your task is to create a complete, realistic sample that adheres to the given data specification while embodying the specific characteristics of the sample case provided.
 """
