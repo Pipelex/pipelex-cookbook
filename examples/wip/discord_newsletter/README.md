@@ -21,7 +21,7 @@ The key steps are:
 
 ## Run the pipeline
 
-Run the Python script that loads the Discord export JSON and generates the newsletter:
+From the root of the repository, run the Python script that loads the Discord export JSON and generates the newsletter:
 
 ```bash
 python examples/wip/discord_newsletter/run_discord_newsletter.py

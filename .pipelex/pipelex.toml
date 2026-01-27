@@ -137,7 +137,7 @@ console_print_target = "stdout"
 
 [pipelex.log_config.package_log_levels]
 # Log levels for specific packages (use "-" instead of "." in package names)
-pipelex = "INFO"
+pipelex = "DEBUG"
 
 ####################################################################################################
 # Feature Config
