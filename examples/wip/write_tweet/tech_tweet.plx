@@ -1,5 +1,6 @@
 domain = "tech_tweet"
 description = "A pipeline for optimizing tech tweets using Twitter/X best practices"
+main_pipe = "optimize_tweet_sequence"
 
 [concept]
 DraftTweet = "A draft version of a tech tweet that needs optimization"
@@ -13,7 +14,7 @@ type = "PipeLLM"
 description = "Analyze the draft tweet and identify areas for improvement"
 inputs = { draft_tweet = "DraftTweet" }
 output = "TweetAnalysis"
-model = "llm_for_writing_analysis"
+model = "$writing-factual"
 system_prompt = """
 You are an expert in social media optimization, particularly for tech content on Twitter/X.
 Your role is to analyze tech tweets and check if they display typical startup communication pitfalls.
@@ -42,7 +43,7 @@ type = "PipeLLM"
 description = "Optimize the tweet based on the analysis"
 inputs = { draft_tweet = "DraftTweet", tweet_analysis = "TweetAnalysis", writing_style = "WritingStyle" }
 output = "OptimizedTweet"
-model = "llm_for_social_post_writing"
+model = "$writing-creative"
 system_prompt = """
 You are an expert in writing engaging tech tweets that drive meaningful discussions and engagement.
 Your goal is to rewrite tweets to be impactful and avoid the pitfalls identified in the analysis.

@@ -1,41 +1,112 @@
-import runpy
+import subprocess
 
 import pytest
 from pipelex.system.environment import get_optional_env
-
-from examples.b_basics.document_extract.extract_dpe import extract_dpe
-from examples.b_basics.document_extract.extract_gantt import extract_gantt
-from examples.b_basics.document_extract.extract_generic import extract_generic
-from examples.b_basics.document_extract.extract_invoice import extract_invoice
-from examples.b_basics.document_extract.extract_proof_of_purchase import extract_proof_of_purchase
-from examples.b_basics.document_extract.extract_table import extract_table
-from examples.c_advanced.using_inference_plugins import hello_plugin
 
 
 @pytest.mark.inference
 @pytest.mark.dry_runnable
 class TestExamples:
-    def test_extract_dpe(self):
-        runpy.run_path(extract_dpe.__file__, run_name="__main__")
+    def test_extract_dpe(self, pipelex_cmd: str):
+        result = subprocess.run(
+            [
+                pipelex_cmd,
+                "run",
+                "examples/b_basics/document_extract/extract_dpe/bundle.plx",
+                "-i",
+                "examples/b_basics/document_extract/extract_dpe/inputs.json",
+                "-L",
+                "examples/documents",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, f"Command failed: {result.stderr}"
 
-    def test_extract_gantt(self):
-        runpy.run_path(extract_gantt.__file__, run_name="__main__")
+    def test_extract_gantt(self, pipelex_cmd: str):
+        result = subprocess.run(
+            [
+                pipelex_cmd,
+                "run",
+                "examples/b_basics/document_extract/extract_gantt/bundle.plx",
+                "-i",
+                "examples/b_basics/document_extract/extract_gantt/inputs.json",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, f"Command failed: {result.stderr}"
 
-    def test_extract_generic(self):
-        runpy.run_path(extract_generic.__file__, run_name="__main__")
+    def test_extract_generic(self, pipelex_cmd: str):
+        result = subprocess.run(
+            [
+                pipelex_cmd,
+                "run",
+                "examples/b_basics/document_extract/extract_generic/bundle.plx",
+                "-i",
+                "examples/b_basics/document_extract/extract_generic/inputs.json",
+                "-L",
+                "examples",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, f"Command failed: {result.stderr}"
 
-    def test_extract_proof_of_purchase(self):
-        runpy.run_path(extract_proof_of_purchase.__file__, run_name="__main__")
+    def test_extract_proof_of_purchase(self, pipelex_cmd: str):
+        result = subprocess.run(
+            [
+                pipelex_cmd,
+                "run",
+                "examples/b_basics/document_extract/extract_proof_of_purchase/bundle.plx",
+                "-i",
+                "examples/b_basics/document_extract/extract_proof_of_purchase/inputs.json",
+                "-L",
+                "examples/documents",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, f"Command failed: {result.stderr}"
 
-    def test_extract_table(self):
-        runpy.run_path(extract_table.__file__, run_name="__main__")
+    def test_extract_table(self, pipelex_cmd: str):
+        result = subprocess.run(
+            [
+                pipelex_cmd,
+                "run",
+                "examples/b_basics/document_extract/extract_table/bundle.plx",
+                "-i",
+                "examples/b_basics/document_extract/extract_table/inputs.json",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, f"Command failed: {result.stderr}"
 
-    def test_invoice_extractor(self):
-        runpy.run_path(extract_invoice.__file__, run_name="__main__")
+    def test_invoice_extractor(self, pipelex_cmd: str):
+        result = subprocess.run(
+            [
+                pipelex_cmd,
+                "run",
+                "examples/b_basics/document_extract/extract_invoice/bundle.plx",
+                "-i",
+                "examples/b_basics/document_extract/extract_invoice/inputs.json",
+                "-L",
+                "examples/documents",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        assert result.returncode == 0, f"Command failed: {result.stderr}"
 
     @pytest.mark.gha_disabled
-    def test_hello_plugin(self):
+    def test_hello_plugin(self, pipelex_cmd: str):
         if not get_optional_env("OPENAI_API_KEY"):
             pytest.skip("OPENAI_API_KEY is not set")
         else:
-            runpy.run_path(hello_plugin.__file__, run_name="__main__")
+            result = subprocess.run(
+                [pipelex_cmd, "run", "examples/c_advanced/using_inference_plugins/hello_plugin.plx"],
+                capture_output=True,
+                text=True,
+            )
+            assert result.returncode == 0, f"Command failed: {result.stderr}"

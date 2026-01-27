@@ -1,5 +1,6 @@
 domain = "batch_processing"
 description = "Learn how to process items in batches"
+main_pipe = "batch_write_summaries"
 
 [concept]
 

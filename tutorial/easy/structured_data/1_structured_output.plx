@@ -1,5 +1,6 @@
 domain = "structured_output"
 description = "Get structured data from LLMs"
+main_pipe = "struct_generate_book_idea"
 
 [concept]
 

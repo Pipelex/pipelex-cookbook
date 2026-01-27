@@ -1,5 +1,6 @@
 domain = "chaining_llm_calls"
 description = "Chain multiple LLM calls together"
+main_pipe = "generate_and_expand"
 
 [pipe]
 

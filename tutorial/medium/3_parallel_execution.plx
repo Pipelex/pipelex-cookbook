@@ -1,5 +1,6 @@
 domain = "parallel_execution"
 description = "Learn how to run pipes in parallel"
+main_pipe = "generate_poems_parallel"
 
 [pipe]
 
@@ -39,32 +40,3 @@ parallels = [
     { pipe = "generate_sonnet_excerpt", result = "sonnet" },
 ]
 add_each_output = true
-
-# Format the results
-[pipe.format_poems]
-type = "PipeCompose"
-description = "Format all poems"
-inputs = { haiku = "Text", limerick = "Text", sonnet = "Text" }
-output = "Text"
-template = """
-# Poetry Collection
-
-## Haiku
-$haiku
-
-## Limerick
-$limerick
-
-## Sonnet (excerpt)
-$sonnet
-"""
-
-# Main pipeline: parallel generation + formatting
-[pipe.create_poetry_collection]
-type = "PipeSequence"
-description = "Create a collection of poems using parallel execution"
-output = "Text"
-steps = [
-    { pipe = "generate_poems_parallel", result = "poems" },
-    { pipe = "format_poems", result = "collection" },
-]

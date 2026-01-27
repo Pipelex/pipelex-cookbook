@@ -12,44 +12,82 @@ Control which LLM to use and how it behaves.
 
 **File: `1_model_config.plx`**
 
-### Default (uses default config from deck)
-
 ```plx
-[pipe.generate_text]
+domain = "model_config"
+description = "Learn how to configure LLM models"
+main_pipe = "compare_models"
+
+[pipe]
+
+# Example 1: Default model (uses default config from deck)
+[pipe.generate_with_default]
 type = "PipeLLM"
+description = "Generate text using the default model"
 output = "Text"
-prompt = "Write a haiku."
-```
+prompt = """
+Write a haiku about coding.
+"""
 
-### Inline settings
-
-```plx
-[pipe.generate_creative]
+# Example 2: Inline model configuration
+[pipe.generate_with_custom_settings]
 type = "PipeLLM"
+description = "Generate text with custom temperature"
 output = "Text"
 model = { model = "base-claude", temperature = 0.9 }
-prompt = "Write a creative haiku."
-```
+prompt = """
+Write a creative haiku about coding.
+"""
 
-### Using a preset
-
-```plx
+# Example 3: Using a preset
 [pipe.generate_with_preset]
 type = "PipeLLM"
+description = "Generate text using a preset"
 output = "Text"
-model = "llm_for_creative_writing"
-prompt = "Write a creative haiku."
+model = "$writing-creative"
+prompt = """
+Write a creative haiku about coding.
+"""
+
+# Compare all three approaches
+[pipe.compare_models]
+type = "PipeSequence"
+description = "Compare different model configurations"
+output = "Text"
+steps = [
+    { pipe = "generate_with_default", result = "default_result" },
+    { pipe = "generate_with_custom_settings", result = "custom_result" },
+    { pipe = "generate_with_preset", result = "preset_result" },
+    { pipe = "format_comparison", result = "comparison" },
+]
+
+[pipe.format_comparison]
+type = "PipeCompose"
+description = "Format the comparison results"
+inputs = { default_result = "Text", custom_result = "Text", preset_result = "Text" }
+output = "Text"
+template = """
+# Model Configuration Comparison
+
+## 1. Default Model (no config)
+$default_result
+
+## 2. Custom Settings (temperature = 0.9)
+$custom_result
+
+## 3. Preset (writing-creative)
+$preset_result
+"""
 ```
 
 **What you need to know:**
 - `model = { model = "...", temperature = 0.9 }` - Inline configuration
-- `model = "preset_name"` - Use a predefined preset from your deck
+- `model = "preset_name"` - Use a predefined preset from your deck: Leanr more here: [LLM Presets](https://docs.pipelex.com/latest/home/7-configuration/config-technical/inference-backend-config/)
 - Temperature: 0.0 = deterministic, 1.0 = creative
 - Presets and aliases are defined in `.pipelex/inference/deck/base_deck.toml`
 
 **Run it:**
 ```bash
-python tutorial/medium/1_model_config.py
+pipelex run tutorial/medium/1_model_config.plx
 ```
 
 ---
@@ -61,26 +99,61 @@ Process a list of items one by one (in parallel behind the scenes).
 **File: `2_batch_processing.plx`**
 
 ```plx
-# Generate a list of topics
+domain = "batch_processing"
+description = "Learn how to process items in batches"
+main_pipe = "batch_write_summaries"
+
+[concept]
+
+[concept.Topic]
+description = "A topic to write about"
+refines = "Text"
+
+[pipe]
+
+# Step 1: Generate a list of topics
 [pipe.generate_topics]
 type = "PipeLLM"
+description = "Generate a list of topics"
 output = "Topic[3]"
-prompt = "Generate 3 blog topics."
+prompt = """
+Generate 3 interesting topics for short blog posts about technology.
+Just the topic titles, nothing else.
+"""
 
-# Process a single topic
+# Step 2: Process each topic (this will be batched)
 [pipe.write_summary]
 type = "PipeLLM"
+description = "Write a summary for a single topic"
 inputs = { topic = "Topic" }
 output = "Text"
-prompt = "Write a summary for: $topic"
+prompt = """
+Write a 2-sentence summary for a blog post about:
 
-# Batch over the list
-[pipe.batch_pipeline]
+$topic
+"""
+
+# Step 3: Combine results
+[pipe.format_results]
+type = "PipeCompose"
+description = "Format all summaries"
+inputs = { summaries = "Text[]" }
+output = "Text"
+template = """
+# Blog Post Summaries
+
+@summaries
+"""
+
+# Main pipeline using batch_over
+[pipe.batch_write_summaries]
 type = "PipeSequence"
+description = "Generate topics and write summaries for each"
 output = "Text"
 steps = [
     { pipe = "generate_topics", result = "topics" },
     { pipe = "write_summary", batch_over = "topics", batch_as = "topic", result = "summaries" },
+    { pipe = "format_results", result = "final_output" },
 ]
 ```
 
@@ -92,7 +165,7 @@ steps = [
 
 **Run it:**
 ```bash
-python tutorial/medium/2_batch_processing.py
+pipelex run tutorial/medium/2_batch_processing.plx
 ```
 
 ---
@@ -104,22 +177,46 @@ Run independent pipes at the same time.
 **File: `3_parallel_execution.plx`**
 
 ```plx
-[pipe.task_a]
-type = "PipeLLM"
-output = "Text"
-prompt = "Write a haiku."
+domain = "parallel_execution"
+description = "Learn how to run pipes in parallel"
+main_pipe = "generate_poems_parallel"
 
-[pipe.task_b]
-type = "PipeLLM"
-output = "Text"
-prompt = "Write a limerick."
+[pipe]
 
-[pipe.run_parallel]
+# Three independent pipes that can run in parallel
+[pipe.generate_haiku]
+type = "PipeLLM"
+description = "Generate a haiku"
+output = "Text"
+prompt = """
+Write a haiku about the ocean.
+"""
+
+[pipe.generate_limerick]
+type = "PipeLLM"
+description = "Generate a limerick"
+output = "Text"
+prompt = """
+Write a limerick about a programmer.
+"""
+
+[pipe.generate_sonnet_excerpt]
+type = "PipeLLM"
+description = "Generate a sonnet excerpt"
+output = "Text"
+prompt = """
+Write the first 4 lines of a sonnet about nature.
+"""
+
+# Run all three in parallel
+[pipe.generate_poems_parallel]
 type = "PipeParallel"
+description = "Generate different poem types in parallel"
 output = "Dynamic"
 parallels = [
-    { pipe = "task_a", result = "haiku" },
-    { pipe = "task_b", result = "limerick" },
+    { pipe = "generate_haiku", result = "haiku" },
+    { pipe = "generate_limerick", result = "limerick" },
+    { pipe = "generate_sonnet_excerpt", result = "sonnet" },
 ]
 add_each_output = true
 ```
@@ -132,7 +229,7 @@ add_each_output = true
 
 **Run it:**
 ```bash
-python tutorial/medium/3_parallel_execution.py
+pipelex run tutorial/medium/3_parallel_execution.plx
 ```
 
 ---

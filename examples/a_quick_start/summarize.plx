@@ -7,10 +7,16 @@ system_prompt = "You are an expert at summarizing text."
 [concept] ####### Concept definitions ############################
 Topic = "A topic a text deals with."
 Summary = "A concise rewriting of a dense text."
-StructuredSummary = "A summary with a structured output."
+
+[concept.StructuredSummary]
+description = "A summary with a structured output."
+
+[concept.StructuredSummary.structure]
+summary = { type = "text", description = "Summary of the text, super clear and factual", required = true }
+abstract = { type = "text", description = "Abstract of the summary 1 short sentences", required = true }
+main_concepts = { type = "list", item_type = "text", description = "Array of main concepts tackled in the text" }
 
 [pipe] ####### Pipe definitions ##################################
-
 [pipe.summarize_with_structure]
 type = "PipeLLM"
 description = "Summarize text."

@@ -1,0 +1,80 @@
+domain = "invoice_extraction"
+main_pipe = "process_invoice"
+
+[concept.InvoiceDetails]
+description = "Classification of the invoice type (formal bill vs simple receipt)"
+
+[concept.InvoiceDetails.structure]
+category = { type = "text", description = "The category of the invoice", choices = ["bill", "receipt"] }
+explanation = { type = "text", description = "Explanation of the classification" }
+
+[concept.Invoice]
+description = "Invoice information extracted from text, supporting both formal bills and receipts"
+
+[concept.Invoice.structure]
+invoice_id = { type = "text", description = "Unique identifier for the invoice" }
+invoice_number = { type = "text", description = "Invoice number as shown on the document" }
+date = { type = "date", description = "Date when the invoice was issued" }
+time = { type = "text", description = "Time of the transaction if available" }
+amount_incl_tax = { type = "number", description = "Total amount including taxes" }
+amount_excl_tax = { type = "number", description = "Net amount excluding taxes" }
+vat_amount = { type = "number", description = "Total VAT/tax amount" }
+vat_rates = { type = "list", item_type = "number", description = "List of VAT rates applied" }
+vendor = { type = "text", description = "Name of the vendor/seller" }
+vendor_address = { type = "text", description = "Complete address of the vendor" }
+vendor_siret = { type = "text", description = "SIRET number of the vendor (French company registration)" }
+vendor_vat_number = { type = "text", description = "VAT registration number of the vendor" }
+company_name = { type = "text", description = "Name of the purchasing company" }
+company_address = { type = "text", description = "Address of the purchasing company" }
+description = { type = "text", description = "Description of goods or services purchased" }
+category = { type = "concept", concept_ref = "invoice_extraction.InvoiceDetails", description = "Category or type of expense" }
+text = { type = "text", description = "Raw text extracted from the invoice" }
+
+[pipe]
+[pipe.process_invoice]
+type = "PipeSequence"
+description = "Process relevant information from an invoice"
+inputs = { document = "Document" }
+output = "Invoice[]"
+steps = [
+    { pipe = "extract_page_contents_and_views_from_pdf", result = "invoice_pages" },
+    { pipe = "extract_invoice", batch_over = "invoice_pages", batch_as = "invoice_page", result = "invoice" },
+]
+
+[pipe.extract_invoice]
+type = "PipeSequence"
+description = "Extract invoice information from an invoice text transcript"
+inputs = { invoice_page = "Page" }
+output = "Invoice"
+steps = [
+    { pipe = "analyze_invoice", result = "invoice_details" },
+    { pipe = "extract_invoice_data", result = "invoice" },
+]
+
+[pipe.analyze_invoice]
+type = "PipeLLM"
+description = "Analyze the invoice"
+inputs = { invoice_page = "Page" }
+output = "InvoiceDetails"
+prompt = """
+Analyze this invoice:
+
+@invoice_page.text_and_images.text.text
+"""
+
+[pipe.extract_invoice_data]
+type = "PipeLLM"
+description = "Extract invoice information from an invoice text transcript"
+inputs = { "invoice_page.page_view" = "Image", invoice_details = "InvoiceDetails", invoice_page = "Page" }
+output = "Invoice"
+model = "$vision"
+prompt = """
+Extract invoice information from this invoice:
+
+The category of this invoice is: $invoice_details.category.
+
+{{ invoice_page.text_and_images.text.text|tag("ocr_extacted_text") }}
+
+Page view: $invoice_page.page_view
+"""
+

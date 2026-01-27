@@ -86,20 +86,20 @@ Want to bring your own API keys or use local models? See [Configure AI Providers
 Try the hello world example:
 
 ```bash
-python examples/a_quick_start/hello_world.py
+pipelex run examples/a_quick_start/hello_world.plx
 ```
 
 Or explore other cookbook examples:
 
 ```bash
 # Extract data from a Gantt chart image
-python examples/b_basics/document_extract/extract_gantt/extract_gantt.py
+pipelex run examples/b_basics/document_extract/extract_gantt/gantt.plx -i examples/b_basics/document_extract/extract_gantt/inputs.json
 
 # Extract and summarize invoice information
-python examples/b_basics/document_extract/extract_invoice/extract_invoice.py
+pipelex run examples/b_basics/document_extract/extract_invoice/invoice.plx -i examples/b_basics/document_extract/extract_invoice/inputs.json
 
 # Multi-step text summarization
-python examples/a_quick_start/summarize_2_steps.py
+pipelex run examples/a_quick_start/summarize.plx --pipe summarize_by_steps -i examples/a_quick_start/inputs.json
 ```
 
 ## 5. Known Limitations
@@ -199,7 +199,7 @@ Performs comprehensive analysis comparing the candidate's CV against the job off
 """
 inputs = { cv_pages = "Page[]", job_offer_pages = "Page[]" }
 output = "MatchAnalysis"
-model = "llm_to_answer_hard_questions"
+model = "$writing-factual"
 system_prompt = """
 You are an expert HR analyst and recruiter specializing in candidate-job fit assessment. Your task is to generate a structured MatchAnalysis comparing a candidate's CV against job requirements.
 """
@@ -222,7 +222,7 @@ Generates exactly 5 targeted, relevant interview questions based on the match an
 """
 inputs = { match_analysis = "MatchAnalysis" }
 output = "Question[5]"
-model = "llm_to_write_questions"
+model = "$writing-creative"
 system_prompt = """
 You are an expert HR interviewer and talent assessment specialist. Your task is to generate structured interview questions based on candidate-position match analysis.
 """
@@ -407,9 +407,8 @@ The cookbook contains production-ready examples covering various use cases:
 
 Each example includes:
 - Complete `.plx` pipeline definition
-- Python execution script
+- `inputs.json` file with sample inputs
 - Sample input data in `assets/`
-- Structured output models where applicable
 
 ## 📖 Next Steps
 

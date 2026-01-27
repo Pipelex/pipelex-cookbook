@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from pipelex import pretty_print
 from pipelex.tools.misc.file_utils import (
@@ -19,7 +20,7 @@ def get_results_dir_path(sample_name: str):
     return result_dir_path
 
 
-def get_results_file_path(sample_name: str, file_name: str):
+def get_results_file_path(sample_name: str, file_name: str) -> Path:
     extension = file_name.split(".")[-1]
     base_name = file_name.split(".")[0]
     result_dir_path = f"{RESULTS_DIR_PATH}/{sample_name}"
@@ -39,5 +40,5 @@ def output_result(
     content: str,
 ):
     result_file_path = get_results_file_path(sample_name, file_name)
-    save_text_to_path(content, result_file_path)
+    save_text_to_path(content, str(result_file_path))
     pretty_print(f"file://{os.path.abspath(result_file_path)}", title=title)

@@ -1,0 +1,34 @@
+domain = "extract_generic"
+main_pipe = "power_extractor"
+
+[pipe]
+[pipe.power_extractor]
+type = "PipeSequence"
+description = "Update page content with markdown"
+inputs = { document = "Document" }
+output = "Text[]"
+steps = [
+    { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },
+    { pipe = "write_markdown_from_page_content", batch_over = "page_contents", batch_as = "page_content", result = "markdowns" },
+]
+
+[pipe.write_markdown_from_page_content]
+type = "PipeLLM"
+description = "Write markdown from page content"
+inputs = { "page_content.page_view" = "Image", page_content = "Page" }
+output = "Text"
+model = "$vision"
+system_prompt = "You are a multimodal LLM, expert at converting images into perfect markdown."
+prompt = """
+You are given an image which is a view of a document page: $page_content.page_view
+You are also given the text extracted from the page by an OCR model.
+Your task is to output the perfect markdown of the page.
+
+Here is the text extracted from the page:
+{{ page_content.text_and_images.text.text|tag("ocr_text") }}
+
+- Ensure you do not miss any information from the page. The text extracted from the page is not always complete. Your task is to complete the text and add the missing information using the page view.
+- Output only the markdown, nothing else. No need for "```markdown" or "```".
+- In case of diagrams, charts, visualizations, etc. with text inside (the text may not appear in the input text - the OCR fails to extract it), make sure to include the text in the markdown. Feel free to choose the most appropriate markdown element to do so.
+"""
+
