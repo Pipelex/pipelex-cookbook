@@ -9,52 +9,48 @@ Topic
 - Writing tone
 - Article length
 
-This example demonstrates how to design production-ready AI workflows with multi-step reasoning and cost tracking.
+This example demonstrates how to build a simple multi-step blog generation workflow using Pipelex pipelines and structured inputs.
 
 ## Overview
 
 This project uses Pipelex to orchestrate multiple LLM calls:
 
-- Generate an SEO outline
-- Expand outline into a full blog article
-- Display results in terminal
-- Save output as a Markdown file
+- Generate an SEO-friendly outline
+- Expand the outline into a full blog article
+- Automatically save results (Markdown, JSON, HTML)
+- Inputs are provided via a structured JSON file.
 
 It supports:
 
 - Pipelex Gateway
 - Any supported LLM provider (OpenAI, Anthropic, Groq, Mistral, local models, etc.)
-- Cost tracking
-- Interactive CLI input
+- Structured JSON inputs
+- Automatic output generation via Pipelex
 
 ## Features
 
-- Interactive CLI input
+- Structured input via JSON
 - SEO title & meta description generation
-- Structured outline creation
-- Full blog generation
-- Cost & token usage tracking
-- Saves output automatically
-- Modular, production-ready architecture
+- Outline creation
+- Full blog article generation
+- Automatic output saving (via Pipelex)
+- Clean, minimal PLX-based workflow
 
 ## Technology Stack
 
 - Pipelex – AI workflow orchestration
-- Python 3.10+
-- OpenAI / Pipelex Gateway
-- AsyncIO
-- Pydantic
 - TOML (.plx) pipelines
+- Pipelex CLI
+- Any supported LLM provider
 
 ## Project Structure
+
 ```bash
 blog_article_generator/
-│
-├── __init__.py
-├── blog_article_generator.plx   # Pipeline blueprint
-├── blog_article_generator_run.py
-├── blog_article_struct.py
+├── blog_article_generator.plx   # Pipeline definition
+├── input.json                   # Example input
 ├── README.md
+└── __init__.py
 ```
 
 ## Getting Started
@@ -133,67 +129,71 @@ You can use any provider you selected during pipelex init.
 **Note**: We use OpenAI API Here.
 
 ## Run the Example
-```python
-python examples/wip/blog_article_generator/blog_article_generator_run.py
+```bash
+pipelex run examples/wip/blog_article_generator/blog_article_generator.plx \
+  -i examples/wip/blog_article_generator/input.json
 ```
 
 ## Example Input
-```bash
-Enter blog topic: Top AI Startups in 2026
-Target audience: Developers
-Tone: Professional
-Length: Long
+This example uses a structured JSON input file.
+
+```json
+{
+  "user_prompt": {
+    "concept": "BlogArticleRequest",
+    "content": {
+      "text": "Write a fun and engaging blog article",
+      "topic": "Capybara",
+      "audience": "Kids",
+      "tone": "Casual",
+      "length": "Short"
+    }
+  }
+}
 ```
 
 ## Output
-- Full blog article
-- Markdown file saved automatically
-- Cost report per model
 
-Example saved file:
+- SEO-optimized blog outline
+- Full blog article in Markdown
+- Structured outputs generated automatically by Pipelex
+
+Example output directory:
 ```bash
-results/examples/blog_article_generator/blog_article_01.md
+results/generate_blog_article_output_01/
 ```
+This directory contains:
+
+- Markdown (.md)
+- JSON
+- HTML
+- Execution graphs
+- Working memory artifacts
 
 ## Usage
-You can change topic every time:
+
+To generate a new article, update the input file:
 ```bash
-Enter blog topic: AI Agents in Healthcare
+"topic": "AI Agents in Healthcare"
 ```
-No code changes required.
-
-## Cost Tracking
-
-Pipelex automatically prints:
-
-- Model name
-- Input tokens
-- Output tokens
-- Total cost
-
-Example:
-```bash
-Model: gpt-5
-Input tokens: 4,000
-Output tokens: 6,200
-Cost: $0.0034
-```
+Then re-run the pipeline.
+No changes to the pipeline code are required.
 
 ## Customization
 
-You can modify:
+You can customize this example by modifying:
 
-- Prompts in .plx file
+- Prompts in the .plx file
 - Model selection
-- Temperature
 - Output format
-- Save location
+- Pipeline structure
+- Input schema
 
 ## Use Cases
 
 - Content marketing automation
 - SEO blog generation
-- Newsletter writing
+- Newsletter drafting
 - Developer documentation
-- AI content SaaS
-- Startup blogging
+- AI-powered content workflows
+- Educational content creation
