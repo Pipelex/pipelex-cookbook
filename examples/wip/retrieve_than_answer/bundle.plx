@@ -1,5 +1,6 @@
 domain = "answer"
 description = "The domain for questions and answers"
+main_pipe = "retrieve_then_answer"
 
 [concept]
 Answer = "An answer to a question"
@@ -7,18 +8,24 @@ Question = "A question to a problem"
 EnrichedQuestion = "An enriched question"
 RetrievedExcerpt = "An excerpt from a text with its justification for being relevant to a question"
 
+[concept.MatrimonialRegime]
+description = "The matrimonial regime extracted from a document"
+
+[concept.MatrimonialRegime.structure]
+regime = { type = "text", description = "The matrimonial regime", required = true, choices = ["Non renseigné", "Communauté universelle", "Communauté de meubles et d'acquêts", "Communauté réduite aux acquêts", "Séparation de biens", "Participation aux acquêts", "Autres (régimes matrimoniaux étrangers)"] }
 
 [pipe]
 [pipe.retrieve_then_answer]
 type = "PipeSequence"
-description = "Answer a question, given the target type and the excerpts neeeded to answer it"
-inputs = { question = "answer.Question", text = "Text", client_instructions = "Text" }
-output = "Dynamic"
+description = "Answer a question, given the target type and the excerpts needed to answer it"
+inputs = { text = "Text", question = "answer.Question", client_instructions = "Text" }
+output = "MatrimonialRegime"
 steps = [
-  { pipe = "write_context_of_text", result = "context" },
-  { pipe = "retrieve_excerpts", result = "excerpts" },
-  { pipe = "enrich_question", result = "enriched_question" },
-  { pipe = "answer_question", result = "answer" },
+    { pipe = "write_context_of_text", result = "context" },
+    { pipe = "retrieve_excerpts", result = "excerpts" },
+    { pipe = "enrich_question", result = "enriched_question" },
+    { pipe = "pre_answer_question", result = "answer" },
+    { pipe = "cleanse_answer", result = "cleaned_answer" },
 ]
 
 [pipe.write_context_of_text]
@@ -39,7 +46,6 @@ type = "PipeLLM"
 description = "Find the most relevant excerpt in a text that answers a specific question"
 inputs = { text = "Text", question = "answer.Question" }
 output = "RetrievedExcerpt[]"
-model = "llm_to_retrieve"
 prompt = """
 Your task is to find all relevant excerpts from a text that contribute to answering a question.
 It might not contain the exact answer, but it should be relevant to the question.
@@ -56,7 +62,6 @@ type = "PipeLLM"
 description = "Get an enriched question"
 inputs = { question = "answer.Question", client_instructions = "Text", context = "Text" }
 output = "EnrichedQuestion"
-model = "llm_to_enrich"
 prompt = """
 Your task is to reformulate a form field or a question into a question for a LLM.
 This question will need an answer from a text.
@@ -80,23 +85,11 @@ Here are some rules that you absolutely must follow:
 - It is important that you specify that the question is a Yes/No question if it is the case.
 """
 
-[pipe.answer_question]
-type = "PipeSequence"
-description = "Answer the question in a dynamically specified format"
-inputs = { enriched_question = "EnrichedQuestion", client_instructions = "Text", context = "Text", excerpts = "retrieve.RetrievedExcerpt" }
-output = "Dynamic"
-steps = [
-  { pipe = "pre_answer_question", result = "answer" },
-  { pipe = "cleanse_answer", result = "cleaned_answer" },
-]
-
 [pipe.pre_answer_question]
 type = "PipeLLM"
 description = "Answer the question in a dynamically specified format"
-inputs = { enriched_question = "EnrichedQuestion", excerpts = "retrieve.RetrievedExcerpt", context = "Text", client_instructions = "Text" }
-output = "Dynamic"
-model = "llm_to_answer"
-structuring_method = "preliminary_text"
+inputs = { enriched_question = "EnrichedQuestion", excerpts = "answer.RetrievedExcerpt[]", context = "Text", client_instructions = "Text" }
+output = "MatrimonialRegime"
 prompt = """
 Your task is to answer a question based on excerpts previously retrieved from a text.
 To help you, your assistant has already enriched the question and extracted the most relevant excerpts{% if client_instructions %},
@@ -133,9 +126,8 @@ Here is the fields format of the answer you must output:
 [pipe.cleanse_answer]
 type = "PipeLLM"
 description = "Clean the answer"
-inputs = { answer = "Anything" }
-output = "Dynamic"
-structuring_method = "preliminary_text"
+inputs = { answer = "MatrimonialRegime" }
+output = "MatrimonialRegime"
 prompt = """
 You are helping to clean answers that were generated from analyzing document excerpts to answer specific questions.
 
@@ -162,3 +154,4 @@ Important rules:
 - Preserve all other valid answers exactly as they are
 - DO NOT add any explanation or commentary to your output
 """
+
