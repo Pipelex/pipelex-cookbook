@@ -8,8 +8,16 @@ Before running this example, ensure you have set up your environment. See the [C
 
 ## Run the pipeline
 
+Corporate example (Q4 Financial Results):
+
 ```bash
 pipelex run examples/b_basics/generate_visuals/design_slides/bundle.plx --inputs examples/b_basics/generate_visuals/design_slides/inputs.json
+```
+
+Fun example (Why Cats Are Secretly Running the Internet):
+
+```bash
+pipelex run examples/b_basics/generate_visuals/design_slides/bundle.plx --inputs examples/b_basics/generate_visuals/design_slides/inputs_fun.json
 ```
 
 ## Flowchart
@@ -68,7 +76,7 @@ flowchart TD
 The pipeline expects a `SlideDesignBrief` with the following fields:
 - `topic` (required): The main topic or subject of the presentation
 - `brand_guidelines`: The client's brand guidelines (colors, fonts, logo usage)
-- `brand_personality`: formal, playful, innovative, trustworthy, or artsy
+- `tone`: formal, playful, innovative, trustworthy, or artsy
 - `existing_references`: Existing templates or past decks to reference
 - `goal`: pitch investors, sell to clients, internal training, or keynote
 - `audience`: executives, technical team, or general public

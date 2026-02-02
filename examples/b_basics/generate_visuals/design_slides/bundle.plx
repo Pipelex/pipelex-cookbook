@@ -10,7 +10,7 @@ description = "Client brief for slide deck design"
 [concept.SlideDesignBrief.structure]
 topic = { type = "text", description = "The main topic or subject of the presentation", required = true }
 brand_guidelines = { type = "text", description = "The client's brand guidelines (colors, fonts, logo usage, etc.)", required = false }
-brand_personality = { type = "text", description = "The brand personality", choices = ["formal", "playful", "innovative", "trustworthy", "artsy"], required = false }
+tone = { type = "text", description = "The tone of the presentation", choices = ["formal", "playful", "innovative", "trustworthy", "artsy"], required = false }
 existing_references = { type = "text", description = "Existing templates or past decks to reference or avoid", required = false }
 goal = { type = "text", description = "The goal of the presentation", choices = ["pitch investors", "sell to clients", "internal training", "keynote"], required = false }
 audience = { type = "text", description = "The target audience", choices = ["executives", "technical team", "general public"], required = false }
@@ -111,7 +111,7 @@ You are a professional presentation design consultant. Review this client brief 
 Your task:
 1. Keep all provided information, but refine the wording if needed for clarity
 2. For any missing fields, infer sensible defaults based on the topic and any other provided context
-3. Ensure brand_personality, goal, and audience are filled in with the most appropriate choice
+3. Ensure tone, goal, and audience are filled in with the most appropriate choice
 4. If brand_guidelines are missing, leave them empty (do not invent specific colors or fonts)
 
 Return a complete, polished brief.
@@ -120,23 +120,23 @@ Return a complete, polished brief.
 [pipe.generate_theme]
 type = "PipeLLM"
 description = "Generate a presentation theme from a polished design brief"
-inputs = { brief = "SlideDesignBrief" }
+inputs = { polished_brief = "SlideDesignBrief" }
 output = "Theme"
 prompt = """
 You are an expert presentation designer. Create a cohesive visual theme based on this design brief.
 
-@brief
+@polished_brief
 
 Generate a complete theme with:
 
-1. **Name**: A short, memorable theme name reflecting the brand personality and topic
+1. **Name**: A short, memorable theme name reflecting the tone and topic
 
-2. **Colors**: A harmonious color palette appropriate for the brand personality and audience
+2. **Colors**: A harmonious color palette appropriate for the tone and audience
    - If brand_guidelines specify colors, use them
-   - Otherwise, choose colors that match the personality (e.g., formal = navy/gray, playful = vibrant, innovative = bold accents)
+   - Otherwise, choose colors that match the tone (e.g., formal = navy/gray, playful = vibrant, innovative = bold accents)
    - Ensure sufficient contrast for readability
 
-3. **Typography**: Font choices that match the personality
+3. **Typography**: Font choices that match the tone
    - Formal: serif or clean sans-serif (e.g., Georgia, Helvetica)
    - Playful: rounded or friendly fonts (e.g., Nunito, Poppins)
    - Innovative: modern geometric fonts (e.g., Futura, Montserrat)
@@ -147,7 +147,7 @@ Generate a complete theme with:
    - Margins and alignment based on content density needs
 
 5. **Style**: Overall visual approach
-   - Match the brand personality and audience expectations
+   - Match the tone and audience expectations
    - Define icon and graphic styles that complement the theme
 
 6. **Exclusions**: Things to avoid based on the brief context
@@ -156,23 +156,23 @@ Generate a complete theme with:
 [pipe.generate_multiple_themes]
 type = "PipeLLM"
 description = "Generate a presentation theme from a polished design brief"
-inputs = { brief = "SlideDesignBrief" }
+inputs = { polished_brief = "SlideDesignBrief" }
 output = "Theme[]"
 prompt = """
 You are an expert presentation designer. Create {{ _nb_output }} cohesive visual themes based on this design brief.
 
-@brief
+@polished_brief
 
 Generate a complete theme with:
 
-1. **Name**: A short, memorable theme name reflecting the brand personality and topic
+1. **Name**: A short, memorable theme name reflecting the tone and topic
 
-2. **Colors**: A harmonious color palette appropriate for the brand personality and audience
+2. **Colors**: A harmonious color palette appropriate for the tone and audience
    - If brand_guidelines specify colors, use them
-   - Otherwise, choose colors that match the personality (e.g., formal = navy/gray, playful = vibrant, innovative = bold accents)
+   - Otherwise, choose colors that match the tone (e.g., formal = navy/gray, playful = vibrant, innovative = bold accents)
    - Ensure sufficient contrast for readability
 
-3. **Typography**: Font choices that match the personality
+3. **Typography**: Font choices that match the tone
    - Formal: serif or clean sans-serif (e.g., Georgia, Helvetica)
    - Playful: rounded or friendly fonts (e.g., Nunito, Poppins)
    - Innovative: modern geometric fonts (e.g., Futura, Montserrat)
@@ -183,7 +183,7 @@ Generate a complete theme with:
    - Margins and alignment based on content density needs
 
 5. **Style**: Overall visual approach
-   - Match the brand personality and audience expectations
+   - Match the tone and audience expectations
    - Define icon and graphic styles that complement the theme
 
 6. **Exclusions**: Things to avoid based on the brief context
@@ -257,7 +257,7 @@ template = """
   <div class="brief-section">
     <h3>Original Brief</h3>
     <p><strong>Topic:</strong> {{ brief.topic }}</p>
-    {% if brief.brand_personality %}<p><strong>Brand Personality:</strong> {{ brief.brand_personality }}</p>{% endif %}
+    {% if brief.tone %}<p><strong>Tone:</strong> {{ brief.tone }}</p>{% endif %}
     {% if brief.goal %}<p><strong>Goal:</strong> {{ brief.goal }}</p>{% endif %}
     {% if brief.audience %}<p><strong>Audience:</strong> {{ brief.audience }}</p>{% endif %}
     {% if brief.brand_guidelines %}<p><strong>Brand Guidelines:</strong> {{ brief.brand_guidelines }}</p>{% endif %}
@@ -268,7 +268,7 @@ template = """
   <div class="brief-section">
     <h3>Enhanced Brief</h3>
     <p><strong>Topic:</strong> {{ polished_brief.topic }}</p>
-    {% if polished_brief.brand_personality %}<p><strong>Brand Personality:</strong> {{ polished_brief.brand_personality }}</p>{% endif %}
+    {% if polished_brief.tone %}<p><strong>Tone:</strong> {{ polished_brief.tone }}</p>{% endif %}
     {% if polished_brief.goal %}<p><strong>Goal:</strong> {{ polished_brief.goal }}</p>{% endif %}
     {% if polished_brief.audience %}<p><strong>Audience:</strong> {{ polished_brief.audience }}</p>{% endif %}
     {% if polished_brief.brand_guidelines %}<p><strong>Brand Guidelines:</strong> {{ polished_brief.brand_guidelines }}</p>{% endif %}

@@ -3,9 +3,9 @@
     "concept": "slide_designer.SlideDesignBrief",
     "content": {
       "topic": "Q4 2025 Financial Results",
-      "purpose": "Present quarterly earnings and financial outlook to stakeholders",
+      "goal": "keynote",
       "audience": "executives",
-      "tone": "Professional, authoritative, and data-driven"
+      "tone": "formal"
     }
   }
 }
