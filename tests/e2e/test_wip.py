@@ -1,6 +1,9 @@
+import runpy
 import subprocess
 
 import pytest
+
+from examples.wip.discord_newsletter import run_discord_newsletter
 
 
 @pytest.mark.inference
@@ -30,10 +33,5 @@ class TestWip:
         )
         assert result.returncode == 0, f"Command failed: {result.stderr}"
 
-    def test_discord_newsletter(self, pipelex_cmd: str):
-        result = subprocess.run(
-            [pipelex_cmd, "run", "examples/wip/discord_newsletter/bundle.plx", "-i", "examples/wip/discord_newsletter/inputs.json"],
-            capture_output=True,
-            text=True,
-        )
-        assert result.returncode == 0, f"Command failed: {result.stderr}"
+    def test_discord_newsletter(self):
+        runpy.run_path(run_discord_newsletter.__file__, run_name="__main__")

@@ -2,6 +2,7 @@
 
 domain = "hello_plugin"
 description = "Using an LLM Plugin"
+main_pipe = "hello_plugin"
 
 [pipe]
 [pipe.hello_plugin]
