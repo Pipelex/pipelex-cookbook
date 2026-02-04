@@ -10,15 +10,16 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
+from typing import Literal
+
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
 
 
-class Employee(StructuredContent):
-    """An employee who can submit expense reports"""
+class CompanyCategory(StructuredContent):
+    """A type of company for expense generation with typical expense range"""
 
-    employee_id: str = Field(..., description="Unique employee identifier")
-    full_name: str = Field(..., description="Employee full name")
-    email: str = Field(..., description="Employee email address")
-    department: str = Field(..., description="Department name")
-    job_title: str = Field(..., description="Job title")
+    category: Literal[
+        "supermarket", "restaurant", "cafe", "hotel", "airline", "office_supplies", "pharmacy", "electronics", "gas_station", "delivery"
+    ] = Field(..., description="Company category type")
+    typical_expense_range: str = Field(..., description="Typical expense range e.g. '20-80 USD'")

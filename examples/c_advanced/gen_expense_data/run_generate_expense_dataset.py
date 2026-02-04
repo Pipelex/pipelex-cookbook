@@ -6,13 +6,11 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 import asyncio
 
-from weasyprint import HTML, CSS
-
-from structures.expense_data_generation__employee_expense_report import EmployeeExpenseReport
-from structures.expense_data_generation__nb_of_employees import NbOfEmployees
-
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
+from structures.expense_data_generation__employee_expense_report import EmployeeExpenseReport
+from structures.expense_data_generation__nb_of_employees import NbOfEmployees
+from weasyprint import CSS, HTML
 
 
 async def run_generate_expense_dataset() -> list[EmployeeExpenseReport]:
@@ -58,7 +56,7 @@ async def export_to_folders(reports: list[EmployeeExpenseReport], output_dir: Pa
         # Generate PDF from HTML
         pdf_path = folder / "expense_report.pdf"
         page_css = CSS(string="@page { size: A4; margin: 1.5cm; }")
-        HTML(string=html_content, base_url=str(folder)).write_pdf(pdf_path, stylesheets=[page_css], pdf_variant="pdf/a-3u") # pyright: ignore[reportUnknownMemberType]
+        HTML(string=html_content, base_url=str(folder)).write_pdf(pdf_path, stylesheets=[page_css], pdf_variant="pdf/a-3u")  # pyright: ignore[reportUnknownMemberType]
         print(f"Generated PDF: {pdf_path}")
 
         # Save employee as HTML

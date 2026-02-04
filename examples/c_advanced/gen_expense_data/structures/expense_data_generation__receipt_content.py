@@ -17,13 +17,14 @@ from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
 
 
-class Expense(StructuredContent):
-    """An expense submitted for reimbursement"""
+class ReceiptContent(StructuredContent):
+    """The full text content of a receipt with metadata"""
 
-    expense_id: str = Field(..., description="Unique expense identifier")
-    category: Literal["Meals", "Travel", "Accommodation", "Equipment", "Supplies", "Transportation"] = Field(..., description="Expense category")
-    merchant_name: str = Field(..., description="Name of the merchant")
-    expense_date: datetime = Field(..., description="Date of the expense")
-    total_amount: float = Field(..., description="Total expense amount")
+    full_receipt_text: str = Field(..., description="Complete formatted receipt text including header, items, totals")
+    total_amount: float = Field(..., description="Total amount on the receipt")
     currency: str = Field(..., description="Currency code")
+    expense_date: datetime = Field(..., description="Date of the transaction")
+    expense_category: Literal["Meals", "Travel", "Accommodation", "Equipment", "Supplies", "Transportation"] = Field(
+        ..., description="Expense category for this receipt"
+    )
     business_purpose: str = Field(..., description="Business justification for the expense")
