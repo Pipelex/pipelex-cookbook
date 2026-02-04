@@ -1,0 +1,8 @@
+{
+  "nb_employees": {
+    "concept": "expense_data_generation.NbOfEmployees",
+    "content": {
+      "number": 5
+    }
+  }
+}
