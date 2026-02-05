@@ -55,7 +55,6 @@ full_receipt_text = { type = "text", description = "Complete formatted receipt t
 total_amount = { type = "number", description = "Total amount on the receipt", required = true }
 currency = { type = "text", description = "Currency code", required = true }
 expense_date = { type = "date", description = "Date of the transaction", required = true }
-expense_category = { type = "text", description = "Expense category for this receipt", choices = ["Meals", "Travel", "Accommodation", "Equipment", "Supplies", "Transportation"], required = true }
 business_purpose = { type = "text", description = "Business justification for the expense", required = true }
 
 [concept.PurchasedItem]
@@ -91,7 +90,6 @@ transaction_time = { type = "text", description = "Time of transaction (format: 
 description = "Business metadata for an expense"
 
 [concept.ExpenseMetadata.structure]
-expense_category = { type = "text", description = "Expense category", choices = ["Meals", "Travel", "Accommodation", "Equipment", "Supplies", "Transportation"], required = true }
 business_purpose = { type = "text", description = "Business justification for the expense", required = true }
 
 [concept.Expense]
@@ -117,7 +115,7 @@ description = "An expense paired with its receipt image"
 
 [concept.ExpenseWithReceipt.structure]
 expense = { type = "concept", concept_ref = "expense_data_generation.Expense", description = "The expense details", required = true }
-receipt = { type = "concept", concept_ref = "expense_data_generation.Receipt", description = "The receipt image" }
+receipt = { type = "concept", concept_ref = "expense_data_generation.Receipt", description = "The receipt image", required = true }
 
 [concept.EmployeeExpenseReport]
 description = "An employee with their list of expenses, receipts, and HTML report"
@@ -314,12 +312,12 @@ CRITICAL REQUIREMENTS:
 
 [pipe.generate_expense_metadata]
 type = "PipeLLM"
-description = "Determines expense category and business purpose"
+description = "Determines business purpose"
 inputs = { employee = "Employee", company_profile = "CompanyProfile" }
 output = "ExpenseMetadata"
 model = "$synthesizing-data"
 prompt = """
-Determine the expense category and business purpose for this transaction.
+Determine the business purpose for this transaction.
 
 @employee
 
@@ -327,15 +325,8 @@ Company: $company_profile.name
 Category: $company_profile.category
 
 Based on the company category and the employee's role:
-1. Map to the appropriate expense_category:
-   - restaurant, cafe, supermarket → "Meals"
-   - airline → "Travel"
-   - hotel → "Accommodation"
-   - electronics → "Equipment"
-   - office_supplies, pharmacy → "Supplies"
-   - gas_station, delivery → "Transportation"
 
-2. Write a brief business_purpose (1 sentence) that makes sense for this employee's job function.
+Write a brief business_purpose (1 sentence) that makes sense for this employee's job function.
    Examples:
    - "Team lunch meeting to discuss Q4 roadmap"
    - "Client dinner with Acme Corp representatives"
@@ -387,7 +378,6 @@ full_receipt_text = { from = "formatted_receipt" }
 total_amount = { from = "items_and_totals.total_amount" }
 currency = { from = "items_and_totals.currency" }
 expense_date = { from = "receipt_header.transaction_date" }
-expense_category = { from = "expense_metadata.expense_category" }
 business_purpose = { from = "expense_metadata.business_purpose" }
 
 [pipe.generate_receipt_prompt]

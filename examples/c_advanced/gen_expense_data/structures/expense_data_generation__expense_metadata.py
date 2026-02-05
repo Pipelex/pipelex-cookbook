@@ -10,16 +10,13 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from typing import Literal
-
+from enum import Enum
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
+from typing import Optional, List, Dict, Any, Literal
 
 
 class ExpenseMetadata(StructuredContent):
     """Business metadata for an expense"""
 
-    expense_category: Literal["Meals", "Travel", "Accommodation", "Equipment", "Supplies", "Transportation"] = Field(
-        ..., description="Expense category"
-    )
     business_purpose: str = Field(..., description="Business justification for the expense")

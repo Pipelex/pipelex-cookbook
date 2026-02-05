@@ -10,8 +10,13 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
+from enum import Enum
 from pipelex.core.stuffs.image_content import ImageContent
+from pipelex.core.stuffs.structured_content import StructuredContent
+from pydantic import Field
+from typing import Optional, List, Dict, Any, Literal
 
 
 class Receipt(ImageContent):
     """A receipt image for an expense"""
+

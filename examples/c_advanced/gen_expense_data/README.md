@@ -35,8 +35,6 @@ generate_expense_dataset (PipeSequence)
 
 ### Expense
 - `expense_id`: Unique identifier (EXP-YYYYMMDD-XXXX format)
-- `category`: Meals, Travel, Accommodation, Equipment
-- `merchant_name`: Name of the merchant
 - `expense_date`: Date of the expense
 - `total_amount`: Amount in USD
 - `currency`: Currency code

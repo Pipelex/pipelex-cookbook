@@ -22,8 +22,6 @@ description = "A single expense line item"
 
 [concept.Expense.structure]
 expense_id = { type = "text", description = "Unique expense identifier", required = true }
-category = { type = "text", description = "Expense category", choices = ["Meals", "Travel", "Accommodation", "Equipment", "Supplies", "Transportation"], required = true }
-merchant_name = { type = "text", description = "Name of the merchant", required = true }
 expense_date = { type = "date", description = "Date of the expense", required = true }
 total_amount = { type = "number", description = "Total expense amount", required = true }
 currency = { type = "text", description = "Currency code", required = true }
@@ -148,7 +146,7 @@ INSTRUCTIONS:
    - employee_id, full_name, email, department, job_title, seniority
 
 2. For each expense row in the table, extract:
-   - expense_id, category, merchant_name, expense_date, total_amount, currency, business_purpose
+   - expense_id, expense_date, total_amount, currency, business_purpose
 
 3. Match each expense with its receipt image:
    - Look at the images in the pages
@@ -207,7 +205,6 @@ Verify if this receipt matches the expense claim.
 
 EXPENSE DETAILS:
 - Expense ID: $expense_with_receipt.expense.expense_id
-- Merchant: $expense_with_receipt.expense.merchant_name
 - Amount: $expense_with_receipt.expense.total_amount $expense_with_receipt.expense.currency
 - Date: $expense_with_receipt.expense.expense_date
 - Category: $expense_with_receipt.expense.category
@@ -216,8 +213,7 @@ RECEIPT IMAGE:
 $expense_with_receipt.receipt_image
 
 VERIFY:
-1. Does the merchant name on the receipt match "$expense_with_receipt.expense.merchant_name"?
-2. Does the total amount on the receipt match $expense_with_receipt.expense.total_amount?
+1. Does the total amount on the receipt match $expense_with_receipt.expense.total_amount?
 3. Does the date on the receipt match $expense_with_receipt.expense.expense_date?
 
 If no receipt image is provided, set is_matching=false and note "No receipt provided" in discrepancies.
@@ -259,8 +255,6 @@ Typical ranges by category:
 prompt = """
 Assess if this expense amount is reasonable:
 
-Category: $expense_with_receipt.expense.category
-Merchant: $expense_with_receipt.expense.merchant_name
 Amount: $expense_with_receipt.expense.total_amount $expense_with_receipt.expense.currency
 Business Purpose: $expense_with_receipt.expense.business_purpose
 
@@ -283,7 +277,6 @@ category = "markdown"
 template = """
 ## Expense: $expense_with_receipt.expense.expense_id
 
-**Merchant:** $expense_with_receipt.expense.merchant_name
 **Amount:** $expense_with_receipt.expense.total_amount $expense_with_receipt.expense.currency
 **Date:** $expense_with_receipt.expense.expense_date
 **Category:** $expense_with_receipt.expense.category
