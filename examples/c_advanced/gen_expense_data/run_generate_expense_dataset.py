@@ -8,7 +8,7 @@ import asyncio
 
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
-from weasyprint import CSS, HTML  # type: ignore[import-untyped]
+from weasyprint import CSS, HTML
 
 from examples.c_advanced.gen_expense_data.structures.expense_data_generation__employee_expense_report import EmployeeExpenseReport
 from examples.c_advanced.gen_expense_data.structures.expense_data_generation__nb_of_employees import NbOfEmployees

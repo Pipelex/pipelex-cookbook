@@ -76,7 +76,7 @@ warn_unused_configs = true
 
 [[tool.mypy.overrides]]
 ignore_missing_imports = true
-module = ["json2html"]
+module = ["json2html", "weasyprint"]
 
 [tool.pyright]
 analyzeUnannotatedFunctions = true
