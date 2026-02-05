@@ -29,6 +29,7 @@ for_object = "@default-general"
 [llm.aliases]
 best-gpt = "gpt-5.2"
 best-claude = "claude-4.5-opus"
+base-claude = "claude-4.5-sonnet"
 best-gemini = "gemini-3.0-pro"
 best-mistral = "mistral-large-3"
 
