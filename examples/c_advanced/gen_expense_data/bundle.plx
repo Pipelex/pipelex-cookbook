@@ -287,12 +287,11 @@ CRITICAL REQUIREMENTS:
 
 STYLE SELECTION (pick ONE randomly):
 
-IMPERFECT STYLE (1/3 chance):
-- Receipt slightly crumpled or with a small coffee stain in corner
-- OR held by a hand / lying on a restaurant table
+IMPERFECT STYLE (4/5 chance):
+- Receipt slightly crumpled or with a small coffee stain in corner, held by a hand outside in the steet
 - Text must still be clearly readable
 
-CLEAN STYLE (2/3 chance):
+CLEAN STYLE (1/5 chance):
 - Receipt flat on a plain surface (desk, table)
 - Good lighting, slight angle
 - Clean and crisp like a casual photo
