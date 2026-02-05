@@ -8,11 +8,11 @@ from pipelex.core.memory.working_memory import WorkingMemory
 from pipelex.core.stuffs.list_content import ListContent
 from pipelex.system.registries.func_registry import pipe_func
 
-from examples.c_advanced.validate_expense_data.data import SPENDING_LIMITS
-from examples.c_advanced.validate_expense_data.structures.expense_validator__expense_report import ExpenseReport
-from examples.c_advanced.validate_expense_data.structures.expense_validator__expense_with_receipt import ExpenseWithReceipt
-from examples.c_advanced.validate_expense_data.structures.expense_validator__spending_limit_check import SpendingLimitCheck
-from examples.c_advanced.validate_expense_data.structures.expense_validator__weekend_check import WeekendCheck
+from examples.wip.validate_expense_data.data import SPENDING_LIMITS
+from examples.wip.validate_expense_data.structures.expense_validator__expense_report import ExpenseReport
+from examples.wip.validate_expense_data.structures.expense_validator__expense_with_receipt import ExpenseWithReceipt
+from examples.wip.validate_expense_data.structures.expense_validator__spending_limit_check import SpendingLimitCheck
+from examples.wip.validate_expense_data.structures.expense_validator__weekend_check import WeekendCheck
 
 # ============================================================================
 # PIPEFUNC IMPLEMENTATIONS

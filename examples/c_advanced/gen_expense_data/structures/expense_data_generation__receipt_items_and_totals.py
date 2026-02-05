@@ -11,10 +11,12 @@ To regenerate: pipelex build structures <target_directory>
 """
 
 from enum import Enum
-from examples.c_advanced.gen_expense_data.structures.expense_data_generation__purchased_item import PurchasedItem
+from typing import Any, Dict, List, Literal, Optional
+
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
+
+from examples.c_advanced.gen_expense_data.structures.expense_data_generation__purchased_item import PurchasedItem
 
 
 class ReceiptItemsAndTotals(StructuredContent):

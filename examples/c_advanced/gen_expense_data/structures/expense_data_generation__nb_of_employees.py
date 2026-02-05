@@ -11,12 +11,12 @@ To regenerate: pipelex build structures <target_directory>
 """
 
 from enum import Enum
+from typing import Any, Dict, List, Literal, Optional
+
 from pipelex.core.stuffs.number_content import NumberContent
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
 class NbOfEmployees(NumberContent):
     """How many employees to generate"""
-

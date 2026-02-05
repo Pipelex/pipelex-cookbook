@@ -11,11 +11,13 @@ To regenerate: pipelex build structures <target_directory>
 """
 
 from enum import Enum
-from examples.c_advanced.validate_expense_data.structures.expense_validator__expense import Expense
-from examples.c_advanced.validate_expense_data.structures.expense_validator__receipt import Receipt
+from typing import Any, Dict, List, Literal, Optional
+
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
+
+from examples.wip.validate_expense_data.structures.expense_validator__expense import Expense
+from examples.wip.validate_expense_data.structures.expense_validator__receipt import Receipt
 
 
 class ExpenseWithReceipt(StructuredContent):

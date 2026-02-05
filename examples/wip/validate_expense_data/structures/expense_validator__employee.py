@@ -11,9 +11,10 @@ To regenerate: pipelex build structures <target_directory>
 """
 
 from enum import Enum
+from typing import Any, Dict, List, Literal, Optional
+
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
 class Employee(StructuredContent):
@@ -24,4 +25,4 @@ class Employee(StructuredContent):
     email: str = Field(..., description="Employee email address")
     department: str = Field(..., description="Department name")
     job_title: str = Field(..., description="Job title")
-    seniority: Literal['Junior', 'Senior', 'Lead', 'Manager', 'Director', 'VP', 'Executive'] = Field(..., description="Employee seniority level")
+    seniority: Literal["Junior", "Senior", "Lead", "Manager", "Director", "VP", "Executive"] = Field(..., description="Employee seniority level")
