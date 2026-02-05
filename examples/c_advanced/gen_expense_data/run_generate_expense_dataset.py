@@ -30,30 +30,34 @@ async def run_generate_expense_dataset() -> list[EmployeeExpenseReport]:
     return pipe_output.main_stuff_as_items(item_type=EmployeeExpenseReport)
 
 
+async def export_single_report(report: EmployeeExpenseReport) -> None:
+    """Export a single employee expense report to a folder with PDF."""
+    # Create folder for employee
+    folder = OUTPUT_DIR / report.employee.employee_id
+    folder.mkdir(exist_ok=True)
+
+    # Copy receipt images first (needed for PDF generation)
+    for item in report.expenses_with_receipts:
+        image_path = folder / f"{item.expense.expense_id}.png"
+        image_bytes = await get_storage_provider().load(item.receipt.url)
+        image_path.write_bytes(image_bytes)
+
+    # Update HTML to use local image paths
+    html_content = report.html_report.inner_html
+    for item in report.expenses_with_receipts:
+        html_content = html_content.replace(item.receipt.url, f"{item.expense.expense_id}.png")
+
+    # Generate PDF from HTML
+    HTML(string=html_content, base_url=str(folder)).write_pdf(  # pyright: ignore[reportUnknownMemberType]
+        target=folder / "expense_report.pdf", stylesheets=[CSS(string="@page { size: A4; margin: 1.5cm; }")], pdf_variant="pdf/a-3u"
+    )
+
+
 async def export_to_folders(reports: list[EmployeeExpenseReport]):
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    storage_provider = get_storage_provider()
 
-    for report in reports:
-        # Create folder for employee
-        folder = OUTPUT_DIR / report.employee.employee_id
-        folder.mkdir(exist_ok=True)
-
-        # Copy receipt images first (needed for PDF generation)
-        for item in report.expenses_with_receipts:
-            image_path = folder / f"{item.expense.expense_id}.png"
-            image_bytes = await storage_provider.load(item.receipt.url)
-            image_path.write_bytes(image_bytes)
-
-        # Update HTML to use local image paths
-        html_content = report.html_report.inner_html
-        for item in report.expenses_with_receipts:
-            html_content = html_content.replace(item.receipt.url, f"{item.expense.expense_id}.png")
-
-        # Generate PDF from HTML
-        HTML(string=html_content, base_url=str(folder)).write_pdf(  # pyright: ignore[reportUnknownMemberType]
-            target=folder / "expense_report.pdf", stylesheets=[CSS(string="@page { size: A4; margin: 1.5cm; }")], pdf_variant="pdf/a-3u"
-        )
+    # Export all reports in parallel
+    await asyncio.gather(*[export_single_report(report) for report in reports])
 
 
 if __name__ == "__main__":
