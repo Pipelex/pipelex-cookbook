@@ -10,8 +10,7 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
-from typing import Any, Dict, List, Literal, Optional
+from typing import List, Optional
 
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
