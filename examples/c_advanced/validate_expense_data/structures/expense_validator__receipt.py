@@ -11,17 +11,12 @@ To regenerate: pipelex build structures <target_directory>
 """
 
 from enum import Enum
+from pipelex.core.stuffs.image_content import ImageContent
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
 from typing import Optional, List, Dict, Any, Literal
 
 
-class Employee(StructuredContent):
-    """Employee information from the expense report"""
+class Receipt(ImageContent):
+    """A receipt image for an expense"""
 
-    employee_id: str = Field(..., description="Unique employee identifier")
-    full_name: str = Field(..., description="Employee full name")
-    email: str = Field(..., description="Employee email address")
-    department: str = Field(..., description="Department name")
-    job_title: str = Field(..., description="Job title")
-    seniority: Literal['Junior', 'Senior', 'Lead', 'Manager', 'Director', 'VP', 'Executive'] = Field(..., description="Seniority level")

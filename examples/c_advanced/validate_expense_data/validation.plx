@@ -3,11 +3,11 @@ description = "Validates expense reports against company rules and determines re
 main_pipe = "validate_expense_report"
 
 # ============================================================================
-# EXPENSE REPORT CONCEPTS (independent from generation domain)
+# DATA CONCEPTS
 # ============================================================================
 
 [concept.Employee]
-description = "Employee information from the expense report"
+description = "An employee who can submit expense reports"
 
 [concept.Employee.structure]
 employee_id = { type = "text", description = "Unique employee identifier", required = true }
@@ -15,24 +15,30 @@ full_name = { type = "text", description = "Employee full name", required = true
 email = { type = "text", description = "Employee email address", required = true }
 department = { type = "text", description = "Department name", required = true }
 job_title = { type = "text", description = "Job title", required = true }
-seniority = { type = "text", description = "Seniority level", choices = ["Junior", "Senior", "Lead", "Manager", "Director", "VP", "Executive"], required = true }
+seniority = { type = "text", description = "Employee seniority level", choices = ["Junior", "Senior", "Lead", "Manager", "Director", "VP", "Executive"], required = true }
 
 [concept.Expense]
-description = "A single expense line item"
+description = "An expense submitted for reimbursement"
 
 [concept.Expense.structure]
 expense_id = { type = "text", description = "Unique expense identifier", required = true }
 expense_date = { type = "date", description = "Date of the expense", required = true }
+category = { type = "text", description = "Expense category", choices = ["meals", "travel", "accommodation", "equipment", "supplies", "transportation", "entertainment", "other"], required = true }
+merchant = { type = "text", description = "Merchant or vendor name", required = true }
 total_amount = { type = "number", description = "Total expense amount", required = true }
 currency = { type = "text", description = "Currency code", required = true }
 business_purpose = { type = "text", description = "Business justification for the expense", required = true }
+
+[concept.Receipt]
+description = "A receipt image for an expense"
+refines = "Image"
 
 [concept.ExpenseWithReceipt]
 description = "An expense paired with its receipt image"
 
 [concept.ExpenseWithReceipt.structure]
 expense = { type = "concept", concept_ref = "expense_validator.Expense", description = "The expense details", required = true }
-receipt_image = { type = "concept", concept_ref = "Image", description = "The receipt image (null if missing)" }
+receipt = { type = "concept", concept_ref = "expense_validator.Receipt", description = "The receipt image", required = true }
 
 [concept.ExpenseReport]
 description = "Complete expense report extracted from PDF"
@@ -44,13 +50,6 @@ expenses_with_receipts = { type = "list", item_type = "concept", item_concept_re
 # ============================================================================
 # VALIDATION CHECK RESULT CONCEPTS
 # ============================================================================
-
-[concept.ReceiptPresenceCheck]
-description = "Check if a receipt is present for the expense"
-
-[concept.ReceiptPresenceCheck.structure]
-has_receipt = { type = "boolean", description = "Whether a receipt image is attached", required = true }
-message = { type = "text", description = "Explanation", required = true }
 
 [concept.ReceiptMatchCheck]
 description = "LLM assessment of whether receipt matches the expense details"
@@ -135,7 +134,7 @@ type = "PipeLLM"
 description = "Parses extracted pages into a structured ExpenseReport"
 inputs = { pages = "Page[]" }
 output = "ExpenseReport"
-model = { model = "base-claude", temperature = 0.1 }
+model = { model = "best-claude", temperature = 0.1 }
 prompt = """
 Parse this expense report document into a structured ExpenseReport.
 
@@ -146,12 +145,12 @@ INSTRUCTIONS:
    - employee_id, full_name, email, department, job_title, seniority
 
 2. For each expense row in the table, extract:
-   - expense_id, expense_date, total_amount, currency, business_purpose
+   - expense_id, expense_date, category, merchant, total_amount, currency, business_purpose
 
 3. Match each expense with its receipt image:
    - Look at the images in the pages
    - Each receipt image should be matched to its corresponding expense
-   - If an expense has no matching receipt image, set receipt_image to null
+   - If an expense has no matching receipt image, set receipt to null
 
 4. Return the complete ExpenseReport with employee and all expenses_with_receipts.
 
@@ -175,7 +174,6 @@ description = "Validates a single expense against all company rules"
 inputs = { report = "ExpenseReport", expense_with_receipt = "ExpenseWithReceipt" }
 output = "Text"
 steps = [
-    { pipe = "check_receipt_presence", result = "receipt_check" },
     { pipe = "check_receipt_match", result = "match_check" },
     { pipe = "check_spending_limit", result = "limit_check" },
     { pipe = "check_weekend", result = "weekend_check" },
@@ -187,33 +185,28 @@ steps = [
 # VALIDATION CHECKS
 # ============================================================================
 
-[pipe.check_receipt_presence]
-type = "PipeFunc"
-description = "Checks if a receipt image is present for the expense"
-inputs = { expense_with_receipt = "ExpenseWithReceipt" }
-output = "ReceiptPresenceCheck"
-function_name = "check_receipt_presence"
-
 [pipe.check_receipt_match]
 type = "PipeLLM"
 description = "Uses vision LLM to verify receipt matches expense details"
 inputs = { expense_with_receipt = "ExpenseWithReceipt" }
 output = "ReceiptMatchCheck"
-model = { model = "base-claude", temperature = 0.1 }
+model = { model = "best-claude", temperature = 0.1 }
 prompt = """
 Verify if this receipt matches the expense claim.
 
 EXPENSE DETAILS:
 - Expense ID: $expense_with_receipt.expense.expense_id
+- Merchant: $expense_with_receipt.expense.merchant
 - Amount: $expense_with_receipt.expense.total_amount $expense_with_receipt.expense.currency
 - Date: $expense_with_receipt.expense.expense_date
 - Category: $expense_with_receipt.expense.category
 
 RECEIPT IMAGE:
-$expense_with_receipt.receipt_image
+$expense_with_receipt.receipt
 
 VERIFY:
-1. Does the total amount on the receipt match $expense_with_receipt.expense.total_amount?
+1. Does the merchant on the receipt match $expense_with_receipt.expense.merchant?
+2. Does the total amount on the receipt match $expense_with_receipt.expense.total_amount?
 3. Does the date on the receipt match $expense_with_receipt.expense.expense_date?
 
 If no receipt image is provided, set is_matching=false and note "No receipt provided" in discrepancies.
@@ -240,7 +233,7 @@ type = "PipeLLM"
 description = "Assesses if expense amount is reasonable for the category"
 inputs = { expense_with_receipt = "ExpenseWithReceipt" }
 output = "ReasonableAmountCheck"
-model = { model = "base-claude", temperature = 0.2 }
+model = { model = "best-claude", temperature = 0.2 }
 system_prompt = """
 You are an expense auditor. Assess if expense amounts are reasonable based on typical business costs.
 
@@ -255,6 +248,8 @@ Typical ranges by category:
 prompt = """
 Assess if this expense amount is reasonable:
 
+Category: $expense_with_receipt.expense.category
+Merchant: $expense_with_receipt.expense.merchant
 Amount: $expense_with_receipt.expense.total_amount $expense_with_receipt.expense.currency
 Business Purpose: $expense_with_receipt.expense.business_purpose
 
@@ -269,7 +264,7 @@ Provide the expected range and your assessment.
 [pipe.compose_expense_validation]
 type = "PipeCompose"
 description = "Composes the validation result for a single expense"
-inputs = { expense_with_receipt = "ExpenseWithReceipt", receipt_check = "ReceiptPresenceCheck", match_check = "ReceiptMatchCheck", limit_check = "SpendingLimitCheck", weekend_check = "WeekendCheck", reasonable_check = "ReasonableAmountCheck" }
+inputs = { expense_with_receipt = "ExpenseWithReceipt", match_check = "ReceiptMatchCheck", limit_check = "SpendingLimitCheck", weekend_check = "WeekendCheck", reasonable_check = "ReasonableAmountCheck" }
 output = "Text"
 
 [pipe.compose_expense_validation.template]
@@ -277,6 +272,7 @@ category = "markdown"
 template = """
 ## Expense: $expense_with_receipt.expense.expense_id
 
+**Merchant:** $expense_with_receipt.expense.merchant
 **Amount:** $expense_with_receipt.expense.total_amount $expense_with_receipt.expense.currency
 **Date:** $expense_with_receipt.expense.expense_date
 **Category:** $expense_with_receipt.expense.category
@@ -286,7 +282,6 @@ template = """
 
 | Check | Status | Details |
 |-------|--------|---------|
-| Receipt Present | {% if receipt_check.has_receipt %}✅ Yes{% else %}❌ Missing{% endif %} | {{ receipt_check.message }} |
 | Receipt Matches | {% if match_check.is_matching %}✅ Match{% else %}❌ Mismatch{% endif %} | Merchant: {% if match_check.merchant_matches %}✓{% else %}✗{% endif %}, Amount: {% if match_check.amount_matches %}✓{% else %}✗{% endif %}, Date: {% if match_check.date_matches %}✓{% else %}✗{% endif %} ({{ match_check.confidence }} confidence) |
 | Spending Limit | {% if limit_check.within_limit %}✅ Within{% else %}❌ Exceeded{% endif %} | Limit: ${{ limit_check.limit_amount }} for {{ limit_check.seniority }} ({{ limit_check.category }}){% if not limit_check.within_limit %} - Exceeded by ${{ limit_check.exceeded_by }}{% endif %} |
 | Weekday Expense | {% if weekend_check.is_weekday %}✅ Weekday{% else %}❌ Weekend{% endif %} | {{ weekend_check.day_of_week }} - {{ weekend_check.message }} |
@@ -294,14 +289,13 @@ template = """
 
 ### Result
 
-{% set has_critical_issue = not receipt_check.has_receipt or not match_check.is_matching or not limit_check.within_limit or not weekend_check.is_weekday %}
+{% set has_critical_issue = not match_check.is_matching or not limit_check.within_limit or not weekend_check.is_weekday %}
 {% if has_critical_issue %}
 **Status:** ❌ REJECTED
 **Approved Amount:** $0.00
 
 **Issues:**
-{% if not receipt_check.has_receipt %}- Missing receipt - all expenses require receipt documentation
-{% endif %}{% if not match_check.is_matching %}- Receipt does not match expense: {{ match_check.discrepancies }}
+{% if not match_check.is_matching %}- Receipt does not match expense: {{ match_check.discrepancies }}
 {% endif %}{% if not limit_check.within_limit %}- Exceeds spending limit for {{ limit_check.seniority }} level by ${{ limit_check.exceeded_by }}
 {% endif %}{% if not weekend_check.is_weekday %}- Weekend expenses not permitted without prior approval
 {% endif %}{% if not reasonable_check.is_reasonable %}- Amount flagged for review: {{ reasonable_check.assessment }}

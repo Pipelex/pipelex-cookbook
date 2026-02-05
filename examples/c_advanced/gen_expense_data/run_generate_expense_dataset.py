@@ -41,8 +41,6 @@ async def export_to_folders(reports: list[EmployeeExpenseReport]):
 
         # Copy receipt images first (needed for PDF generation)
         for item in report.expenses_with_receipts:
-            if item.receipt is None:
-                continue
             image_path = folder / f"{item.expense.expense_id}.png"
             image_bytes = await storage_provider.load(item.receipt.url)
             image_path.write_bytes(image_bytes)
@@ -50,8 +48,6 @@ async def export_to_folders(reports: list[EmployeeExpenseReport]):
         # Update HTML to use local image paths
         html_content = report.html_report.inner_html
         for item in report.expenses_with_receipts:
-            if item.receipt is None:
-                continue
             html_content = html_content.replace(item.receipt.url, f"{item.expense.expense_id}.png")
 
         # Generate PDF from HTML

@@ -11,13 +11,15 @@ To regenerate: pipelex build structures <target_directory>
 """
 
 from enum import Enum
+from examples.c_advanced.validate_expense_data.structures.expense_validator__expense import Expense
+from examples.c_advanced.validate_expense_data.structures.expense_validator__receipt import Receipt
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
 from typing import Optional, List, Dict, Any, Literal
 
 
-class ReceiptPresenceCheck(StructuredContent):
-    """Check if a receipt is present for the expense"""
+class ExpenseWithReceipt(StructuredContent):
+    """An expense paired with its receipt image"""
 
-    has_receipt: bool = Field(..., description="Whether a receipt image is attached")
-    message: str = Field(..., description="Explanation")
+    expense: Expense = Field(..., description="The expense details")
+    receipt: Receipt = Field(..., description="The receipt image")

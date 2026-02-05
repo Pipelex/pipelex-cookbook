@@ -11,8 +11,8 @@ To regenerate: pipelex build structures <target_directory>
 """
 
 from enum import Enum
-from examples.c_advanced.gen_expense_data.structures.expense_validator__employee import Employee
-from examples.c_advanced.gen_expense_data.structures.expense_validator__expense_with_receipt import ExpenseWithReceipt
+from examples.c_advanced.validate_expense_data.structures.expense_validator__employee import Employee
+from examples.c_advanced.validate_expense_data.structures.expense_validator__expense_with_receipt import ExpenseWithReceipt
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
 from typing import Optional, List, Dict, Any, Literal

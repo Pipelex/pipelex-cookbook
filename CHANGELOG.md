@@ -91,7 +91,7 @@
  - **Documentation**: Migration guide, BLACKBOX_RULES.md for Blackbox AI
 
 ### Changed
- - **Models**: Updated `base-claude` alias to `claude-4.5-sonnet`
+ - **Models**: Updated `best-claude` alias to `claude-4.5-sonnet`
  - **Examples**: Reorganized into subdirectories, moved quick_start to examples/_quick_start
  - **Dependencies**: Updated pyproject.toml to use pipelex from git, pyright >=1.1.405
  - **Configuration**: Enhanced backend TOML files with headers and categorized model sections

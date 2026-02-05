@@ -18,10 +18,12 @@ from typing import Optional, List, Dict, Any, Literal
 
 
 class Expense(StructuredContent):
-    """A single expense line item"""
+    """An expense submitted for reimbursement"""
 
     expense_id: str = Field(..., description="Unique expense identifier")
     expense_date: datetime = Field(..., description="Date of the expense")
+    category: Literal['meals', 'travel', 'accommodation', 'equipment', 'supplies', 'transportation', 'entertainment', 'other'] = Field(..., description="Expense category")
+    merchant: str = Field(..., description="Merchant or vendor name")
     total_amount: float = Field(..., description="Total expense amount")
     currency: str = Field(..., description="Currency code")
     business_purpose: str = Field(..., description="Business justification for the expense")
