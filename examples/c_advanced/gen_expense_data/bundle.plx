@@ -83,7 +83,7 @@ description = "Header information for a receipt"
 
 [concept.ReceiptHeader.structure]
 transaction_number = { type = "text", description = "Transaction/ticket number (format: TIC# XXXXX)", required = true }
-transaction_date = { type = "date", description = "Date of transaction (within last 30 days)", required = true }
+transaction_date = { type = "date", description = "Date of transaction (must be in January 2026)", required = true }
 transaction_time = { type = "text", description = "Time of transaction (format: HH:MM AM/PM)", required = true }
 
 [concept.ExpenseMetadata]
@@ -273,7 +273,7 @@ Company: $company_profile.name
 
 Generate:
 - A transaction number (format: TIC# followed by 5 digits, e.g., TIC# 48291)
-- A transaction date (must be within the last 30 days from today)
+- A transaction date (must be a date in January 2026, e.g., 2026-01-15)
 - A transaction time (format: HH:MM AM/PM, e.g., 2:34 PM)
 """
 

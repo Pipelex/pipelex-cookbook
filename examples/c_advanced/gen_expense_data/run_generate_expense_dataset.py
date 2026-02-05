@@ -23,7 +23,7 @@ async def run_generate_expense_dataset() -> list[EmployeeExpenseReport]:
         inputs={
             "nb_employees": {
                 "concept": "expense_data_generation.NbOfEmployees",
-                "content": NbOfEmployees(number=5),
+                "content": NbOfEmployees(number=15),
             },
         },
     )
