@@ -445,7 +445,7 @@ inputs = { receipt_content = "ReceiptContent" }
 output = "Expense"
 
 [pipe.compose_expense_from_receipt.construct]
-expense_id = { template = "EXP-{{ receipt_content.expense_date | replace('-', '') }}-0001" }
+expense_id = { template = "EXP-{{ receipt_content.expense_date.strftime('%Y%m%d') }}-0001" }
 expense_date = { from = "receipt_content.expense_date" }
 total_amount = { from = "receipt_content.total_amount" }
 currency = { from = "receipt_content.currency" }
@@ -496,7 +496,7 @@ img { width: 50px; height: 50px; object-fit: cover; display: block; }
 {% for item in expenses_with_receipts %}
 <tr>
 <td>{{ item.expense.expense_id }}</td>
-<td>{{ item.expense.expense_date }}</td>
+<td>{{ item.expense.expense_date.strftime('%Y-%m-%d') }}</td>
 <td>{{ item.expense.business_purpose }}</td>
 <td class="amount">{{ item.expense.currency }} {{ item.expense.total_amount }}</td>
 <td><img src="{{ item.receipt.public_url }}"></td>
