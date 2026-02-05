@@ -10,6 +10,8 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
+from typing import List
+
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
 
@@ -21,4 +23,4 @@ class ExpenseReport(StructuredContent):
     """Complete expense report extracted from PDF"""
 
     employee: Employee = Field(..., description="The employee")
-    expenses_with_receipts: list[ExpenseWithReceipt] = Field(..., description="List of expenses with receipts")
+    expenses_with_receipts: List[ExpenseWithReceipt] = Field(..., description="List of expenses with receipts")

@@ -15,14 +15,12 @@ from typing import List, Optional
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
 
-from examples.c_advanced.gen_expense_data.structures.expense_validator__rule_violation import RuleViolation
-
 
 class ExpenseValidationResult(StructuredContent):
-    """Validation result for a single expense"""
+    """Complete validation result for a single expense"""
 
-    expense_id: str = Field(..., description="The expense ID being validated")
-    is_approved: bool = Field(..., description="Whether the expense is approved for reimbursement")
-    violations: Optional[List[RuleViolation]] = Field(default=None, description="List of rule violations")
-    total_amount: float = Field(..., description="The expense amount")
-    approved_amount: float = Field(..., description="Amount approved for reimbursement (may be partial)")
+    expense_id: str = Field(..., description="The expense ID")
+    is_approved: bool = Field(..., description="Whether expense is approved")
+    total_amount: float = Field(..., description="Expense amount")
+    approved_amount: float = Field(..., description="Approved amount (0 if rejected)")
+    issues: Optional[List[str]] = Field(default=None, description="List of validation issues found")

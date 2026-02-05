@@ -10,10 +10,8 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
 class PurchasedItem(StructuredContent):
@@ -23,3 +21,4 @@ class PurchasedItem(StructuredContent):
     quantity: int = Field(..., description="Quantity purchased")
     unit_price: float = Field(..., description="Price per unit")
     line_total: float = Field(..., description="Total for this line (quantity * unit_price)")
+    currency: str = Field(..., description="Currency code (always USD)")

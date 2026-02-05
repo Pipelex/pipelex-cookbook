@@ -99,8 +99,6 @@ description = "An expense submitted for reimbursement"
 
 [concept.Expense.structure]
 expense_id = { type = "text", description = "Unique expense identifier", required = true }
-category = { type = "text", description = "Expense category", choices = ["Meals", "Travel", "Accommodation", "Equipment", "Supplies", "Transportation"], required = true }
-merchant_name = { type = "text", description = "Name of the merchant", required = true }
 expense_date = { type = "date", description = "Date of the expense", required = true }
 total_amount = { type = "number", description = "Total expense amount", required = true }
 currency = { type = "text", description = "Currency code", required = true }
@@ -453,13 +451,11 @@ prompt = "$receipt_prompt"
 [pipe.compose_expense_from_receipt]
 type = "PipeCompose"
 description = "Creates an Expense record from the receipt content"
-inputs = { receipt_content = "ReceiptContent", company_profile = "CompanyProfile" }
+inputs = { receipt_content = "ReceiptContent" }
 output = "Expense"
 
 [pipe.compose_expense_from_receipt.construct]
 expense_id = { template = "EXP-{{ receipt_content.expense_date | replace('-', '') }}-0001" }
-category = { from = "receipt_content.expense_category" }
-merchant_name = { from = "company_profile.name" }
 expense_date = { from = "receipt_content.expense_date" }
 total_amount = { from = "receipt_content.total_amount" }
 currency = { from = "receipt_content.currency" }

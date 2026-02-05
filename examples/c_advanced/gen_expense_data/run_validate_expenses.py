@@ -7,9 +7,9 @@ sys.path.insert(0, str(Path(__file__).parent))
 import asyncio
 
 from pipelex import pretty_print
+from pipelex.core.stuffs.document_content import DocumentContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
-from pipelex.core.stuffs.document_content import DocumentContent
 
 
 async def validate_expense_report_from_pdf(pdf_path: str) -> None:

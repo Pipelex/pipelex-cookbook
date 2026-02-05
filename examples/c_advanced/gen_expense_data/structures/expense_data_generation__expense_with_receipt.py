@@ -10,15 +10,17 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
-from examples.c_advanced.gen_expense_data.structures.expense_data_generation__expense import Expense
+from typing import Optional
+
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
+
+from examples.c_advanced.gen_expense_data.structures.expense_data_generation__expense import Expense
+from examples.c_advanced.gen_expense_data.structures.expense_data_generation__receipt import Receipt
 
 
 class ExpenseWithReceipt(StructuredContent):
-    """An expense paired with its receipt image URL"""
+    """An expense paired with its receipt image"""
 
     expense: Expense = Field(..., description="The expense details")
-    receipt_url: Optional[str] = Field(default=None, description="URL of the receipt image")
+    receipt: Optional[Receipt] = Field(default=None, description="The receipt image")

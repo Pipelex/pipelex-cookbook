@@ -15,10 +15,10 @@ from pydantic import Field
 
 
 class SpendingLimitCheck(StructuredContent):
-    """Result of checking spending limits"""
+    """Check if expense is within spending limits for seniority level"""
 
-    within_limit: bool = Field(..., description="Whether expense is within spending limit")
+    within_limit: bool = Field(..., description="Whether expense is within limit")
     limit_amount: float = Field(..., description="The applicable spending limit")
     exceeded_by: float = Field(..., description="Amount exceeded (0 if within limit)")
-    category: str = Field(..., description="Expense category checked")
+    category: str = Field(..., description="Expense category")
     seniority: str = Field(..., description="Employee seniority level")

@@ -10,7 +10,7 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from datetime import date
+from datetime import datetime
 from typing import Literal
 
 from pipelex.core.stuffs.structured_content import StructuredContent
@@ -23,7 +23,7 @@ class Expense(StructuredContent):
     expense_id: str = Field(..., description="Unique expense identifier")
     category: Literal["Meals", "Travel", "Accommodation", "Equipment", "Supplies", "Transportation"] = Field(..., description="Expense category")
     merchant_name: str = Field(..., description="Name of the merchant")
-    expense_date: date = Field(..., description="Date of the expense")
+    expense_date: datetime = Field(..., description="Date of the expense")
     total_amount: float = Field(..., description="Total expense amount")
     currency: str = Field(..., description="Currency code")
     business_purpose: str = Field(..., description="Business justification for the expense")
