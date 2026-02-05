@@ -117,42 +117,6 @@ Your task:
 Return a complete, polished brief.
 """
 
-[pipe.generate_theme]
-type = "PipeLLM"
-description = "Generate a presentation theme from a polished design brief"
-inputs = { polished_brief = "SlideDesignBrief" }
-output = "Theme"
-prompt = """
-You are an expert presentation designer. Create a cohesive visual theme based on this design brief.
-
-@polished_brief
-
-Generate a complete theme with:
-
-1. **Name**: A short, memorable theme name reflecting the tone and topic
-
-2. **Colors**: A harmonious color palette appropriate for the tone and audience
-   - If brand_guidelines specify colors, use them
-   - Otherwise, choose colors that match the tone (e.g., formal = navy/gray, playful = vibrant, innovative = bold accents)
-   - Ensure sufficient contrast for readability
-
-3. **Typography**: Font choices that match the tone
-   - Formal: serif or clean sans-serif (e.g., Georgia, Helvetica)
-   - Playful: rounded or friendly fonts (e.g., Nunito, Poppins)
-   - Innovative: modern geometric fonts (e.g., Futura, Montserrat)
-   - Artsy: distinctive display fonts with classic body text
-
-4. **Layout**: Appropriate settings for the presentation goal
-   - Aspect ratio: 16:9 for most presentations, 4:3 for traditional settings
-   - Margins and alignment based on content density needs
-
-5. **Style**: Overall visual approach
-   - Match the tone and audience expectations
-   - Define icon and graphic styles that complement the theme
-
-6. **Exclusions**: Things to avoid based on the brief context
-"""
-
 [pipe.generate_multiple_themes]
 type = "PipeLLM"
 description = "Generate a presentation theme from a polished design brief"
@@ -188,16 +152,6 @@ Generate a complete theme with:
 
 6. **Exclusions**: Things to avoid based on the brief context
 """
-
-[pipe.generate_theme_from_rough_brief]
-type = "PipeSequence"
-description = "Transform a design brief into a complete presentation theme"
-inputs = { brief = "SlideDesignBrief" }
-output = "Theme"
-steps = [
-    { pipe = "polish_brief", result = "polished_brief" },
-    { pipe = "generate_theme", result = "theme" }
-]
 
 [pipe.render_visual_proposal]
 type = "PipeImgGen"
