@@ -65,7 +65,7 @@ pan_to_top = true    # Pan to show top of graph on load
 
 [pipelex.storage_config]
 # Storage method: "local", "in_memory" (default), "s3", or "gcp"
-method = "local"
+method = "s3"
 # Whether to fetch remote HTTP URLs and store them locally
 is_fetch_remote_content_enabled = true
 
@@ -81,8 +81,8 @@ uri_format = "{primary_id}/{secondary_id}/{hash}.{extension}"
 [pipelex.storage_config.s3]
 # AWS S3 storage settings (requires boto3: `pip install pipelex[s3]`)
 uri_format = "{primary_id}/{secondary_id}/{hash}.{extension}"
-bucket_name = ""
-region = ""
+bucket_name = "pipelex-assets"
+region = "eu-west-3"
 signed_urls_lifespan_seconds = 3600                           # Set to "disabled" for public URLs
 
 [pipelex.storage_config.gcp]

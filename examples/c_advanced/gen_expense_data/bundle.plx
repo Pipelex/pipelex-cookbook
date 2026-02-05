@@ -23,6 +23,7 @@ full_name = { type = "text", description = "Employee full name", required = true
 email = { type = "text", description = "Employee email address", required = true }
 department = { type = "text", description = "Department name", required = true }
 job_title = { type = "text", description = "Job title", required = true }
+seniority = { type = "text", description = "Employee seniority level", choices = ["Junior", "Senior", "Lead", "Manager", "Director", "VP", "Executive"], required = true }
 
 [concept.CompanyCategory]
 description = "A type of company for expense generation with typical expense range"
@@ -57,6 +58,42 @@ expense_date = { type = "date", description = "Date of the transaction", require
 expense_category = { type = "text", description = "Expense category for this receipt", choices = ["Meals", "Travel", "Accommodation", "Equipment", "Supplies", "Transportation"], required = true }
 business_purpose = { type = "text", description = "Business justification for the expense", required = true }
 
+[concept.PurchasedItem]
+description = "An item purchased on a receipt"
+
+[concept.PurchasedItem.structure]
+name = { type = "text", description = "Item name from catalog", required = true }
+quantity = { type = "integer", description = "Quantity purchased", required = true }
+unit_price = { type = "number", description = "Price per unit", required = true }
+line_total = { type = "number", description = "Total for this line (quantity * unit_price)", required = true }
+currency = { type = "text", description = "Currency code (always USD)", required = true }
+
+[concept.ReceiptItemsAndTotals]
+description = "Items purchased and calculated totals for a receipt"
+
+[concept.ReceiptItemsAndTotals.structure]
+items = { type = "list", item_type = "concept", item_concept_ref = "expense_data_generation.PurchasedItem", description = "List of purchased items" }
+subtotal = { type = "number", description = "Sum of all line totals", required = true }
+tax_rate = { type = "number", description = "Tax rate as decimal (e.g., 0.08 for 8%)", required = true }
+tax_amount = { type = "number", description = "Calculated tax amount", required = true }
+total_amount = { type = "number", description = "Final total (subtotal + tax)", required = true }
+currency = { type = "text", description = "Currency code (always USD)", required = true }
+
+[concept.ReceiptHeader]
+description = "Header information for a receipt"
+
+[concept.ReceiptHeader.structure]
+transaction_number = { type = "text", description = "Transaction/ticket number (format: TIC# XXXXX)", required = true }
+transaction_date = { type = "date", description = "Date of transaction (within last 30 days)", required = true }
+transaction_time = { type = "text", description = "Time of transaction (format: HH:MM AM/PM)", required = true }
+
+[concept.ExpenseMetadata]
+description = "Business metadata for an expense"
+
+[concept.ExpenseMetadata.structure]
+expense_category = { type = "text", description = "Expense category", choices = ["Meals", "Travel", "Accommodation", "Equipment", "Supplies", "Transportation"], required = true }
+business_purpose = { type = "text", description = "Business justification for the expense", required = true }
+
 [concept.Expense]
 description = "An expense submitted for reimbursement"
 
@@ -73,12 +110,16 @@ business_purpose = { type = "text", description = "Business justification for th
 description = "A prompt optimized for generating a receipt image"
 refines = "Text"
 
+[concept.Receipt]
+description = "A receipt image for an expense"
+refines = "Image"
+
 [concept.ExpenseWithReceipt]
-description = "An expense paired with its receipt image URL"
+description = "An expense paired with its receipt image"
 
 [concept.ExpenseWithReceipt.structure]
 expense = { type = "concept", concept_ref = "expense_data_generation.Expense", description = "The expense details", required = true }
-receipt_url = { type = "text", description = "URL of the receipt image", required = true }
+receipt = { type = "concept", concept_ref = "expense_data_generation.Receipt", description = "The receipt image" }
 
 [concept.EmployeeExpenseReport]
 description = "An employee with their list of expenses, receipts, and HTML report"
@@ -120,6 +161,8 @@ Guidelines:
 - Departments: Engineering, Marketing, Sales, Finance, Product
 - Job titles should vary (Manager, Senior, Lead, Director, etc.)
 - Each employee should have a unique employee_id (format: EMP-XXXX)
+- Assign appropriate seniority levels: Junior, Senior, Lead, Manager, Director, VP, Executive
+- Seniority should align with job title (e.g., "Senior Engineer" = Senior, "VP of Sales" = VP)
 """
 
 [pipe.generate_employee_report]
@@ -209,56 +252,145 @@ Examples of product catalogs by category:
 """
 
 [pipe.generate_receipt_content]
-type = "PipeLLM"
-description = "Generates the full text content of a receipt"
+type = "PipeSequence"
+description = "Generates the full text content of a receipt in multiple steps"
 inputs = { employee = "Employee", company_profile = "CompanyProfile", company_category = "CompanyCategory" }
 output = "ReceiptContent"
-model = "$synthesizing-data"
-system_prompt = """
-You are a synthetic data generator creating realistic receipt content for expense reports.
-"""
-prompt = """
-Generate a realistic receipt for this employee's expense at this company.
+steps = [
+    { pipe = "generate_receipt_header", result = "receipt_header" },
+    { pipe = "generate_receipt_items_and_totals", result = "items_and_totals" },
+    { pipe = "generate_expense_metadata", result = "expense_metadata" },
+    { pipe = "format_receipt_text", result = "formatted_receipt" },
+    { pipe = "compose_receipt_content", result = "receipt_content" },
+]
 
-@employee
+[pipe.generate_receipt_header]
+type = "PipeLLM"
+description = "Generates receipt header with transaction details"
+inputs = { company_profile = "CompanyProfile" }
+output = "ReceiptHeader"
+model = "$synthesizing-data"
+prompt = """
+Generate receipt header information for a transaction at this company:
+
+Company: $company_profile.name
+
+Generate:
+- A transaction number (format: TIC# followed by 5 digits, e.g., TIC# 48291)
+- A transaction date (must be within the last 30 days from today)
+- A transaction time (format: HH:MM AM/PM, e.g., 2:34 PM)
+"""
+
+[pipe.generate_receipt_items_and_totals]
+type = "PipeLLM"
+description = "Selects items from catalog and calculates totals with explicit currency"
+inputs = { company_profile = "CompanyProfile", company_category = "CompanyCategory" }
+output = "ReceiptItemsAndTotals"
+model = "$synthesizing-data"
+prompt = """
+Select items from this company's catalog and calculate the receipt totals.
 
 @company_profile
 
-Expense range: $company_category.typical_expense_range
+Target expense range: $company_category.typical_expense_range
 
-IMPORTANT FORMATTING RULES:
-The receipt text must include ALL of these sections in order:
+Instructions:
+1. Select 2-6 items from the product_catalog above
+2. For EACH item, you MUST specify:
+   - name: item name from catalog
+   - quantity: usually 1-3
+   - unit_price: price from catalog
+   - line_total: quantity * unit_price
+   - currency: MUST be "USD" for EVERY item
+3. Calculate subtotal = sum of all line_totals
+4. Apply tax_rate of 0.08 (8%)
+5. Calculate tax_amount = subtotal * tax_rate (round to 2 decimals)
+6. Calculate total_amount = subtotal + tax_amount
 
-1. HEADER:
-   - Company name (centered/prominent)
-   - Full address
-   - Phone number
-   - Transaction/ticket number (format: TIC# XXXXX or #XXXXX)
-   - Date and time (within last 30 days)
-
-2. ITEMIZED LIST:
-   - Select 2-6 realistic items from the product catalog
-   - Format: QTY x ITEM NAME ... 12.99
-   - For weighted items: 5.99/lb 0.5lb = 3.00
-
-3. TOTALS SECTION:
-   - Subtotal
-   - Tax (calculate realistic tax ~8%)
-   - TOTAL (must be within the expense range)
-
-4. PAYMENT SECTION:
-   - Payment method: "Card VISA ****1234" or similar
-   - Status: APPROVED
-
-Format the full_receipt_text as it would appear printed on thermal paper - use simple text formatting with spaces for alignment.
-
-ALSO provide:
-- The total_amount as a number
-- Currency: "USD"
-- The expense_date (within last 30 days)
-- The expense_category: map to one of ["Meals", "Travel", "Accommodation", "Equipment", "Supplies", "Transportation"]
-- A brief business_purpose based on the employee's role
+CRITICAL REQUIREMENTS:
+- EVERY item MUST have currency = "USD"
+- The totals section MUST have currency = "USD"
+- The total_amount MUST be within the target expense range
+- All amounts must be positive numbers with max 2 decimal places
 """
+
+[pipe.generate_expense_metadata]
+type = "PipeLLM"
+description = "Determines expense category and business purpose"
+inputs = { employee = "Employee", company_profile = "CompanyProfile" }
+output = "ExpenseMetadata"
+model = "$synthesizing-data"
+prompt = """
+Determine the expense category and business purpose for this transaction.
+
+@employee
+
+Company: $company_profile.name
+Category: $company_profile.category
+
+Based on the company category and the employee's role:
+1. Map to the appropriate expense_category:
+   - restaurant, cafe, supermarket → "Meals"
+   - airline → "Travel"
+   - hotel → "Accommodation"
+   - electronics → "Equipment"
+   - office_supplies, pharmacy → "Supplies"
+   - gas_station, delivery → "Transportation"
+
+2. Write a brief business_purpose (1 sentence) that makes sense for this employee's job function.
+   Examples:
+   - "Team lunch meeting to discuss Q4 roadmap"
+   - "Client dinner with Acme Corp representatives"
+   - "Office supplies for project documentation"
+"""
+
+[pipe.format_receipt_text]
+type = "PipeCompose"
+description = "Formats the receipt as thermal paper text"
+inputs = { company_profile = "CompanyProfile", receipt_header = "ReceiptHeader", items_and_totals = "ReceiptItemsAndTotals" }
+output = "Text"
+
+[pipe.format_receipt_text.template]
+category = "basic"
+template = """
+================================
+      $company_profile.name
+================================
+$company_profile.address
+$company_profile.city, $company_profile.postal_code
+Tel: $company_profile.phone
+--------------------------------
+$receipt_header.transaction_number
+$receipt_header.transaction_date $receipt_header.transaction_time
+--------------------------------
+{% for item in items_and_totals.items %}
+{{ item.name }}              ${{ item.line_total | round(2) }}
+{% endfor %}
+--------------------------------
+SUBTOTAL             ${{ items_and_totals.subtotal | round(2) }}
+TAX {{ (items_and_totals.tax_rate * 100) | round(0) | int }}%                ${{ items_and_totals.tax_amount | round(2) }}
+TOTAL                ${{ items_and_totals.total_amount | round(2) }}
+================================
+VISA ****1234
+APPROVED
+================================
+     Thank you for your visit!
+================================
+"""
+
+[pipe.compose_receipt_content]
+type = "PipeCompose"
+description = "Assembles the final ReceiptContent from all parts"
+inputs = { formatted_receipt = "Text", items_and_totals = "ReceiptItemsAndTotals", receipt_header = "ReceiptHeader", expense_metadata = "ExpenseMetadata" }
+output = "ReceiptContent"
+
+[pipe.compose_receipt_content.construct]
+full_receipt_text = { from = "formatted_receipt" }
+total_amount = { from = "items_and_totals.total_amount" }
+currency = { from = "items_and_totals.currency" }
+expense_date = { from = "receipt_header.transaction_date" }
+expense_category = { from = "expense_metadata.expense_category" }
+business_purpose = { from = "expense_metadata.business_purpose" }
 
 [pipe.generate_receipt_prompt]
 type = "PipeLLM"
@@ -268,42 +400,53 @@ output = "ReceiptPrompt"
 model = "@default-small"
 system_prompt = """
 You are an expert at creating image generation prompts for realistic receipt photos.
+Your prompts MUST include the COMPLETE receipt text that should appear on the receipt.
 """
 prompt = """
-Create an image generation prompt for a photo of this receipt:
+Create an image generation prompt for a photo of a thermal paper receipt.
 
-Company: $company_profile.name
-Category: $company_profile.category
+Company: $company_profile.name ($company_profile.category)
+Location: $company_profile.address, $company_profile.city
 
-Receipt content to show:
+=== EXACT RECEIPT TEXT TO DISPLAY (COPY THIS VERBATIM) ===
 
-@receipt_content
+$receipt_content.full_receipt_text
 
-CRITICAL REQUIREMENTS:
-- The receipt MUST show the exact text content above - it must be READABLE
-- Include a simple logo/brand mark at the top of the receipt appropriate for this type of business
-- The receipt should be printed on white thermal paper
-- This is a PHOTO of a receipt, not a scan
+=== END OF RECEIPT TEXT ===
 
-STYLE SELECTION (pick ONE randomly):
+CRITICAL REQUIREMENTS FOR YOUR PROMPT:
+1. Your prompt MUST include ALL the text above EXACTLY as written - every line, every number, every detail
+2. The receipt text must be READABLE and LEGIBLE in the generated image
+3. Include a simple logo/brand mark at the top appropriate for a $company_profile.category business
+4. The receipt is printed on white thermal paper (the typical thin paper from cash registers)
+5. This is a PHOTO of a receipt, not a digital scan
 
-IMPERFECT STYLE (4/5 chance):
-- Receipt slightly crumpled or with a small coffee stain in corner, held by a hand outside in the steet
-- Text must still be clearly readable
+PHOTO STYLE (pick ONE):
 
-CLEAN STYLE (1/5 chance):
-- Receipt flat on a plain surface (desk, table)
-- Good lighting, slight angle
-- Clean and crisp like a casual photo
+STYLE A - IMPERFECT (use this 80% of the time):
+- Receipt slightly crumpled or with a small fold
+- Maybe a tiny coffee stain in one corner
+- Held by a hand, or on a slightly messy surface
+- Natural lighting, slight shadows
+- Text must still be clearly readable despite imperfections
 
-Write 2-3 sentences describing the visual scene. Focus on the photo style, the receipt should display the exact content provided above.
+STYLE B - CLEAN (use this 20% of the time):
+- Receipt flat on a plain surface (wooden desk, clean table)
+- Good even lighting with soft shadows
+- Slight angle (not perfectly top-down)
+- Fresh and crisp like just printed
+
+Your prompt must be 3-5 sentences that:
+1. Describe the photo scene and style
+2. INCLUDE THE COMPLETE RECEIPT TEXT from above
+3. Specify that text must be sharp and readable
 """
 
 [pipe.render_receipt]
 type = "PipeImgGen"
 description = "Generates the final receipt image"
 inputs = { receipt_prompt = "ReceiptPrompt" }
-output = "Image"
+output = "Receipt"
 model = "@best-gpt"
 prompt = "$receipt_prompt"
 
@@ -325,12 +468,12 @@ business_purpose = { from = "receipt_content.business_purpose" }
 [pipe.compose_expense_with_receipt]
 type = "PipeCompose"
 description = "Pairs an expense with its generated receipt"
-inputs = { expense = "Expense", receipt = "Image" }
+inputs = { expense = "Expense", receipt = "Receipt" }
 output = "ExpenseWithReceipt"
 
 [pipe.compose_expense_with_receipt.construct]
 expense = { from = "expense" }
-receipt_url = { from = "receipt.url" }
+receipt = { from = "receipt" }
 
 [pipe.render_expense_report_html]
 type = "PipeCompose"
@@ -361,18 +504,16 @@ img { width: 50px; height: 50px; object-fit: cover; display: block; }
 <h1>Expense Report</h1>
 <h2>{{ employee.full_name }}</h2>
 <p class="info"><strong>ID:</strong> {{ employee.employee_id }} | <strong>Email:</strong> {{ employee.email }}</p>
-<p class="info"><strong>Department:</strong> {{ employee.department }} | <strong>Title:</strong> {{ employee.job_title }}</p>
+<p class="info"><strong>Department:</strong> {{ employee.department }} | <strong>Title:</strong> {{ employee.job_title }} | <strong>Seniority:</strong> {{ employee.seniority }}</p>
 <table>
-<tr><th>Expense ID</th><th>Date</th><th>Category</th><th>Merchant</th><th>Purpose</th><th>Amount</th><th>Receipt</th></tr>
+<tr><th>Expense ID</th><th>Date</th><th>Purpose</th><th>Amount</th><th>Receipt</th></tr>
 {% for item in expenses_with_receipts %}
 <tr>
 <td>{{ item.expense.expense_id }}</td>
 <td>{{ item.expense.expense_date }}</td>
-<td>{{ item.expense.category }}</td>
-<td>{{ item.expense.merchant_name }}</td>
 <td>{{ item.expense.business_purpose }}</td>
 <td class="amount">{{ item.expense.currency }} {{ item.expense.total_amount }}</td>
-<td><img src="{{ item.receipt_url }}"></td>
+<td><img src="{{ item.receipt.public_url }}"></td>
 </tr>
 {% endfor %}
 </table>

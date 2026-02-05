@@ -10,13 +10,15 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
 from pipelex.core.stuffs.structured_content import StructuredContent
-from pipelex.core.stuffs.text_content import TextContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
-class ReceiptPrompt(TextContent):
-    """A prompt optimized for generating a receipt image"""
+class SpendingLimitCheck(StructuredContent):
+    """Result of checking spending limits"""
 
+    within_limit: bool = Field(..., description="Whether expense is within spending limit")
+    limit_amount: float = Field(..., description="The applicable spending limit")
+    exceeded_by: float = Field(..., description="Amount exceeded (0 if within limit)")
+    category: str = Field(..., description="Expense category checked")
+    seniority: str = Field(..., description="Employee seniority level")

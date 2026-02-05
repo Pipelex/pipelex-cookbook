@@ -10,13 +10,16 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
+from typing import Literal
+
 from pipelex.core.stuffs.structured_content import StructuredContent
-from pipelex.core.stuffs.text_content import TextContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
-class ReceiptPrompt(TextContent):
-    """A prompt optimized for generating a receipt image"""
+class BusinessPurposeAssessment(StructuredContent):
+    """LLM assessment of business purpose validity"""
 
+    is_valid: bool = Field(..., description="Whether the business purpose is valid")
+    confidence: Literal["high", "medium", "low"] = Field(..., description="Confidence level")
+    reasoning: str = Field(..., description="Explanation of assessment")
+    suggested_action: Literal["approve", "flag_for_review", "reject"] = Field(..., description="Recommended action")

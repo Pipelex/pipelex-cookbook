@@ -10,13 +10,16 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
+from typing import Literal
+
 from pipelex.core.stuffs.structured_content import StructuredContent
-from pipelex.core.stuffs.text_content import TextContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
-class ReceiptPrompt(TextContent):
-    """A prompt optimized for generating a receipt image"""
+class RuleViolation(StructuredContent):
+    """A specific rule violation found during validation"""
 
+    rule_code: str = Field(..., description="Unique code for the rule")
+    rule_name: str = Field(..., description="Human-readable rule name")
+    severity: Literal["warning", "rejection"] = Field(..., description="Severity level")
+    message: str = Field(..., description="Detailed explanation of the violation")

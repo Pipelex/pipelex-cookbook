@@ -10,13 +10,13 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
 from pipelex.core.stuffs.structured_content import StructuredContent
-from pipelex.core.stuffs.text_content import TextContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
-class ReceiptPrompt(TextContent):
-    """A prompt optimized for generating a receipt image"""
+class WeekendCheck(StructuredContent):
+    """Check if expense occurred on a weekend (not allowed)"""
 
+    is_weekday: bool = Field(..., description="True if expense is on a weekday")
+    day_of_week: str = Field(..., description="Day name (Monday, Tuesday, etc.)")
+    message: str = Field(..., description="Explanation")

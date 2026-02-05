@@ -16,12 +16,10 @@ from pydantic import Field
 from typing import Optional, List, Dict, Any, Literal
 
 
-class Employee(StructuredContent):
-    """An employee who can submit expense reports"""
+class PurchasedItem(StructuredContent):
+    """An item purchased on a receipt"""
 
-    employee_id: str = Field(..., description="Unique employee identifier")
-    full_name: str = Field(..., description="Employee full name")
-    email: str = Field(..., description="Employee email address")
-    department: str = Field(..., description="Department name")
-    job_title: str = Field(..., description="Job title")
-    seniority: Literal['Junior', 'Senior', 'Lead', 'Manager', 'Director', 'VP', 'Executive'] = Field(..., description="Employee seniority level")
+    name: str = Field(..., description="Item name from catalog")
+    quantity: int = Field(..., description="Quantity purchased")
+    unit_price: float = Field(..., description="Price per unit")
+    line_total: float = Field(..., description="Total for this line (quantity * unit_price)")

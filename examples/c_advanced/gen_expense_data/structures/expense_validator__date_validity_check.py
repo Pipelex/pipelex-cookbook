@@ -10,13 +10,16 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
+from typing import Optional
+
 from pipelex.core.stuffs.structured_content import StructuredContent
-from pipelex.core.stuffs.text_content import TextContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
-class ReceiptPrompt(TextContent):
-    """A prompt optimized for generating a receipt image"""
+class DateValidityCheck(StructuredContent):
+    """Result of checking date validity"""
 
+    is_valid: bool = Field(..., description="Whether date is valid for reimbursement")
+    days_old: int = Field(..., description="Number of days since expense date")
+    max_days_allowed: int = Field(..., description="Maximum days allowed for submission")
+    reason: Optional[str] = Field(default=None, description="Explanation if invalid")

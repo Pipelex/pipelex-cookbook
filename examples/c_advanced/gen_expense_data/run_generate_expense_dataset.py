@@ -1,3 +1,4 @@
+import logging
 import sys
 from pathlib import Path
 
@@ -9,6 +10,11 @@ import asyncio
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.execute import execute_pipeline
 from weasyprint import CSS, HTML
+from pipelex.hub import get_storage_provider
+
+# Suppress weasyprint verbose logging (must be after weasyprint import)
+logging.getLogger("weasyprint").setLevel(logging.ERROR)
+logging.getLogger("fontTools").setLevel(logging.ERROR)
 
 from examples.c_advanced.gen_expense_data.structures.expense_data_generation__employee_expense_report import EmployeeExpenseReport
 from examples.c_advanced.gen_expense_data.structures.expense_data_generation__nb_of_employees import NbOfEmployees
@@ -22,23 +28,17 @@ async def run_generate_expense_dataset() -> list[EmployeeExpenseReport]:
         inputs={
             "nb_employees": {
                 "concept": "expense_data_generation.NbOfEmployees",
-                "content": NbOfEmployees(number=5),
+                "content": NbOfEmployees(number=3),
             },
         },
     )
     return pipe_output.main_stuff_as_items(item_type=EmployeeExpenseReport)
 
 
-def copy_image(url: str, filepath: Path):
-    # pipelex-storage:// maps to .pipelex/storage/
-    if url.startswith("pipelex-storage://"):
-        local_path = Path(".pipelex/storage") / url.replace("pipelex-storage://", "")
-        if local_path.exists():
-            filepath.write_bytes(local_path.read_bytes())
-
 
 async def export_to_folders(reports: list[EmployeeExpenseReport]):
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    storage_provider = get_storage_provider()
 
     for report in reports:
         # Create folder for employee
@@ -48,12 +48,13 @@ async def export_to_folders(reports: list[EmployeeExpenseReport]):
         # Copy receipt images first (needed for PDF generation)
         for item in report.expenses_with_receipts:
             image_path = folder / f"{item.expense.expense_id}.png"
-            copy_image(item.receipt_url, image_path)
+            image_bytes = await storage_provider.load(item.receipt_image.url)
+            image_path.write_bytes(image_bytes)
 
         # Update HTML to use local image paths
         html_content = report.html_report.inner_html
         for item in report.expenses_with_receipts:
-            html_content = html_content.replace(item.receipt_url, f"{item.expense.expense_id}.png")
+            html_content = html_content.replace(item.receipt_image.url, f"{item.expense.expense_id}.png")
 
         # Generate PDF from HTML
         HTML(string=html_content, base_url=str(folder)).write_pdf(  # pyright: ignore[reportUnknownMemberType]

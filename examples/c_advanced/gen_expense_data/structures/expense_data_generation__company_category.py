@@ -10,16 +10,14 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from typing import Literal
-
+from enum import Enum
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
+from typing import Optional, List, Dict, Any, Literal
 
 
 class CompanyCategory(StructuredContent):
     """A type of company for expense generation with typical expense range"""
 
-    category: Literal[
-        "supermarket", "restaurant", "cafe", "hotel", "airline", "office_supplies", "pharmacy", "electronics", "gas_station", "delivery"
-    ] = Field(..., description="Company category type")
+    category: Literal['supermarket', 'restaurant', 'cafe', 'hotel', 'airline', 'office_supplies', 'pharmacy', 'electronics', 'gas_station', 'delivery'] = Field(..., description="Company category type")
     typical_expense_range: str = Field(..., description="Typical expense range e.g. '20-80 USD'")

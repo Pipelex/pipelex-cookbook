@@ -10,13 +10,16 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
+from typing import Optional
+
 from pipelex.core.stuffs.structured_content import StructuredContent
-from pipelex.core.stuffs.text_content import TextContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
-class ReceiptPrompt(TextContent):
-    """A prompt optimized for generating a receipt image"""
+class CategoryPermissionCheck(StructuredContent):
+    """Result of checking category permissions by role"""
 
+    is_permitted: bool = Field(..., description="Whether employee can expense in this category")
+    category: str = Field(..., description="Expense category")
+    department: str = Field(..., description="Employee department")
+    reason: Optional[str] = Field(default=None, description="Explanation if not permitted")

@@ -10,13 +10,15 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
 from pipelex.core.stuffs.structured_content import StructuredContent
-from pipelex.core.stuffs.text_content import TextContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
+
+from examples.c_advanced.gen_expense_data.structures.expense_validator__employee import Employee
+from examples.c_advanced.gen_expense_data.structures.expense_validator__expense_with_receipt import ExpenseWithReceipt
 
 
-class ReceiptPrompt(TextContent):
-    """A prompt optimized for generating a receipt image"""
+class ExpenseReport(StructuredContent):
+    """Complete expense report extracted from PDF"""
 
+    employee: Employee = Field(..., description="The employee")
+    expenses_with_receipts: list[ExpenseWithReceipt] = Field(..., description="List of expenses with receipts")

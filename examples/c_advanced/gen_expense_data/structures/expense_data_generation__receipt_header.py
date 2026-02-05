@@ -10,18 +10,16 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
+from datetime import datetime
 from enum import Enum
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
 from typing import Optional, List, Dict, Any, Literal
 
 
-class Employee(StructuredContent):
-    """An employee who can submit expense reports"""
+class ReceiptHeader(StructuredContent):
+    """Header information for a receipt"""
 
-    employee_id: str = Field(..., description="Unique employee identifier")
-    full_name: str = Field(..., description="Employee full name")
-    email: str = Field(..., description="Employee email address")
-    department: str = Field(..., description="Department name")
-    job_title: str = Field(..., description="Job title")
-    seniority: Literal['Junior', 'Senior', 'Lead', 'Manager', 'Director', 'VP', 'Executive'] = Field(..., description="Employee seniority level")
+    transaction_number: str = Field(..., description="Transaction/ticket number (format: TIC# XXXXX)")
+    transaction_date: datetime = Field(..., description="Date of transaction (within last 30 days)")
+    transaction_time: str = Field(..., description="Time of transaction (format: HH:MM AM/PM)")

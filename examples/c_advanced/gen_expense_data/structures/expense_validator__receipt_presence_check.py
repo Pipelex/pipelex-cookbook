@@ -10,13 +10,12 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
 from pipelex.core.stuffs.structured_content import StructuredContent
-from pipelex.core.stuffs.text_content import TextContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
-class ReceiptPrompt(TextContent):
-    """A prompt optimized for generating a receipt image"""
+class ReceiptPresenceCheck(StructuredContent):
+    """Check if a receipt is present for the expense"""
 
+    has_receipt: bool = Field(..., description="Whether a receipt image is attached")
+    message: str = Field(..., description="Explanation")

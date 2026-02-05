@@ -10,13 +10,15 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
+from typing import List, Literal, Optional
+
 from pipelex.core.stuffs.structured_content import StructuredContent
-from pipelex.core.stuffs.text_content import TextContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
-class ReceiptPrompt(TextContent):
-    """A prompt optimized for generating a receipt image"""
+class SuspiciousPatternCheck(StructuredContent):
+    """Detection of suspicious expense patterns"""
 
+    is_suspicious: bool = Field(..., description="Whether suspicious patterns detected")
+    patterns_found: Optional[List[str]] = Field(default=None, description="List of suspicious patterns identified")
+    risk_level: Literal["none", "low", "medium", "high"] = Field(..., description="Risk assessment")

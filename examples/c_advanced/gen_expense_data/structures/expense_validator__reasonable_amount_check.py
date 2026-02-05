@@ -10,13 +10,13 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
 from pipelex.core.stuffs.structured_content import StructuredContent
-from pipelex.core.stuffs.text_content import TextContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
-class ReceiptPrompt(TextContent):
-    """A prompt optimized for generating a receipt image"""
+class ReasonableAmountCheck(StructuredContent):
+    """Check if expense amount is reasonable for the category"""
 
+    is_reasonable: bool = Field(..., description="Whether amount is reasonable")
+    expected_range: str = Field(..., description="Expected range for this category")
+    assessment: str = Field(..., description="Explanation of assessment")

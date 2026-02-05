@@ -16,12 +16,8 @@ from pydantic import Field
 from typing import Optional, List, Dict, Any, Literal
 
 
-class Employee(StructuredContent):
-    """An employee who can submit expense reports"""
+class ExpenseMetadata(StructuredContent):
+    """Business metadata for an expense"""
 
-    employee_id: str = Field(..., description="Unique employee identifier")
-    full_name: str = Field(..., description="Employee full name")
-    email: str = Field(..., description="Employee email address")
-    department: str = Field(..., description="Department name")
-    job_title: str = Field(..., description="Job title")
-    seniority: Literal['Junior', 'Senior', 'Lead', 'Manager', 'Director', 'VP', 'Executive'] = Field(..., description="Employee seniority level")
+    expense_category: Literal['Meals', 'Travel', 'Accommodation', 'Equipment', 'Supplies', 'Transportation'] = Field(..., description="Expense category")
+    business_purpose: str = Field(..., description="Business justification for the expense")
