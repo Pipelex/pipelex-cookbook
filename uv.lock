@@ -2942,7 +2942,7 @@ wheels = [
 [[package]]
 name = "pipelex"
 version = "0.18.0b2"
-source = { git = "https://github.com/Pipelex/pipelex.git?rev=feature%2FChicago#1876264aef90cc6705dfe1db92027ba749933525" }
+source = { git = "https://github.com/Pipelex/pipelex.git?branch=feature%2FChicago#1a2232ef95bca48d12d27cea178f890e1db4f090" }
 dependencies = [
     { name = "aiofiles" },
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
@@ -3040,7 +3040,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal", "docling"], git = "https://github.com/Pipelex/pipelex.git?rev=feature%2FChicago" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal", "docling"], git = "https://github.com/Pipelex/pipelex.git?branch=feature%2FChicago" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.405" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.1" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
