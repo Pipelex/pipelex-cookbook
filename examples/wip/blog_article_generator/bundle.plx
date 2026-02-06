@@ -1,0 +1,76 @@
+domain = "blog_article_generator"
+description = "Generate SEO optimized blog articles dynamically"
+main_pipe = "generate_blog_article"
+
+############################################################
+# CONCEPTS
+############################################################
+
+[concept]
+ArticleOutline = "SEO optimized blog outline"
+BlogArticle = "Final blog article"
+
+[concept.BlogArticleRequest]
+description = "Structured request describing the blog article to generate"
+
+[concept.BlogArticleRequest.structure]
+text = { type = "text", description = "Free-form instruction for the article", required = true }
+topic = { type = "text", description = "The main topic of the blog article", required = true }
+audience = { type = "text", description = "Target audience for the article", required = true }
+tone = { type = "text", description = "Writing tone", choices = ["Casual", "Professional", "Humorous", "Academic"], required = true }
+length = { type = "text", description = "Desired article length", choices = ["Short", "Medium", "Long"], required = true }
+
+############################################################
+# MAIN PIPE
+############################################################
+
+[pipe.generate_blog_article]
+type = "PipeSequence"
+description = "Generate a complete blog article from a blog article request"
+inputs = { user_prompt = "BlogArticleRequest" }
+output = "BlogArticle"
+steps = [
+    { pipe = "create_outline", result = "outline" },
+    { pipe = "write_article", result = "article" },
+]
+
+############################################################
+# STEP 1 - CREATE OUTLINE
+############################################################
+
+[pipe.create_outline]
+type = "PipeLLM"
+description = "Create an SEO-friendly blog outline from the blog article request"
+inputs = { user_prompt = "BlogArticleRequest" }
+output = "ArticleOutline"
+prompt = """
+Create an SEO-friendly blog outline based on the following request:
+
+@user_prompt
+
+Return:
+- seo_title
+- meta_description
+- headings
+"""
+
+############################################################
+# STEP 2 - WRITE ARTICLE
+############################################################
+
+[pipe.write_article]
+type = "PipeLLM"
+description = "Write the full blog article in markdown using the generated outline"
+inputs = { outline = "ArticleOutline" }
+output = "BlogArticle"
+prompt = """
+Write a full blog article in markdown format using the following outline:
+
+@outline
+
+Rules:
+- Use clear markdown headings
+- SEO optimized
+- Include engaging examples
+- Match the requested tone
+"""
