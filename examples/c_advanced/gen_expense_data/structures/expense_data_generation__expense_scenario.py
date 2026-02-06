@@ -10,17 +10,21 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
+from typing import Literal, Optional
+
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
 class ExpenseScenario(StructuredContent):
     """Defines whether an expense is legitimate or contains fraud indicators"""
 
-    scenario_type: Literal['legitimate', 'weekend_expense', 'inflated_amount', 'receipt_mismatch', 'vague_purpose'] = Field(..., description="Type of expense scenario")
+    scenario_type: Literal["legitimate", "weekend_expense", "inflated_amount", "receipt_mismatch", "vague_purpose"] = Field(
+        ..., description="Type of expense scenario"
+    )
     fraud_description: Optional[str] = Field(default=None, description="Description of the fraud indicator if not legitimate")
-    target_date: Optional[str] = Field(default=None, description="Specific date to use for the expense (YYYY-MM-DD format), especially for weekend scenarios")
+    target_date: Optional[str] = Field(
+        default=None, description="Specific date to use for the expense (YYYY-MM-DD format), especially for weekend scenarios"
+    )
     amount_multiplier: Optional[float] = Field(default=1.0, description="Multiplier for inflated amounts (1.0 for normal, 2.0+ for inflated)")
     fake_purpose: Optional[str] = Field(default=None, description="For receipt_mismatch: the lying business purpose that claims something legitimate")
