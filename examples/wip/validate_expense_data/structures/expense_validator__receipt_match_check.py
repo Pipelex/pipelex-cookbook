@@ -10,10 +10,10 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
+from typing import Literal, Optional
+
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
 class ReceiptMatchCheck(StructuredContent):
@@ -26,5 +26,5 @@ class ReceiptMatchCheck(StructuredContent):
     merchant_matches: bool = Field(..., description="Merchant name on receipt matches claimed merchant")
     amount_matches: bool = Field(..., description="Amount on receipt matches claimed amount")
     date_matches: bool = Field(..., description="Date on receipt matches claimed date")
-    confidence: Literal['high', 'medium', 'low'] = Field(..., description="Confidence level of the assessment")
+    confidence: Literal["high", "medium", "low"] = Field(..., description="Confidence level of the assessment")
     discrepancies: Optional[str] = Field(default=None, description="Description of any discrepancies found")

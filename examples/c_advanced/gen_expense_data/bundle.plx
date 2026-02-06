@@ -25,12 +25,22 @@ department = { type = "text", description = "Department name", required = true }
 job_title = { type = "text", description = "Job title", required = true }
 seniority = { type = "text", description = "Employee seniority level", choices = ["Junior", "Senior", "Lead", "Manager", "Director", "VP", "Executive"], required = true }
 
+[concept.ExpenseScenario]
+description = "Defines whether an expense is legitimate or contains fraud indicators"
+
+[concept.ExpenseScenario.structure]
+scenario_type = { type = "text", description = "Type of expense scenario", choices = ["legitimate", "weekend_expense", "inflated_amount", "personal_expense", "vague_purpose"], required = true }
+fraud_description = { type = "text", description = "Description of the fraud indicator if not legitimate" }
+target_date = { type = "text", description = "Specific date to use for the expense (YYYY-MM-DD format), especially for weekend scenarios" }
+amount_multiplier = { type = "number", description = "Multiplier for inflated amounts (1.0 for normal, 2.0+ for inflated)", default_value = 1.0 }
+
 [concept.CompanyCategory]
 description = "A type of company for expense generation with typical expense range"
 
 [concept.CompanyCategory.structure]
 category = { type = "text", description = "Company category type", choices = ["supermarket", "restaurant", "cafe", "hotel", "airline", "office_supplies", "pharmacy", "electronics", "gas_station", "delivery"], required = true }
 typical_expense_range = { type = "text", description = "Typical expense range e.g. '20-80 USD'", required = true }
+expense_scenario = { type = "concept", concept_ref = "expense_data_generation.ExpenseScenario", description = "The fraud scenario for this expense", required = true }
 
 [concept.CompanyProfile]
 description = "A company with its details and product catalog"
@@ -181,25 +191,69 @@ steps = [
 
 [pipe.generate_company_assignments]
 type = "PipeLLM"
-description = "Assigns 3 company categories appropriate for the employee's role and department"
+description = "Assigns 3-4 company categories with a mix of legitimate and fraudulent expense scenarios"
 inputs = { employee = "Employee" }
-output = "CompanyCategory[3]"
+output = "CompanyCategory[]"
 model = "$synthesizing-data"
 system_prompt = """
-You are a synthetic data generator that assigns realistic expense categories based on employee roles.
+You are a synthetic data generator creating expense scenarios for testing expense validation systems.
+You must create a mix of legitimate expenses AND fraudulent/problematic expenses that should be flagged or rejected.
 """
 prompt = """
-Based on this employee's role and department, select 3 different company categories where they would realistically have business expenses.
+Based on this employee's role and department, generate 3 OR 4 expense scenarios - some legitimate and some with fraud indicators.
 
 @employee
 
-Guidelines:
-- Choose categories that make sense for their job function
+JANUARY 2026 WEEKEND DATES (Saturday/Sunday):
+- January 3-4 (Sat-Sun)
+- January 10-11 (Sat-Sun)
+- January 17-18 (Sat-Sun)
+- January 24-25 (Sat-Sun)
+- January 31 (Sat) - February 1 (Sun)
+
+GENERATE EITHER 3 OR 4 EXPENSES (randomly choose):
+
+If generating 3 expenses, include:
+1. ONE legitimate expense (scenario_type = "legitimate")
+2. ONE weekend expense (scenario_type = "weekend_expense") - use a weekend date from above
+3. ONE of: inflated_amount, personal_expense, OR vague_purpose
+
+If generating 4 expenses, include:
+1. ONE legitimate expense (scenario_type = "legitimate")
+2. ONE weekend expense (scenario_type = "weekend_expense") - use a weekend date from above
+3. ONE inflated amount OR personal expense (scenario_type = "inflated_amount" or "personal_expense")
+4. ONE with vague purpose (scenario_type = "vague_purpose")
+
+FOR EACH CompanyCategory, provide:
+- category: appropriate business category
+- typical_expense_range: normal range for this category
+- expense_scenario with:
+  - scenario_type: one of the types above
+  - fraud_description: explain the issue (empty for legitimate)
+  - target_date: REQUIRED for weekend_expense (use format "2026-01-11" for a Saturday), optional otherwise
+  - amount_multiplier: 1.0 for normal, 2.0-3.0 for inflated_amount scenarios
+
+FRAUD SCENARIO DETAILS:
+
+1. weekend_expense: Expense on Saturday or Sunday without prior approval
+   - target_date MUST be a weekend date like "2026-01-04", "2026-01-11", "2026-01-18", or "2026-01-25"
+   - fraud_description: "Weekend expense without prior manager approval"
+
+2. inflated_amount: Amount significantly exceeds reasonable limits
+   - amount_multiplier: 2.0 to 3.0
+   - fraud_description: "Amount exceeds spending limit for employee seniority"
+
+3. personal_expense: Personal purchase disguised as business
+   - Use categories like electronics, pharmacy, supermarket
+   - fraud_description: "Personal items claimed as business expense"
+
+4. vague_purpose: Missing or inadequate business justification
+   - fraud_description: "Vague or missing business purpose"
+
+CATEGORY GUIDELINES:
 - Sales/Marketing: restaurants, hotels, airlines, cafes
 - Engineering/Product: cafes, electronics, office_supplies
 - Finance/Operations: office_supplies, delivery, supermarket
-- Include variety - don't pick similar categories
-- Set realistic expense ranges for each category
 """
 
 # ============================================================================
@@ -251,7 +305,7 @@ Examples of product catalogs by category:
 
 [pipe.generate_receipt_content]
 type = "PipeSequence"
-description = "Generates the full text content of a receipt in multiple steps"
+description = "Generates the full text content of a receipt in multiple steps, respecting fraud scenarios"
 inputs = { employee = "Employee", company_profile = "CompanyProfile", company_category = "CompanyCategory" }
 output = "ReceiptContent"
 steps = [
@@ -264,8 +318,8 @@ steps = [
 
 [pipe.generate_receipt_header]
 type = "PipeLLM"
-description = "Generates receipt header with transaction details"
-inputs = { company_profile = "CompanyProfile" }
+description = "Generates receipt header with transaction details, respecting scenario target dates"
+inputs = { company_profile = "CompanyProfile", company_category = "CompanyCategory" }
 output = "ReceiptHeader"
 model = "$synthesizing-data"
 prompt = """
@@ -273,15 +327,22 @@ Generate receipt header information for a transaction at this company:
 
 Company: $company_profile.name
 
+Expense Scenario: $company_category.expense_scenario.scenario_type
+Target Date: $company_category.expense_scenario.target_date
+
 Generate:
 - A transaction number (format: TIC# followed by 5 digits, e.g., TIC# 48291)
-- A transaction date (must be a date in January 2026, e.g., 2026-01-15)
+- A transaction date:
+  * If Target Date is provided and not empty, you MUST use exactly that date
+  * If Target Date is empty/null, use a random WEEKDAY in January 2026 (avoid weekends: 3-4, 10-11, 17-18, 24-25, 31)
 - A transaction time (format: HH:MM AM/PM, e.g., 2:34 PM)
+
+CRITICAL: For weekend_expense scenarios, the target_date will be a weekend date like 2026-01-04 or 2026-01-11. You MUST use this exact date.
 """
 
 [pipe.generate_receipt_items_and_totals]
 type = "PipeLLM"
-description = "Selects items from catalog and calculates totals with explicit currency"
+description = "Selects items from catalog and calculates totals, applying amount multiplier for fraud scenarios"
 inputs = { company_profile = "CompanyProfile", company_category = "CompanyCategory" }
 output = "ReceiptItemsAndTotals"
 model = "$synthesizing-data"
@@ -291,6 +352,8 @@ Select items from this company's catalog and calculate the receipt totals.
 @company_profile
 
 Target expense range: $company_category.typical_expense_range
+Expense Scenario Type: $company_category.expense_scenario.scenario_type
+Amount Multiplier: $company_category.expense_scenario.amount_multiplier
 
 Instructions:
 1. Select 2-6 items from the product_catalog above
@@ -305,34 +368,71 @@ Instructions:
 5. Calculate tax_amount = subtotal * tax_rate (round to 2 decimals)
 6. Calculate total_amount = subtotal + tax_amount
 
+AMOUNT ADJUSTMENT FOR FRAUD SCENARIOS:
+- If Amount Multiplier > 1.0, multiply ALL prices by this multiplier to inflate the receipt
+- For "inflated_amount" scenarios, the final total should be 2-3x the normal range
+- For "personal_expense" scenarios, include items that look personal (snacks, personal care, etc.)
+
 CRITICAL REQUIREMENTS:
 - EVERY item MUST have currency = "USD"
 - The totals section MUST have currency = "USD"
-- The total_amount MUST be within the target expense range
+- For legitimate scenarios: total_amount should be within the target expense range
+- For inflated_amount scenarios: total_amount should EXCEED typical limits (use the multiplier)
 - All amounts must be positive numbers with max 2 decimal places
 """
 
 [pipe.generate_expense_metadata]
 type = "PipeLLM"
-description = "Determines business purpose"
-inputs = { employee = "Employee", company_profile = "CompanyProfile" }
+description = "Determines business purpose based on expense scenario (legitimate or fraudulent)"
+inputs = { employee = "Employee", company_profile = "CompanyProfile", company_category = "CompanyCategory" }
 output = "ExpenseMetadata"
 model = "$synthesizing-data"
 prompt = """
-Determine the business purpose for this transaction.
+Determine the business purpose for this transaction based on the expense scenario.
 
 @employee
 
 Company: $company_profile.name
 Category: $company_profile.category
 
-Based on the company category and the employee's role:
+Expense Scenario Type: $company_category.expense_scenario.scenario_type
+Fraud Description: $company_category.expense_scenario.fraud_description
 
-Write a brief business_purpose (1 sentence) that makes sense for this employee's job function.
+WRITE THE BUSINESS PURPOSE BASED ON THE SCENARIO TYPE:
+
+1. If scenario_type = "legitimate":
+   Write a clear, specific business purpose that makes sense for this employee's job function.
    Examples:
-   - "Team lunch meeting to discuss Q4 roadmap"
-   - "Client dinner with Acme Corp representatives"
-   - "Office supplies for project documentation"
+   - "Team lunch meeting to discuss Q4 roadmap with 5 engineers"
+   - "Client dinner with Acme Corp representatives to finalize contract"
+   - "Office supplies for project documentation and quarterly reports"
+
+2. If scenario_type = "weekend_expense":
+   Write a business purpose that tries to justify a weekend expense but lacks prior approval mention.
+   Examples:
+   - "Urgent client meeting on Saturday"
+   - "Weekend work session with team"
+
+3. If scenario_type = "personal_expense":
+   Write a vague business purpose that poorly disguises a personal purchase.
+   Examples:
+   - "Supplies for home office setup"
+   - "Wellness items for productivity"
+   - "Personal development materials"
+   - "Snacks for the team" (but actually personal groceries)
+
+4. If scenario_type = "vague_purpose":
+   Write a very vague, non-specific purpose that doesn't explain the business need.
+   Examples:
+   - "Business expense"
+   - "Work related"
+   - "Misc"
+   - "Various items"
+   - "General supplies"
+
+5. If scenario_type = "inflated_amount":
+   Write a legitimate-sounding purpose (the fraud is in the amount, not the purpose).
+   Examples: Same as legitimate
 """
 
 [pipe.format_receipt_text]

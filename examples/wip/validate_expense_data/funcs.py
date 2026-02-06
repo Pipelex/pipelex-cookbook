@@ -1,27 +1,22 @@
 from __future__ import annotations
 
 from datetime import date
-from typing import TYPE_CHECKING
 
 from pipelex.core.memory.working_memory import WorkingMemory
 from pipelex.core.stuffs.list_content import ListContent
-from pipelex.core.stuffs.structured_content import StructuredContent
 from pipelex.system.registries.func_registry import pipe_func
 
 from examples.wip.validate_expense_data.data import SPENDING_LIMITS
-
-
-from examples.wip.validate_expense_data.structures.expense_validator__expense_report import ExpenseReport
 from examples.wip.validate_expense_data.structures.expense_validator__expense import Expense
-from examples.wip.validate_expense_data.structures.expense_validator__spending_limit_check import SpendingLimitCheck
-from examples.wip.validate_expense_data.structures.expense_validator__weekend_check import WeekendCheck
-from examples.wip.validate_expense_data.structures.expense_validator__timelines_check import TimelinesCheck
+from examples.wip.validate_expense_data.structures.expense_validator__expense_report import ExpenseReport
 from examples.wip.validate_expense_data.structures.expense_validator__expense_validation_result import ExpenseValidationResult
-from examples.wip.validate_expense_data.structures.expense_validator__validation_report import ValidationReport
-from examples.wip.validate_expense_data.structures.expense_validator__receipt_match_check import ReceiptMatchCheck
-from examples.wip.validate_expense_data.structures.expense_validator__reasonable_amount_check import ReasonableAmountCheck
 from examples.wip.validate_expense_data.structures.expense_validator__purpose_quality_check import PurposeQualityCheck
-
+from examples.wip.validate_expense_data.structures.expense_validator__reasonable_amount_check import ReasonableAmountCheck
+from examples.wip.validate_expense_data.structures.expense_validator__receipt_match_check import ReceiptMatchCheck
+from examples.wip.validate_expense_data.structures.expense_validator__spending_limit_check import SpendingLimitCheck
+from examples.wip.validate_expense_data.structures.expense_validator__timelines_check import TimelinesCheck
+from examples.wip.validate_expense_data.structures.expense_validator__validation_report import ValidationReport
+from examples.wip.validate_expense_data.structures.expense_validator__weekend_check import WeekendCheck
 
 # Maximum days allowed for expense submission (company policy)
 SUBMISSION_DEADLINE_DAYS = 30
@@ -128,7 +123,7 @@ async def check_timeliness(working_memory: WorkingMemory) -> TimelinesCheck:
     # Calculate days since expense
     today = date.today()
     # expense_date may be datetime or date, normalize to date
-    expense_date = expense.expense_date.date() if hasattr(expense.expense_date, 'date') else expense.expense_date
+    expense_date = expense.expense_date.date() if hasattr(expense.expense_date, "date") else expense.expense_date
     days_since = (today - expense_date).days
 
     if days_since <= SUBMISSION_DEADLINE_DAYS:
@@ -138,11 +133,13 @@ async def check_timeliness(working_memory: WorkingMemory) -> TimelinesCheck:
     elif days_since <= LATE_GRACE_PERIOD_DAYS:
         is_timely = True
         policy_status = "late_but_acceptable"
-        message = f"Submitted {days_since} days after expense - past {SUBMISSION_DEADLINE_DAYS}-day deadline but within {LATE_GRACE_PERIOD_DAYS}-day grace period"
+        message = f"Submitted {days_since} days after expense - past {SUBMISSION_DEADLINE_DAYS}-day \
+            deadline but within {LATE_GRACE_PERIOD_DAYS}-day grace period"
     else:
         is_timely = False
         policy_status = "too_late"
-        message = f"Submitted {days_since} days after expense - exceeds {LATE_GRACE_PERIOD_DAYS}-day maximum, may require special approval"
+        message = f"Submitted {days_since} days after expense - exceeds {LATE_GRACE_PERIOD_DAYS}-day \
+            maximum, may require special approval"
 
     return TimelinesCheck(
         expense_id=expense.expense_id,
@@ -202,8 +199,7 @@ async def compose_expense_result(working_memory: WorkingMemory) -> ExpenseValida
     # Timeliness check
     if not timeliness_check.is_timely:
         rejection_reasons.append(
-            f"Submission too late: {timeliness_check.days_since_expense} days since expense "
-            f"(maximum: {LATE_GRACE_PERIOD_DAYS} days)"
+            f"Submission too late: {timeliness_check.days_since_expense} days since expense (maximum: {LATE_GRACE_PERIOD_DAYS} days)"
         )
         action_items.append("Request late submission exception from finance")
     elif timeliness_check.policy_status == "late_but_acceptable":
@@ -308,12 +304,8 @@ async def compose_validation_report(working_memory: WorkingMemory) -> Validation
     # Generate executive summary notes
     summary_parts: list[str] = []
 
-    summary_parts.append(
-        f"Expense report for {report.employee.full_name} ({report.employee.seniority} - {report.employee.department})"
-    )
-    summary_parts.append(
-        f"Total: {num_expenses} expenses, ${total_claimed:.2f} claimed"
-    )
+    summary_parts.append(f"Expense report for {report.employee.full_name} ({report.employee.seniority} - {report.employee.department})")
+    summary_parts.append(f"Total: {num_expenses} expenses, ${total_claimed:.2f} claimed")
 
     if expenses_approved > 0:
         summary_parts.append(f"Approved: {expenses_approved} expenses (${total_approved:.2f})")

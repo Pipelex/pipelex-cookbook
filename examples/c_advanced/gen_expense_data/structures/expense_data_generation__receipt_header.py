@@ -11,10 +11,9 @@ To regenerate: pipelex build structures <target_directory>
 """
 
 from datetime import datetime
-from enum import Enum
+
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
 class ReceiptHeader(StructuredContent):

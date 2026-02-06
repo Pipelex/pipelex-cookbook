@@ -10,12 +10,13 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
-from examples.wip.validate_expense_data.structures.expense_validator__employee import Employee
-from examples.wip.validate_expense_data.structures.expense_validator__expense import Expense
+from typing import List
+
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
+
+from examples.wip.validate_expense_data.structures.expense_validator__employee import Employee
+from examples.wip.validate_expense_data.structures.expense_validator__expense import Expense
 
 
 class ExpenseReport(StructuredContent):

@@ -10,10 +10,10 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
+from typing import Literal
+
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
 class ReasonableAmountCheck(StructuredContent):
@@ -23,5 +23,7 @@ class ReasonableAmountCheck(StructuredContent):
     is_reasonable: bool = Field(..., description="Whether the amount seems reasonable")
     expected_range_min: float = Field(..., description="Lower bound of expected price range")
     expected_range_max: float = Field(..., description="Upper bound of expected price range")
-    variance_category: Literal['within_range', 'slightly_high', 'significantly_high', 'slightly_low', 'significantly_low'] = Field(..., description="How the amount compares to expectations")
+    variance_category: Literal["within_range", "slightly_high", "significantly_high", "slightly_low", "significantly_low"] = Field(
+        ..., description="How the amount compares to expectations"
+    )
     assessment: str = Field(..., description="Explanation of the assessment")

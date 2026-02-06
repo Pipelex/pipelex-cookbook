@@ -10,13 +10,8 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
 from pipelex.core.stuffs.document_content import DocumentContent
-from pipelex.core.stuffs.structured_content import StructuredContent
-from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
 class ExpenseReportPDF(DocumentContent):
     """A PDF document containing the expense report with employee info and expense line items"""
-

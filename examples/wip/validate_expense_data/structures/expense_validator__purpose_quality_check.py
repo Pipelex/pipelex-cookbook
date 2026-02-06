@@ -10,10 +10,10 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
+from typing import Literal
+
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
 class PurposeQualityCheck(StructuredContent):
@@ -21,7 +21,11 @@ class PurposeQualityCheck(StructuredContent):
 
     expense_id: str = Field(..., description="The expense ID being checked")
     is_adequate: bool = Field(..., description="Whether the business purpose is adequately justified")
-    clarity_score: Literal['excellent', 'good', 'acceptable', 'insufficient', 'missing'] = Field(..., description="Clarity of the justification")
-    business_relevance: Literal['clearly_related', 'possibly_related', 'unclear', 'unrelated'] = Field(..., description="How clearly the expense relates to business activities")
-    recommendation: Literal['approve', 'approve_with_note', 'request_clarification', 'reject'] = Field(..., description="Recommendation for the expense")
+    clarity_score: Literal["excellent", "good", "acceptable", "insufficient", "missing"] = Field(..., description="Clarity of the justification")
+    business_relevance: Literal["clearly_related", "possibly_related", "unclear", "unrelated"] = Field(
+        ..., description="How clearly the expense relates to business activities"
+    )
+    recommendation: Literal["approve", "approve_with_note", "request_clarification", "reject"] = Field(
+        ..., description="Recommendation for the expense"
+    )
     assessment: str = Field(..., description="Detailed explanation of the assessment")

@@ -10,10 +10,10 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from enum import Enum
+from typing import Literal
+
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
 class TimelinesCheck(StructuredContent):
@@ -23,5 +23,5 @@ class TimelinesCheck(StructuredContent):
     is_timely: bool = Field(..., description="Whether the expense was submitted within deadline")
     days_since_expense: int = Field(..., description="Number of days since the expense occurred")
     submission_deadline: int = Field(..., description="Maximum allowed days for submission")
-    policy_status: Literal['compliant', 'late_but_acceptable', 'too_late'] = Field(..., description="Policy compliance status")
+    policy_status: Literal["compliant", "late_but_acceptable", "too_late"] = Field(..., description="Policy compliance status")
     message: str = Field(..., description="Explanation of the timeliness status")

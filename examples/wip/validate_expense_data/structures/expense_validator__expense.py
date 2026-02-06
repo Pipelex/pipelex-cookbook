@@ -11,10 +11,10 @@ To regenerate: pipelex build structures <target_directory>
 """
 
 from datetime import datetime
-from enum import Enum
+from typing import Literal
+
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
-from typing import Optional, List, Dict, Any, Literal
 
 
 class Expense(StructuredContent):
@@ -22,7 +22,9 @@ class Expense(StructuredContent):
 
     expense_id: str = Field(..., description="Unique expense identifier (e.g., EXP-20260115-0001)")
     expense_date: datetime = Field(..., description="Date of the expense")
-    category: Literal['supermarket', 'restaurant', 'cafe', 'hotel', 'airline', 'office_supplies', 'pharmacy', 'electronics', 'gas_station', 'delivery', 'other'] = Field(..., description="Expense category")
+    category: Literal[
+        "supermarket", "restaurant", "cafe", "hotel", "airline", "office_supplies", "pharmacy", "electronics", "gas_station", "delivery", "other"
+    ] = Field(..., description="Expense category")
     merchant: str = Field(..., description="Merchant or vendor name")
     total_amount: float = Field(..., description="Total expense amount")
     currency: str = Field(..., description="Currency code (e.g., USD)")
