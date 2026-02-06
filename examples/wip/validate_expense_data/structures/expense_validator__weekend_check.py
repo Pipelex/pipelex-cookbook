@@ -10,13 +10,17 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
+from enum import Enum
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
+from typing import Optional, List, Dict, Any, Literal
 
 
 class WeekendCheck(StructuredContent):
-    """Check if expense occurred on a weekend (not allowed)"""
+    """Check if expense occurred on a weekend (company policy: no weekend expenses without prior approval)"""
 
-    is_weekday: bool = Field(..., description="True if expense is on a weekday")
+    expense_id: str = Field(..., description="The expense ID being checked")
+    is_weekday: bool = Field(..., description="True if expense is on a weekday (Mon-Fri)")
     day_of_week: str = Field(..., description="Day name (Monday, Tuesday, etc.)")
-    message: str = Field(..., description="Explanation")
+    policy_status: Literal['compliant', 'requires_approval', 'violation'] = Field(..., description="Policy compliance status")
+    message: str = Field(..., description="Explanation of the check result")

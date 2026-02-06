@@ -16,12 +16,12 @@ from pydantic import Field
 from typing import Optional, List, Dict, Any, Literal
 
 
-class ReasonableAmountCheck(StructuredContent):
-    """LLM assessment of whether expense amount is reasonable for the category and context"""
+class TimelinesCheck(StructuredContent):
+    """Check if expense was submitted within the allowed timeframe (30 days from expense date)"""
 
     expense_id: str = Field(..., description="The expense ID being checked")
-    is_reasonable: bool = Field(..., description="Whether the amount seems reasonable")
-    expected_range_min: float = Field(..., description="Lower bound of expected price range")
-    expected_range_max: float = Field(..., description="Upper bound of expected price range")
-    variance_category: Literal['within_range', 'slightly_high', 'significantly_high', 'slightly_low', 'significantly_low'] = Field(..., description="How the amount compares to expectations")
-    assessment: str = Field(..., description="Explanation of the assessment")
+    is_timely: bool = Field(..., description="Whether the expense was submitted within deadline")
+    days_since_expense: int = Field(..., description="Number of days since the expense occurred")
+    submission_deadline: int = Field(..., description="Maximum allowed days for submission")
+    policy_status: Literal['compliant', 'late_but_acceptable', 'too_late'] = Field(..., description="Policy compliance status")
+    message: str = Field(..., description="Explanation of the timeliness status")

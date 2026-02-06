@@ -10,15 +10,13 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from typing import Optional
-
+from enum import Enum
+from pipelex.core.stuffs.document_content import DocumentContent
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
+from typing import Optional, List, Dict, Any, Literal
 
 
-class DuplicateCheck(StructuredContent):
-    """Check for potential duplicate expenses"""
+class ExpenseReportPDF(DocumentContent):
+    """A PDF document containing the expense report with employee info and expense line items"""
 
-    is_duplicate: bool = Field(..., description="Whether this appears to be a duplicate")
-    similar_expense_id: Optional[str] = Field(default=None, description="ID of similar expense if found")
-    similarity_reason: Optional[str] = Field(default=None, description="Why it might be a duplicate")

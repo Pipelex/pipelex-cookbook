@@ -10,15 +10,19 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
+from enum import Enum
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
+from typing import Optional, List, Dict, Any, Literal
 
 
 class SpendingLimitCheck(StructuredContent):
-    """Check if expense is within spending limits for seniority level"""
+    """Check if expense is within spending limits based on employee seniority and expense category"""
 
-    within_limit: bool = Field(..., description="Whether expense is within limit")
-    limit_amount: float = Field(..., description="The applicable spending limit")
+    expense_id: str = Field(..., description="The expense ID being checked")
+    within_limit: bool = Field(..., description="Whether expense is within the allowed limit")
+    limit_amount: float = Field(..., description="The spending limit for this seniority/category")
+    claimed_amount: float = Field(..., description="The amount claimed")
     exceeded_by: float = Field(..., description="Amount exceeded (0 if within limit)")
-    category: str = Field(..., description="Expense category")
-    seniority: str = Field(..., description="Employee seniority level")
+    category: str = Field(..., description="The expense category checked")
+    seniority: str = Field(..., description="The employee seniority level")

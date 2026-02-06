@@ -30,6 +30,10 @@
 # Pipeline Execution Config
 ####################################################################################################
 
+[pipelex.dry_run_config]
+# Pipes allowed to fail during dry run validation
+allowed_to_fail_pipes = ["validate_expense_report", "validate_single_expense", "generate_expense_dataset", "generate_employee_report", "generate_receipt_for_category", "compose_expense_from_receipt"]
+
 [pipelex.pipeline_execution_config]
 # Set to false to disable conversion of incoming data URLs to pipelex-storage:// URIs
 is_normalize_data_urls_to_storage = true

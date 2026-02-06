@@ -10,17 +10,22 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from typing import List, Optional
-
+from enum import Enum
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
+from typing import Optional, List, Dict, Any, Literal
 
 
 class ExpenseValidationResult(StructuredContent):
-    """Complete validation result for a single expense"""
+    """Complete validation result for a single expense with detailed findings"""
 
-    expense_id: str = Field(..., description="The expense ID")
-    is_approved: bool = Field(..., description="Whether expense is approved")
-    total_amount: float = Field(..., description="Expense amount")
-    approved_amount: float = Field(..., description="Approved amount (0 if rejected)")
-    issues: Optional[List[str]] = Field(default=None, description="List of validation issues found")
+    expense_id: str = Field(..., description="The expense ID being validated")
+    expense_category: str = Field(..., description="The category of the expense")
+    expense_merchant: str = Field(..., description="The merchant name")
+    is_approved: bool = Field(..., description="Whether the expense is approved for reimbursement")
+    approval_status: Literal['approved', 'approved_with_warnings', 'pending_clarification', 'rejected'] = Field(..., description="Detailed approval status")
+    claimed_amount: float = Field(..., description="The amount claimed by the employee")
+    approved_amount: float = Field(..., description="The amount approved (0 if rejected, may be capped at limit)")
+    rejection_reasons: Optional[List[str]] = Field(default=None, description="List of reasons for rejection (empty if approved)")
+    warnings: Optional[List[str]] = Field(default=None, description="List of warnings (expense approved but flagged)")
+    action_required: Optional[str] = Field(default=None, description="Any action required from employee or manager")

@@ -11,14 +11,15 @@ To regenerate: pipelex build structures <target_directory>
 """
 
 from datetime import datetime
-
+from enum import Enum
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
+from typing import Optional, List, Dict, Any, Literal
 
 
 class ReceiptHeader(StructuredContent):
     """Header information for a receipt"""
 
     transaction_number: str = Field(..., description="Transaction/ticket number (format: TIC# XXXXX)")
-    transaction_date: datetime = Field(..., description="Date of transaction (within last 30 days)")
+    transaction_date: datetime = Field(..., description="Date of transaction (must be in January 2026)")
     transaction_time: str = Field(..., description="Time of transaction (format: HH:MM AM/PM)")

@@ -10,18 +10,21 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from typing import Literal, Optional
-
+from enum import Enum
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
+from typing import Optional, List, Dict, Any, Literal
 
 
 class ReceiptMatchCheck(StructuredContent):
-    """LLM assessment of whether receipt matches the expense details"""
+    """Vision LLM assessment of whether receipt matches the expense details"""
 
-    is_matching: bool = Field(..., description="Whether receipt matches expense")
-    merchant_matches: bool = Field(..., description="Merchant name matches")
-    amount_matches: bool = Field(..., description="Amount matches")
-    date_matches: bool = Field(..., description="Date matches")
-    confidence: Literal["high", "medium", "low"] = Field(..., description="Confidence level")
+    expense_id: str = Field(..., description="The expense ID being checked")
+    has_receipt: bool = Field(..., description="Whether a receipt was provided for this expense")
+    is_matching: bool = Field(..., description="Whether receipt matches expense (false if no receipt)")
+    extracted_merchant: str = Field(..., description="Merchant name extracted from the receipt image")
+    merchant_matches: bool = Field(..., description="Merchant name on receipt matches claimed merchant")
+    amount_matches: bool = Field(..., description="Amount on receipt matches claimed amount")
+    date_matches: bool = Field(..., description="Date on receipt matches claimed date")
+    confidence: Literal['high', 'medium', 'low'] = Field(..., description="Confidence level of the assessment")
     discrepancies: Optional[str] = Field(default=None, description="Description of any discrepancies found")

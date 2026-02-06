@@ -98,6 +98,8 @@ description = "An expense submitted for reimbursement"
 [concept.Expense.structure]
 expense_id = { type = "text", description = "Unique expense identifier", required = true }
 expense_date = { type = "date", description = "Date of the expense", required = true }
+category = { type = "text", description = "Expense category", choices = ["supermarket", "restaurant", "cafe", "hotel", "airline", "office_supplies", "pharmacy", "electronics", "gas_station", "delivery"], required = true }
+merchant = { type = "text", description = "Merchant or vendor name", required = true }
 total_amount = { type = "number", description = "Total expense amount", required = true }
 currency = { type = "text", description = "Currency code", required = true }
 business_purpose = { type = "text", description = "Business justification for the expense", required = true }
@@ -440,13 +442,15 @@ prompt = "$receipt_prompt"
 
 [pipe.compose_expense_from_receipt]
 type = "PipeCompose"
-description = "Creates an Expense record from the receipt content"
-inputs = { receipt_content = "ReceiptContent" }
+description = "Creates an Expense record from the receipt content and company profile"
+inputs = { receipt_content = "ReceiptContent", company_profile = "CompanyProfile" }
 output = "Expense"
 
 [pipe.compose_expense_from_receipt.construct]
 expense_id = { template = "EXP-{{ receipt_content.expense_date.strftime('%Y%m%d') }}-0001" }
 expense_date = { from = "receipt_content.expense_date" }
+category = { from = "company_profile.category" }
+merchant = { from = "company_profile.name" }
 total_amount = { from = "receipt_content.total_amount" }
 currency = { from = "receipt_content.currency" }
 business_purpose = { from = "receipt_content.business_purpose" }
@@ -492,11 +496,13 @@ img { width: 50px; height: 50px; object-fit: cover; display: block; }
 <p class="info"><strong>ID:</strong> {{ employee.employee_id }} | <strong>Email:</strong> {{ employee.email }}</p>
 <p class="info"><strong>Department:</strong> {{ employee.department }} | <strong>Title:</strong> {{ employee.job_title }} | <strong>Seniority:</strong> {{ employee.seniority }}</p>
 <table>
-<tr><th>Expense ID</th><th>Date</th><th>Purpose</th><th>Amount</th><th>Receipt</th></tr>
+<tr><th>Expense ID</th><th>Date</th><th>Category</th><th>Merchant</th><th>Purpose</th><th>Amount</th><th>Receipt</th></tr>
 {% for item in expenses_with_receipts %}
 <tr>
 <td>{{ item.expense.expense_id }}</td>
 <td>{{ item.expense.expense_date.strftime('%Y-%m-%d') }}</td>
+<td>{{ item.expense.category }}</td>
+<td>{{ item.expense.merchant }}</td>
 <td>{{ item.expense.business_purpose }}</td>
 <td class="amount">{{ item.expense.currency }} {{ item.expense.total_amount }}</td>
 <td><img src="{{ item.receipt.public_url }}"></td>

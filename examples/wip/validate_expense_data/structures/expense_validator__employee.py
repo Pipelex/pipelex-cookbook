@@ -10,18 +10,18 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from typing import Literal
-
+from enum import Enum
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
+from typing import Optional, List, Dict, Any, Literal
 
 
 class Employee(StructuredContent):
-    """An employee who can submit expense reports"""
+    """An employee who submitted the expense report"""
 
-    employee_id: str = Field(..., description="Unique employee identifier")
+    employee_id: str = Field(..., description="Unique employee identifier (e.g., EMP-0001)")
     full_name: str = Field(..., description="Employee full name")
     email: str = Field(..., description="Employee email address")
     department: str = Field(..., description="Department name")
     job_title: str = Field(..., description="Job title")
-    seniority: Literal["Junior", "Senior", "Lead", "Manager", "Director", "VP", "Executive"] = Field(..., description="Employee seniority level")
+    seniority: Literal['Junior', 'Senior', 'Lead', 'Manager', 'Director', 'VP', 'Executive'] = Field(..., description="Employee seniority level")
