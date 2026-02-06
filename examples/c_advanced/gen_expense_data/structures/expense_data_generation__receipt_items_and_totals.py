@@ -10,12 +10,11 @@ If you want to customize this structure:
 To regenerate: pipelex build structures <target_directory>
 """
 
-from typing import List, Optional
-
+from enum import Enum
+from examples.c_advanced.gen_expense_data.structures.expense_data_generation__purchased_item import PurchasedItem
 from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
-
-from examples.c_advanced.gen_expense_data.structures.expense_data_generation__purchased_item import PurchasedItem
+from typing import Optional, List, Dict, Any, Literal
 
 
 class ReceiptItemsAndTotals(StructuredContent):

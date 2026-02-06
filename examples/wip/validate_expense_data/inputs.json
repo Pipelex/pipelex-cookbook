@@ -2,17 +2,23 @@
   "expense_pdf": {
     "concept": "expense_validator.ExpenseReportPDF",
     "content": {
-      "url": "/Users/thomashebrardevotis/dev/pipelex/pipelex-cookbook/examples/c_advanced/gen_expense_data/output/EMP-0014/expense_report.pdf"
+      "url": "assets/validate_expense/expense_report.pdf"
     }
     },
   "receipts": {
     "concept": "expense_validator.ReceiptImage",
     "content": [
       {
-      "url": "/Users/thomashebrardevotis/dev/pipelex/pipelex-cookbook/examples/c_advanced/gen_expense_data/output/EMP-0014/EXP-20260101-0001.png"
+        "url": "assets/validate_expenseweekend_team_bonding_session_to_improve_collaboration_and_morale_among_engineers.png"
       },
       {
-      "url": "/Users/thomashebrardevotis/dev/pipelex/pipelex-cookbook/examples/c_advanced/gen_expense_data/output/EMP-0014/EXP-20260115-0001.png"
+        "url": "assets/validate_expense/team_lunch_meeting_to_discuss_project_progress_and_collaboration_among_engineering_team_members.png"
+      },
+      {
+        "url": "assets/validate_expense/software_subscription_for_market_research.png"
+      },
+      {
+        "url": "assets/validate_expense/purchase_of_essential_electronics_for_project_development_and_testing_in_the_engineering_department.png"
       }
     ]
   } 

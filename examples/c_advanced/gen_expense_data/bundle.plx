@@ -29,16 +29,17 @@ seniority = { type = "text", description = "Employee seniority level", choices =
 description = "Defines whether an expense is legitimate or contains fraud indicators"
 
 [concept.ExpenseScenario.structure]
-scenario_type = { type = "text", description = "Type of expense scenario", choices = ["legitimate", "weekend_expense", "inflated_amount", "personal_expense", "vague_purpose"], required = true }
+scenario_type = { type = "text", description = "Type of expense scenario", choices = ["legitimate", "weekend_expense", "inflated_amount", "receipt_mismatch", "vague_purpose"], required = true }
 fraud_description = { type = "text", description = "Description of the fraud indicator if not legitimate" }
 target_date = { type = "text", description = "Specific date to use for the expense (YYYY-MM-DD format), especially for weekend scenarios" }
 amount_multiplier = { type = "number", description = "Multiplier for inflated amounts (1.0 for normal, 2.0+ for inflated)", default_value = 1.0 }
+fake_purpose = { type = "text", description = "For receipt_mismatch: the lying business purpose that claims something legitimate" }
 
 [concept.CompanyCategory]
 description = "A type of company for expense generation with typical expense range"
 
 [concept.CompanyCategory.structure]
-category = { type = "text", description = "Company category type", choices = ["supermarket", "restaurant", "cafe", "hotel", "airline", "office_supplies", "pharmacy", "electronics", "gas_station", "delivery"], required = true }
+category = { type = "text", description = "Company category type", choices = ["supermarket", "restaurant", "cafe", "hotel", "airline", "office_supplies", "pharmacy", "electronics", "gas_station", "delivery", "bowling_alley", "streaming_service", "gaming_store", "movie_theater", "spa", "gym", "liquor_store", "nightclub"], required = true }
 typical_expense_range = { type = "text", description = "Typical expense range e.g. '20-80 USD'", required = true }
 expense_scenario = { type = "concept", concept_ref = "expense_data_generation.ExpenseScenario", description = "The fraud scenario for this expense", required = true }
 
@@ -108,8 +109,6 @@ description = "An expense submitted for reimbursement"
 [concept.Expense.structure]
 expense_id = { type = "text", description = "Unique expense identifier", required = true }
 expense_date = { type = "date", description = "Date of the expense", required = true }
-category = { type = "text", description = "Expense category", choices = ["supermarket", "restaurant", "cafe", "hotel", "airline", "office_supplies", "pharmacy", "electronics", "gas_station", "delivery"], required = true }
-merchant = { type = "text", description = "Merchant or vendor name", required = true }
 total_amount = { type = "number", description = "Total expense amount", required = true }
 currency = { type = "text", description = "Currency code", required = true }
 business_purpose = { type = "text", description = "Business justification for the expense", required = true }
@@ -216,13 +215,13 @@ GENERATE EITHER 3 OR 4 EXPENSES (randomly choose):
 If generating 3 expenses, include:
 1. ONE legitimate expense (scenario_type = "legitimate")
 2. ONE weekend expense (scenario_type = "weekend_expense") - use a weekend date from above
-3. ONE of: inflated_amount, personal_expense, OR vague_purpose
+3. ONE of: inflated_amount, receipt_mismatch, OR vague_purpose
 
 If generating 4 expenses, include:
 1. ONE legitimate expense (scenario_type = "legitimate")
 2. ONE weekend expense (scenario_type = "weekend_expense") - use a weekend date from above
-3. ONE inflated amount OR personal expense (scenario_type = "inflated_amount" or "personal_expense")
-4. ONE with vague purpose (scenario_type = "vague_purpose")
+3. ONE receipt_mismatch (scenario_type = "receipt_mismatch") - MANDATORY
+4. ONE with vague purpose OR inflated_amount
 
 FOR EACH CompanyCategory, provide:
 - category: appropriate business category
@@ -232,6 +231,7 @@ FOR EACH CompanyCategory, provide:
   - fraud_description: explain the issue (empty for legitimate)
   - target_date: REQUIRED for weekend_expense (use format "2026-01-11" for a Saturday), optional otherwise
   - amount_multiplier: 1.0 for normal, 2.0-3.0 for inflated_amount scenarios
+  - fake_purpose: REQUIRED for receipt_mismatch - the lying business purpose
 
 FRAUD SCENARIO DETAILS:
 
@@ -243,14 +243,24 @@ FRAUD SCENARIO DETAILS:
    - amount_multiplier: 2.0 to 3.0
    - fraud_description: "Amount exceeds spending limit for employee seniority"
 
-3. personal_expense: Personal purchase disguised as business
-   - Use categories like electronics, pharmacy, supermarket
-   - fraud_description: "Personal items claimed as business expense"
+3. receipt_mismatch: THE PURPOSE LIES ABOUT WHAT WAS PURCHASED
+   - Use PERSONAL/ENTERTAINMENT categories: bowling_alley, streaming_service, gaming_store, movie_theater, spa, gym, liquor_store, nightclub
+   - The receipt will clearly show personal entertainment (bowling, Netflix, Twitch, video games, spa treatment, etc.)
+   - BUT the fake_purpose claims something business-related that sounds legitimate
+   - fraud_description: "Purpose claims business expense but receipt shows personal entertainment"
+   - fake_purpose examples:
+     * For bowling_alley: "Team building workshop with engineering team"
+     * For streaming_service: "Software subscription for market research"
+     * For gaming_store: "Educational materials for product development"
+     * For movie_theater: "Client entertainment event"
+     * For spa: "Wellness program for team morale"
+     * For liquor_store: "Client gifts for Q4 appreciation"
+     * For nightclub: "Networking event with industry partners"
 
 4. vague_purpose: Missing or inadequate business justification
    - fraud_description: "Vague or missing business purpose"
 
-CATEGORY GUIDELINES:
+CATEGORY GUIDELINES FOR LEGITIMATE EXPENSES:
 - Sales/Marketing: restaurants, hotels, airlines, cafes
 - Engineering/Product: cafes, electronics, office_supplies
 - Finance/Operations: office_supplies, delivery, supermarket
@@ -397,6 +407,7 @@ Category: $company_profile.category
 
 Expense Scenario Type: $company_category.expense_scenario.scenario_type
 Fraud Description: $company_category.expense_scenario.fraud_description
+Fake Purpose (if receipt_mismatch): $company_category.expense_scenario.fake_purpose
 
 WRITE THE BUSINESS PURPOSE BASED ON THE SCENARIO TYPE:
 
@@ -413,13 +424,10 @@ WRITE THE BUSINESS PURPOSE BASED ON THE SCENARIO TYPE:
    - "Urgent client meeting on Saturday"
    - "Weekend work session with team"
 
-3. If scenario_type = "personal_expense":
-   Write a vague business purpose that poorly disguises a personal purchase.
-   Examples:
-   - "Supplies for home office setup"
-   - "Wellness items for productivity"
-   - "Personal development materials"
-   - "Snacks for the team" (but actually personal groceries)
+3. If scenario_type = "receipt_mismatch":
+   USE THE FAKE_PURPOSE PROVIDED ABOVE - this is the lying business purpose.
+   The receipt will show personal entertainment (bowling, Netflix, gaming, etc.) but the purpose claims business.
+   Copy or slightly rephrase the fake_purpose value.
 
 4. If scenario_type = "vague_purpose":
    Write a very vague, non-specific purpose that doesn't explain the business need.
@@ -542,15 +550,13 @@ prompt = "$receipt_prompt"
 
 [pipe.compose_expense_from_receipt]
 type = "PipeCompose"
-description = "Creates an Expense record from the receipt content and company profile"
-inputs = { receipt_content = "ReceiptContent", company_profile = "CompanyProfile" }
+description = "Creates an Expense record from the receipt content"
+inputs = { receipt_content = "ReceiptContent" }
 output = "Expense"
 
 [pipe.compose_expense_from_receipt.construct]
 expense_id = { template = "EXP-{{ receipt_content.expense_date.strftime('%Y%m%d') }}-0001" }
 expense_date = { from = "receipt_content.expense_date" }
-category = { from = "company_profile.category" }
-merchant = { from = "company_profile.name" }
 total_amount = { from = "receipt_content.total_amount" }
 currency = { from = "receipt_content.currency" }
 business_purpose = { from = "receipt_content.business_purpose" }
@@ -596,13 +602,11 @@ img { width: 50px; height: 50px; object-fit: cover; display: block; }
 <p class="info"><strong>ID:</strong> {{ employee.employee_id }} | <strong>Email:</strong> {{ employee.email }}</p>
 <p class="info"><strong>Department:</strong> {{ employee.department }} | <strong>Title:</strong> {{ employee.job_title }} | <strong>Seniority:</strong> {{ employee.seniority }}</p>
 <table>
-<tr><th>Expense ID</th><th>Date</th><th>Category</th><th>Merchant</th><th>Purpose</th><th>Amount</th><th>Receipt</th></tr>
+<tr><th>Expense ID</th><th>Date</th><th>Purpose</th><th>Amount</th><th>Receipt</th></tr>
 {% for item in expenses_with_receipts %}
 <tr>
 <td>{{ item.expense.expense_id }}</td>
 <td>{{ item.expense.expense_date.strftime('%Y-%m-%d') }}</td>
-<td>{{ item.expense.category }}</td>
-<td>{{ item.expense.merchant }}</td>
 <td>{{ item.expense.business_purpose }}</td>
 <td class="amount">{{ item.expense.currency }} {{ item.expense.total_amount }}</td>
 <td><img src="{{ item.receipt.public_url }}"></td>

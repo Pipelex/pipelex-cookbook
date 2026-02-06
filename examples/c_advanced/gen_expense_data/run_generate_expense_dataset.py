@@ -5,6 +5,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 import asyncio
+import re
 
 from pipelex.hub import get_storage_provider
 from pipelex.pipelex import Pipelex
@@ -15,6 +16,12 @@ from examples.c_advanced.gen_expense_data.structures.expense_data_generation__em
 from examples.c_advanced.gen_expense_data.structures.expense_data_generation__nb_of_employees import NbOfEmployees
 
 OUTPUT_DIR = Path(__file__).parent / "output"
+
+
+def to_snake_case(text: str) -> str:
+    text = text.strip().lower()
+    text = re.sub(r"[^a-z0-9]+", "_", text)
+    return text.strip("_")
 
 
 async def run_generate_expense_dataset() -> list[EmployeeExpenseReport]:
@@ -38,14 +45,16 @@ async def export_single_report(report: EmployeeExpenseReport) -> None:
 
     # Copy receipt images first (needed for PDF generation)
     for item in report.expenses_with_receipts:
-        image_path = folder / f"{item.expense.expense_id}.png"
+        filename = f"{to_snake_case(item.expense.business_purpose)}.png"
+        image_path = folder / filename
         image_bytes = await get_storage_provider().load(item.receipt.url)
         image_path.write_bytes(image_bytes)
 
     # Update HTML to use local image paths
     html_content = report.html_report.inner_html
     for item in report.expenses_with_receipts:
-        html_content = html_content.replace(item.receipt.url, f"{item.expense.expense_id}.png")
+        filename = f"{to_snake_case(item.expense.business_purpose)}.png"
+        html_content = html_content.replace(item.receipt.url, filename)
 
     # Generate PDF from HTML
     HTML(string=html_content, base_url=str(folder)).write_pdf(  # pyright: ignore[reportUnknownMemberType]
