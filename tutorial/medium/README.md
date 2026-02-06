@@ -33,7 +33,7 @@ Write a haiku about coding.
 type = "PipeLLM"
 description = "Generate text with custom temperature"
 output = "Text"
-model = { model = "base-claude", temperature = 0.9 }
+model = { model = "best-claude", temperature = 0.9 }
 prompt = """
 Write a creative haiku about coding.
 """
