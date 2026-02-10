@@ -341,19 +341,9 @@ BUSINESS RELEVANCE:
 prompt = """
 Assess the business purpose justification for this expense:
 
-EXPENSE DETAILS:
-- Expense ID: $expense.expense_id
-- Category: $expense.category
-- Merchant: $expense.merchant
-- Amount: $expense.total_amount $expense.currency
-- Date: $expense.expense_date
-- Business Purpose: "$expense.business_purpose"
+@expense
 
-EMPLOYEE CONTEXT:
-- Name: $report.employee.full_name
-- Department: $report.employee.department
-- Job Title: $report.employee.job_title
-- Seniority: $report.employee.seniority
+@report
 
 Evaluate:
 1. Is the business purpose clearly stated and specific?
@@ -400,19 +390,9 @@ Flag as unreasonable ONLY if the amount is significantly outside normal ranges w
 prompt = """
 Assess if this expense amount is reasonable:
 
-EXPENSE DETAILS:
-- Expense ID: $expense.expense_id
-- Category: $expense.category
-- Merchant: $expense.merchant
-- Amount: $expense.total_amount $expense.currency
-- Date: $expense.expense_date
-- Business Purpose: "$expense.business_purpose"
+@expense
 
-EMPLOYEE CONTEXT:
-- Name: $report.employee.full_name
-- Department: $report.employee.department
-- Job Title: $report.employee.job_title
-- Seniority: $report.employee.seniority
+@report
 
 Determine:
 1. What is the expected price range for this type of expense?
