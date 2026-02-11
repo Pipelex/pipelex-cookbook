@@ -6,7 +6,7 @@ This guide will help you migrate your Pipelex pipelines and configurations to th
 
 This release introduces several breaking changes to make the Pipelex language more declarative, intuitive, and consistent. The changes affect:
 - Project structure and organization
-- Pipeline definitions (.plx files)
+- Pipeline definitions (.mthds files)
 - Configuration files (.pipelex/ directory)
 - Python code initialization
 - Python import paths (module refactoring)
@@ -15,7 +15,7 @@ This release introduces several breaking changes to make the Pipelex language mo
 ## Migration Checklist
 
 - [ ] **Migrate from pipelex_libraries system (CRITICAL)**
-- [ ] Move .plx files to appropriate locations in your project
+- [ ] Move .mthds files to appropriate locations in your project
 - [ ] Update Pipelex.make() calls (remove config path parameters)
 - [ ] Add @pipe_func() decorators to custom functions used in PipeFunc operators
 - [ ] Update PipeCompose (formerly PipeJinja2)
@@ -46,9 +46,9 @@ The centralized `pipelex_libraries` folder system has been removed in favor of a
 
 ### Step 1: Move Pipeline Files (Flexible Organization)
 
-**The key change:** `.plx` files can now live ANYWHERE in your project. No special directory required!
+**The key change:** `.mthds` files can now live ANYWHERE in your project. No special directory required!
 
-**Recommendation:** Put `.plx` files with related code. If you have topic-based organization, keep pipelines with their topics.
+**Recommendation:** Put `.mthds` files with related code. If you have topic-based organization, keep pipelines with their topics.
 
 **Example Migration Patterns:**
 
@@ -56,9 +56,9 @@ The centralized `pipelex_libraries` folder system has been removed in favor of a
 ```
 Before:
 pipelex_libraries/pipelines/
-├── finance.plx
+├── finance.mthds
 ├── finance.py
-├── legal.plx
+├── legal.mthds
 └── legal.py
 
 After - Keep with related code:
@@ -66,12 +66,12 @@ my_project/
 ├── finance/
 │   ├── models.py
 │   ├── services.py
-│   ├── invoices.plx          # Pipeline with finance code
+│   ├── invoices.mthds          # Pipeline with finance code
 │   └── invoices_struct.py    # Structure classes
 └── legal/
     ├── models.py
     ├── services.py
-    ├── contracts.plx         # Pipeline with legal code
+    ├── contracts.mthds         # Pipeline with legal code
     └── contracts_struct.py
 ```
 
@@ -80,9 +80,9 @@ my_project/
 After - Group pipelines together:
 my_project/
 ├── pipelines/
-│   ├── finance.plx
+│   ├── finance.mthds
 │   ├── finance_struct.py
-│   ├── legal.plx
+│   ├── legal.mthds
 │   └── legal_struct.py
 └── core/
     └── (your other code)
@@ -92,7 +92,7 @@ my_project/
 ```
 After - Just put them in your source directory:
 my_project/
-├── finance_pipeline.plx
+├── finance_pipeline.mthds
 ├── finance_struct.py
 └── main.py
 ```
@@ -101,10 +101,10 @@ my_project/
 
 1. **Choose your organization** (any of the above patterns work)
 
-2. **Move .plx files** to where they make sense for YOUR project:
+2. **Move .mthds files** to where they make sense for YOUR project:
    ```bash
    # Example: Moving to topic-based structure
-   mv pipelex_libraries/pipelines/finance.plx my_project/finance/
+   mv pipelex_libraries/pipelines/finance.mthds my_project/finance/
    ```
 
 3. **Rename structure files** with `_struct.py` suffix:
@@ -233,13 +233,13 @@ inputs = { wedding_photo = "Photo" }
 
 **The big change:** Pipelex now scans your entire project and finds:
 
-- **`.plx` files** - Pipeline definitions (wherever they are!)
+- **`.mthds` files** - Pipeline definitions (wherever they are!)
 - **Structure classes** - Classes inheriting from `StructuredContent`
 - **Custom functions** - Functions decorated with `@pipe_func()`
 
 **This means:**
 - No special `pipelex_libraries/pipelines/` folder needed
-- Put `.plx` files where they logically belong in YOUR codebase
+- Put `.mthds` files where they logically belong in YOUR codebase
 - Keep related things together (pipelines with their code)
 
 **Excluded directories** (automatically skipped):
@@ -251,7 +251,7 @@ inputs = { wedding_photo = "Photo" }
 
 **Issue: Pipelines not found**
 
-Solution: Ensure `.plx` files are not in excluded directories and run:
+Solution: Ensure `.mthds` files are not in excluded directories and run:
 ```bash
 pipelex show pipes  # See what was discovered
 ```
@@ -1010,7 +1010,7 @@ If your project has `AGENTS.md` or `CLAUDE.md` files with Pipelex examples:
 
 **Cause:** You may have used an old field name (e.g., `prompt_template`, `jinja2`, `llm`, `ocr_model`).
 
-**Solution:** Search your .plx files for the old field names and replace them according to this guide.
+**Solution:** Search your .mthds files for the old field names and replace them according to this guide.
 
 ### Issue: Tests fail with marker errors
 
@@ -1090,7 +1090,7 @@ You can automate many of these text replacements using standard tools available 
 
 The following replacements can be done with find/replace tools:
 
-**In `.plx` files:**
+**In `.mthds` files:**
 - `definition = "` → `description = "`
 - `type = "PipeJinja2"` → `type = "PipeCompose"`
 - `type = "PipeOCR"` → `type = "PipeExtract"`
@@ -1129,7 +1129,7 @@ The following replacements can be done with find/replace tools:
 
 These require manual intervention:
 
-1. Moving `.plx` files to appropriate locations (project-specific)
+1. Moving `.mthds` files to appropriate locations (project-specific)
 2. Renaming structure files to `*_struct.py` suffix
 3. Adding `@pipe_func()` decorator to custom functions
 4. Updating imports to match your new structure

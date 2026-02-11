@@ -16,7 +16,7 @@ async def validate_expense_report_from_pdf(pdf_path: str) -> None:
     """
     Validates an expense report from a PDF document.
 
-    This demonstrates the validation workflow:
+    This demonstrates the validation method:
     1. Extract content from the PDF document
     2. Parse the content into a structured EmployeeExpenseReport
     3. Validate each expense against company policies

@@ -37,7 +37,7 @@ question_format = { type = "text", description = "The student's preferred questi
 [pipe.generate_synthetic_data_samples]
 type = "PipeSequence"
 description = """
-Main pipeline that orchestrates the entire synthetic data generation process. Takes a description of the synthetic data to produce, first identifies a comprehensive variety of sample cases that cover all expected real-world scenarios, then creates detailed synthetic data profiles for each identified case. This is the entry point for the complete synthetic data generation workflow.
+Main pipeline that orchestrates the entire synthetic data generation process. Takes a description of the synthetic data to produce, first identifies a comprehensive variety of sample cases that cover all expected real-world scenarios, then creates detailed synthetic data profiles for each identified case. This is the entry point for the complete synthetic data generation method.
 """
 inputs = { data_description = "DataDescription", nb_samples = "NbOfSamples" }
 output = "Sample[]"

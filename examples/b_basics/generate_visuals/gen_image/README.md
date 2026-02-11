@@ -9,7 +9,7 @@ Before running this example, ensure you have set up your environment. See the [C
 ## Run the pipeline
 
 ```bash
-pipelex run examples/b_basics/generate_visuals/gen_image/bundle.plx
+pipelex run examples/b_basics/generate_visuals/gen_image/bundle.mthds
 ```
 
 ## Flowchart
@@ -50,7 +50,7 @@ flowchart TD
 You can go further by generating the python structures and runner code out of this bundle:
 
 ```bash
-pipelex build runner examples/b_basics/generate_visuals/gen_image/bundle.plx
+pipelex build runner examples/b_basics/generate_visuals/gen_image/bundle.mthds
 ```
 
 This will create a new file `examples/b_basics/generate_visuals/gen_image/run_crazy_image_generation.py` and a `structures` directory containing the python structures.

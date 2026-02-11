@@ -11,13 +11,13 @@ Before running this example, ensure you have set up your environment. See the [C
 Corporate example (Q4 Financial Results):
 
 ```bash
-pipelex run examples/b_basics/generate_visuals/design_slides/bundle.plx --inputs examples/b_basics/generate_visuals/design_slides/inputs.json
+pipelex run examples/b_basics/generate_visuals/design_slides/bundle.mthds --inputs examples/b_basics/generate_visuals/design_slides/inputs.json
 ```
 
 Fun example (Why Cats Are Secretly Running the Internet):
 
 ```bash
-pipelex run examples/b_basics/generate_visuals/design_slides/bundle.plx --inputs examples/b_basics/generate_visuals/design_slides/inputs_fun.json
+pipelex run examples/b_basics/generate_visuals/design_slides/bundle.mthds --inputs examples/b_basics/generate_visuals/design_slides/inputs_fun.json
 ```
 
 ## Flowchart
@@ -93,7 +93,7 @@ An HTML report containing:
 You can go further by generating the python structures and runner code out of this bundle:
 
 ```bash
-pipelex build runner examples/b_basics/generate_visuals/design_slides/bundle.plx
+pipelex build runner examples/b_basics/generate_visuals/design_slides/bundle.mthds
 ```
 
 This will create a new file `examples/b_basics/generate_visuals/design_slides/run_slide_designer.py` and a `structures` directory containing the python structures.

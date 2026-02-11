@@ -47,14 +47,14 @@ generate_expense_dataset (PipeSequence)
 
 ```bash
 # Validate the pipeline
-pipelex validate examples/c_advanced/gen_expense_data/bundle.plx
+pipelex validate examples/c_advanced/gen_expense_data/bundle.mthds
 
 # Run with default inputs (5 employees)
-pipelex run examples/c_advanced/gen_expense_data/bundle.plx \
+pipelex run examples/c_advanced/gen_expense_data/bundle.mthds \
   -i examples/c_advanced/gen_expense_data/inputs.json
 
 # Run with custom number of employees
-pipelex run examples/c_advanced/gen_expense_data/bundle.plx \
+pipelex run examples/c_advanced/gen_expense_data/bundle.mthds \
   -i examples/c_advanced/gen_expense_data/inputs.json \
   --override nb_employees.content.number=10
 ```

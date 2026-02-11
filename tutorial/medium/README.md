@@ -10,7 +10,7 @@ Control which LLM to use and how it behaves.
 
 **To change default models and presets**, edit `.pipelex/inference/deck/base_deck.toml`. See the [full list of available models](https://docs.pipelex.com/pre-release/home/5-setup/gateway-models/) and the <!-- PRERELEASE_LINK -->[Inference Backend Configuration](https://docs.pipelex.com/pre-release/home/7-configuration/config-technical/inference-backend-config/) documentation for details.
 
-**File: `1_model_config.plx`**
+**File: `1_model_config.mthds`**
 
 ```plx
 domain = "model_config"
@@ -87,7 +87,7 @@ $preset_result
 
 **Run it:**
 ```bash
-pipelex run tutorial/medium/1_model_config.plx
+pipelex run tutorial/medium/1_model_config.mthds
 ```
 
 ---
@@ -96,7 +96,7 @@ pipelex run tutorial/medium/1_model_config.plx
 
 Process a list of items one by one (in parallel behind the scenes).
 
-**File: `2_batch_processing.plx`**
+**File: `2_batch_processing.mthds`**
 
 ```plx
 domain = "batch_processing"
@@ -165,7 +165,7 @@ steps = [
 
 **Run it:**
 ```bash
-pipelex run tutorial/medium/2_batch_processing.plx
+pipelex run tutorial/medium/2_batch_processing.mthds
 ```
 
 ---
@@ -174,7 +174,7 @@ pipelex run tutorial/medium/2_batch_processing.plx
 
 Run independent pipes at the same time.
 
-**File: `3_parallel_execution.plx`**
+**File: `3_parallel_execution.mthds`**
 
 ```plx
 domain = "parallel_execution"
@@ -229,7 +229,7 @@ add_each_output = true
 
 **Run it:**
 ```bash
-pipelex run tutorial/medium/3_parallel_execution.plx
+pipelex run tutorial/medium/3_parallel_execution.mthds
 ```
 
 ---
