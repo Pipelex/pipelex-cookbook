@@ -20,11 +20,11 @@ classifiers = [
 dependencies = [
     "beautifulsoup4==4.13.4",
     "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal,docling]",
-    "weasyprint==68.0"
+    "weasyprint==68.0",
 ]
 
 [tool.uv.sources]
-pipelex = { git = "https://github.com/Pipelex/pipelex.git", branch = "pre-release/v0.18.0b3" }
+pipelex = { git = "https://github.com/Pipelex/pipelex.git", branch = "feature/Chicago" }
 
 [project.optional-dependencies]
 compat = ["backports.strenum>=1.3.0 ; python_version < '3.11'"]
