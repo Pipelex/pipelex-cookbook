@@ -3,8 +3,10 @@ description = "The domain of extracting slides from documents"
 main_pipe = "extract_slides"
 
 [concept]
+
 [concept.Slide]
 description = "A slide from a presentation"
+
 [concept.Slide.structure]
 title = { type = "text", description = "The title of the slide" }
 text_markdown = { type = "text", description = "The content of the slide as markdown" }

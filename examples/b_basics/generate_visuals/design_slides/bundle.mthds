@@ -10,10 +10,25 @@ description = "Client brief for slide deck design"
 [concept.SlideDesignBrief.structure]
 topic = { type = "text", description = "The main topic or subject of the presentation", required = true }
 brand_guidelines = { type = "text", description = "The client's brand guidelines (colors, fonts, logo usage, etc.)", required = false }
-tone = { type = "text", description = "The tone of the presentation", choices = ["formal", "playful", "innovative", "trustworthy", "artsy"], required = false }
+tone = { type = "text", description = "The tone of the presentation", choices = [
+  "formal",
+  "playful",
+  "innovative",
+  "trustworthy",
+  "artsy",
+], required = false }
 existing_references = { type = "text", description = "Existing templates or past decks to reference or avoid", required = false }
-goal = { type = "text", description = "The goal of the presentation", choices = ["pitch investors", "sell to clients", "internal training", "keynote"], required = false }
-audience = { type = "text", description = "The target audience", choices = ["executives", "technical team", "general public"], required = false }
+goal = { type = "text", description = "The goal of the presentation", choices = [
+  "pitch investors",
+  "sell to clients",
+  "internal training",
+  "keynote",
+], required = false }
+audience = { type = "text", description = "The target audience", choices = [
+  "executives",
+  "technical team",
+  "general public",
+], required = false }
 
 # Nested structures for Theme
 
@@ -40,7 +55,11 @@ body_style = { type = "text", description = "Style description for body text" }
 description = "Layout configuration for slides"
 
 [concept.LayoutSettings.structure]
-aspect_ratio = { type = "text", description = "Slide aspect ratio", required = true, choices = ["16:9", "4:3", "1:1"] }
+aspect_ratio = { type = "text", description = "Slide aspect ratio", required = true, choices = [
+  "16:9",
+  "4:3",
+  "1:1",
+] }
 margins = { type = "text", description = "Margin style (e.g., narrow, standard, wide)" }
 alignment = { type = "text", description = "Default content alignment (e.g., left, center, right)" }
 
@@ -71,7 +90,15 @@ exclusions = { type = "text", description = "Elements to avoid in the design (e.
 description = "Content definition for a single slide"
 
 [concept.Slide.structure]
-slide_type = { type = "text", description = "Type of slide layout", required = true, choices = ["title", "content", "comparison", "process", "infographic", "quote", "closing"] }
+slide_type = { type = "text", description = "Type of slide layout", required = true, choices = [
+  "title",
+  "content",
+  "comparison",
+  "process",
+  "infographic",
+  "quote",
+  "closing",
+] }
 title = { type = "text", description = "Slide title", required = true }
 subtitle = { type = "text", description = "Optional subtitle or tagline" }
 content = { type = "text", description = "Main content or bullet points for the slide", required = true }
@@ -92,10 +119,10 @@ description = "Transform a design brief into multiple themes with visual mockups
 inputs = { brief = "SlideDesignBrief" }
 output = "Html"
 steps = [
-    { pipe = "polish_brief", result = "polished_brief" },
-    { pipe = "generate_multiple_themes", nb_output = 3, result = "themes" },
-    { pipe = "render_visual_proposal", batch_over = "themes", batch_as = "theme", result = "design_proposals" },
-    { pipe = "compose_proposals_report", result = "proposals_report" }
+  { pipe = "polish_brief", result = "polished_brief" },
+  { pipe = "generate_multiple_themes", nb_output = 3, result = "themes" },
+  { pipe = "render_visual_proposal", batch_over = "themes", batch_as = "theme", result = "design_proposals" },
+  { pipe = "compose_proposals_report", result = "proposals_report" },
 ]
 
 [pipe.polish_brief]

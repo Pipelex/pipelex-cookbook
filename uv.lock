@@ -2219,6 +2219,20 @@ wheels = [
 ]
 
 [[package]]
+name = "mthds"
+version = "0.0.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "backports-strenum", marker = "python_full_version < '3.11'" },
+    { name = "httpx" },
+    { name = "pydantic" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b4/1c/207fed4b05c8dbcfe6f6c0802b0c59cdc683466f02f95625475248e1ff20/mthds-0.0.2.tar.gz", hash = "sha256:273aaec6e8332f462f772c1bd58cf5baaea4a69224de2fa024b08ebe7ed005f1", size = 60229, upload-time = "2026-02-19T13:38:28.094Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6c/52/c831b1c6bb0a2b7ecaf21de099132eb4c1a1277569ad7ae214da86dd5583/mthds-0.0.2-py3-none-any.whl", hash = "sha256:168210f289f67cc1fd831ddc4bb46f2d65de6c48b5932406bc31459be94f312e", size = 11818, upload-time = "2026-02-19T13:38:26.447Z" },
+]
+
+[[package]]
 name = "multidict"
 version = "6.7.1"
 source = { registry = "https://pypi.org/simple" }
@@ -3105,7 +3119,7 @@ wheels = [
 [[package]]
 name = "pipelex"
 version = "0.18.0b3"
-source = { editable = "../_epic-mthds-4" }
+source = { git = "https://github.com/Pipelex/pipelex.git?rev=ba658a74dadb5889dbbec61f20ba7810d96e5d20#ba658a74dadb5889dbbec61f20ba7810d96e5d20" }
 dependencies = [
     { name = "aiofiles" },
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
@@ -3116,6 +3130,7 @@ dependencies = [
     { name = "json2html" },
     { name = "kajson" },
     { name = "markdown" },
+    { name = "mthds" },
     { name = "networkx", version = "3.4.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "networkx", version = "3.6.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "openai" },
@@ -3132,6 +3147,7 @@ dependencies = [
     { name = "python-dotenv" },
     { name = "pyyaml" },
     { name = "rich" },
+    { name = "semantic-version" },
     { name = "shortuuid" },
     { name = "tomli" },
     { name = "tomlkit" },
@@ -3163,75 +3179,6 @@ google-genai = [
 mistralai = [
     { name = "mistralai" },
 ]
-
-[package.metadata]
-requires-dist = [
-    { name = "aioboto3", marker = "extra == 'bedrock'", specifier = ">=13.4.0" },
-    { name = "aioboto3", marker = "extra == 's3'", specifier = ">=13.4.0" },
-    { name = "aiofiles", specifier = ">=23.2.1" },
-    { name = "anthropic", marker = "extra == 'anthropic'", specifier = ">=0.78.0" },
-    { name = "backports-strenum", marker = "python_full_version < '3.11'", specifier = ">=1.3.0" },
-    { name = "boto3", marker = "extra == 'bedrock'", specifier = ">=1.34.131" },
-    { name = "boto3", marker = "extra == 's3'", specifier = ">=1.34.131" },
-    { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
-    { name = "docling", marker = "extra == 'docling'", specifier = ">=2.64.0" },
-    { name = "fal-client", marker = "extra == 'fal'", specifier = ">=0.4.1" },
-    { name = "filetype", specifier = ">=1.2.0" },
-    { name = "google-auth-oauthlib", marker = "extra == 'google'", specifier = ">=1.2.1" },
-    { name = "google-cloud-storage", marker = "extra == 'gcp-storage'", specifier = ">=2.10.0" },
-    { name = "google-genai", marker = "extra == 'google-genai'" },
-    { name = "httpx", specifier = ">=0.23.0,<1.0.0" },
-    { name = "huggingface-hub", marker = "extra == 'huggingface'", specifier = ">=0.23,<1.0.0" },
-    { name = "instructor", specifier = ">=1.8.3,!=1.11.*,!=1.12.*" },
-    { name = "instructor", extras = ["google-genai"], marker = "extra == 'google-genai'" },
-    { name = "jinja2", specifier = ">=3.1.4" },
-    { name = "json2html", specifier = ">=1.3.0" },
-    { name = "kajson", specifier = "==0.3.1" },
-    { name = "markdown", specifier = ">=3.6" },
-    { name = "mike", marker = "extra == 'docs'", specifier = ">=2.1.3" },
-    { name = "mistralai", marker = "extra == 'mistralai'", specifier = ">=1.12.0" },
-    { name = "mkdocs", marker = "extra == 'docs'", specifier = ">=1.6.1" },
-    { name = "mkdocs-glightbox", marker = "extra == 'docs'", specifier = ">=0.4.0" },
-    { name = "mkdocs-material", marker = "extra == 'docs'", specifier = ">=9.6.14" },
-    { name = "mkdocs-meta-manager", marker = "extra == 'docs'", specifier = ">=1.1.0" },
-    { name = "moto", extras = ["s3"], marker = "extra == 'dev'", specifier = ">=5.0.0" },
-    { name = "mypy", marker = "extra == 'dev'", specifier = "==1.19.1" },
-    { name = "networkx", specifier = ">=3.4.2" },
-    { name = "openai", specifier = ">=1.108.1" },
-    { name = "opentelemetry-api" },
-    { name = "opentelemetry-exporter-otlp-proto-http" },
-    { name = "opentelemetry-sdk" },
-    { name = "opentelemetry-semantic-conventions" },
-    { name = "pillow", specifier = ">=11.2.1" },
-    { name = "polyfactory", specifier = ">=2.21.0" },
-    { name = "portkey-ai", specifier = ">=2.1.0" },
-    { name = "posthog", specifier = ">=6.7.0" },
-    { name = "pydantic", specifier = ">=2.10.6,<3.0.0" },
-    { name = "pylint", marker = "extra == 'dev'", specifier = "==4.0.4" },
-    { name = "pypdfium2", specifier = ">=4.30.0,!=4.30.1,<5.0.0" },
-    { name = "pyright", marker = "extra == 'dev'", specifier = "==1.1.408" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.2" },
-    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
-    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=6.1.1" },
-    { name = "pytest-mock", marker = "extra == 'dev'", specifier = ">=3.14.0" },
-    { name = "pytest-sugar", marker = "extra == 'dev'", specifier = ">=1.0.0" },
-    { name = "pytest-xdist", marker = "extra == 'dev'", specifier = ">=3.6.1" },
-    { name = "python-dotenv", specifier = ">=1.0.1" },
-    { name = "pyyaml", specifier = ">=6.0.2" },
-    { name = "rich", specifier = ">=13.8.1" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = "==0.14.13" },
-    { name = "shortuuid", specifier = ">=1.0.13" },
-    { name = "tomli", specifier = ">=2.3.0" },
-    { name = "tomlkit", specifier = ">=0.13.2" },
-    { name = "typer", specifier = ">=0.16.0" },
-    { name = "types-aioboto3", extras = ["bedrock", "bedrock-runtime"], marker = "extra == 'dev'", specifier = ">=13.4.0" },
-    { name = "types-aiofiles", marker = "extra == 'dev'", specifier = ">=24.1.0.20240626" },
-    { name = "types-markdown", marker = "extra == 'dev'", specifier = ">=3.6.0.20240316" },
-    { name = "types-networkx", marker = "extra == 'dev'", specifier = ">=3.3.0.20241020" },
-    { name = "types-pyyaml", marker = "extra == 'dev'", specifier = ">=6.0.12.20250326" },
-    { name = "typing-extensions", specifier = ">=4.13.2" },
-]
-provides-extras = ["anthropic", "bedrock", "docling", "fal", "gcp-storage", "google", "google-genai", "huggingface", "mistralai", "s3", "docs", "dev"]
 
 [[package]]
 name = "pipelex-cookbook"
@@ -3273,7 +3220,7 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal", "docling"], editable = "../_epic-mthds-4" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal", "docling"], git = "https://github.com/Pipelex/pipelex.git?rev=ba658a74dadb5889dbbec61f20ba7810d96e5d20" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.405" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.1" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
@@ -4694,6 +4641,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/ef/5e/e565bd73991d42023eb82bb99e51c5b3d9e2c588ca9d4b3e2cc1d3ca62a6/scipy-1.17.0-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:f9eb55bb97d00f8b7ab95cb64f873eb0bf54d9446264d9f3609130381233483f", size = 37457743, upload-time = "2026-01-10T21:30:34.819Z" },
     { url = "https://files.pythonhosted.org/packages/58/a8/a66a75c3d8f1fb2b83f66007d6455a06a6f6cf5618c3dc35bc9b69dd096e/scipy-1.17.0-cp314-cp314t-win_amd64.whl", hash = "sha256:1ff269abf702f6c7e67a4b7aad981d42871a11b9dd83c58d2d2ea624efbd1088", size = 37098574, upload-time = "2026-01-10T21:30:40.782Z" },
     { url = "https://files.pythonhosted.org/packages/56/a5/df8f46ef7da168f1bc52cd86e09a9de5c6f19cc1da04454d51b7d4f43408/scipy-1.17.0-cp314-cp314t-win_arm64.whl", hash = "sha256:031121914e295d9791319a1875444d55079885bbae5bdc9c5e0f2ee5f09d34ff", size = 25246266, upload-time = "2026-01-10T21:30:45.923Z" },
+]
+
+[[package]]
+name = "semantic-version"
+version = "2.10.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/7d/31/f2289ce78b9b473d582568c234e104d2a342fd658cc288a7553d83bb8595/semantic_version-2.10.0.tar.gz", hash = "sha256:bdabb6d336998cbb378d4b9db3a4b56a1e3235701dc05ea2690d9a997ed5041c", size = 52289, upload-time = "2022-05-26T13:35:23.454Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6a/23/8146aad7d88f4fcb3a6218f41a60f6c2d4e3a72de72da1825dc7c8f7877c/semantic_version-2.10.0-py2.py3-none-any.whl", hash = "sha256:de78a3b8e0feda74cabc54aab2da702113e33ac9d9eb9d2389bcf1f58b7d9177", size = 15552, upload-time = "2022-05-26T13:35:21.206Z" },
 ]
 
 [[package]]
