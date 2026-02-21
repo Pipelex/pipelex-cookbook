@@ -9,7 +9,7 @@ import re
 
 from pipelex.hub import get_storage_provider
 from pipelex.pipelex import Pipelex
-from pipelex.pipeline.execute import execute_pipeline
+from pipelex.pipeline.runner import PipelexRunner
 from weasyprint import CSS, HTML
 
 from examples.c_advanced.gen_expense_data.structures.expense_data_generation__employee_expense_report import EmployeeExpenseReport
@@ -25,7 +25,8 @@ def to_snake_case(text: str) -> str:
 
 
 async def run_generate_expense_dataset() -> list[EmployeeExpenseReport]:
-    pipe_output = await execute_pipeline(
+    runner = PipelexRunner()
+    response = await runner.execute_pipeline(
         pipe_code="generate_expense_dataset",
         inputs={
             "nb_employees": {
@@ -34,6 +35,7 @@ async def run_generate_expense_dataset() -> list[EmployeeExpenseReport]:
             },
         },
     )
+    pipe_output = response.pipe_output
     return pipe_output.main_stuff_as_items(item_type=EmployeeExpenseReport)
 
 
