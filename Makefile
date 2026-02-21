@@ -13,6 +13,7 @@ VENV_RUFF := $(VIRTUAL_ENV)/bin/ruff
 VENV_PYRIGHT := $(VIRTUAL_ENV)/bin/pyright
 VENV_MYPY := $(VIRTUAL_ENV)/bin/mypy
 VENV_PIPELEX := $(VIRTUAL_ENV)/bin/pipelex
+VENV_PLXT := RUST_LOG=warn $(VIRTUAL_ENV)/bin/plxt
 
 UV_MIN_VERSION = $(shell grep -m1 'required-version' pyproject.toml | sed -E 's/.*= *"([^<>=, ]+).*/\1/')
 
@@ -48,8 +49,12 @@ make er                       - Shorthand -> export-requirements
 make erd                      - Shorthand -> export-requirements-dev
 make validate                 - Run the setup sequence to validate the config and libraries
 
-make format                   - format with ruff format
-make lint                     - lint with ruff check
+make format                   - Format all (ruff-format + plxt-format)
+make lint                     - Lint all (ruff-lint + plxt-lint)
+make ruff-format              - Format Python with ruff
+make ruff-lint                - Lint Python with ruff
+make plxt-format              - Format .mthds/.toml with plxt
+make plxt-lint                - Lint .mthds/.toml with plxt
 make pyright                  - Check types with pyright
 make mypy                     - Check types with mypy
 
@@ -60,6 +65,8 @@ make reinstall                - Reinstall dependencies
 
 make merge-check-ruff-lint    - Run ruff merge check without updating files
 make merge-check-ruff-format  - Run ruff merge check without updating files
+make merge-check-plxt-format  - Check .mthds/.toml formatting with plxt
+make merge-check-plxt-lint    - Lint .mthds/.toml with plxt
 make merge-check-mypy         - Run mypy merge check without updating files
 make merge-check-pyright	  - Run pyright merge check without updating files
 
@@ -95,13 +102,13 @@ export HELP
 .PHONY: \
 	all help env lock install update build \
 	export-requirements export-requirements-dev er erd \
-	format lint pyright mypy \
+	format lint ruff-format ruff-lint plxt-format plxt-lint pyright mypy \
 	cleanderived cleanenv cleanall \
 	test test-xdist t test-quiet tq test-with-prints tp test-inference ti \
 	codex-tests gha-tests \
 	run-all-tests run-manual-trigger-gha-tests run-gha_disabled-tests \
 	validate v check c cc agent-check agent-test \
-	merge-check-ruff-lint merge-check-ruff-format merge-check-mypy merge-check-pyright \
+	merge-check-ruff-lint merge-check-ruff-format merge-check-plxt-format merge-check-plxt-lint merge-check-mypy merge-check-pyright \
 	li check-unused-imports fix-unused-imports check-uv check-TODOs
 
 all help:
@@ -307,13 +314,27 @@ agent-test: env
 ############################               Linting              ############################
 ############################################################################################
 
-format: env
+ruff-format: env
 	$(call PRINT_TITLE,"Formatting with ruff")
 	@$(VENV_RUFF) format .
 
-lint: env
+ruff-lint: env
 	$(call PRINT_TITLE,"Linting with ruff")
 	@$(VENV_RUFF) check . --fix
+
+plxt-format: env
+	$(call PRINT_TITLE,"Formatting MTHDS/TOML with plxt")
+	$(VENV_PLXT) fmt
+
+plxt-lint: env
+	$(call PRINT_TITLE,"Linting MTHDS/TOML with plxt")
+	$(VENV_PLXT) lint
+
+format: ruff-format plxt-format
+	@echo "> done: format = ruff-format plxt-format"
+
+lint: ruff-lint plxt-lint
+	@echo "> done: lint = ruff-lint plxt-lint"
 
 pyright: env
 	$(call PRINT_TITLE,"Typechecking with pyright")
@@ -335,6 +356,14 @@ merge-check-ruff-format: env
 merge-check-ruff-lint: env check-unused-imports
 	$(call PRINT_TITLE,"Linting with ruff without fixing files")
 	$(VENV_RUFF) check -v .
+
+merge-check-plxt-format: env
+	$(call PRINT_TITLE,"Checking MTHDS/TOML formatting with plxt")
+	$(VENV_PLXT) fmt --check
+
+merge-check-plxt-lint: env
+	$(call PRINT_TITLE,"Linting MTHDS/TOML with plxt")
+	$(VENV_PLXT) lint
 
 merge-check-pyright: env
 	$(call PRINT_TITLE,"Typechecking with pyright")
