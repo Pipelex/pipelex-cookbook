@@ -1,4 +1,4 @@
-domain = "quick_start"
+domain    = "quick_start"
 main_pipe = "hello_world"
 
 [pipe]

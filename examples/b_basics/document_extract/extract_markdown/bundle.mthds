@@ -1,6 +1,6 @@
-domain = "extract_markdown"
+domain      = "extract_markdown"
 description = "The domain of extracting markdown from documents"
-main_pipe = "extract_markdown_from_document"
+main_pipe   = "extract_markdown_from_document"
 
 [pipe]
 
@@ -10,8 +10,8 @@ description = "Extract markdown from a document"
 inputs = { document = "Document" }
 output = "Text"
 steps = [
-    { pipe = "extract_markdown_pages_from_document", result = "pages" },
-    { pipe = "write_markdown_from_pages", result = "markdown" },
+  { pipe = "extract_markdown_pages_from_document", result = "pages" },
+  { pipe = "write_markdown_from_pages", result = "markdown" },
 ]
 
 [pipe.write_markdown_from_pages]
@@ -24,4 +24,3 @@ template = """
 {{ page.text_and_images.text }}
 {% endfor %}
 """
-

@@ -1,6 +1,6 @@
-domain = "using_object_fields"
+domain      = "using_object_fields"
 description = "Use specific fields from structured objects"
-main_pipe = "generate_and_pitch"
+main_pipe   = "generate_and_pitch"
 
 [concept]
 
@@ -9,9 +9,9 @@ main_pipe = "generate_and_pitch"
 description = "A book idea with title, genre, and synopsis"
 
 [concept.BookIdea.structure]
-title = { type = "text", description = "The book title", required = true }
-genre = { type = "text", description = "The genre of the book", required = true }
-synopsis = { type = "text", description = "A brief synopsis of the book" }
+title           = { type = "text", description = "The book title", required = true }
+genre           = { type = "text", description = "The genre of the book", required = true }
+synopsis        = { type = "text", description = "A brief synopsis of the book" }
 target_audience = { type = "text", description = "Who this book is for" }
 
 [pipe]
@@ -46,6 +46,6 @@ type = "PipeSequence"
 description = "Generate a book idea then write a marketing pitch"
 output = "Text"
 steps = [
-    { pipe = "fields_generate_book_idea", result = "book_idea" },
-    { pipe = "write_pitch", result = "marketing_pitch" },
+  { pipe = "fields_generate_book_idea", result = "book_idea" },
+  { pipe = "write_pitch", result = "marketing_pitch" },
 ]

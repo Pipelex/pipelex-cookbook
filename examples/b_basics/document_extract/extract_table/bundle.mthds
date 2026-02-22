@@ -1,18 +1,18 @@
-domain = "tables"
-description = "Extracting tables from images"
+domain        = "tables"
+description   = "Extracting tables from images"
 system_prompt = "You are an expert at data tables and html syntax and you have a strong attention to details."
-main_pipe = "extract_html_table_and_review"
+main_pipe     = "extract_html_table_and_review"
 
 [concept.HtmlTable]
 description = "An HTML table extracted from an image"
 
 [concept.HtmlTable.structure]
-title = { type = "text", description = "The title of the table", required = true }
+title            = { type = "text", description = "The title of the table", required = true }
 inner_html_table = { type = "text", description = "The HTML content of the table", required = true }
 
 [concept.TableScreenshot]
 description = "A screenshot of a table (table in the sense of a data structure used to organize information in rows and columns)"
-refines = "Image"
+refines     = "Image"
 
 [pipe]
 [pipe.extract_html_table_and_review]
@@ -21,8 +21,8 @@ description = "Get an HTML table and review it"
 inputs = { table_screenshot = "TableScreenshot" }
 output = "HtmlTable"
 steps = [
-    { pipe = "extract_html_table_from_image", result = "html_table" },
-    { pipe = "review_html_table", result = "reviewed_html_table" },
+  { pipe = "extract_html_table_from_image", result = "html_table" },
+  { pipe = "review_html_table", result = "reviewed_html_table" },
 ]
 
 [pipe.extract_html_table_from_image]

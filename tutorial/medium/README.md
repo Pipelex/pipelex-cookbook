@@ -213,7 +213,7 @@ Write the first 4 lines of a sonnet about nature.
 type = "PipeParallel"
 description = "Generate different poem types in parallel"
 output = "Dynamic"
-parallels = [
+branches = [
     { pipe = "generate_haiku", result = "haiku" },
     { pipe = "generate_limerick", result = "limerick" },
     { pipe = "generate_sonnet_excerpt", result = "sonnet" },
@@ -241,6 +241,6 @@ pipelex run tutorial/medium/3_parallel_execution.mthds
 | Custom model | `model = { model = "...", temperature = 0.5 }` |
 | Preset | `model = "preset_name"` |
 | Batch processing | `batch_over = "list"`, `batch_as = "item"` |
-| Parallel execution | `PipeParallel` with `parallels = [...]` |
+| Parallel execution | `PipeParallel` with `branches = [...]` |
 
 **Next:** Explore the [examples](../../examples/) for real-world use cases!

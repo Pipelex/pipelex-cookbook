@@ -1,8 +1,8 @@
 
 
-domain = "hello_plugin"
+domain      = "hello_plugin"
 description = "Using an LLM Plugin"
-main_pipe = "hello_plugin"
+main_pipe   = "hello_plugin"
 
 [pipe]
 [pipe.hello_plugin]
@@ -13,4 +13,3 @@ model = { model = "llm_plugin_example_using_openai", temperature = 0.5 }
 prompt = """
 Write a haiku about Hello World.
 """
-

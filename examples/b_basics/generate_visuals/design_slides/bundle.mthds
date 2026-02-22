@@ -1,6 +1,6 @@
-domain = "slide_designer"
+domain      = "slide_designer"
 description = "Data model for slide prompt generation with reusable themes"
-main_pipe = "generate_design_proposals_from_rough_brief"
+main_pipe   = "generate_design_proposals_from_rough_brief"
 
 # Input concept for design brief
 
@@ -36,20 +36,20 @@ audience = { type = "text", description = "The target audience", choices = [
 description = "Color scheme for the presentation theme"
 
 [concept.ColorPalette.structure]
-primary = { type = "text", description = "Primary brand color (hex or name)", required = true }
-secondary = { type = "text", description = "Secondary color for accents", required = true }
-accent = { type = "text", description = "Accent color for highlights", required = true }
-background = { type = "text", description = "Background color", required = true }
-text_primary = { type = "text", description = "Primary text color", required = true }
+primary        = { type = "text", description = "Primary brand color (hex or name)", required = true }
+secondary      = { type = "text", description = "Secondary color for accents", required = true }
+accent         = { type = "text", description = "Accent color for highlights", required = true }
+background     = { type = "text", description = "Background color", required = true }
+text_primary   = { type = "text", description = "Primary text color", required = true }
 text_secondary = { type = "text", description = "Secondary text color for subtitles", required = true }
 
 [concept.Typography]
 description = "Font and text styling for the presentation"
 
 [concept.Typography.structure]
-font_family = { type = "text", description = "Primary font family name", required = true }
+font_family   = { type = "text", description = "Primary font family name", required = true }
 heading_style = { type = "text", description = "Style description for headings (e.g., bold, uppercase)" }
-body_style = { type = "text", description = "Style description for body text" }
+body_style    = { type = "text", description = "Style description for body text" }
 
 [concept.LayoutSettings]
 description = "Layout configuration for slides"
@@ -67,8 +67,8 @@ alignment = { type = "text", description = "Default content alignment (e.g., lef
 description = "Visual style preferences for the presentation"
 
 [concept.StyleSettings.structure]
-overall = { type = "text", description = "Overall visual style (e.g., minimal, corporate, creative)", required = true }
-icon_style = { type = "text", description = "Style for icons (e.g., outline, filled, flat)" }
+overall       = { type = "text", description = "Overall visual style (e.g., minimal, corporate, creative)", required = true }
+icon_style    = { type = "text", description = "Style for icons (e.g., outline, filled, flat)" }
 graphic_style = { type = "text", description = "Style for graphics and illustrations" }
 
 # Main Theme concept
@@ -77,11 +77,11 @@ graphic_style = { type = "text", description = "Style for graphics and illustrat
 description = "Complete presentation theme with colors, typography, layout, and style"
 
 [concept.Theme.structure]
-name = { type = "text", description = "Theme name identifier", required = true }
-colors = { type = "concept", concept_ref = "ColorPalette", description = "Color palette for the theme", required = true }
+name       = { type = "text", description = "Theme name identifier", required = true }
+colors     = { type = "concept", concept_ref = "ColorPalette", description = "Color palette for the theme", required = true }
 typography = { type = "concept", concept_ref = "Typography", description = "Typography settings", required = true }
-layout = { type = "concept", concept_ref = "LayoutSettings", description = "Layout configuration", required = true }
-style = { type = "concept", concept_ref = "StyleSettings", description = "Visual style settings", required = true }
+layout     = { type = "concept", concept_ref = "LayoutSettings", description = "Layout configuration", required = true }
+style      = { type = "concept", concept_ref = "StyleSettings", description = "Visual style settings", required = true }
 exclusions = { type = "text", description = "Elements to avoid in the design (e.g., no gradients, no stock photos)" }
 
 # Slide content concept
@@ -109,7 +109,7 @@ layout_override = { type = "text", description = "Optional layout override for t
 
 [concept.SlidePrompt]
 description = "Generated image prompt ready for slide image generation"
-refines = "Text"
+refines     = "Text"
 
 # Pipes
 
@@ -204,10 +204,10 @@ Make the mosaic edge to edge, no space between the slides.
 """
 
 [pipe.compose_proposals_report]
-type = "PipeCompose"
+type        = "PipeCompose"
 description = "Generate an HTML report presenting the design proposals"
-inputs = { brief = "SlideDesignBrief", polished_brief = "SlideDesignBrief", themes = "Theme[]", design_proposals = "Image[]" }
-output = "Html"
+inputs      = { brief = "SlideDesignBrief", polished_brief = "SlideDesignBrief", themes = "Theme[]", design_proposals = "Image[]" }
+output      = "Html"
 
 [pipe.compose_proposals_report.template]
 category = "html"

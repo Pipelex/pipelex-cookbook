@@ -1,6 +1,6 @@
-domain = "chaining_llm_calls"
+domain      = "chaining_llm_calls"
 description = "Chain multiple LLM calls together"
-main_pipe = "generate_and_expand"
+main_pipe   = "generate_and_expand"
 
 [pipe]
 
@@ -33,6 +33,6 @@ type = "PipeSequence"
 description = "Generate a story idea then expand it"
 output = "Text"
 steps = [
-    { pipe = "chain_generate_idea", result = "story_idea" },
-    { pipe = "chain_expand_idea", result = "story_outline" },
+  { pipe = "chain_generate_idea", result = "story_idea" },
+  { pipe = "chain_expand_idea", result = "story_outline" },
 ]

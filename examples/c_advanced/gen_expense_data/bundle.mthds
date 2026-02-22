@@ -1,6 +1,6 @@
-domain = "expense_data_generation"
+domain      = "expense_data_generation"
 description = "Generating synthetic expense data with realistic receipts"
-main_pipe = "generate_expense_dataset"
+main_pipe   = "generate_expense_dataset"
 
 # ============================================================================
 # INPUT CONCEPTS
@@ -8,7 +8,7 @@ main_pipe = "generate_expense_dataset"
 
 [concept.NbOfEmployees]
 description = "How many employees to generate"
-refines = "Number"
+refines     = "Number"
 
 # ============================================================================
 # DATA CONCEPTS
@@ -23,13 +23,27 @@ full_name = { type = "text", description = "Employee full name", required = true
 email = { type = "text", description = "Employee email address", required = true }
 department = { type = "text", description = "Department name", required = true }
 job_title = { type = "text", description = "Job title", required = true }
-seniority = { type = "text", description = "Employee seniority level", choices = ["Junior", "Senior", "Lead", "Manager", "Director", "VP", "Executive"], required = true }
+seniority = { type = "text", description = "Employee seniority level", choices = [
+  "Junior",
+  "Senior",
+  "Lead",
+  "Manager",
+  "Director",
+  "VP",
+  "Executive",
+], required = true }
 
 [concept.ExpenseScenario]
 description = "Defines whether an expense is legitimate or contains fraud indicators"
 
 [concept.ExpenseScenario.structure]
-scenario_type = { type = "text", description = "Type of expense scenario", choices = ["legitimate", "weekend_expense", "inflated_amount", "receipt_mismatch", "vague_purpose"], required = true }
+scenario_type = { type = "text", description = "Type of expense scenario", choices = [
+  "legitimate",
+  "weekend_expense",
+  "inflated_amount",
+  "receipt_mismatch",
+  "vague_purpose",
+], required = true }
 fraud_description = { type = "text", description = "Description of the fraud indicator if not legitimate" }
 target_date = { type = "text", description = "Specific date to use for the expense (YYYY-MM-DD format), especially for weekend scenarios" }
 amount_multiplier = { type = "number", description = "Multiplier for inflated amounts (1.0 for normal, 2.0+ for inflated)", default_value = 1.0 }
@@ -39,7 +53,26 @@ fake_purpose = { type = "text", description = "For receipt_mismatch: the lying b
 description = "A type of company for expense generation with typical expense range"
 
 [concept.CompanyCategory.structure]
-category = { type = "text", description = "Company category type", choices = ["supermarket", "restaurant", "cafe", "hotel", "airline", "office_supplies", "pharmacy", "electronics", "gas_station", "delivery", "bowling_alley", "streaming_service", "gaming_store", "movie_theater", "spa", "gym", "liquor_store", "nightclub"], required = true }
+category = { type = "text", description = "Company category type", choices = [
+  "supermarket",
+  "restaurant",
+  "cafe",
+  "hotel",
+  "airline",
+  "office_supplies",
+  "pharmacy",
+  "electronics",
+  "gas_station",
+  "delivery",
+  "bowling_alley",
+  "streaming_service",
+  "gaming_store",
+  "movie_theater",
+  "spa",
+  "gym",
+  "liquor_store",
+  "nightclub",
+], required = true }
 typical_expense_range = { type = "text", description = "Typical expense range e.g. '20-80 USD'", required = true }
 expense_scenario = { type = "concept", concept_ref = "expense_data_generation.ExpenseScenario", description = "The fraud scenario for this expense", required = true }
 
@@ -47,15 +80,15 @@ expense_scenario = { type = "concept", concept_ref = "expense_data_generation.Ex
 description = "A company with its details and product catalog"
 
 [concept.CompanyProfile.structure]
-name = { type = "text", description = "Company name", required = true }
-category = { type = "text", description = "Company category type", required = true }
-address = { type = "text", description = "Street address", required = true }
-city = { type = "text", description = "City name", required = true }
-postal_code = { type = "text", description = "Postal/ZIP code", required = true }
-country = { type = "text", description = "Country name", required = true }
-phone = { type = "text", description = "Phone number", required = true }
-website = { type = "text", description = "Website URL" }
-tax_id = { type = "text", description = "Tax identification number" }
+name            = { type = "text", description = "Company name", required = true }
+category        = { type = "text", description = "Company category type", required = true }
+address         = { type = "text", description = "Street address", required = true }
+city            = { type = "text", description = "City name", required = true }
+postal_code     = { type = "text", description = "Postal/ZIP code", required = true }
+country         = { type = "text", description = "Country name", required = true }
+phone           = { type = "text", description = "Phone number", required = true }
+website         = { type = "text", description = "Website URL" }
+tax_id          = { type = "text", description = "Tax identification number" }
 product_catalog = { type = "text", description = "List of products/services with typical prices", required = true }
 
 [concept.ReceiptContent]
@@ -63,39 +96,39 @@ description = "The full text content of a receipt with metadata"
 
 [concept.ReceiptContent.structure]
 full_receipt_text = { type = "text", description = "Complete formatted receipt text including header, items, totals", required = true }
-total_amount = { type = "number", description = "Total amount on the receipt", required = true }
-currency = { type = "text", description = "Currency code", required = true }
-expense_date = { type = "date", description = "Date of the transaction", required = true }
-business_purpose = { type = "text", description = "Business justification for the expense", required = true }
+total_amount      = { type = "number", description = "Total amount on the receipt", required = true }
+currency          = { type = "text", description = "Currency code", required = true }
+expense_date      = { type = "date", description = "Date of the transaction", required = true }
+business_purpose  = { type = "text", description = "Business justification for the expense", required = true }
 
 [concept.PurchasedItem]
 description = "An item purchased on a receipt"
 
 [concept.PurchasedItem.structure]
-name = { type = "text", description = "Item name from catalog", required = true }
-quantity = { type = "integer", description = "Quantity purchased", required = true }
+name       = { type = "text", description = "Item name from catalog", required = true }
+quantity   = { type = "integer", description = "Quantity purchased", required = true }
 unit_price = { type = "number", description = "Price per unit", required = true }
 line_total = { type = "number", description = "Total for this line (quantity * unit_price)", required = true }
-currency = { type = "text", description = "Currency code (always USD)", required = true }
+currency   = { type = "text", description = "Currency code (always USD)", required = true }
 
 [concept.ReceiptItemsAndTotals]
 description = "Items purchased and calculated totals for a receipt"
 
 [concept.ReceiptItemsAndTotals.structure]
-items = { type = "list", item_type = "concept", item_concept_ref = "expense_data_generation.PurchasedItem", description = "List of purchased items" }
-subtotal = { type = "number", description = "Sum of all line totals", required = true }
-tax_rate = { type = "number", description = "Tax rate as decimal (e.g., 0.08 for 8%)", required = true }
-tax_amount = { type = "number", description = "Calculated tax amount", required = true }
+items        = { type = "list", item_type = "concept", item_concept_ref = "expense_data_generation.PurchasedItem", description = "List of purchased items" }
+subtotal     = { type = "number", description = "Sum of all line totals", required = true }
+tax_rate     = { type = "number", description = "Tax rate as decimal (e.g., 0.08 for 8%)", required = true }
+tax_amount   = { type = "number", description = "Calculated tax amount", required = true }
 total_amount = { type = "number", description = "Final total (subtotal + tax)", required = true }
-currency = { type = "text", description = "Currency code (always USD)", required = true }
+currency     = { type = "text", description = "Currency code (always USD)", required = true }
 
 [concept.ReceiptHeader]
 description = "Header information for a receipt"
 
 [concept.ReceiptHeader.structure]
 transaction_number = { type = "text", description = "Transaction/ticket number (format: TIC# XXXXX)", required = true }
-transaction_date = { type = "date", description = "Date of transaction (must be in January 2026)", required = true }
-transaction_time = { type = "text", description = "Time of transaction (format: HH:MM AM/PM)", required = true }
+transaction_date   = { type = "date", description = "Date of transaction (must be in January 2026)", required = true }
+transaction_time   = { type = "text", description = "Time of transaction (format: HH:MM AM/PM)", required = true }
 
 [concept.ExpenseMetadata]
 description = "Business metadata for an expense"
@@ -107,19 +140,19 @@ business_purpose = { type = "text", description = "Business justification for th
 description = "An expense submitted for reimbursement"
 
 [concept.Expense.structure]
-expense_id = { type = "text", description = "Unique expense identifier", required = true }
-expense_date = { type = "date", description = "Date of the expense", required = true }
-total_amount = { type = "number", description = "Total expense amount", required = true }
-currency = { type = "text", description = "Currency code", required = true }
+expense_id       = { type = "text", description = "Unique expense identifier", required = true }
+expense_date     = { type = "date", description = "Date of the expense", required = true }
+total_amount     = { type = "number", description = "Total expense amount", required = true }
+currency         = { type = "text", description = "Currency code", required = true }
 business_purpose = { type = "text", description = "Business justification for the expense", required = true }
 
 [concept.ReceiptPrompt]
 description = "A prompt optimized for generating a receipt image"
-refines = "Text"
+refines     = "Text"
 
 [concept.Receipt]
 description = "A receipt image for an expense"
-refines = "Image"
+refines     = "Image"
 
 [concept.ExpenseWithReceipt]
 description = "An expense paired with its receipt image"
@@ -132,9 +165,9 @@ receipt = { type = "concept", concept_ref = "expense_data_generation.Receipt", d
 description = "An employee with their list of expenses, receipts, and HTML report"
 
 [concept.EmployeeExpenseReport.structure]
-employee = { type = "concept", concept_ref = "expense_data_generation.Employee", description = "The employee", required = true }
+employee               = { type = "concept", concept_ref = "expense_data_generation.Employee", description = "The employee", required = true }
 expenses_with_receipts = { type = "list", item_type = "concept", item_concept_ref = "expense_data_generation.ExpenseWithReceipt", description = "List of expenses with receipts", required = true }
-html_report = { type = "concept", concept_ref = "Html", description = "HTML formatted expense report", required = true }
+html_report            = { type = "concept", concept_ref = "Html", description = "HTML formatted expense report", required = true }
 
 # ============================================================================
 # MAIN PIPELINE
@@ -146,8 +179,8 @@ description = "Main pipeline that generates synthetic expense data for multiple 
 inputs = { nb_employees = "NbOfEmployees" }
 output = "EmployeeExpenseReport[]"
 steps = [
-    { pipe = "generate_employees", result = "employees" },
-    { pipe = "generate_employee_report", batch_over = "employees", batch_as = "employee", result = "reports" },
+  { pipe = "generate_employees", result = "employees" },
+  { pipe = "generate_employee_report", batch_over = "employees", batch_as = "employee", result = "reports" },
 ]
 
 [pipe.generate_employees]
@@ -178,10 +211,10 @@ description = "Generates expenses with realistic receipts and HTML report for a 
 inputs = { employee = "Employee" }
 output = "EmployeeExpenseReport"
 steps = [
-    { pipe = "generate_company_assignments", result = "company_categories" },
-    { pipe = "generate_receipt_for_category", batch_over = "company_categories", batch_as = "company_category", result = "expenses_with_receipts" },
-    { pipe = "render_expense_report_html", result = "html_report" },
-    { pipe = "compose_employee_report", result = "report" },
+  { pipe = "generate_company_assignments", result = "company_categories" },
+  { pipe = "generate_receipt_for_category", batch_over = "company_categories", batch_as = "company_category", result = "expenses_with_receipts" },
+  { pipe = "render_expense_report_html", result = "html_report" },
+  { pipe = "compose_employee_report", result = "report" },
 ]
 
 # ============================================================================
@@ -276,12 +309,12 @@ description = "Generates a company profile, logo, receipt content, and final rec
 inputs = { employee = "Employee", company_category = "CompanyCategory" }
 output = "ExpenseWithReceipt"
 steps = [
-    { pipe = "generate_company_profile", result = "company_profile" },
-    { pipe = "generate_receipt_content", result = "receipt_content" },
-    { pipe = "generate_receipt_prompt", result = "receipt_prompt" },
-    { pipe = "render_receipt", result = "receipt" },
-    { pipe = "compose_expense_from_receipt", result = "expense" },
-    { pipe = "compose_expense_with_receipt", result = "expense_with_receipt" },
+  { pipe = "generate_company_profile", result = "company_profile" },
+  { pipe = "generate_receipt_content", result = "receipt_content" },
+  { pipe = "generate_receipt_prompt", result = "receipt_prompt" },
+  { pipe = "render_receipt", result = "receipt" },
+  { pipe = "compose_expense_from_receipt", result = "expense" },
+  { pipe = "compose_expense_with_receipt", result = "expense_with_receipt" },
 ]
 
 [pipe.generate_company_profile]
@@ -319,11 +352,11 @@ description = "Generates the full text content of a receipt in multiple steps, r
 inputs = { employee = "Employee", company_profile = "CompanyProfile", company_category = "CompanyCategory" }
 output = "ReceiptContent"
 steps = [
-    { pipe = "generate_receipt_header", result = "receipt_header" },
-    { pipe = "generate_receipt_items_and_totals", result = "items_and_totals" },
-    { pipe = "generate_expense_metadata", result = "expense_metadata" },
-    { pipe = "format_receipt_text", result = "formatted_receipt" },
-    { pipe = "compose_receipt_content", result = "receipt_content" },
+  { pipe = "generate_receipt_header", result = "receipt_header" },
+  { pipe = "generate_receipt_items_and_totals", result = "items_and_totals" },
+  { pipe = "generate_expense_metadata", result = "expense_metadata" },
+  { pipe = "format_receipt_text", result = "formatted_receipt" },
+  { pipe = "compose_receipt_content", result = "receipt_content" },
 ]
 
 [pipe.generate_receipt_header]
@@ -444,10 +477,10 @@ WRITE THE BUSINESS PURPOSE BASED ON THE SCENARIO TYPE:
 """
 
 [pipe.format_receipt_text]
-type = "PipeCompose"
+type        = "PipeCompose"
 description = "Formats the receipt as thermal paper text"
-inputs = { company_profile = "CompanyProfile", receipt_header = "ReceiptHeader", items_and_totals = "ReceiptItemsAndTotals" }
-output = "Text"
+inputs      = { company_profile = "CompanyProfile", receipt_header = "ReceiptHeader", items_and_totals = "ReceiptItemsAndTotals" }
+output      = "Text"
 
 [pipe.format_receipt_text.template]
 category = "basic"
@@ -478,17 +511,17 @@ APPROVED
 """
 
 [pipe.compose_receipt_content]
-type = "PipeCompose"
+type        = "PipeCompose"
 description = "Assembles the final ReceiptContent from all parts"
-inputs = { formatted_receipt = "Text", items_and_totals = "ReceiptItemsAndTotals", receipt_header = "ReceiptHeader", expense_metadata = "ExpenseMetadata" }
-output = "ReceiptContent"
+inputs      = { formatted_receipt = "Text", items_and_totals = "ReceiptItemsAndTotals", receipt_header = "ReceiptHeader", expense_metadata = "ExpenseMetadata" }
+output      = "ReceiptContent"
 
 [pipe.compose_receipt_content.construct]
 full_receipt_text = { from = "formatted_receipt" }
-total_amount = { from = "items_and_totals.total_amount" }
-currency = { from = "items_and_totals.currency" }
-expense_date = { from = "receipt_header.transaction_date" }
-business_purpose = { from = "expense_metadata.business_purpose" }
+total_amount      = { from = "items_and_totals.total_amount" }
+currency          = { from = "items_and_totals.currency" }
+expense_date      = { from = "receipt_header.transaction_date" }
+business_purpose  = { from = "expense_metadata.business_purpose" }
 
 [pipe.generate_receipt_prompt]
 type = "PipeLLM"
@@ -541,41 +574,41 @@ Your prompt must be 3-5 sentences that:
 """
 
 [pipe.render_receipt]
-type = "PipeImgGen"
+type        = "PipeImgGen"
 description = "Generates the final receipt image"
-inputs = { receipt_prompt = "ReceiptPrompt" }
-output = "Receipt"
-model = "@best-gpt"
-prompt = "$receipt_prompt"
+inputs      = { receipt_prompt = "ReceiptPrompt" }
+output      = "Receipt"
+model       = "@best-gpt"
+prompt      = "$receipt_prompt"
 
 [pipe.compose_expense_from_receipt]
-type = "PipeCompose"
+type        = "PipeCompose"
 description = "Creates an Expense record from the receipt content"
-inputs = { receipt_content = "ReceiptContent" }
-output = "Expense"
+inputs      = { receipt_content = "ReceiptContent" }
+output      = "Expense"
 
 [pipe.compose_expense_from_receipt.construct]
-expense_id = { template = "EXP-{{ receipt_content.expense_date.strftime('%Y%m%d') }}-0001" }
-expense_date = { from = "receipt_content.expense_date" }
-total_amount = { from = "receipt_content.total_amount" }
-currency = { from = "receipt_content.currency" }
+expense_id       = { template = "EXP-{{ receipt_content.expense_date.strftime('%Y%m%d') }}-0001" }
+expense_date     = { from = "receipt_content.expense_date" }
+total_amount     = { from = "receipt_content.total_amount" }
+currency         = { from = "receipt_content.currency" }
 business_purpose = { from = "receipt_content.business_purpose" }
 
 [pipe.compose_expense_with_receipt]
-type = "PipeCompose"
+type        = "PipeCompose"
 description = "Pairs an expense with its generated receipt"
-inputs = { expense = "Expense", receipt = "Receipt" }
-output = "ExpenseWithReceipt"
+inputs      = { expense = "Expense", receipt = "Receipt" }
+output      = "ExpenseWithReceipt"
 
 [pipe.compose_expense_with_receipt.construct]
 expense = { from = "expense" }
 receipt = { from = "receipt" }
 
 [pipe.render_expense_report_html]
-type = "PipeCompose"
+type        = "PipeCompose"
 description = "Renders an HTML expense report for an employee"
-inputs = { employee = "Employee", expenses_with_receipts = "ExpenseWithReceipt[]" }
-output = "Html"
+inputs      = { employee = "Employee", expenses_with_receipts = "ExpenseWithReceipt[]" }
+output      = "Html"
 
 [pipe.render_expense_report_html.template]
 category = "html"
@@ -618,12 +651,12 @@ img { width: 50px; height: 50px; object-fit: cover; display: block; }
 """
 
 [pipe.compose_employee_report]
-type = "PipeCompose"
+type        = "PipeCompose"
 description = "Assembles the final employee expense report with HTML"
-inputs = { employee = "Employee", expenses_with_receipts = "ExpenseWithReceipt[]", html_report = "Html" }
-output = "EmployeeExpenseReport"
+inputs      = { employee = "Employee", expenses_with_receipts = "ExpenseWithReceipt[]", html_report = "Html" }
+output      = "EmployeeExpenseReport"
 
 [pipe.compose_employee_report.construct]
-employee = { from = "employee" }
+employee               = { from = "employee" }
 expenses_with_receipts = { from = "expenses_with_receipts" }
-html_report = { from = "html_report" }
+html_report            = { from = "html_report" }

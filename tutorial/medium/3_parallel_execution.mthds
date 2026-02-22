@@ -1,6 +1,6 @@
-domain = "parallel_execution"
+domain      = "parallel_execution"
 description = "Learn how to run pipes in parallel"
-main_pipe = "generate_poems_parallel"
+main_pipe   = "generate_poems_parallel"
 
 [pipe]
 
@@ -34,9 +34,9 @@ Write the first 4 lines of a sonnet about nature.
 type = "PipeParallel"
 description = "Generate different poem types in parallel"
 output = "Dynamic"
-parallels = [
-    { pipe = "generate_haiku", result = "haiku" },
-    { pipe = "generate_limerick", result = "limerick" },
-    { pipe = "generate_sonnet_excerpt", result = "sonnet" },
+branches = [
+  { pipe = "generate_haiku", result = "haiku" },
+  { pipe = "generate_limerick", result = "limerick" },
+  { pipe = "generate_sonnet_excerpt", result = "sonnet" },
 ]
 add_each_output = true

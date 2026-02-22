@@ -1,4 +1,4 @@
-domain = "extract_generic"
+domain    = "extract_generic"
 main_pipe = "power_extractor"
 
 [pipe]
@@ -8,8 +8,8 @@ description = "Update page content with markdown"
 inputs = { document = "Document" }
 output = "Text[]"
 steps = [
-    { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },
-    { pipe = "write_markdown_from_page_content", batch_over = "page_contents", batch_as = "page_content", result = "markdowns" },
+  { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },
+  { pipe = "write_markdown_from_page_content", batch_over = "page_contents", batch_as = "page_content", result = "markdowns" },
 ]
 
 [pipe.write_markdown_from_page_content]
@@ -31,4 +31,3 @@ Here is the text extracted from the page:
 - Output only the markdown, nothing else. No need for "```markdown" or "```".
 - In case of diagrams, charts, visualizations, etc. with text inside (the text may not appear in the input text - the OCR fails to extract it), make sure to include the text in the markdown. Feel free to choose the most appropriate markdown element to do so.
 """
-

@@ -1,6 +1,6 @@
-domain = "power_extractor"
+domain      = "power_extractor"
 description = "The domain for power extractor"
-main_pipe = "power_extractor_dpe"
+main_pipe   = "power_extractor_dpe"
 
 [concept]
 [concept.Dpe]
@@ -10,9 +10,25 @@ description = "A diagnostic of the energy performance of a building"
 address = { type = "text", description = "The address of the building" }
 date_of_issue = { type = "date", description = "The date the DPE was issued" }
 date_of_expiration = { type = "date", description = "The expiration date of the DPE" }
-energy_efficiency_class = { type = "text", description = "The energy efficiency class", choices = ["A", "B", "C", "D", "E", "F", "G"] }
+energy_efficiency_class = { type = "text", description = "The energy efficiency class", choices = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+] }
 per_year_per_m2_consumption = { type = "number", description = "Energy consumption per year per m2" }
-co2_emission_class = { type = "text", description = "The CO2 emission class", choices = ["A", "B", "C", "D", "E", "F", "G"] }
+co2_emission_class = { type = "text", description = "The CO2 emission class", choices = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+] }
 per_year_per_m2_co2_emissions = { type = "number", description = "CO2 emissions per year per m2" }
 yearly_energy_costs = { type = "number", description = "Yearly energy costs" }
 
@@ -23,9 +39,9 @@ description = "Extract DPE details from a document"
 inputs = { document = "Document" }
 output = "Dpe"
 steps = [
-    { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },                                                # Located in the base library, in the domain "documents"
-    { pipe = "write_markdown_from_page_content_dpe", batch_over = "page_contents", batch_as = "page_content", result = "dpe_pages" },
-    { pipe = "conclude_dpe", result = "dpe" },
+  { pipe = "extract_page_contents_and_views_from_pdf", result = "page_contents" },                                                  # Located in the base library, in the domain "documents"
+  { pipe = "write_markdown_from_page_content_dpe", batch_over = "page_contents", batch_as = "page_content", result = "dpe_pages" },
+  { pipe = "conclude_dpe", result = "dpe" },
 ]
 
 [pipe.write_markdown_from_page_content_dpe]

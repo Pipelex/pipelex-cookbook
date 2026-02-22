@@ -1,19 +1,19 @@
 
 
-domain = "summarize"
-description = "Example of summarizing text by topics."
+domain        = "summarize"
+description   = "Example of summarizing text by topics."
 system_prompt = "You are an expert at summarizing text."
 
 [concept] ####### Concept definitions ############################
-Topic = "A topic a text deals with."
+Topic   = "A topic a text deals with."
 Summary = "A concise rewriting of a dense text."
 
 [concept.StructuredSummary]
 description = "A summary with a structured output."
 
 [concept.StructuredSummary.structure]
-summary = { type = "text", description = "Summary of the text, super clear and factual", required = true }
-abstract = { type = "text", description = "Abstract of the summary 1 short sentences", required = true }
+summary       = { type = "text", description = "Summary of the text, super clear and factual", required = true }
+abstract      = { type = "text", description = "Abstract of the summary 1 short sentences", required = true }
 main_concepts = { type = "list", item_type = "text", description = "Array of main concepts tackled in the text" }
 
 [pipe] ####### Pipe definitions ##################################
@@ -37,9 +37,9 @@ description = "Summarize text by steps: extract topics, summarize for each topic
 inputs = { text = "Text" }
 output = "Summary"
 steps = [
-    { pipe = "extract_topics", result = "topics" },
-    { pipe = "summarize_topic", batch_over = "topics", batch_as = "topic", result = "summarized_topics" },
-    { pipe = "summarize_from_summaries", result = "summary" },
+  { pipe = "extract_topics", result = "topics" },
+  { pipe = "summarize_topic", batch_over = "topics", batch_as = "topic", result = "summarized_topics" },
+  { pipe = "summarize_from_summaries", result = "summary" },
 ]
 
 [pipe.extract_topics]
@@ -83,4 +83,3 @@ Your task is to generate an overall summary of the text based on the provided su
 
 Please provide only the summary, with no additional text or explanations.
 """
-

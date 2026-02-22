@@ -13,7 +13,7 @@ VENV_RUFF := $(VIRTUAL_ENV)/bin/ruff
 VENV_PYRIGHT := $(VIRTUAL_ENV)/bin/pyright
 VENV_MYPY := $(VIRTUAL_ENV)/bin/mypy
 VENV_PIPELEX := $(VIRTUAL_ENV)/bin/pipelex
-VENV_PLXT := RUST_LOG=warn $(VIRTUAL_ENV)/bin/plxt
+VENV_PLXT := RUST_LOG=warn "$(VIRTUAL_ENV)/bin/plxt"
 
 UV_MIN_VERSION = $(shell grep -m1 'required-version' pyproject.toml | sed -E 's/.*= *"([^<>=, ]+).*/\1/')
 
@@ -49,12 +49,12 @@ make er                       - Shorthand -> export-requirements
 make erd                      - Shorthand -> export-requirements-dev
 make validate                 - Run the setup sequence to validate the config and libraries
 
-make format                   - Format all (ruff-format + plxt-format)
-make lint                     - Lint all (ruff-lint + plxt-lint)
-make ruff-format              - Format Python with ruff
-make ruff-lint                - Lint Python with ruff
-make plxt-format              - Format .mthds/.toml with plxt
-make plxt-lint                - Lint .mthds/.toml with plxt
+make format                   - format with ruff and plxt
+make lint                     - lint with ruff and plxt
+make ruff-format              - format with ruff format
+make ruff-lint                - lint with ruff check
+make plxt-format              - Format MTHDS/TOML files with plxt
+make plxt-lint                - Lint MTHDS/TOML files with plxt
 make pyright                  - Check types with pyright
 make mypy                     - Check types with mypy
 
@@ -65,8 +65,8 @@ make reinstall                - Reinstall dependencies
 
 make merge-check-ruff-lint    - Run ruff merge check without updating files
 make merge-check-ruff-format  - Run ruff merge check without updating files
-make merge-check-plxt-format  - Check .mthds/.toml formatting with plxt
-make merge-check-plxt-lint    - Lint .mthds/.toml with plxt
+make merge-check-plxt-format  - Run plxt format check without modifying files
+make merge-check-plxt-lint    - Run plxt lint check
 make merge-check-mypy         - Run mypy merge check without updating files
 make merge-check-pyright	  - Run pyright merge check without updating files
 
@@ -100,7 +100,7 @@ endef
 export HELP
 
 .PHONY: \
-	all help env lock install update build \
+	all help env env-verbose check-uv check-uv-verbose lock install update build \
 	export-requirements export-requirements-dev er erd \
 	format lint ruff-format ruff-lint plxt-format plxt-lint pyright mypy \
 	cleanderived cleanenv cleanall \
@@ -119,7 +119,18 @@ all help:
 ### SETUP
 ##########################################################################################
 
+# Quiet check-uv: only shows output if uv is missing (needs install)
 check-uv:
+	@command -v uv >/dev/null 2>&1 || { \
+		echo ""; \
+		echo "=== [$(PROJECT_NAME)] ===== (check-uv) ====== Ensuring uv ≥ $(UV_MIN_VERSION) =========="; \
+		echo "uv not found – installing latest …"; \
+		curl -LsSf https://astral.sh/uv/install.sh | sh; \
+	}
+	@uv self update >/dev/null 2>&1 || true
+
+# Verbose check-uv: always shows output (for setup commands)
+check-uv-verbose:
 	$(call PRINT_TITLE,"Ensuring uv ≥ $(UV_MIN_VERSION)")
 	@command -v uv >/dev/null 2>&1 || { \
 		echo "uv not found – installing latest …"; \
@@ -127,7 +138,17 @@ check-uv:
 	}
 	@uv self update >/dev/null 2>&1 || true
 
+# Quiet env: only shows output if venv needs to be created
 env: check-uv
+	@if [ ! -d $(VIRTUAL_ENV) ]; then \
+		echo ""; \
+		echo "=== [$(PROJECT_NAME)] ===== (env) ====== Creating virtual environment ================="; \
+		echo "Creating Python virtual env in \`${VIRTUAL_ENV}\`"; \
+		uv venv $(VIRTUAL_ENV) --python $(PYTHON_VERSION); \
+	fi
+
+# Verbose env: always shows output (for setup commands like install, lock, update)
+env-verbose: check-uv-verbose
 	$(call PRINT_TITLE,"Creating virtual environment")
 	@if [ ! -d $(VIRTUAL_ENV) ]; then \
 		echo "Creating Python virtual env in \`${VIRTUAL_ENV}\`"; \
@@ -136,28 +157,28 @@ env: check-uv
 		echo "Python virtual env already exists in \`${VIRTUAL_ENV}\`"; \
 	fi
 
-install: env
+install: env-verbose
 	$(call PRINT_TITLE,"Installing dependencies")
 	@. $(VIRTUAL_ENV)/bin/activate && \
 	uv sync --all-extras && \
 	echo "Installed Pipelex cookbook dependencies in ${VIRTUAL_ENV} and initialized Pipelex libraries";
 
-lock: env
+lock: env-verbose
 	$(call PRINT_TITLE,"Resolving dependencies without update")
 	@uv lock && \
 	echo "uv lock without update";
 
-update: env
+update: env-verbose
 	$(call PRINT_TITLE,"Updating all dependencies")
 	@uv lock --upgrade && \
 	echo "Updated dependencies in ${VIRTUAL_ENV}";
 
-export-requirements: env
+export-requirements: env-verbose
 	$(call PRINT_TITLE,"Exporting production requirements")
 	@uv export --no-dev --output-file requirements.txt && \
 	echo "Exported production requirements to requirements.txt";
 
-export-requirements-dev: env
+export-requirements-dev: env-verbose
 	$(call PRINT_TITLE,"Exporting development requirements")
 	@uv export --all-extras --output-file requirements-dev.txt && \
 	echo "Exported all requirements (including dev) to requirements-dev.txt";
