@@ -23,5 +23,17 @@
     "djlint.showInstallError": false,
     "files.associations": {
         "*.mthds": "mthds"
+    },
+    "editor.formatOnSave": true,
+    "[html]": {
+        "editor.formatOnSave": false
+    },
+    "[toml]": {
+        "editor.defaultFormatter": "Pipelex.pipelex",
+        "editor.formatOnSave": true
+    },
+    "[mthds]": {
+        "editor.defaultFormatter": "Pipelex.pipelex",
+        "editor.formatOnSave": true
     }
 }
