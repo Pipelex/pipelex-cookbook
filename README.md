@@ -1,8 +1,18 @@
 <div align="center">
   <a href="https://www.pipelex.com/"><img src="https://raw.githubusercontent.com/Pipelex/pipelex/main/.github/assets/logo.png" alt="Pipelex Logo" width="400" style="max-width: 100%; height: auto;"></a>
+  <br/>
+  <br/>
 
+  <!-- PRERELEASE_LINK -->
+  <a href="https://github.com/Pipelex/pipelex-cookbook/tree/feature/Chicago">
+    <img src="https://img.shields.io/badge/PRE--RELEASE-Chicago-ff6b35?style=for-the-badge&labelColor=1a1a2e" alt="Pre-release: Chicago">
+  </a>
+
+  <br/>
+  <br/>
   <h2 align="center">Pipelex Cookbook 📚</h2>
-  <p align="center">Examples, recipes, and best-practice pipelines for the <strong><a href="https://github.com/Pipelex/pipelex">Pipelex</a></strong> AI workflow framework.<br/>
+  <!-- PRERELEASE_LINK -->
+  <p align="center">Examples, recipes, and best-practice pipelines for the <strong><a href="https://go.pipelex.com/pre-release">Pipelex</a></strong> AI method framework.<br/>
 Learn by doing with production-ready examples.</p>
 
   <div>
@@ -20,7 +30,8 @@ Learn by doing with production-ready examples.</p>
     <a href="https://go.pipelex.com/discord"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
     <a href="https://www.youtube.com/@PipelexAI"><img src="https://img.shields.io/badge/YouTube-FF0000?logo=youtube&logoColor=white" alt="YouTube"></a>
     <a href="https://pipelex.com"><img src="https://img.shields.io/badge/Homepage-03bb95?logo=google-chrome&logoColor=white&style=flat" alt="Website"></a>
-    <a href="https://github.com/Pipelex/pipelex"><img src="https://img.shields.io/badge/Main_Repo-5a0dad?logo=github&logoColor=white&style=flat" alt="Main Repository"></a>
+<!-- PRERELEASE_LINK -->
+    <a href="https://go.pipelex.com/pre-release"><img src="https://img.shields.io/badge/Main_Repo-5a0dad?logo=github&logoColor=white&style=flat" alt="Main Repository"></a>
     <a href="https://docs.pipelex.com/"><img src="https://img.shields.io/badge/Docs-03bb95?logo=read-the-docs&logoColor=white&style=flat" alt="Documentation"></a>
     <br/> 
     <br/>
@@ -30,8 +41,10 @@ Learn by doing with production-ready examples.</p>
 
 ## 1. Clone and Install
 
+<!-- PRERELEASE_LINK -->
 ```bash
-git clone https://github.com/Pipelex/pipelex-cookbook.git
+# Clone Pipelex Cookbook from Pre-release branch "Chicago"
+git clone -b feature/Chicago https://github.com/Pipelex/pipelex-cookbook.git
 cd pipelex-cookbook
 
 # Create and activate virtual environment
@@ -45,36 +58,51 @@ pip install .  # or uv sync
 
 ## 2. Get Your API Key (Free)
 
-To use AI models, you need an API key:
+Sign up at [app.pipelex.com](https://app.pipelex.com) to get **free API credits** with access to **all models** (text, vision, OCR, image generation).
 
-- **Free Pipelex API Key**: Join our [Discord community](https://go.pipelex.com/discord) and request your **free API key** (no credit card required) in the [🔑・free-api-key](https://discord.com/channels/1369447918955921449/1418228010431025233) channel.
-- **Bring your own API keys**: OpenAI, Anthropic, Google, Mistral
-- **Local AI**: Ollama, vLLM, LM Studio, llama.cpp... any endpoint based on the OpenAI API or not, as you can plug-in your own non-standard APIs.
+Add your key to `.env`:
+```bash
+PIPELEX_GATEWAY_API_KEY=your_api_key_here
+```
 
-See [Configure AI Providers](https://docs.pipelex.com/pages/setup/configure-ai-providers/) for details.
+Want to bring your own API keys or use local models? See [Configure AI Providers](https://docs.pipelex.com/pages/setup/configure-ai-providers/).
 
-## 3. Run Your First Example
+## 3. Learn Pipelex
+
+**New to Pipelex?** Follow the tutorials to learn step-by-step:
+
+| Level | Tutorial | What you'll learn |
+|-------|----------|-------------------|
+| Easy | [LLM Basics](./tutorial/easy/llm_basics/) | Make LLM calls, chain them together, format output |
+| Easy | [Structured Data](./tutorial/easy/structured_data/) | Extract structured objects from text and documents |
+| Medium | [Model Configuration](./tutorial/medium/) | Control which LLM to use and configure temperature |
+| Medium | [Batch Processing](./tutorial/medium/) | Process lists of items efficiently |
+| Medium | [Parallel Execution](./tutorial/medium/) | Run independent tasks at the same time |
+
+**Already familiar?** Jump straight to the examples below.
+
+## 4. Run Examples
 
 Try the hello world example:
 
 ```bash
-python examples/_quick_start/hello_world.py
+pipelex run pipe examples/a_quick_start/hello_world.mthds
 ```
 
 Or explore other cookbook examples:
 
 ```bash
 # Extract data from a Gantt chart image
-python examples/extract_gantt/extract_gantt.py
+pipelex run pipe examples/b_basics/document_extract/extract_gantt/gantt.mthds -i examples/b_basics/document_extract/extract_gantt/inputs.json
 
 # Extract and summarize invoice information
-python examples/invoice_extractor/invoice_extractor.py
+pipelex run pipe examples/b_basics/document_extract/extract_invoice/invoice.mthds -i examples/b_basics/document_extract/extract_invoice/inputs.json
 
 # Multi-step text summarization
-python examples/_quick_start/summarize_2_steps.py
+pipelex run pipe examples/a_quick_start/summarize.mthds --pipe summarize_by_steps -i examples/a_quick_start/inputs.json
 ```
 
-## 4. Known Limitations
+## 5. Known Limitations
 
 ### Third-Party API Requirements
 
@@ -85,17 +113,17 @@ Some Pipelex pipes currently require additional API keys beyond the Pipelex Infe
 
 **Note:** These dependencies are temporary and will be addressed in future updates. We're working on adding support for multiple providers and local alternatives. Check our [roadmap](https://github.com/Pipelex/pipelex/issues/473) for planned improvements.
 
-## 5. Generate Your Own Workflow
+## 6. Generate Your Own Method
 
-Create a complete AI workflow with a single command:
+Create a complete AI method with a single command:
 
 ```bash
-pipelex build pipe "Take a CV and Job offer in PDF, analyze if they match and generate 5 questions for the interview" --output results/cv_match.plx
+pipelex build pipe "Take a CV and Job offer in PDF, analyze if they match and generate 5 questions for the interview" --output results/cv_match.mthds
 ```
 
-This command generates a production-ready `.plx` file with domain definitions, concepts, and multiple processing steps that analyzes CV-job fit and prepares interview questions.
+This command generates a production-ready `.mthds` file with domain definitions, concepts, and multiple processing steps that analyzes CV-job fit and prepares interview questions.
 
-**cv_match.plx**
+**cv_match.mthds**
 ```toml
 domain = "cv_match"
 description = "Matching CVs with job offers and generating interview questions"
@@ -118,7 +146,7 @@ refines = "Text"
 [pipe.analyze_cv_job_match_and_generate_questions]
 type = "PipeSequence"
 description = """
-Main pipeline that orchestrates the complete CV-job matching and interview question generation workflow. Takes a candidate's CV and a job offer as PDF documents, extracts their content, performs a comprehensive match analysis identifying strengths, gaps, and areas to probe, and generates exactly 5 targeted interview questions based on the analysis results.
+Main pipeline that orchestrates the complete CV-job matching and interview question generation method. Takes a candidate's CV and a job offer as PDF documents, extracts their content, performs a comprehensive match analysis identifying strengths, gaps, and areas to probe, and generates exactly 5 targeted interview questions based on the analysis results.
 """
 inputs = { cv_pdf = "PDF", job_offer_pdf = "PDF" }
 output = "Question[5]"
@@ -140,7 +168,7 @@ Executes parallel extraction of text content from both the CV PDF and job offer 
 """
 inputs = { cv_pdf = "PDF", job_offer_pdf = "PDF" }
 output = "Dynamic"
-parallels = [
+branches = [
     { pipe = "extract_cv_text", result = "cv_pages" },
     { pipe = "extract_job_offer_text", result = "job_offer_pages" },
 ]
@@ -171,7 +199,7 @@ Performs comprehensive analysis comparing the candidate's CV against the job off
 """
 inputs = { cv_pages = "Page[]", job_offer_pages = "Page[]" }
 output = "MatchAnalysis"
-model = "llm_to_answer_hard_questions"
+model = "$writing-factual"
 system_prompt = """
 You are an expert HR analyst and recruiter specializing in candidate-job fit assessment. Your task is to generate a structured MatchAnalysis comparing a candidate's CV against job requirements.
 """
@@ -194,7 +222,7 @@ Generates exactly 5 targeted, relevant interview questions based on the match an
 """
 inputs = { match_analysis = "MatchAnalysis" }
 output = "Question[5]"
-model = "llm_to_write_questions"
+model = "$writing-creative"
 system_prompt = """
 You are an expert HR interviewer and talent assessment specialist. Your task is to generate structured interview questions based on candidate-position match analysis.
 """
@@ -263,7 +291,7 @@ flowchart TD
 
 ```bash
 # Via CLI with input file
-pipelex run results/cv_match.plx --inputs inputs.json
+pipelex run pipe results/cv_match.mthds --inputs inputs.json
 ```
 
 Create an `inputs.json` file with your PDF URLs:
@@ -307,7 +335,7 @@ Pipelex.make()
 asyncio.run(run_pipeline())
 ```
 
-## 6. Iterate with AI Assistance
+## 7. Iterate with AI Assistance
 
 Install AI assistant rules to easily modify your pipelines:
 
@@ -322,26 +350,32 @@ This installs rules for Cursor, Claude, OpenAI Codex, GitHub Copilot, Windsurf, 
 
 ## 💡 What is Pipelex?
 
-Pipelex is an open-source language that enables you to build and run **repeatable AI workflows**. Instead of cramming everything into one complex prompt, you break tasks into focused steps, each pipe handling one clear transformation.
+Pipelex is an open-source language that enables you to build and run **repeatable AI methods**. Instead of cramming everything into one complex prompt, you break tasks into focused steps, each pipe handling one clear transformation.
 
-Each pipe processes information using **Concepts** (typing with meaning) to ensure your pipelines make sense. The Pipelex language (`.plx` files) is simple and human-readable, even for non-technical users. Each step can be structured and validated, giving you the reliability of software with the intelligence of AI.
+Each pipe processes information using **Concepts** (typing with meaning) to ensure your pipelines make sense. The Pipelex language (`.mthds` files) is simple and human-readable, even for non-technical users. Each step can be structured and validated, giving you the reliability of software with the intelligence of AI.
 
 ## 🔧 IDE Extension
 
-We **highly** recommend installing our extension for `.plx` files into your IDE. You can find it in the [Open VSX Registry](https://open-vsx.org/extension/Pipelex/pipelex). It's coming soon to VS Code marketplace too. If you're using Cursor, Windsurf or another VS Code fork, you can search for it directly in your extensions tab.
+We **highly** recommend installing our extension for `.mthds` files into your IDE. You can find it in the [Open VSX Registry](https://open-vsx.org/extension/Pipelex/pipelex). It's coming soon to VS Code marketplace too. If you're using Cursor, Windsurf or another VS Code fork, you can search for it directly in your extensions tab.
 
 ## 📚 Repository Layout
 
 ```
 .
 ├── examples/                  # Production-ready examples
-│   ├── _quick_start/         # Getting started tutorials
-│   ├── extract_gantt/        # Extract structured data from Gantt charts
-│   ├── extract_dpe/          # Extract energy performance diagnostics
-│   ├── invoice_extractor/    # Invoice data extraction
-│   ├── extract_table/        # Table extraction from images
-│   ├── synthesize/           # Data synthesis examples
-│   └── wip/                  # Work in progress examples
+│   ├── a_quick_start/         # Getting started tutorials
+│   ├── b_basics/              # Core functionality examples
+│   │   └── document_extract/  # Document extraction examples
+│   │       ├── extract_dpe/
+│   │       ├── extract_gantt/
+│   │       ├── extract_generic/
+│   │       ├── extract_invoice/
+│   │       ├── extract_proof_of_purchase/
+│   │       └── extract_table/
+│   ├── c_advanced/            # Advanced features
+│   │   ├── gen_synthetic_data/
+│   │   └── using_inference_plugins/
+│   └── wip/                   # Work in progress examples
 ├── assets/                    # Sample data files for examples
 ├── tests/                     # Test suite for all examples
 └── utils/                     # Helper utilities
@@ -366,22 +400,21 @@ The cookbook contains production-ready examples covering various use cases:
 - **Gantt Chart** - Extract project timelines from visual diagrams
 - **Table Extraction** - Extract structured tables from images
 
-### Advanced Workflows
+### Advanced Methods
 - **Data Synthesis** - Generate synthetic data based on schemas
 - **Advisory Board** (WIP) - Multi-agent advisory system
 - **Newsletter Generation** (WIP) - Automated newsletter creation
 
 Each example includes:
-- Complete `.plx` pipeline definition
-- Python execution script
+- Complete `.mthds` pipeline definition
+- `inputs.json` file with sample inputs
 - Sample input data in `assets/`
-- Structured output models where applicable
 
 ## 📖 Next Steps
 
 **Learn More:**
-- [Writing Workflows Tutorial](https://docs.pipelex.com/pages/writing-workflows/) - Complete guide with examples
-- [Build Reliable AI Workflows](https://docs.pipelex.com/pages/build-reliable-ai-workflows-with-pipelex/kick-off-a-pipelex-workflow-project/) - Deep dive into Pipelex
+- [Writing Methods Tutorial](https://docs.pipelex.com/pages/writing-workflows/) - Complete guide with examples
+- [Build Reliable AI Methods](https://docs.pipelex.com/pages/build-reliable-ai-workflows-with-pipelex/kick-off-a-pipelex-workflow-project/) - Deep dive into Pipelex
 - [Configuration Guide](https://docs.pipelex.com/pages/setup/configure-ai-providers/) - Set up AI providers and models
 - [Cookbook Examples](https://docs.pipelex.com/pages/cookbook-examples/) - Detailed documentation of cookbook examples
 

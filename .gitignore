@@ -34,3 +34,14 @@ temp/
 pipelex_super.toml
 
 gcp_credentials.json
+.pipelex/pipelex_service.toml
+.pipelex/storage/*
+
+# macOS
+.DS_Store
+pipelex_override.toml
+telemetry_override.toml
+
+# Claude AI
+.claude
+examples/c_advanced/gen_expense_data/output*

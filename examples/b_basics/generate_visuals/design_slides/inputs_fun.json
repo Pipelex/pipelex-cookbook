@@ -1,0 +1,12 @@
+{
+  "brief": {
+    "concept": "slide_designer.SlideDesignBrief",
+    "content": {
+      "topic": "Why Cats Are Secretly Running the Internet",
+      "goal": "keynote",
+      "audience": "general public",
+      "tone": "playful",
+      "existing_references": "Use whimsical hand-drawn illustrations and vibrant colors"
+    }
+  }
+}

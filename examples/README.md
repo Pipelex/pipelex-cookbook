@@ -1,43 +1,79 @@
 # Sample Pipelines to show off Pipelex capabilities
 
-The scripts in this folder demonstrate various Pipelex pipelines and capabilities. They
-rely on helper functions in `cookbook/utils` and write their results to the
-`results/examples/` directory.
+The pipelines in this folder demonstrate various Pipelex capabilities. Each example
+includes an `inputs.json` file with sample inputs that can be used to run the pipeline.
 
-The folder wip contains work in progress. The pipelines in this folder are not stable.
+## Directory Structure
 
-## Available Examples
+```
+examples/
+├── a_quick_start/         # Getting started tutorials
+├── b_basics/              # Core functionality examples
+│   └── document_extract/  # Document extraction examples
+│       ├── extract_dpe/
+│       ├── extract_gantt/
+│       ├── extract_generic/
+│       ├── extract_invoice/
+│       ├── extract_proof_of_purchase/
+│       └── extract_table/
+├── c_advanced/            # Advanced features
+│   ├── gen_synthetic_data/
+│   └── using_inference_plugins/
+└── wip/                   # Work in progress (not stable)
+```
 
-- `expense_report.py` processes invoices and an expense report to extract
-  structured information.
-- `extract_gantt.py` extracts a gantt chart from an image.
-- `extract_table.py` extracts an HTML table from an image screenshot.
-- `extract_proof_of_purchase.py` extracts key information from proof of purchase documents
-  like receipts and invoices.
-- `extract_dpe.py` demonstrates extraction of information from DPE (Diagnostic de Performance
-  Énergétique) documents.
-- `extract_generic.py` shows how to build a generic document extraction pipeline that can
-  handle various document types.
-- `invoice_extractor.py` specializes in extracting structured data from invoice documents,
-  including line items, totals, and vendor information.
-- `simple_ocr.py` demonstrates basic OCR capabilities on PDF documents,
-  extracting text and images from each page.
-- `retrieve_then_answer.py` showcases a RAG (Retrieval-Augmented Generation) pipeline
-  that first retrieves relevant information and then answers questions about documents.
+## Quick Start Examples (`a_quick_start/`)
+
+- `hello_world.mthds` - Your first Pipelex pipeline
+- `summarize.mthds` - Multi-step text summarization with structured output
+
+## Document Extraction Examples (`b_basics/document_extract/`)
+
+- `extract_gantt/` - Extract structured data from Gantt chart images
+- `extract_invoice/` - Extract structured data from invoice documents
+- `extract_table/` - Extract HTML tables from image screenshots
+- `extract_proof_of_purchase/` - Extract key information from receipts and invoices
+- `extract_dpe/` - Extract information from DPE (Diagnostic de Performance Énergétique) documents
+- `extract_generic/` - Generic document extraction pipeline for various document types
+
+## Advanced Examples (`c_advanced/`)
+
+- `gen_synthetic_data/` - Generate synthetic data based on schemas
+
+## Work in Progress (`wip/`)
+
+The `wip/` folder contains experimental pipelines that are not yet stable.
 
 ## Running the Examples
 
-Run any sample from the repository root, for example:
+Run any example from the repository root using the CLI:
 
 ```bash
-python examples/extract_table.py
+# Quick start - Hello World (no inputs needed)
+pipelex run pipe examples/a_quick_start/hello_world.mthds
+
+# Quick start - Summarization with inputs
+pipelex run pipe examples/a_quick_start/summarize.mthds --pipe summarize_with_structure -i examples/a_quick_start/inputs.json
+
+# Document extraction - Gantt chart
+pipelex run pipe examples/b_basics/document_extract/extract_gantt/bundle.mthds -i examples/b_basics/document_extract/extract_gantt/inputs.json
+
+# Document extraction - Invoice
+pipelex run pipe examples/b_basics/document_extract/extract_invoice/bundle.mthds -i examples/b_basics/document_extract/extract_invoice/inputs.json
+
+# Document extraction - Table
+pipelex run pipe examples/b_basics/document_extract/extract_table/bundle.mthds -i examples/b_basics/document_extract/extract_table/inputs.json
+
+# Advanced features - Synthetic data generation
+pipelex run pipe examples/c_advanced/gen_synthetic_data/bundle.mthds -i examples/c_advanced/gen_synthetic_data/inputs.json
 ```
 
-Each example includes detailed comments explaining the pipeline construction and configuration.
-The results will be saved in the `results/examples/` directory for inspection.
+Results will be saved as JSON files in the current directory (or specify `-o path/to/output.json`).
 
 ## Prerequisites
 
-Make sure you have installed all required dependencies and have the necessary API keys
-configured for any LLM or OCR services used in the examples. Refer to the main README
-for setup instructions.
+Before running these examples, make sure you have:
+1. Created and activated a virtual environment
+2. Installed the dependencies
+
+See the [Clone and Install](../README.md#1-clone-and-install) section in the main README for setup instructions.

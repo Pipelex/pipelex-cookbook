@@ -1,10 +1,19 @@
 import os
+import sys
+from pathlib import Path
 
 import pipelex.pipelex
 import pytest
 from pipelex.pipe_run.pipe_run_mode import PipeRunMode
 from pipelex.pipe_run.pipe_run_params import FORCE_DRY_RUN_MODE_ENV_KEY
 from rich import print
+
+
+@pytest.fixture(scope="session")
+def pipelex_cmd() -> str:
+    """Return the path to the pipelex executable in the virtual environment."""
+    venv_bin = Path(sys.executable).parent
+    return str(venv_bin / "pipelex")
 
 
 @pytest.fixture(scope="function", autouse=True)
