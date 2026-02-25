@@ -3,16 +3,10 @@
   <br/>
   <br/>
 
-  <!-- PRERELEASE_LINK -->
-  <a href="https://github.com/Pipelex/pipelex-cookbook/tree/feature/Chicago">
-    <img src="https://img.shields.io/badge/PRE--RELEASE-Chicago-ff6b35?style=for-the-badge&labelColor=1a1a2e" alt="Pre-release: Chicago">
-  </a>
-
   <br/>
   <br/>
   <h2 align="center">Pipelex Cookbook 📚</h2>
-  <!-- PRERELEASE_LINK -->
-  <p align="center">Examples, recipes, and best-practice pipelines for the <strong><a href="https://go.pipelex.com/pre-release">Pipelex</a></strong> AI method framework.<br/>
+  <p align="center">Examples, recipes, and best-practice pipelines for the <strong><a href="https://pipelex.com/">Pipelex</a></strong> AI method framework.<br/>
 Learn by doing with production-ready examples.</p>
 
   <div>
@@ -30,8 +24,7 @@ Learn by doing with production-ready examples.</p>
     <a href="https://go.pipelex.com/discord"><img src="https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white" alt="Discord"></a>
     <a href="https://www.youtube.com/@PipelexAI"><img src="https://img.shields.io/badge/YouTube-FF0000?logo=youtube&logoColor=white" alt="YouTube"></a>
     <a href="https://pipelex.com"><img src="https://img.shields.io/badge/Homepage-03bb95?logo=google-chrome&logoColor=white&style=flat" alt="Website"></a>
-<!-- PRERELEASE_LINK -->
-    <a href="https://go.pipelex.com/pre-release"><img src="https://img.shields.io/badge/Main_Repo-5a0dad?logo=github&logoColor=white&style=flat" alt="Main Repository"></a>
+    <a href="https://github.com/Pipelex/pipelex"><img src="https://img.shields.io/badge/Main_Repo-5a0dad?logo=github&logoColor=white&style=flat" alt="Main Repository"></a>
     <a href="https://docs.pipelex.com/"><img src="https://img.shields.io/badge/Docs-03bb95?logo=read-the-docs&logoColor=white&style=flat" alt="Documentation"></a>
     <br/> 
     <br/>
@@ -41,10 +34,9 @@ Learn by doing with production-ready examples.</p>
 
 ## 1. Clone and Install
 
-<!-- PRERELEASE_LINK -->
 ```bash
-# Clone Pipelex Cookbook from Pre-release branch "Chicago"
-git clone -b feature/Chicago https://github.com/Pipelex/pipelex-cookbook.git
+# Clone Pipelex Cookbook
+git clone https://github.com/Pipelex/pipelex-cookbook.git
 cd pipelex-cookbook
 
 # Create and activate virtual environment
