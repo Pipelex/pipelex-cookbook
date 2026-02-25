@@ -50,11 +50,11 @@ generate_expense_dataset (PipeSequence)
 pipelex validate examples/c_advanced/gen_expense_data/bundle.mthds
 
 # Run with default inputs (5 employees)
-pipelex run examples/c_advanced/gen_expense_data/bundle.mthds \
+pipelex run pipe examples/c_advanced/gen_expense_data/bundle.mthds \
   -i examples/c_advanced/gen_expense_data/inputs.json
 
 # Run with custom number of employees
-pipelex run examples/c_advanced/gen_expense_data/bundle.mthds \
+pipelex run pipe examples/c_advanced/gen_expense_data/bundle.mthds \
   -i examples/c_advanced/gen_expense_data/inputs.json \
   --override nb_employees.content.number=10
 ```

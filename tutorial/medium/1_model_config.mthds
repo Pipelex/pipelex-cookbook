@@ -1,6 +1,6 @@
-domain = "model_config"
+domain      = "model_config"
 description = "Learn how to configure LLM models"
-main_pipe = "compare_models"
+main_pipe   = "compare_models"
 
 [pipe]
 
@@ -39,10 +39,10 @@ type = "PipeSequence"
 description = "Compare different model configurations"
 output = "Text"
 steps = [
-    { pipe = "generate_with_default", result = "default_result" },
-    { pipe = "generate_with_custom_settings", result = "custom_result" },
-    { pipe = "generate_with_preset", result = "preset_result" },
-    { pipe = "format_comparison", result = "comparison" },
+  { pipe = "generate_with_default", result = "default_result" },
+  { pipe = "generate_with_custom_settings", result = "custom_result" },
+  { pipe = "generate_with_preset", result = "preset_result" },
+  { pipe = "format_comparison", result = "comparison" },
 ]
 
 [pipe.format_comparison]

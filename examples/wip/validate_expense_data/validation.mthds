@@ -1,6 +1,6 @@
-domain = "expense_validator"
+domain      = "expense_validator"
 description = "Validates expense reports against company policies and determines reimbursement eligibility"
-main_pipe = "validate_expense_report"
+main_pipe   = "validate_expense_report"
 
 # ============================================================================
 # INPUT CONCEPTS
@@ -8,11 +8,11 @@ main_pipe = "validate_expense_report"
 
 [concept.ExpenseReportPDF]
 description = "A PDF document containing the expense report with employee info and expense line items"
-refines = "Document"
+refines     = "Document"
 
 [concept.ReceiptImage]
 description = "A receipt image linked to an expense by expense_id in the filename"
-refines = "Image"
+refines     = "Image"
 
 # ============================================================================
 # DATA CONCEPTS - EMPLOYEE
@@ -27,7 +27,15 @@ full_name = { type = "text", description = "Employee full name", required = true
 email = { type = "text", description = "Employee email address", required = true }
 department = { type = "text", description = "Department name", required = true }
 job_title = { type = "text", description = "Job title", required = true }
-seniority = { type = "text", description = "Employee seniority level", choices = ["Junior", "Senior", "Lead", "Manager", "Director", "VP", "Executive"], required = true }
+seniority = { type = "text", description = "Employee seniority level", choices = [
+  "Junior",
+  "Senior",
+  "Lead",
+  "Manager",
+  "Director",
+  "VP",
+  "Executive",
+], required = true }
 
 # ============================================================================
 # DATA CONCEPTS - EXPENSE
@@ -39,7 +47,19 @@ description = "A single expense line item from the expense report"
 [concept.Expense.structure]
 expense_id = { type = "text", description = "Unique expense identifier (e.g., EXP-20260115-0001)", required = true }
 expense_date = { type = "date", description = "Date of the expense", required = true }
-category = { type = "text", description = "Expense category", choices = ["supermarket", "restaurant", "cafe", "hotel", "airline", "office_supplies", "pharmacy", "electronics", "gas_station", "delivery", "other"], required = true }
+category = { type = "text", description = "Expense category", choices = [
+  "supermarket",
+  "restaurant",
+  "cafe",
+  "hotel",
+  "airline",
+  "office_supplies",
+  "pharmacy",
+  "electronics",
+  "gas_station",
+  "delivery",
+  "other",
+], required = true }
 merchant = { type = "text", description = "Merchant or vendor name", required = true }
 total_amount = { type = "number", description = "Total expense amount", required = true }
 currency = { type = "text", description = "Currency code (e.g., USD)", required = true }
@@ -67,20 +87,24 @@ extracted_merchant = { type = "text", description = "Merchant name extracted fro
 merchant_matches = { type = "boolean", description = "Merchant name on receipt matches claimed merchant", required = true }
 amount_matches = { type = "boolean", description = "Amount on receipt matches claimed amount", required = true }
 date_matches = { type = "boolean", description = "Date on receipt matches claimed date", required = true }
-confidence = { type = "text", description = "Confidence level of the assessment", choices = ["high", "medium", "low"], required = true }
+confidence = { type = "text", description = "Confidence level of the assessment", choices = [
+  "high",
+  "medium",
+  "low",
+], required = true }
 discrepancies = { type = "text", description = "Description of any discrepancies found" }
 
 [concept.SpendingLimitCheck]
 description = "Check if expense is within spending limits based on employee seniority and expense category"
 
 [concept.SpendingLimitCheck.structure]
-expense_id = { type = "text", description = "The expense ID being checked", required = true }
-within_limit = { type = "boolean", description = "Whether expense is within the allowed limit", required = true }
-limit_amount = { type = "number", description = "The spending limit for this seniority/category", required = true }
+expense_id     = { type = "text", description = "The expense ID being checked", required = true }
+within_limit   = { type = "boolean", description = "Whether expense is within the allowed limit", required = true }
+limit_amount   = { type = "number", description = "The spending limit for this seniority/category", required = true }
 claimed_amount = { type = "number", description = "The amount claimed", required = true }
-exceeded_by = { type = "number", description = "Amount exceeded (0 if within limit)", required = true }
-category = { type = "text", description = "The expense category checked", required = true }
-seniority = { type = "text", description = "The employee seniority level", required = true }
+exceeded_by    = { type = "number", description = "Amount exceeded (0 if within limit)", required = true }
+category       = { type = "text", description = "The expense category checked", required = true }
+seniority      = { type = "text", description = "The employee seniority level", required = true }
 
 [concept.WeekendCheck]
 description = "Check if expense occurred on a weekend (company policy: no weekend expenses without prior approval)"
@@ -89,7 +113,11 @@ description = "Check if expense occurred on a weekend (company policy: no weeken
 expense_id = { type = "text", description = "The expense ID being checked", required = true }
 is_weekday = { type = "boolean", description = "True if expense is on a weekday (Mon-Fri)", required = true }
 day_of_week = { type = "text", description = "Day name (Monday, Tuesday, etc.)", required = true }
-policy_status = { type = "text", description = "Policy compliance status", choices = ["compliant", "requires_approval", "violation"], required = true }
+policy_status = { type = "text", description = "Policy compliance status", choices = [
+  "compliant",
+  "requires_approval",
+  "violation",
+], required = true }
 message = { type = "text", description = "Explanation of the check result", required = true }
 
 [concept.PurposeQualityCheck]
@@ -98,9 +126,25 @@ description = "LLM assessment of whether the business purpose justification is a
 [concept.PurposeQualityCheck.structure]
 expense_id = { type = "text", description = "The expense ID being checked", required = true }
 is_adequate = { type = "boolean", description = "Whether the business purpose is adequately justified", required = true }
-clarity_score = { type = "text", description = "Clarity of the justification", choices = ["excellent", "good", "acceptable", "insufficient", "missing"], required = true }
-business_relevance = { type = "text", description = "How clearly the expense relates to business activities", choices = ["clearly_related", "possibly_related", "unclear", "unrelated"], required = true }
-recommendation = { type = "text", description = "Recommendation for the expense", choices = ["approve", "approve_with_note", "request_clarification", "reject"], required = true }
+clarity_score = { type = "text", description = "Clarity of the justification", choices = [
+  "excellent",
+  "good",
+  "acceptable",
+  "insufficient",
+  "missing",
+], required = true }
+business_relevance = { type = "text", description = "How clearly the expense relates to business activities", choices = [
+  "clearly_related",
+  "possibly_related",
+  "unclear",
+  "unrelated",
+], required = true }
+recommendation = { type = "text", description = "Recommendation for the expense", choices = [
+  "approve",
+  "approve_with_note",
+  "request_clarification",
+  "reject",
+], required = true }
 assessment = { type = "text", description = "Detailed explanation of the assessment", required = true }
 
 [concept.ReasonableAmountCheck]
@@ -111,7 +155,13 @@ expense_id = { type = "text", description = "The expense ID being checked", requ
 is_reasonable = { type = "boolean", description = "Whether the amount seems reasonable", required = true }
 expected_range_min = { type = "number", description = "Lower bound of expected price range", required = true }
 expected_range_max = { type = "number", description = "Upper bound of expected price range", required = true }
-variance_category = { type = "text", description = "How the amount compares to expectations", choices = ["within_range", "slightly_high", "significantly_high", "slightly_low", "significantly_low"], required = true }
+variance_category = { type = "text", description = "How the amount compares to expectations", choices = [
+  "within_range",
+  "slightly_high",
+  "significantly_high",
+  "slightly_low",
+  "significantly_low",
+], required = true }
 assessment = { type = "text", description = "Explanation of the assessment", required = true }
 
 [concept.TimelinesCheck]
@@ -122,7 +172,11 @@ expense_id = { type = "text", description = "The expense ID being checked", requ
 is_timely = { type = "boolean", description = "Whether the expense was submitted within deadline", required = true }
 days_since_expense = { type = "integer", description = "Number of days since the expense occurred", required = true }
 submission_deadline = { type = "integer", description = "Maximum allowed days for submission", required = true }
-policy_status = { type = "text", description = "Policy compliance status", choices = ["compliant", "late_but_acceptable", "too_late"], required = true }
+policy_status = { type = "text", description = "Policy compliance status", choices = [
+  "compliant",
+  "late_but_acceptable",
+  "too_late",
+], required = true }
 message = { type = "text", description = "Explanation of the timeliness status", required = true }
 
 # ============================================================================
@@ -137,7 +191,12 @@ expense_id = { type = "text", description = "The expense ID being validated", re
 expense_category = { type = "text", description = "The category of the expense", required = true }
 expense_merchant = { type = "text", description = "The merchant name", required = true }
 is_approved = { type = "boolean", description = "Whether the expense is approved for reimbursement", required = true }
-approval_status = { type = "text", description = "Detailed approval status", choices = ["approved", "approved_with_warnings", "pending_clarification", "rejected"], required = true }
+approval_status = { type = "text", description = "Detailed approval status", choices = [
+  "approved",
+  "approved_with_warnings",
+  "pending_clarification",
+  "rejected",
+], required = true }
 claimed_amount = { type = "number", description = "The amount claimed by the employee", required = true }
 approved_amount = { type = "number", description = "The amount approved (0 if rejected, may be capped at limit)", required = true }
 rejection_reasons = { type = "list", item_type = "text", description = "List of reasons for rejection (empty if approved)" }
@@ -148,17 +207,17 @@ action_required = { type = "text", description = "Any action required from emplo
 description = "Final validation report with all expense results and executive summary"
 
 [concept.ValidationReport.structure]
-employee = { type = "concept", concept_ref = "expense_validator.Employee", description = "The employee who submitted the report", required = true }
-expense_results = { type = "list", item_type = "concept", item_concept_ref = "expense_validator.ExpenseValidationResult", description = "Validation results for each expense", required = true }
-total_claimed = { type = "number", description = "Total amount claimed", required = true }
-total_approved = { type = "number", description = "Total amount approved for reimbursement", required = true }
-total_rejected = { type = "number", description = "Total amount rejected", required = true }
-total_pending = { type = "number", description = "Total amount pending clarification", required = true }
-approval_rate = { type = "number", description = "Percentage of expenses fully approved", required = true }
+employee          = { type = "concept", concept_ref = "expense_validator.Employee", description = "The employee who submitted the report", required = true }
+expense_results   = { type = "list", item_type = "concept", item_concept_ref = "expense_validator.ExpenseValidationResult", description = "Validation results for each expense", required = true }
+total_claimed     = { type = "number", description = "Total amount claimed", required = true }
+total_approved    = { type = "number", description = "Total amount approved for reimbursement", required = true }
+total_rejected    = { type = "number", description = "Total amount rejected", required = true }
+total_pending     = { type = "number", description = "Total amount pending clarification", required = true }
+approval_rate     = { type = "number", description = "Percentage of expenses fully approved", required = true }
 expenses_approved = { type = "integer", description = "Number of expenses approved", required = true }
 expenses_rejected = { type = "integer", description = "Number of expenses rejected", required = true }
-expenses_pending = { type = "integer", description = "Number of expenses pending clarification", required = true }
-summary_notes = { type = "text", description = "Executive summary notes for the finance team", required = true }
+expenses_pending  = { type = "integer", description = "Number of expenses pending clarification", required = true }
+summary_notes     = { type = "text", description = "Executive summary notes for the finance team", required = true }
 
 # ============================================================================
 # MAIN VALIDATION PIPELINE
@@ -170,18 +229,18 @@ description = "Main pipeline that validates an expense report from PDF and recei
 inputs = { expense_pdf = "ExpenseReportPDF", receipts = "ReceiptImage[]" }
 output = "ValidationReport"
 steps = [
-    { pipe = "extract_pdf_content", result = "pages" },
-    { pipe = "parse_expense_report", result = "report" },
-    { pipe = "extract_expenses_list", result = "expenses" },
-    { pipe = "validate_single_expense", batch_over = "expenses", batch_as = "expense", result = "expense_validations" },
-    { pipe = "compose_validation_report", result = "validation_report" },
+  { pipe = "extract_pdf_content", result = "pages" },
+  { pipe = "parse_expense_report", result = "report" },
+  { pipe = "extract_expenses_list", result = "expenses" },
+  { pipe = "validate_single_expense", batch_over = "expenses", batch_as = "expense", result = "expense_validations" },
+  { pipe = "compose_validation_report", result = "validation_report" },
 ]
 
 [pipe.extract_expenses_list]
-type = "PipeFunc"
-description = "Extracts the expenses list from the parsed expense report"
-inputs = { report = "ExpenseReport", receipts = "ReceiptImage[]" }
-output = "Expense[]"
+type          = "PipeFunc"
+description   = "Extracts the expenses list from the parsed expense report"
+inputs        = { report = "ExpenseReport", receipts = "ReceiptImage[]" }
+output        = "Expense[]"
 function_name = "extract_expenses_list"
 
 # ============================================================================
@@ -189,10 +248,10 @@ function_name = "extract_expenses_list"
 # ============================================================================
 
 [pipe.extract_pdf_content]
-type = "PipeExtract"
+type        = "PipeExtract"
 description = "Extracts text and images from the expense report PDF"
-inputs = { expense_pdf = "ExpenseReportPDF" }
-output = "Page[]"
+inputs      = { expense_pdf = "ExpenseReportPDF" }
+output      = "Page[]"
 
 [pipe.parse_expense_report]
 type = "PipeLLM"
@@ -231,13 +290,13 @@ description = "Validates a single expense against all company policies"
 inputs = { report = "ExpenseReport", expense = "Expense", receipts = "ReceiptImage[]" }
 output = "ExpenseValidationResult"
 steps = [
-    { pipe = "check_receipt_match", result = "receipt_check" },
-    { pipe = "check_spending_limit", result = "limit_check" },
-    { pipe = "check_weekend", result = "weekend_check" },
-    { pipe = "check_timeliness", result = "timeliness_check" },
-    { pipe = "check_purpose_quality", result = "purpose_check" },
-    { pipe = "check_reasonable_amount", result = "reasonable_check" },
-    { pipe = "compose_expense_result", result = "validation_result" },
+  { pipe = "check_receipt_match", result = "receipt_check" },
+  { pipe = "check_spending_limit", result = "limit_check" },
+  { pipe = "check_weekend", result = "weekend_check" },
+  { pipe = "check_timeliness", result = "timeliness_check" },
+  { pipe = "check_purpose_quality", result = "purpose_check" },
+  { pipe = "check_reasonable_amount", result = "reasonable_check" },
+  { pipe = "compose_expense_result", result = "validation_result" },
 ]
 
 # ============================================================================
@@ -288,24 +347,24 @@ Return expense_id as "$expense.expense_id" in your response.
 """
 
 [pipe.check_spending_limit]
-type = "PipeFunc"
-description = "Checks if expense is within spending limits based on seniority and category"
-inputs = { report = "ExpenseReport", expense = "Expense" }
-output = "SpendingLimitCheck"
+type          = "PipeFunc"
+description   = "Checks if expense is within spending limits based on seniority and category"
+inputs        = { report = "ExpenseReport", expense = "Expense" }
+output        = "SpendingLimitCheck"
 function_name = "check_spending_limit"
 
 [pipe.check_weekend]
-type = "PipeFunc"
-description = "Checks if expense occurred on a weekend (requires prior approval per company policy)"
-inputs = { expense = "Expense" }
-output = "WeekendCheck"
+type          = "PipeFunc"
+description   = "Checks if expense occurred on a weekend (requires prior approval per company policy)"
+inputs        = { expense = "Expense" }
+output        = "WeekendCheck"
 function_name = "check_weekend"
 
 [pipe.check_timeliness]
-type = "PipeFunc"
-description = "Checks if expense was submitted within the allowed timeframe"
-inputs = { expense = "Expense" }
-output = "TimelinesCheck"
+type          = "PipeFunc"
+description   = "Checks if expense was submitted within the allowed timeframe"
+inputs        = { expense = "Expense" }
+output        = "TimelinesCheck"
 function_name = "check_timeliness"
 
 [pipe.check_purpose_quality]
@@ -416,15 +475,15 @@ Return expense_id as "$expense.expense_id" in your response.
 # ============================================================================
 
 [pipe.compose_expense_result]
-type = "PipeFunc"
-description = "Composes the final validation result for a single expense based on all checks"
-inputs = { expense = "Expense", receipt_check = "ReceiptMatchCheck", limit_check = "SpendingLimitCheck", weekend_check = "WeekendCheck", timeliness_check = "TimelinesCheck", purpose_check = "PurposeQualityCheck", reasonable_check = "ReasonableAmountCheck" }
-output = "ExpenseValidationResult"
+type          = "PipeFunc"
+description   = "Composes the final validation result for a single expense based on all checks"
+inputs        = { expense = "Expense", receipt_check = "ReceiptMatchCheck", limit_check = "SpendingLimitCheck", weekend_check = "WeekendCheck", timeliness_check = "TimelinesCheck", purpose_check = "PurposeQualityCheck", reasonable_check = "ReasonableAmountCheck" }
+output        = "ExpenseValidationResult"
 function_name = "compose_expense_result"
 
 [pipe.compose_validation_report]
-type = "PipeFunc"
-description = "Composes the final validation report with summary statistics and executive notes"
-inputs = { report = "ExpenseReport", expense_validations = "ExpenseValidationResult[]" }
-output = "ValidationReport"
+type          = "PipeFunc"
+description   = "Composes the final validation report with summary statistics and executive notes"
+inputs        = { report = "ExpenseReport", expense_validations = "ExpenseValidationResult[]" }
+output        = "ValidationReport"
 function_name = "compose_validation_report"

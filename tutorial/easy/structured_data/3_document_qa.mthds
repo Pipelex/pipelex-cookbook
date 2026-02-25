@@ -1,6 +1,6 @@
-domain = "document_qa"
+domain      = "document_qa"
 description = "Extract text from documents and answer questions"
-main_pipe = "document_qa"
+main_pipe   = "document_qa"
 
 [concept]
 
@@ -9,18 +9,18 @@ main_pipe = "document_qa"
 description = "An answer to a question about a document"
 
 [concept.Answer.structure]
-answer = { type = "text", description = "The answer to the question", required = true }
-confidence = { type = "text", description = "How confident: high, medium, or low" }
+answer       = { type = "text", description = "The answer to the question", required = true }
+confidence   = { type = "text", description = "How confident: high, medium, or low" }
 source_quote = { type = "text", description = "A quote from the document that supports the answer" }
 
 [pipe]
 
 # First pipe: Extract text from a PDF document
 [pipe.extract_text]
-type = "PipeExtract"
+type        = "PipeExtract"
 description = "Extract text from a PDF document"
-inputs = { document = "Document" }
-output = "Page[]"
+inputs      = { document = "Document" }
+output      = "Page[]"
 
 # Second pipe: Answer a question based on the extracted text
 [pipe.answer_question]
@@ -46,6 +46,6 @@ description = "Extract text from a document and answer a question"
 inputs = { document = "Document", question = "Text" }
 output = "Answer"
 steps = [
-    { pipe = "extract_text", result = "pages" },
-    { pipe = "answer_question", result = "answer" },
+  { pipe = "extract_text", result = "pages" },
+  { pipe = "answer_question", result = "answer" },
 ]

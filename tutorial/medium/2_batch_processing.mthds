@@ -1,12 +1,12 @@
-domain = "batch_processing"
+domain      = "batch_processing"
 description = "Learn how to process items in batches"
-main_pipe = "batch_write_summaries"
+main_pipe   = "batch_write_summaries"
 
 [concept]
 
 [concept.Topic]
 description = "A topic to write about"
-refines = "Text"
+refines     = "Text"
 
 [pipe]
 
@@ -50,7 +50,7 @@ type = "PipeSequence"
 description = "Generate topics and write summaries for each"
 output = "Text"
 steps = [
-    { pipe = "generate_topics", result = "topics" },
-    { pipe = "write_summary", batch_over = "topics", batch_as = "topic", result = "summaries" },
-    { pipe = "format_results", result = "final_output" },
+  { pipe = "generate_topics", result = "topics" },
+  { pipe = "write_summary", batch_over = "topics", batch_as = "topic", result = "summaries" },
+  { pipe = "format_results", result = "final_output" },
 ]

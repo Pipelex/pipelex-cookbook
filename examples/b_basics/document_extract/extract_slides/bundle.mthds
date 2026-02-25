@@ -1,14 +1,16 @@
-domain = "extract_slides"
+domain      = "extract_slides"
 description = "The domain of extracting slides from documents"
-main_pipe = "extract_slides"
+main_pipe   = "extract_slides"
 
 [concept]
+
 [concept.Slide]
 description = "A slide from a presentation"
+
 [concept.Slide.structure]
-title = { type = "text", description = "The title of the slide" }
+title         = { type = "text", description = "The title of the slide" }
 text_markdown = { type = "text", description = "The content of the slide as markdown" }
-description = { type = "text", description = "A description of the slide: layout of the text, description of the graphics" }
+description   = { type = "text", description = "A description of the slide: layout of the text, description of the graphics" }
 
 [pipe]
 
@@ -18,18 +20,18 @@ description = "Extract markdown from a document"
 inputs = { document = "Document" }
 output = "Text"
 steps = [
-    { pipe = "extract_markdown_and_views_from_document", result = "pages" },
-    { pipe = "describe_slide", batch_over = "pages", batch_as = "page", result = "slides" },
-    { pipe = "concatenate_slide_descriptions", result = "slides_description" },
+  { pipe = "extract_markdown_and_views_from_document", result = "pages" },
+  { pipe = "describe_slide", batch_over = "pages", batch_as = "page", result = "slides" },
+  { pipe = "concatenate_slide_descriptions", result = "slides_description" },
 ]
 
 [pipe.extract_markdown_and_views_from_document]
-type = "PipeExtract"
+type        = "PipeExtract"
 description = "Extract page text markdown and views from a document"
-inputs = { document = "Document" }
-output = "Page[]"
-page_views = true
-model = "azure-document-intelligence"
+inputs      = { document = "Document" }
+output      = "Page[]"
+page_views  = true
+model       = "azure-document-intelligence"
 
 
 [pipe.describe_slide]

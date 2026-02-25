@@ -9,7 +9,7 @@ Before running this example, ensure you have set up your environment. See the [C
 ## Run the pipeline
 
 ```bash
-pipelex run examples/b_basics/document_extract/extract_gantt/bundle.mthds -i examples/b_basics/document_extract/extract_gantt/inputs.json
+pipelex run pipe examples/b_basics/document_extract/extract_gantt/bundle.mthds -i examples/b_basics/document_extract/extract_gantt/inputs.json
 ```
 
 ## Flowchart

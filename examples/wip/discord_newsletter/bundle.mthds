@@ -1,37 +1,37 @@
-domain = "discord_newsletter"
+domain      = "discord_newsletter"
 description = "Create newsletters from Discord channel content by summarizing messages and organizing them according to newsletter format"
-main_pipe = "write_discord_newsletter"
+main_pipe   = "write_discord_newsletter"
 
 [concept.Attachment]
 description = "A Discord message attachment"
 
 [concept.Attachment.structure]
 name = { type = "text", description = "Name of the attachment file", required = true }
-url = { type = "text", description = "URL of the attachment", required = true }
+url  = { type = "text", description = "URL of the attachment", required = true }
 
 [concept.Embed]
 description = "A Discord message embed"
 
 [concept.Embed.structure]
-title = { type = "text", description = "Title of the embed", required = true }
+title       = { type = "text", description = "Title of the embed", required = true }
 description = { type = "text", description = "Description of the embed content", required = true }
-type = { type = "text", description = "Type of the embed (e.g., article, video)", required = true }
+type        = { type = "text", description = "Type of the embed (e.g., article, video)", required = true }
 
 [concept.DiscordMessage]
 description = "A Discord message within a channel"
 
 [concept.DiscordMessage.structure]
-author = { type = "text", description = "Author of the message", required = true }
-content = { type = "text", description = "Content of the message", required = true }
+author      = { type = "text", description = "Author of the message", required = true }
+content     = { type = "text", description = "Content of the message", required = true }
 attachments = { type = "list", item_type = "concept", item_concept_ref = "discord_newsletter.Attachment", description = "List of message attachments" }
-embeds = { type = "list", item_type = "concept", item_concept_ref = "discord_newsletter.Embed", description = "List of message embeds" }
-link = { type = "text", description = "Link to the message", required = true }
+embeds      = { type = "list", item_type = "concept", item_concept_ref = "discord_newsletter.Embed", description = "List of message embeds" }
+link        = { type = "text", description = "Link to the message", required = true }
 
 [concept.DiscordChannelUpdate]
 description = "A Discord channel with its messages for newsletter generation"
 
 [concept.DiscordChannelUpdate.structure]
-name = { type = "text", description = "Name of the Discord channel", required = true }
+name     = { type = "text", description = "Name of the Discord channel", required = true }
 position = { type = "integer", description = "Position of the channel", required = true }
 messages = { type = "list", item_type = "concept", item_concept_ref = "discord_newsletter.DiscordMessage", description = "List of messages in the channel" }
 
@@ -42,7 +42,12 @@ description = "A summarized Discord channel for newsletter inclusion"
 channel_name = { type = "text", description = "Name of the Discord channel", required = true }
 position = { type = "integer", description = "Position of the channel for ordering", required = true }
 summary_items = { type = "list", item_type = "text", description = "Well-written summaries of the channel's activity" }
-category = { type = "text", description = "Category of the channel", choices = ["Share", "Introduce Yourself", "Geographic Hubs", "Other"] }
+category = { type = "text", description = "Category of the channel", choices = [
+  "Share",
+  "Introduce Yourself",
+  "Geographic Hubs",
+  "Other",
+] }
 
 [concept]
 HtmlNewsletter = "The final newsletter content in html format with organized channel summaries"
@@ -54,18 +59,18 @@ description = "Create a newsletter from Discord articles by summarizing channels
 inputs = { discord_channel_updates = "DiscordChannelUpdate[]" }
 output = "HtmlNewsletter"
 steps = [
-   { pipe = "summarize_discord_channel_update", batch_over = "discord_channel_updates", batch_as = "discord_channel_update", result = "channel_summaries" },
-   { pipe = "write_weekly_summary", result = "weekly_summary" },
-   { pipe = "format_html_newsletter", result = "html_newsletter" },
+  { pipe = "summarize_discord_channel_update", batch_over = "discord_channel_updates", batch_as = "discord_channel_update", result = "channel_summaries" },
+  { pipe = "write_weekly_summary", result = "weekly_summary" },
+  { pipe = "format_html_newsletter", result = "html_newsletter" },
 ]
 
 [pipe.summarize_discord_channel_update]
-type = "PipeCondition"
-description = "Select the appropriate summary pipe based on the channel name"
-inputs = { discord_channel_update = "DiscordChannelUpdate" }
-output = "ChannelSummary"
-expression = "discord_channel_update.name"
-outcomes = { "Introduce-Yourself" = "summarize_discord_channel_update_for_new_members" }
+type            = "PipeCondition"
+description     = "Select the appropriate summary pipe based on the channel name"
+inputs          = { discord_channel_update = "DiscordChannelUpdate" }
+output          = "ChannelSummary"
+expression      = "discord_channel_update.name"
+outcomes        = { "Introduce-Yourself" = "summarize_discord_channel_update_for_new_members" }
 default_outcome = "summarize_discord_channel_update_general"
 
 [pipe.summarize_discord_channel_update_for_new_members]
@@ -126,10 +131,10 @@ Keep it short: 200 characters.
 """
 
 [pipe.format_html_newsletter]
-type = "PipeCompose"
+type        = "PipeCompose"
 description = "Combine weekly and channel summaries into a complete newsletter following specific formatting requirements"
-inputs = { weekly_summary = "Text", channel_summaries = "ChannelSummary[]" }
-output = "HtmlNewsletter"
+inputs      = { weekly_summary = "Text", channel_summaries = "ChannelSummary[]" }
+output      = "HtmlNewsletter"
 
 [pipe.format_html_newsletter.template]
 category = "html"
@@ -176,4 +181,3 @@ $weekly_summary
    {% endfor %}
 {% endif %}
 """
-

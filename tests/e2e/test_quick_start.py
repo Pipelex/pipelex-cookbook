@@ -32,7 +32,16 @@ class TestQuickStart:
 
     def test_summarize_by_steps(self, pipelex_cmd: str):
         result = subprocess.run(
-            [pipelex_cmd, "run", "examples/a_quick_start/summarize.mthds", "--pipe", "summarize_by_steps", "-i", "examples/a_quick_start/inputs.json"],
+            [
+                pipelex_cmd,
+                "run",
+                "pipe",
+                "examples/a_quick_start/summarize.mthds",
+                "--pipe",
+                "summarize_by_steps",
+                "-i",
+                "examples/a_quick_start/inputs.json",
+            ],
             capture_output=True,
             text=True,
         )

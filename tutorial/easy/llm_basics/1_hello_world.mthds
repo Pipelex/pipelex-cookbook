@@ -1,6 +1,6 @@
-domain = "tutorial_hello_world"
+domain      = "tutorial_hello_world"
 description = "Your first Pipelex pipeline"
-main_pipe = "tutorial_hello_world"
+main_pipe   = "tutorial_hello_world"
 
 [pipe]
 

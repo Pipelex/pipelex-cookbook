@@ -1,6 +1,6 @@
-domain = "using_templates"
+domain      = "using_templates"
 description = "Format output with templates"
-main_pipe = "create_story_document"
+main_pipe   = "create_story_document"
 
 [pipe]
 
@@ -54,7 +54,7 @@ type = "PipeSequence"
 description = "Generate, expand, and format a story"
 output = "Text"
 steps = [
-    { pipe = "template_generate_idea", result = "story_idea" },
-    { pipe = "template_expand_idea", result = "story_outline" },
-    { pipe = "format_document", result = "final_document" },
+  { pipe = "template_generate_idea", result = "story_idea" },
+  { pipe = "template_expand_idea", result = "story_outline" },
+  { pipe = "format_document", result = "final_document" },
 ]

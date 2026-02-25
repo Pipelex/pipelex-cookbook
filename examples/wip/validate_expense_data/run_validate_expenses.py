@@ -9,14 +9,14 @@ import asyncio
 from pipelex import pretty_print
 from pipelex.core.stuffs.document_content import DocumentContent
 from pipelex.pipelex import Pipelex
-from pipelex.pipeline.execute import execute_pipeline
+from pipelex.pipeline.runner import PipelexRunner
 
 
 async def validate_expense_report_from_pdf(pdf_path: str) -> None:
     """
     Validates an expense report from a PDF document.
 
-    This demonstrates the validation workflow:
+    This demonstrates the validation method:
     1. Extract content from the PDF document
     2. Parse the content into a structured EmployeeExpenseReport
     3. Validate each expense against company policies
@@ -29,14 +29,16 @@ async def validate_expense_report_from_pdf(pdf_path: str) -> None:
     print(f"Validating expense report from: {pdf_path}")
     print(f"{'=' * 60}\n")
 
-    validation_output = await execute_pipeline(
+    runner = PipelexRunner()
+    response = await runner.execute_pipeline(
         pipe_code="validate_expense_report",
         inputs={
             "document": DocumentContent(url=pdf_path),
         },
     )
+    pipe_output = response.pipe_output
 
-    validation_text = validation_output.main_stuff_as_str
+    validation_text = pipe_output.main_stuff_as_str
     pretty_print(validation_text, title="Expense Report Validation Result")
 
 

@@ -12,7 +12,7 @@
   <br/>
   <h2 align="center">Pipelex Cookbook 📚</h2>
   <!-- PRERELEASE_LINK -->
-  <p align="center">Examples, recipes, and best-practice pipelines for the <strong><a href="https://go.pipelex.com/pre-release">Pipelex</a></strong> AI workflow framework.<br/>
+  <p align="center">Examples, recipes, and best-practice pipelines for the <strong><a href="https://go.pipelex.com/pre-release">Pipelex</a></strong> AI method framework.<br/>
 Learn by doing with production-ready examples.</p>
 
   <div>
@@ -86,20 +86,20 @@ Want to bring your own API keys or use local models? See [Configure AI Providers
 Try the hello world example:
 
 ```bash
-pipelex run examples/a_quick_start/hello_world.mthds
+pipelex run pipe examples/a_quick_start/hello_world.mthds
 ```
 
 Or explore other cookbook examples:
 
 ```bash
 # Extract data from a Gantt chart image
-pipelex run examples/b_basics/document_extract/extract_gantt/gantt.mthds -i examples/b_basics/document_extract/extract_gantt/inputs.json
+pipelex run pipe examples/b_basics/document_extract/extract_gantt/gantt.mthds -i examples/b_basics/document_extract/extract_gantt/inputs.json
 
 # Extract and summarize invoice information
-pipelex run examples/b_basics/document_extract/extract_invoice/invoice.mthds -i examples/b_basics/document_extract/extract_invoice/inputs.json
+pipelex run pipe examples/b_basics/document_extract/extract_invoice/invoice.mthds -i examples/b_basics/document_extract/extract_invoice/inputs.json
 
 # Multi-step text summarization
-pipelex run examples/a_quick_start/summarize.mthds --pipe summarize_by_steps -i examples/a_quick_start/inputs.json
+pipelex run pipe examples/a_quick_start/summarize.mthds --pipe summarize_by_steps -i examples/a_quick_start/inputs.json
 ```
 
 ## 5. Known Limitations
@@ -113,9 +113,9 @@ Some Pipelex pipes currently require additional API keys beyond the Pipelex Infe
 
 **Note:** These dependencies are temporary and will be addressed in future updates. We're working on adding support for multiple providers and local alternatives. Check our [roadmap](https://github.com/Pipelex/pipelex/issues/473) for planned improvements.
 
-## 6. Generate Your Own Workflow
+## 6. Generate Your Own Method
 
-Create a complete AI workflow with a single command:
+Create a complete AI method with a single command:
 
 ```bash
 pipelex build pipe "Take a CV and Job offer in PDF, analyze if they match and generate 5 questions for the interview" --output results/cv_match.mthds
@@ -146,7 +146,7 @@ refines = "Text"
 [pipe.analyze_cv_job_match_and_generate_questions]
 type = "PipeSequence"
 description = """
-Main pipeline that orchestrates the complete CV-job matching and interview question generation workflow. Takes a candidate's CV and a job offer as PDF documents, extracts their content, performs a comprehensive match analysis identifying strengths, gaps, and areas to probe, and generates exactly 5 targeted interview questions based on the analysis results.
+Main pipeline that orchestrates the complete CV-job matching and interview question generation method. Takes a candidate's CV and a job offer as PDF documents, extracts their content, performs a comprehensive match analysis identifying strengths, gaps, and areas to probe, and generates exactly 5 targeted interview questions based on the analysis results.
 """
 inputs = { cv_pdf = "PDF", job_offer_pdf = "PDF" }
 output = "Question[5]"
@@ -168,7 +168,7 @@ Executes parallel extraction of text content from both the CV PDF and job offer 
 """
 inputs = { cv_pdf = "PDF", job_offer_pdf = "PDF" }
 output = "Dynamic"
-parallels = [
+branches = [
     { pipe = "extract_cv_text", result = "cv_pages" },
     { pipe = "extract_job_offer_text", result = "job_offer_pages" },
 ]
@@ -291,7 +291,7 @@ flowchart TD
 
 ```bash
 # Via CLI with input file
-pipelex run results/cv_match.mthds --inputs inputs.json
+pipelex run pipe results/cv_match.mthds --inputs inputs.json
 ```
 
 Create an `inputs.json` file with your PDF URLs:
@@ -350,7 +350,7 @@ This installs rules for Cursor, Claude, OpenAI Codex, GitHub Copilot, Windsurf, 
 
 ## 💡 What is Pipelex?
 
-Pipelex is an open-source language that enables you to build and run **repeatable AI workflows**. Instead of cramming everything into one complex prompt, you break tasks into focused steps, each pipe handling one clear transformation.
+Pipelex is an open-source language that enables you to build and run **repeatable AI methods**. Instead of cramming everything into one complex prompt, you break tasks into focused steps, each pipe handling one clear transformation.
 
 Each pipe processes information using **Concepts** (typing with meaning) to ensure your pipelines make sense. The Pipelex language (`.mthds` files) is simple and human-readable, even for non-technical users. Each step can be structured and validated, giving you the reliability of software with the intelligence of AI.
 
@@ -400,7 +400,7 @@ The cookbook contains production-ready examples covering various use cases:
 - **Gantt Chart** - Extract project timelines from visual diagrams
 - **Table Extraction** - Extract structured tables from images
 
-### Advanced Workflows
+### Advanced Methods
 - **Data Synthesis** - Generate synthetic data based on schemas
 - **Advisory Board** (WIP) - Multi-agent advisory system
 - **Newsletter Generation** (WIP) - Automated newsletter creation
@@ -413,8 +413,8 @@ Each example includes:
 ## 📖 Next Steps
 
 **Learn More:**
-- [Writing Workflows Tutorial](https://docs.pipelex.com/pages/writing-workflows/) - Complete guide with examples
-- [Build Reliable AI Workflows](https://docs.pipelex.com/pages/build-reliable-ai-workflows-with-pipelex/kick-off-a-pipelex-workflow-project/) - Deep dive into Pipelex
+- [Writing Methods Tutorial](https://docs.pipelex.com/pages/writing-workflows/) - Complete guide with examples
+- [Build Reliable AI Methods](https://docs.pipelex.com/pages/build-reliable-ai-workflows-with-pipelex/kick-off-a-pipelex-workflow-project/) - Deep dive into Pipelex
 - [Configuration Guide](https://docs.pipelex.com/pages/setup/configure-ai-providers/) - Set up AI providers and models
 - [Cookbook Examples](https://docs.pipelex.com/pages/cookbook-examples/) - Detailed documentation of cookbook examples
 

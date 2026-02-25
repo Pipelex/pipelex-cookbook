@@ -9,7 +9,7 @@ Before running this example, ensure you have set up your environment. See the [C
 ## Run the pipeline
 
 ```bash
-pipelex run examples/wip/write_tweet/tech_tweet.mthds -i examples/wip/write_tweet/inputs.json
+pipelex run pipe examples/wip/write_tweet/tech_tweet.mthds -i examples/wip/write_tweet/inputs.json
 ```
 
 ## What it Does

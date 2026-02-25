@@ -9,7 +9,7 @@ Before running this example, ensure you have set up your environment. See the [C
 ## Run the pipeline
 
 ```bash
-pipelex run examples/b_basics/generate_visuals/gen_image/bundle.mthds
+pipelex run pipe examples/b_basics/generate_visuals/gen_image/bundle.mthds
 ```
 
 ## Flowchart

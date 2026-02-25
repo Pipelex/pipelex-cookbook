@@ -1,6 +1,6 @@
-domain = "blog_article_generator"
+domain      = "blog_article_generator"
 description = "Generate SEO optimized blog articles dynamically"
-main_pipe = "generate_blog_article"
+main_pipe   = "generate_blog_article"
 
 ############################################################
 # CONCEPTS
@@ -8,7 +8,7 @@ main_pipe = "generate_blog_article"
 
 [concept]
 ArticleOutline = "SEO optimized blog outline"
-BlogArticle = "Final blog article"
+BlogArticle    = "Final blog article"
 
 [concept.BlogArticleRequest]
 description = "Structured request describing the blog article to generate"
@@ -17,8 +17,17 @@ description = "Structured request describing the blog article to generate"
 text = { type = "text", description = "Free-form instruction for the article", required = true }
 topic = { type = "text", description = "The main topic of the blog article", required = true }
 audience = { type = "text", description = "Target audience for the article", required = true }
-tone = { type = "text", description = "Writing tone", choices = ["Casual", "Professional", "Humorous", "Academic"], required = true }
-length = { type = "text", description = "Desired article length", choices = ["Short", "Medium", "Long"], required = true }
+tone = { type = "text", description = "Writing tone", choices = [
+  "Casual",
+  "Professional",
+  "Humorous",
+  "Academic",
+], required = true }
+length = { type = "text", description = "Desired article length", choices = [
+  "Short",
+  "Medium",
+  "Long",
+], required = true }
 
 ############################################################
 # MAIN PIPE
@@ -30,8 +39,8 @@ description = "Generate a complete blog article from a blog article request"
 inputs = { user_prompt = "BlogArticleRequest" }
 output = "BlogArticle"
 steps = [
-    { pipe = "create_outline", result = "outline" },
-    { pipe = "write_article", result = "article" },
+  { pipe = "create_outline", result = "outline" },
+  { pipe = "write_article", result = "article" },
 ]
 
 ############################################################
