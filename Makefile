@@ -6,13 +6,14 @@ VIRTUAL_ENV := $(CURDIR)/.venv
 PROJECT_NAME := $(shell grep '^name = ' pyproject.toml | sed -E 's/name = "(.*)"/\1/')
 
 # The "?" is used to make the variable optional, so that it can be overridden by the user.
-PYTHON_VERSION ?= 3.11
+PYTHON_VERSION ?= 3.13
 VENV_PYTHON := $(VIRTUAL_ENV)/bin/python
 VENV_PYTEST := $(VIRTUAL_ENV)/bin/pytest
 VENV_RUFF := $(VIRTUAL_ENV)/bin/ruff
 VENV_PYRIGHT := $(VIRTUAL_ENV)/bin/pyright
 VENV_MYPY := $(VIRTUAL_ENV)/bin/mypy
 VENV_PIPELEX := $(VIRTUAL_ENV)/bin/pipelex
+VENV_PLXT := RUST_LOG=warn "$(VIRTUAL_ENV)/bin/plxt"
 
 UV_MIN_VERSION = $(shell grep -m1 'required-version' pyproject.toml | sed -E 's/.*= *"([^<>=, ]+).*/\1/')
 
@@ -48,8 +49,12 @@ make er                       - Shorthand -> export-requirements
 make erd                      - Shorthand -> export-requirements-dev
 make validate                 - Run the setup sequence to validate the config and libraries
 
-make format                   - format with ruff format
-make lint                     - lint with ruff check
+make format                   - format with ruff and plxt
+make lint                     - lint with ruff and plxt
+make ruff-format              - format with ruff format
+make ruff-lint                - lint with ruff check
+make plxt-format              - Format MTHDS/TOML files with plxt
+make plxt-lint                - Lint MTHDS/TOML files with plxt
 make pyright                  - Check types with pyright
 make mypy                     - Check types with mypy
 
@@ -60,13 +65,13 @@ make reinstall                - Reinstall dependencies
 
 make merge-check-ruff-lint    - Run ruff merge check without updating files
 make merge-check-ruff-format  - Run ruff merge check without updating files
+make merge-check-plxt-format  - Run plxt format check without modifying files
+make merge-check-plxt-lint    - Run plxt lint check
 make merge-check-mypy         - Run mypy merge check without updating files
 make merge-check-pyright	  - Run pyright merge check without updating files
 
-make rl                       - Shorthand -> reinitlibraries
 make ri                       - Shorthand -> reinstall
 make v                        - Shorthand -> validate
-make init                     - Run pipelex init
 make codex-tests              - Run tests for Codex (exit on first failure) (no inference, no codex_disabled)
 make gha-tests		          - Run tests for github actions (exit on first failure) (no inference, no gha_disabled)
 make test                     - Run unit tests (no inference)
@@ -80,29 +85,30 @@ make tb                       - Shorthand -> `make test-with-prints TEST=test_bo
 make test-inference           - Run unit tests only for inference (with prints)
 make ti                       - Shorthand -> test-inference
 
+make check                    - Shorthand -> format lint mypy
+make c                        - Shorthand -> check
+make cc                       - Shorthand -> cleanderived check
+make agent-check              - Shorthand -> fix-unused-imports format lint pyright mypy (for AI agents)
+make agent-test               - Run unit tests, silent on success, output on failure (for AI agents)
+make li                       - Shorthand -> lock install
 make check-unused-imports     - Check for unused imports without fixing
 make fix-unused-imports       - Fix unused imports with ruff
 make fui                      - Shorthand -> fix-unused-imports
 make check-TODOs              - Check for TODOs
 
-make check                    - Shorthand -> format lint mypy
-make c                        - Shorthand -> check
-make cc                       - Shorthand -> cleanderived check
-make li                       - Shorthand -> lock install
-
 endef
 export HELP
 
 .PHONY: \
-	all help env lock install update build \
+	all help env env-verbose check-uv check-uv-verbose lock install update build \
 	export-requirements export-requirements-dev er erd \
-	format lint pyright mypy \
+	format lint ruff-format ruff-lint plxt-format plxt-lint pyright mypy \
 	cleanderived cleanenv cleanall \
 	test test-xdist t test-quiet tq test-with-prints tp test-inference ti \
 	codex-tests gha-tests \
 	run-all-tests run-manual-trigger-gha-tests run-gha_disabled-tests \
-	validate v check c cc \
-	merge-check-ruff-lint merge-check-ruff-format merge-check-mypy merge-check-pyright \
+	validate v check c cc agent-check agent-test \
+	merge-check-ruff-lint merge-check-ruff-format merge-check-plxt-format merge-check-plxt-lint merge-check-mypy merge-check-pyright \
 	li check-unused-imports fix-unused-imports check-uv check-TODOs
 
 all help:
@@ -113,7 +119,18 @@ all help:
 ### SETUP
 ##########################################################################################
 
+# Quiet check-uv: only shows output if uv is missing (needs install)
 check-uv:
+	@command -v uv >/dev/null 2>&1 || { \
+		echo ""; \
+		echo "=== [$(PROJECT_NAME)] ===== (check-uv) ====== Ensuring uv ≥ $(UV_MIN_VERSION) =========="; \
+		echo "uv not found – installing latest …"; \
+		curl -LsSf https://astral.sh/uv/install.sh | sh; \
+	}
+	@uv self update >/dev/null 2>&1 || true
+
+# Verbose check-uv: always shows output (for setup commands)
+check-uv-verbose:
 	$(call PRINT_TITLE,"Ensuring uv ≥ $(UV_MIN_VERSION)")
 	@command -v uv >/dev/null 2>&1 || { \
 		echo "uv not found – installing latest …"; \
@@ -121,7 +138,17 @@ check-uv:
 	}
 	@uv self update >/dev/null 2>&1 || true
 
+# Quiet env: only shows output if venv needs to be created
 env: check-uv
+	@if [ ! -d $(VIRTUAL_ENV) ]; then \
+		echo ""; \
+		echo "=== [$(PROJECT_NAME)] ===== (env) ====== Creating virtual environment ================="; \
+		echo "Creating Python virtual env in \`${VIRTUAL_ENV}\`"; \
+		uv venv $(VIRTUAL_ENV) --python $(PYTHON_VERSION); \
+	fi
+
+# Verbose env: always shows output (for setup commands like install, lock, update)
+env-verbose: check-uv-verbose
 	$(call PRINT_TITLE,"Creating virtual environment")
 	@if [ ! -d $(VIRTUAL_ENV) ]; then \
 		echo "Creating Python virtual env in \`${VIRTUAL_ENV}\`"; \
@@ -130,32 +157,28 @@ env: check-uv
 		echo "Python virtual env already exists in \`${VIRTUAL_ENV}\`"; \
 	fi
 
-init: env
-	$(call PRINT_TITLE,"Running pipelex init")
-	$(VENV_PIPELEX) init config
-
-install: env
+install: env-verbose
 	$(call PRINT_TITLE,"Installing dependencies")
 	@. $(VIRTUAL_ENV)/bin/activate && \
 	uv sync --all-extras && \
 	echo "Installed Pipelex cookbook dependencies in ${VIRTUAL_ENV} and initialized Pipelex libraries";
 
-lock: env
+lock: env-verbose
 	$(call PRINT_TITLE,"Resolving dependencies without update")
 	@uv lock && \
 	echo "uv lock without update";
 
-update: env
+update: env-verbose
 	$(call PRINT_TITLE,"Updating all dependencies")
 	@uv lock --upgrade && \
 	echo "Updated dependencies in ${VIRTUAL_ENV}";
 
-export-requirements: env
+export-requirements: env-verbose
 	$(call PRINT_TITLE,"Exporting production requirements")
 	@uv export --no-dev --output-file requirements.txt && \
 	echo "Exported production requirements to requirements.txt";
 
-export-requirements-dev: env
+export-requirements-dev: env-verbose
 	$(call PRINT_TITLE,"Exporting development requirements")
 	@uv export --all-extras --output-file requirements-dev.txt && \
 	echo "Exported all requirements (including dev) to requirements-dev.txt";
@@ -168,7 +191,7 @@ erd: export-requirements-dev
 
 validate: env
 	$(call PRINT_TITLE,"Running setup sequence")
-	$(VENV_PIPELEX) validate all
+	$(VENV_PIPELEX) validate --all
 
 ##############################################################################################
 ############################      Cleaning                        ############################
@@ -215,12 +238,12 @@ cleanall: cleanderived cleanenv
 codex-tests: env
 	$(call PRINT_TITLE,"Unit testing for Codex")
 	@echo "• Running unit tests for Codex (excluding inference and codex_disabled)"
-	$(VENV_PYTEST) --exitfirst --quiet -m "not inference and not codex_disabled" || [ $$? = 5 ]
+	$(VENV_PYTEST) --disable-inference --exitfirst --quiet -m "not inference and not codex_disabled" || [ $$? = 5 ]
 
 gha-tests: env
 	$(call PRINT_TITLE,"Unit testing for github actions")
 	@echo "• Running unit tests for github actions (excluding inference and gha_disabled)"
-	$(VENV_PYTEST) --exitfirst --quiet -m "not inference and not gha_disabled" || [ $$? = 5 ]
+	$(VENV_PYTEST) --disable-inference --exitfirst --quiet -m "not inference and not gha_disabled" || [ $$? = 5 ]
 
 run-all-tests: env
 	$(call PRINT_TITLE,"Running all unit tests")
@@ -298,17 +321,41 @@ test-inference: env
 ti: test-inference
 	@echo "> done: ti = test-inference"
 
+agent-test: env
+	@echo "• Running unit tests..."
+	@tmpfile=$$(mktemp); \
+	$(VENV_PYTEST) -m $(USUAL_PYTEST_MARKERS) -o log_level=WARNING --tb=short -q > "$$tmpfile" 2>&1; \
+	exit_code=$$?; \
+	if [ $$exit_code -ne 0 ]; then grep -vE '\[\s*[0-9]+%\]\s*$$' "$$tmpfile"; fi; \
+	rm -f "$$tmpfile"; \
+	if [ $$exit_code -eq 0 ]; then echo "• All tests passed."; fi; \
+	exit $$exit_code
+
 ############################################################################################
 ############################               Linting              ############################
 ############################################################################################
 
-format: env
+ruff-format: env
 	$(call PRINT_TITLE,"Formatting with ruff")
 	@$(VENV_RUFF) format .
 
-lint: env
+ruff-lint: env
 	$(call PRINT_TITLE,"Linting with ruff")
 	@$(VENV_RUFF) check . --fix
+
+plxt-format: env
+	$(call PRINT_TITLE,"Formatting MTHDS/TOML with plxt")
+	$(VENV_PLXT) fmt
+
+plxt-lint: env
+	$(call PRINT_TITLE,"Linting MTHDS/TOML with plxt")
+	$(VENV_PLXT) lint
+
+format: ruff-format plxt-format
+	@echo "> done: format = ruff-format plxt-format"
+
+lint: ruff-lint plxt-lint
+	@echo "> done: lint = ruff-lint plxt-lint"
 
 pyright: env
 	$(call PRINT_TITLE,"Typechecking with pyright")
@@ -330,6 +377,14 @@ merge-check-ruff-format: env
 merge-check-ruff-lint: env check-unused-imports
 	$(call PRINT_TITLE,"Linting with ruff without fixing files")
 	$(VENV_RUFF) check -v .
+
+merge-check-plxt-format: env
+	$(call PRINT_TITLE,"Checking MTHDS/TOML formatting with plxt")
+	$(VENV_PLXT) fmt --check
+
+merge-check-plxt-lint: env
+	$(call PRINT_TITLE,"Linting MTHDS/TOML with plxt")
+	$(VENV_PLXT) lint
 
 merge-check-pyright: env
 	$(call PRINT_TITLE,"Typechecking with pyright")
@@ -363,16 +418,19 @@ check-TODOs: env
 ### SHORTHANDS
 ##########################################################################################
 
-c: init format lint pyright mypy
+c: format lint pyright mypy
 	@echo "> done: c = check"
 
-cc: init cleanderived c
+cc: cleanderived c
 	@echo "> done: cc = cleanderived check"
 
-check: init cleanderived check-unused-imports c
+check: cleanderived check-unused-imports c
 	@echo "> done: check"
 
-v: init validate
+agent-check: fix-unused-imports format lint pyright mypy
+	@echo "> done: agent-check"
+
+v: validate
 	@echo "> done: v = validate"
 
 li: lock install

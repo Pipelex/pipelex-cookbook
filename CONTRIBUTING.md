@@ -27,15 +27,17 @@ Bug-fixes to existing examples are welcome, but the core Pipelex library lives i
 ## Repository Layout
 
 ```
-
 pipelex-cookbook/
-├── examples/             # Official, curated demos
-└── quick_start/          # Quick start examples
-└── pipelex_libraries/pipelines/<topic>/your_pipe.plx
-
+├── examples/
+│   ├── a_quick_start/    # Getting started tutorials
+│   ├── b_basics/         # Core functionality examples
+│   ├── c_advanced/       # Advanced features
+│   └── wip/              # Work in progress - add your examples here
+├── assets/               # Sample data files
+└── utils/                # Helper utilities
 ```
 
-Choose or create a **topic folder** (`finance`, `games`, …) that best fits your pipeline.
+Add new examples under **`examples/wip/<your-folder>`**. Choose or create a folder that best fits your pipeline.
 
 ---
 

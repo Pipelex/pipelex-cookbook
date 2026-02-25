@@ -1,0 +1,26 @@
+domain      = "extract_markdown"
+description = "The domain of extracting markdown from documents"
+main_pipe   = "extract_markdown_from_document"
+
+[pipe]
+
+[pipe.extract_markdown_from_document]
+type = "PipeSequence"
+description = "Extract markdown from a document"
+inputs = { document = "Document" }
+output = "Text"
+steps = [
+  { pipe = "extract_markdown_pages_from_document", result = "pages" },
+  { pipe = "write_markdown_from_pages", result = "markdown" },
+]
+
+[pipe.write_markdown_from_pages]
+type = "PipeCompose"
+description = "Write markdown from pages"
+inputs = { pages = "Page[]" }
+output = "Text"
+template = """
+{% for page in pages %}
+{{ page.text_and_images.text }}
+{% endfor %}
+"""
