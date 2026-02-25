@@ -2,6 +2,7 @@
 
 domain = "summarize"
 description = "Example of summarizing text by topics."
+main_pipe = "summarize_by_steps"
 system_prompt = "You are an expert at summarizing text."
 
 [concept] ####### Concept definitions ############################

@@ -8,7 +8,7 @@ import pytest
 class TestQuickStart:
     def test_hello_world(self, pipelex_cmd: str):
         result = subprocess.run(
-            [pipelex_cmd, "run", "examples/a_quick_start/hello_world.plx"],
+            [pipelex_cmd, "run", "examples/a_quick_start/hello_world.mthds"],
             capture_output=True,
             text=True,
         )
@@ -19,7 +19,7 @@ class TestQuickStart:
             [
                 pipelex_cmd,
                 "run",
-                "examples/a_quick_start/summarize.plx",
+                "examples/a_quick_start/summarize.mthds",
                 "--pipe",
                 "summarize_with_structure",
                 "-i",
@@ -32,7 +32,7 @@ class TestQuickStart:
 
     def test_summarize_by_steps(self, pipelex_cmd: str):
         result = subprocess.run(
-            [pipelex_cmd, "run", "examples/a_quick_start/summarize.plx", "--pipe", "summarize_by_steps", "-i", "examples/a_quick_start/inputs.json"],
+            [pipelex_cmd, "run", "examples/a_quick_start/summarize.mthds", "--pipe", "summarize_by_steps", "-i", "examples/a_quick_start/inputs.json"],
             capture_output=True,
             text=True,
         )

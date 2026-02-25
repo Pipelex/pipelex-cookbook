@@ -11,7 +11,7 @@ from examples.wip.discord_newsletter import run_discord_newsletter
 class TestWip:
     def test_write_tweet(self, pipelex_cmd: str):
         result = subprocess.run(
-            [pipelex_cmd, "run", "examples/wip/write_tweet/tech_tweet.plx", "-i", "examples/wip/write_tweet/inputs.json"],
+            [pipelex_cmd, "run", "examples/wip/write_tweet/tech_tweet.mthds", "-i", "examples/wip/write_tweet/inputs.json"],
             capture_output=True,
             text=True,
         )
@@ -22,7 +22,7 @@ class TestWip:
             [
                 pipelex_cmd,
                 "run",
-                "examples/wip/advisory_board/bundle.plx",
+                "examples/wip/advisory_board/bundle.mthds",
                 "-i",
                 "examples/wip/advisory_board/inputs.json",
                 "-L",

@@ -86,20 +86,20 @@ Want to bring your own API keys or use local models? See [Configure AI Providers
 Try the hello world example:
 
 ```bash
-pipelex run examples/a_quick_start/hello_world.plx
+pipelex run examples/a_quick_start/hello_world.mthds
 ```
 
 Or explore other cookbook examples:
 
 ```bash
 # Extract data from a Gantt chart image
-pipelex run examples/b_basics/document_extract/extract_gantt/gantt.plx -i examples/b_basics/document_extract/extract_gantt/inputs.json
+pipelex run examples/b_basics/document_extract/extract_gantt/gantt.mthds -i examples/b_basics/document_extract/extract_gantt/inputs.json
 
 # Extract and summarize invoice information
-pipelex run examples/b_basics/document_extract/extract_invoice/invoice.plx -i examples/b_basics/document_extract/extract_invoice/inputs.json
+pipelex run examples/b_basics/document_extract/extract_invoice/invoice.mthds -i examples/b_basics/document_extract/extract_invoice/inputs.json
 
 # Multi-step text summarization
-pipelex run examples/a_quick_start/summarize.plx --pipe summarize_by_steps -i examples/a_quick_start/inputs.json
+pipelex run examples/a_quick_start/summarize.mthds --pipe summarize_by_steps -i examples/a_quick_start/inputs.json
 ```
 
 ## 5. Known Limitations
@@ -118,12 +118,12 @@ Some Pipelex pipes currently require additional API keys beyond the Pipelex Infe
 Create a complete AI workflow with a single command:
 
 ```bash
-pipelex build pipe "Take a CV and Job offer in PDF, analyze if they match and generate 5 questions for the interview" --output results/cv_match.plx
+pipelex build pipe "Take a CV and Job offer in PDF, analyze if they match and generate 5 questions for the interview" --output results/cv_match.mthds
 ```
 
-This command generates a production-ready `.plx` file with domain definitions, concepts, and multiple processing steps that analyzes CV-job fit and prepares interview questions.
+This command generates a production-ready `.mthds` file with domain definitions, concepts, and multiple processing steps that analyzes CV-job fit and prepares interview questions.
 
-**cv_match.plx**
+**cv_match.mthds**
 ```toml
 domain = "cv_match"
 description = "Matching CVs with job offers and generating interview questions"
@@ -291,7 +291,7 @@ flowchart TD
 
 ```bash
 # Via CLI with input file
-pipelex run results/cv_match.plx --inputs inputs.json
+pipelex run results/cv_match.mthds --inputs inputs.json
 ```
 
 Create an `inputs.json` file with your PDF URLs:
@@ -352,11 +352,11 @@ This installs rules for Cursor, Claude, OpenAI Codex, GitHub Copilot, Windsurf, 
 
 Pipelex is an open-source language that enables you to build and run **repeatable AI workflows**. Instead of cramming everything into one complex prompt, you break tasks into focused steps, each pipe handling one clear transformation.
 
-Each pipe processes information using **Concepts** (typing with meaning) to ensure your pipelines make sense. The Pipelex language (`.plx` files) is simple and human-readable, even for non-technical users. Each step can be structured and validated, giving you the reliability of software with the intelligence of AI.
+Each pipe processes information using **Concepts** (typing with meaning) to ensure your pipelines make sense. The Pipelex language (`.mthds` files) is simple and human-readable, even for non-technical users. Each step can be structured and validated, giving you the reliability of software with the intelligence of AI.
 
 ## 🔧 IDE Extension
 
-We **highly** recommend installing our extension for `.plx` files into your IDE. You can find it in the [Open VSX Registry](https://open-vsx.org/extension/Pipelex/pipelex). It's coming soon to VS Code marketplace too. If you're using Cursor, Windsurf or another VS Code fork, you can search for it directly in your extensions tab.
+We **highly** recommend installing our extension for `.mthds` files into your IDE. You can find it in the [Open VSX Registry](https://open-vsx.org/extension/Pipelex/pipelex). It's coming soon to VS Code marketplace too. If you're using Cursor, Windsurf or another VS Code fork, you can search for it directly in your extensions tab.
 
 ## 📚 Repository Layout
 
@@ -406,7 +406,7 @@ The cookbook contains production-ready examples covering various use cases:
 - **Newsletter Generation** (WIP) - Automated newsletter creation
 
 Each example includes:
-- Complete `.plx` pipeline definition
+- Complete `.mthds` pipeline definition
 - `inputs.json` file with sample inputs
 - Sample input data in `assets/`
 

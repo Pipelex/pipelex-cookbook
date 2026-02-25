@@ -8,7 +8,7 @@ Learn how to get structured objects from LLMs and extract text from documents.
 
 Instead of plain text, get a **structured object** with specific fields.
 
-**File: `1_structured_output.plx`**
+**File: `1_structured_output.mthds`**
 
 ```plx
 domain = "structured_output"
@@ -46,7 +46,7 @@ Generate a creative book idea. Provide a compelling title, genre, synopsis, and 
 
 **Run it:**
 ```bash
-pipelex run tutorial/easy/structured_data/1_structured_output.plx
+pipelex run tutorial/easy/structured_data/1_structured_output.mthds
 ```
 
 ---
@@ -55,7 +55,7 @@ pipelex run tutorial/easy/structured_data/1_structured_output.plx
 
 Access **specific fields** from a structured object in your prompts.
 
-**File: `2_using_object_fields.plx`**
+**File: `2_using_object_fields.mthds`**
 
 ```plx
 domain = "using_object_fields"
@@ -117,7 +117,7 @@ steps = [
 
 **Run it:**
 ```bash
-pipelex run tutorial/easy/structured_data/2_using_object_fields.plx
+pipelex run tutorial/easy/structured_data/2_using_object_fields.mthds
 ```
 
 ---
@@ -126,7 +126,7 @@ pipelex run tutorial/easy/structured_data/2_using_object_fields.plx
 
 Extract text from a **PDF** and answer questions about it.
 
-**File: `3_document_qa.plx`**
+**File: `3_document_qa.mthds`**
 
 ```plx
 domain = "document_qa"
@@ -207,7 +207,7 @@ For native types like `Document`, you need to wrap the content with a `concept` 
 
 **Run it:**
 ```bash
-pipelex run tutorial/easy/structured_data/3_document_qa.plx -i tutorial/easy/structured_data/inputs.json
+pipelex run tutorial/easy/structured_data/3_document_qa.mthds -i tutorial/easy/structured_data/inputs.json
 ```
 
 ---

@@ -8,7 +8,7 @@ Learn the fundamentals of Pipelex pipelines.
 
 The simplest pipeline: an LLM that generates text.
 
-**File: `1_hello_world.plx`**
+**File: `1_hello_world.mthds`**
 
 ```plx
 domain = "tutorial_hello_world"
@@ -35,7 +35,7 @@ Generate a one-paragraph creative story idea about a robot learning to paint.
 
 **Run it:**
 ```bash
-pipelex run tutorial/easy/llm_basics/1_hello_world.plx
+pipelex run tutorial/easy/llm_basics/1_hello_world.mthds
 ```
 
 The flowchart shows one pipe producing a single output:
@@ -48,7 +48,7 @@ The flowchart shows one pipe producing a single output:
 
 What if you want to run **two LLM calls in sequence**? Use **PipeSequence**!
 
-**File: `2_chaining_llm_calls.plx`**
+**File: `2_chaining_llm_calls.mthds`**
 
 ```plx
 domain = "chaining_llm_calls"
@@ -99,7 +99,7 @@ steps = [
 
 **Run it:**
 ```bash
-pipelex run tutorial/easy/llm_basics/2_chaining_llm_calls.plx
+pipelex run tutorial/easy/llm_basics/2_chaining_llm_calls.mthds
 ```
 
 The flowchart shows the first pipe producing an output, which becomes the input to the second pipe:
@@ -112,7 +112,7 @@ The flowchart shows the first pipe producing an output, which becomes the input 
 
 What if you want to **pass data into your pipeline**? Use `inputs`!
 
-**File: `3_using_inputs.plx`**
+**File: `3_using_inputs.mthds`**
 
 ```plx
 domain = "using_inputs"
@@ -150,7 +150,7 @@ Keep it under 100 words.
 
 **Run it:**
 ```bash
-pipelex run tutorial/easy/llm_basics/3_using_inputs.plx -i tutorial/easy/llm_basics/inputs.json
+pipelex run tutorial/easy/llm_basics/3_using_inputs.mthds -i tutorial/easy/llm_basics/inputs.json
 ```
 
 The flowchart shows an external input being passed into the pipe:
@@ -163,7 +163,7 @@ The flowchart shows an external input being passed into the pipe:
 
 Want to **format the output** nicely? Use **PipeCompose**!
 
-**File: `4_using_templates.plx`**
+**File: `4_using_templates.mthds`**
 
 ```plx
 domain = "using_templates"
@@ -235,7 +235,7 @@ steps = [
 
 **Run it:**
 ```bash
-pipelex run tutorial/easy/llm_basics/4_using_templates.plx
+pipelex run tutorial/easy/llm_basics/4_using_templates.mthds
 ```
 
 The flowchart shows three pipes chained together - two LLM pipes feeding into a compose pipe that formats the final output:

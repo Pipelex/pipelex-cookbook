@@ -9,7 +9,7 @@ Before running this example, ensure you have set up your environment. See the [C
 ## Run the pipeline
 
 ```bash
-pipelex run examples/wip/blog_article_generator/bundle.plx -i examples/wip/blog_article_generator/inputs.json
+pipelex run examples/wip/blog_article_generator/bundle.mthds -i examples/wip/blog_article_generator/inputs.json
 ```
 
 ## Example input
@@ -57,5 +57,5 @@ This pipeline uses a `PipeSequence` with two steps to go from a structured reque
 You can generate the Python structures and runner code from this bundle:
 
 ```bash
-pipelex build runner examples/wip/blog_article_generator/bundle.plx
+pipelex build runner examples/wip/blog_article_generator/bundle.mthds
 ```

@@ -1,5 +1,5 @@
 domain = "quick_start"
-main_pipe = "hello_world"
+main_pipe= "hello_world"
 
 [pipe]
 [pipe.hello_world]
