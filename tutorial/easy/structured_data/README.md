@@ -46,7 +46,7 @@ Generate a creative book idea. Provide a compelling title, genre, synopsis, and 
 
 **Run it:**
 ```bash
-pipelex run tutorial/easy/structured_data/1_structured_output.mthds
+pipelex run pipe tutorial/easy/structured_data/1_structured_output.mthds
 ```
 
 ---
@@ -117,7 +117,7 @@ steps = [
 
 **Run it:**
 ```bash
-pipelex run tutorial/easy/structured_data/2_using_object_fields.mthds
+pipelex run pipe tutorial/easy/structured_data/2_using_object_fields.mthds
 ```
 
 ---
@@ -207,7 +207,7 @@ For native types like `Document`, you need to wrap the content with a `concept` 
 
 **Run it:**
 ```bash
-pipelex run tutorial/easy/structured_data/3_document_qa.mthds -i tutorial/easy/structured_data/inputs.json
+pipelex run pipe tutorial/easy/structured_data/3_document_qa.mthds -i tutorial/easy/structured_data/inputs.json
 ```
 
 ---

@@ -11,13 +11,13 @@ Before running this example, ensure you have set up your environment. See the [C
 Corporate example (Q4 Financial Results):
 
 ```bash
-pipelex run examples/b_basics/generate_visuals/design_slides/bundle.mthds --inputs examples/b_basics/generate_visuals/design_slides/inputs.json
+pipelex run pipe examples/b_basics/generate_visuals/design_slides/bundle.mthds --inputs examples/b_basics/generate_visuals/design_slides/inputs.json
 ```
 
 Fun example (Why Cats Are Secretly Running the Internet):
 
 ```bash
-pipelex run examples/b_basics/generate_visuals/design_slides/bundle.mthds --inputs examples/b_basics/generate_visuals/design_slides/inputs_fun.json
+pipelex run pipe examples/b_basics/generate_visuals/design_slides/bundle.mthds --inputs examples/b_basics/generate_visuals/design_slides/inputs_fun.json
 ```
 
 ## Flowchart

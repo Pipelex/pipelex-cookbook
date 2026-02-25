@@ -9,7 +9,7 @@ Before running this example, ensure you have set up your environment. See the [C
 ## Run the pipeline
 
 ```bash
-pipelex run examples/b_basics/document_extract/extract_proof_of_purchase/bundle.mthds -i examples/b_basics/document_extract/extract_proof_of_purchase/inputs.json -L examples/documents
+pipelex run pipe examples/b_basics/document_extract/extract_proof_of_purchase/bundle.mthds -i examples/b_basics/document_extract/extract_proof_of_purchase/inputs.json -L examples/documents
 ```
 
 ## Flowchart

@@ -87,7 +87,7 @@ $preset_result
 
 **Run it:**
 ```bash
-pipelex run tutorial/medium/1_model_config.mthds
+pipelex run pipe tutorial/medium/1_model_config.mthds
 ```
 
 ---
@@ -165,7 +165,7 @@ steps = [
 
 **Run it:**
 ```bash
-pipelex run tutorial/medium/2_batch_processing.mthds
+pipelex run pipe tutorial/medium/2_batch_processing.mthds
 ```
 
 ---
@@ -229,7 +229,7 @@ add_each_output = true
 
 **Run it:**
 ```bash
-pipelex run tutorial/medium/3_parallel_execution.mthds
+pipelex run pipe tutorial/medium/3_parallel_execution.mthds
 ```
 
 ---

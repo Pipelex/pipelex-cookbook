@@ -66,6 +66,7 @@ Analyze this invoice:
 """
 
 [pipe.extract_invoice_data]
+
 type = "PipeLLM"
 description = "Extract invoice information from an invoice text transcript"
 inputs = { "invoice_page.page_view" = "Image", invoice_details = "InvoiceDetails", invoice_page = "Page" }

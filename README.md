@@ -86,20 +86,20 @@ Want to bring your own API keys or use local models? See [Configure AI Providers
 Try the hello world example:
 
 ```bash
-pipelex run examples/a_quick_start/hello_world.mthds
+pipelex run pipe examples/a_quick_start/hello_world.mthds
 ```
 
 Or explore other cookbook examples:
 
 ```bash
 # Extract data from a Gantt chart image
-pipelex run examples/b_basics/document_extract/extract_gantt/gantt.mthds -i examples/b_basics/document_extract/extract_gantt/inputs.json
+pipelex run pipe examples/b_basics/document_extract/extract_gantt/gantt.mthds -i examples/b_basics/document_extract/extract_gantt/inputs.json
 
 # Extract and summarize invoice information
-pipelex run examples/b_basics/document_extract/extract_invoice/invoice.mthds -i examples/b_basics/document_extract/extract_invoice/inputs.json
+pipelex run pipe examples/b_basics/document_extract/extract_invoice/invoice.mthds -i examples/b_basics/document_extract/extract_invoice/inputs.json
 
 # Multi-step text summarization
-pipelex run examples/a_quick_start/summarize.mthds --pipe summarize_by_steps -i examples/a_quick_start/inputs.json
+pipelex run pipe examples/a_quick_start/summarize.mthds --pipe summarize_by_steps -i examples/a_quick_start/inputs.json
 ```
 
 ## 5. Known Limitations
@@ -291,7 +291,7 @@ flowchart TD
 
 ```bash
 # Via CLI with input file
-pipelex run results/cv_match.mthds --inputs inputs.json
+pipelex run pipe results/cv_match.mthds --inputs inputs.json
 ```
 
 Create an `inputs.json` file with your PDF URLs:

@@ -13,7 +13,7 @@ A minimal pipeline that generates text.
 ### Run the pipeline
 
 ```bash
-pipelex run examples/a_quick_start/hello_world.mthds
+pipelex run pipe examples/a_quick_start/hello_world.mthds
 ```
 
 ### Flowchart
@@ -34,10 +34,10 @@ Text summarization pipelines with structured output.
 
 ```bash
 # Summarization with structured output
-pipelex run examples/a_quick_start/summarize.mthds --pipe summarize_with_structure -i examples/a_quick_start/inputs.json
+pipelex run pipe examples/a_quick_start/summarize.mthds --pipe summarize_with_structure -i examples/a_quick_start/inputs.json
 
 # Multi-step summarization
-pipelex run examples/a_quick_start/summarize.mthds --pipe summarize_by_steps -i examples/a_quick_start/inputs.json
+pipelex run pipe examples/a_quick_start/summarize.mthds --pipe summarize_by_steps -i examples/a_quick_start/inputs.json
 ```
 
 ### Flowchart

@@ -35,6 +35,7 @@ class TestQuickStart:
             [
                 pipelex_cmd,
                 "run",
+                "pipe",
                 "examples/a_quick_start/summarize.mthds",
                 "--pipe",
                 "summarize_by_steps",

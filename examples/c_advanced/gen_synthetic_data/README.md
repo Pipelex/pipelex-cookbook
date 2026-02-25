@@ -9,7 +9,7 @@ Before running this example, ensure you have set up your environment. See the [C
 ## Run the pipeline
 
 ```bash
-pipelex run examples/c_advanced/gen_synthetic_data/bundle.mthds -i examples/c_advanced/gen_synthetic_data/inputs.json
+pipelex run pipe examples/c_advanced/gen_synthetic_data/bundle.mthds -i examples/c_advanced/gen_synthetic_data/inputs.json
 ```
 
 ## Flowchart

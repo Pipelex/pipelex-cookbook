@@ -9,7 +9,7 @@ Before running this example, ensure you have set up your environment. See the [C
 ## Run the pipeline
 
 ```bash
-pipelex run examples/wip/advisory_board/bundle.mthds -i examples/wip/advisory_board/inputs.json -L examples/wip/advisory_board
+pipelex run pipe examples/wip/advisory_board/bundle.mthds -i examples/wip/advisory_board/inputs.json -L examples/wip/advisory_board
 ```
 
 ## Flowchart
