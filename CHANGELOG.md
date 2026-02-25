@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.10.0] - 2026-02-25
+
+- Bumper to Chicago release of Pipelex, version `0.18.0`. See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+
 ## [v0.9.4] - 2025-11-26
 
 - Bump `pipelex` to `v0.17.1`: See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
