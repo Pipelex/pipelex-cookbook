@@ -1,0 +1,12 @@
+{
+  "user_prompt": {
+    "concept": "blog_article_generator.BlogArticleRequest",
+    "content": {
+      "text": "Write a fun and engaging blog article",
+      "topic": "Capybara",
+      "audience": "Kids",
+      "tone": "Casual",
+      "length": "Long"
+    }
+  }
+}

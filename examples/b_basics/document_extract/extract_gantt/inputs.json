@@ -1,0 +1,8 @@
+{
+  "gantt_chart_image": {
+    "concept": "gantt.GanttChartImage",
+    "content": {
+      "url": "assets/gantt/gantt_tree_house.png"
+    }
+  }
+}
