@@ -39,7 +39,7 @@ description = "Extract DPE details from a document"
 inputs = { document = "Document" }
 output = "Dpe"
 steps = [
-  { pipe = "extract_page_contents_and_views", result = "page_contents" },                                                           # Located in the base library, in the domain "documents"
+  { pipe = "github.com/Pipelex/methods/documents->documents.extract_page_contents_and_views", result = "page_contents" },           # Located in the base library, in the domain "documents"
   { pipe = "write_markdown_from_page_content_dpe", batch_over = "page_contents", batch_as = "page_content", result = "dpe_pages" },
   { pipe = "conclude_dpe", result = "dpe" },
 ]

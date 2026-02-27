@@ -8,7 +8,7 @@ description = "Update page content with markdown"
 inputs = { document = "Document" }
 output = "Text[]"
 steps = [
-  { pipe = "extract_page_contents_and_views", result = "page_contents" },
+  { pipe = "github.com/Pipelex/methods/documents->documents.extract_page_contents_and_views", result = "page_contents" },
   { pipe = "write_markdown_from_page_content", batch_over = "page_contents", batch_as = "page_content", result = "markdowns" },
 ]
 

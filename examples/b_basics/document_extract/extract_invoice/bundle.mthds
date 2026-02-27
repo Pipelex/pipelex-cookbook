@@ -40,7 +40,7 @@ description = "Process relevant information from an invoice"
 inputs = { document = "Document" }
 output = "Invoice[]"
 steps = [
-  { pipe = "extract_page_contents_and_views", result = "invoice_pages" },
+  { pipe = "github.com/Pipelex/methods/documents->documents.extract_page_contents_and_views", result = "invoice_pages" },
   { pipe = "extract_invoice", batch_over = "invoice_pages", batch_as = "invoice_page", result = "invoice" },
 ]
 

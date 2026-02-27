@@ -23,6 +23,10 @@ dependencies = [
   "weasyprint==68.0",
 ]
 
+[tool.uv.sources]
+# pipelex = { git = "https://github.com/Pipelex/pipelex.git", rev = "c8f413b1951bf140e9be020ea49e84e02360e50b" }
+pipelex = { path = "../pipelex", editable = true }
+
 [project.optional-dependencies]
 compat = ["backports.strenum>=1.3.0 ; python_version < '3.11'"]
 dev = [
