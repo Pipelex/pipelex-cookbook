@@ -207,7 +207,7 @@ For native types like `Document`, you need to wrap the content with a `concept` 
 
 **Run it:**
 ```bash
-pipelex run pipe tutorial/easy/structured_data/3_document_qa.mthds -i tutorial/easy/structured_data/inputs.json
+pipelex run bundle tutorial/easy/structured_data/3_document_qa.mthds -i tutorial/easy/structured_data/inputs.json
 ```
 
 ---
