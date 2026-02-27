@@ -1,0 +1,23 @@
+examples/b_basics/document_extract/extract_markdown/README.md
+  20e95ad3431405cf 1-32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.5",
+  "base_commit_sha": "32e9d82626b76ea454f673ffc801fb68fba37ef2",
+  "prompts": {
+    "20e95ad3431405cf": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f1660c12-a183-4f17-8624-fafaff1e1683",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Louis Choquel <lchoquel@users.noreply.github.com>",
+      "messages": [],
+      "total_additions": 32,
+      "total_deletions": 0,
+      "accepted_lines": 32,
+      "overriden_lines": 0
+    }
+  }
+}
