@@ -1,0 +1,213 @@
+domain = "rfp_qualification"
+description = "Qualifying RFP and tender responses by matching requirements against company capabilities and producing a go/no-go recommendation with executive summary."
+main_pipe = "qualify_rfp"
+
+# ---------------------------------------------------------------------------
+# Concepts
+# ---------------------------------------------------------------------------
+
+[concept.RFPRequirement]
+description = "A single requirement extracted from an RFP or tender document."
+
+[concept.RFPRequirement.structure]
+title = {type = "text", description = "Short title summarizing the requirement", required = true}
+description = {type = "text", description = "Full description of what is required", required = true}
+category = {type = "text", description = "Requirement category", required = true, choices = ["technical", "functional", "organizational", "financial", "legal", "compliance"]}
+priority = {type = "text", description = "Priority level as stated or inferred from the RFP", required = true, choices = ["mandatory", "important", "desirable"]}
+
+[concept.CapabilityMatch]
+description = "Assessment of how well company capabilities meet a single RFP requirement."
+
+[concept.CapabilityMatch.structure]
+requirement_title = {type = "text", description = "Title of the assessed requirement", required = true}
+match_level = {type = "text", description = "How well the company meets this requirement", required = true, choices = ["full_match", "partial_match", "no_match"]}
+evidence = {type = "text", description = "Specific company capabilities, past projects, or certifications that support the match", required = true}
+gap_description = {type = "text", description = "Description of what is missing or weak if partial or no match, empty string if full match", required = true}
+effort_to_close = {description = "Estimated effort to close the gap if any", choices = ["none", "low", "medium", "high"]}
+
+[concept.QualificationMatrix]
+description = "Aggregated go/no-go qualification assessment across all RFP requirements."
+
+[concept.QualificationMatrix.structure]
+go_recommendation = {type = "boolean", description = "Whether the company should bid on this RFP", required = true}
+confidence = {type = "text", description = "Confidence in the recommendation", required = true, choices = ["high", "medium", "low"]}
+total_requirements = {type = "integer", description = "Total number of requirements analyzed", required = true}
+fully_matched = {type = "integer", description = "Number of requirements fully matched", required = true}
+partially_matched = {type = "integer", description = "Number of requirements partially matched", required = true}
+not_matched = {type = "integer", description = "Number of requirements not matched at all", required = true}
+critical_gaps = {type = "text", description = "Summary of the most important unmet mandatory requirements", required = true}
+key_strengths = {type = "text", description = "Summary of the strongest competitive advantages for this bid", required = true}
+win_probability = {type = "text", description = "Estimated probability of winning the bid", required = true, choices = ["high", "moderate", "low", "very_low"]}
+strategic_considerations = "Strategic factors beyond requirement matching: relationship, market positioning, learning opportunity"
+
+[concept.BidSummary]
+description = "An executive summary recommending whether to bid and outlining the key decision factors."
+refines = "Text"
+
+# ---------------------------------------------------------------------------
+# Pipes — Extraction
+# ---------------------------------------------------------------------------
+
+[pipe.extract_rfp]
+type = "PipeExtract"
+description = "Extract text content from the RFP or tender document."
+inputs = {rfp = "Document"}
+output = "Page[]"
+model = "@default-extract-document"
+
+[pipe.extract_capabilities]
+type = "PipeExtract"
+description = "Extract text content from the company capabilities document."
+inputs = {capabilities = "Document"}
+output = "Page[]"
+model = "@default-extract-document"
+
+[pipe.extract_documents]
+type = "PipeParallel"
+description = "Extract both the RFP and capabilities documents concurrently."
+inputs = {rfp = "Document", capabilities = "Document"}
+output = "Page[]"
+add_each_output = true
+branches = [
+    {pipe = "extract_rfp", result = "rfp_pages"},
+    {pipe = "extract_capabilities", result = "capabilities_pages"},
+]
+
+# ---------------------------------------------------------------------------
+# Pipes — Analysis
+# ---------------------------------------------------------------------------
+
+[pipe.parse_requirements]
+type = "PipeLLM"
+description = "Parse the RFP document into a structured list of individual requirements, each classified by category and priority."
+inputs = {rfp_pages = "Page[]"}
+output = "RFPRequirement[]"
+model = "$engineering-structured"
+system_prompt = """
+You are an expert procurement analyst specializing in reading RFPs and tender documents. Your task is to extract every distinct requirement from an RFP, classify it by category and priority, and present them as a structured list.
+
+Be thorough: capture technical specifications, organizational prerequisites (certifications, team size, references), financial conditions, legal and compliance obligations, and functional requirements. If the RFP marks requirements as mandatory vs. desirable, respect that. If not explicitly stated, infer priority from the language used.
+"""
+prompt = """
+Analyze the following RFP document and extract every individual requirement. For each requirement, provide a clear title, a full description, its category, and its priority level.
+
+@rfp_pages
+"""
+
+[pipe.assess_single_requirement]
+type = "PipeLLM"
+description = "Assess how well the companys capabilities meet a single RFP requirement."
+inputs = {requirement = "RFPRequirement", capabilities_pages = "Page[]"}
+output = "CapabilityMatch"
+model = "$engineering-structured"
+system_prompt = """
+You are a bid/no-bid assessment specialist. Given a single requirement from an RFP and a companys capabilities document, determine how well the company can meet this requirement.
+
+Be honest and precise:
+- "full_match" means the company clearly demonstrates this capability with evidence (past projects, certifications, existing solutions).
+- "partial_match" means the company has relevant but incomplete capabilities — they could plausibly address it with some effort.
+- "no_match" means the company lacks the capability and closing the gap would be significant.
+
+Always cite specific evidence from the capabilities document. If there is a gap, describe it concretely and estimate the effort needed to close it.
+"""
+prompt = """
+Assess the following RFP requirement against the companys capabilities.
+
+## Requirement
+Title: $requirement.title
+Category: $requirement.category
+Priority: $requirement.priority
+Description: $requirement.description
+
+## Company Capabilities
+@capabilities_pages
+"""
+
+[pipe.assess_all_requirements]
+type = "PipeBatch"
+description = "Assess every RFP requirement against the companys capabilities."
+inputs = {requirements = "RFPRequirement[]", capabilities_pages = "Page[]"}
+output = "CapabilityMatch[]"
+branch_pipe_code = "assess_single_requirement"
+input_list_name = "requirements"
+input_item_name = "requirement"
+
+[pipe.build_qualification_matrix]
+type = "PipeLLM"
+description = "Synthesize all individual capability assessments into an overall go/no-go qualification matrix."
+inputs = {rfp_pages = "Page[]", capability_matches = "CapabilityMatch[]"}
+output = "QualificationMatrix"
+model = "$engineering-structured"
+system_prompt = """
+You are a senior bid manager making a go/no-go decision on an RFP response. Based on the individual requirement assessments, build an overall qualification picture.
+
+Apply these decision rules:
+- If any mandatory requirement has "no_match", strongly lean toward no-go unless strategic factors override.
+- Count matches at each level. A bid with >70% full or partial match on mandatory requirements is generally worth pursuing.
+- Factor in the total effort to close gaps: if many gaps require "high" effort, the bid may not be realistic.
+- Consider competitive positioning: strong matches on differentiating requirements matter more than commodity ones.
+
+Be direct in your recommendation. Business leaders need clarity, not hedging.
+"""
+prompt = """
+Based on the following individual requirement assessments and the original RFP, produce an overall qualification matrix with a clear go/no-go recommendation.
+
+## Original RFP
+@rfp_pages
+
+## Individual Assessments
+@capability_matches
+"""
+
+# ---------------------------------------------------------------------------
+# Pipes — Synthesis
+# ---------------------------------------------------------------------------
+
+[pipe.generate_executive_summary]
+type = "PipeLLM"
+description = "Generate an executive summary that synthesizes the qualification matrix into an actionable recommendation for leadership."
+inputs = {qualification_matrix = "QualificationMatrix", rfp_pages = "Page[]"}
+output = "BidSummary"
+model = "$writing-creative"
+system_prompt = """
+You are a senior business development director writing an executive summary for leadership. Your summary must be concise (under 500 words), actionable, and structured for quick decision-making.
+
+Structure:
+1. One-line recommendation (Go / No-Go / Conditional Go)
+2. Key numbers (match rate, critical gaps count)
+3. Top 3 strengths that differentiate the company for this bid
+4. Top 3 risks or gaps and their mitigation options
+5. Recommended next steps if Go (team allocation, timeline, partnerships needed)
+"""
+prompt = """
+Write an executive summary for the following RFP qualification assessment.
+
+## Qualification Matrix
+Go recommendation: $qualification_matrix.go_recommendation
+Confidence: $qualification_matrix.confidence
+Match breakdown: $qualification_matrix.fully_matched / $qualification_matrix.total_requirements fully matched, $qualification_matrix.partially_matched partial, $qualification_matrix.not_matched unmatched
+Win probability: $qualification_matrix.win_probability
+Critical gaps: $qualification_matrix.critical_gaps
+Key strengths: $qualification_matrix.key_strengths
+Strategic considerations: $qualification_matrix.strategic_considerations
+
+## Original RFP
+@rfp_pages
+"""
+
+# ---------------------------------------------------------------------------
+# Pipes — Main Pipeline
+# ---------------------------------------------------------------------------
+
+[pipe.qualify_rfp]
+type = "PipeSequence"
+description = "End-to-end RFP qualification pipeline: extract documents, parse requirements, assess each against capabilities, build a qualification matrix, and generate an executive summary."
+inputs = {rfp = "Document", capabilities = "Document"}
+output = "BidSummary"
+steps = [
+    {pipe = "extract_documents", result = "all_pages"},
+    {pipe = "parse_requirements", result = "requirements"},
+    {pipe = "assess_all_requirements", result = "capability_matches"},
+    {pipe = "build_qualification_matrix", result = "qualification_matrix"},
+    {pipe = "generate_executive_summary", result = "executive_summary"},
+]

@@ -1,0 +1,12 @@
+[package]
+name = "due-diligence"
+display_name = "Due Diligence Analyzer"
+address = "github.com/pipelex/methods"
+version = "0.1.0"
+description = "# Due Diligence Analyzer\n\nA comprehensive M&A due diligence pipeline that extracts and analyzes financial statements, contracts, and organizational structure in parallel, then synthesizes findings into an actionable report.\n\n## What it does\n\nGiven **financial statements**, **contracts**, and an **org chart** (as documents), this method:\n\n1. **Extracts** all three documents in parallel into readable pages.\n2. **Analyzes in parallel** across three dimensions:\n   - **Financial**: produces a `FinancialSnapshot` with revenue trends, margin analysis, cash position, debt level, red flags, and health rating.\n   - **Contractual**: produces `ContractualRisk[]` identifying change-of-control clauses, key dependencies, risk levels, and termination conditions for each contract.\n   - **Talent**: produces a `TalentAssessment` covering key-person risk, team composition, organizational gaps, retention risk, and culture observations.\n3. **Synthesizes** all analyses into a `DueDiligenceReport` with overall risk rating, risk matrix, valuation impact, deal breakers, opportunities, and a clear proceed/no-proceed recommendation.\n\n## Concepts\n\n- **FinancialSnapshot**: Structured financial health assessment with margins, cash, debt, and red flags.\n- **ContractualRisk**: Risk assessment for a single contract (change-of-control, dependencies, risk level).\n- **TalentAssessment**: Organizational talent assessment (key-person risk, retention, culture).\n- **DueDiligenceReport**: Comprehensive report with risk matrix, valuation impact, and recommendation.\n\n## Pipeline overview\n\n`analyze_company` → `extract_all_documents` (parallel) → `analyze_all` (parallel: financials + contracts + org) → `synthesize_report`"
+license = "MIT"
+authors = ["Evotis S.A.S"]
+main_pipe = "analyze_company"
+
+[exports.due_diligence]
+pipes = ["analyze_company", "extract_all_documents", "analyze_all", "synthesize_report"]

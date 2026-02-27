@@ -1,0 +1,14 @@
+[package]
+name = "documents"
+display_name = "Documents"
+address = "github.com/Pipelex/methods"
+version = "0.1.0"
+description = "Document extraction methods for text, images, and page views"
+mthds_version = ">=1.0.0"
+
+[exports.documents]
+pipes = [
+  "extract_markdown_pages",
+  "extract_page_contents",
+  "extract_page_contents_and_views",
+]

@@ -13,7 +13,7 @@ A minimal pipeline that generates text.
 ### Run the pipeline
 
 ```bash
-pipelex run pipe examples/a_quick_start/hello_world.mthds
+pipelex run bundle examples/a_quick_start/hello_world.mthds
 ```
 
 ### Flowchart
@@ -34,10 +34,10 @@ Text summarization pipelines with structured output.
 
 ```bash
 # Summarization with structured output
-pipelex run pipe examples/a_quick_start/summarize.mthds --pipe summarize_with_structure -i examples/a_quick_start/inputs.json
+pipelex run bundle examples/a_quick_start/summarize.mthds --pipe summarize_with_structure -i examples/a_quick_start/inputs.json
 
 # Multi-step summarization
-pipelex run pipe examples/a_quick_start/summarize.mthds --pipe summarize_by_steps -i examples/a_quick_start/inputs.json
+pipelex run bundle examples/a_quick_start/summarize.mthds --pipe summarize_by_steps -i examples/a_quick_start/inputs.json
 ```
 
 ### Flowchart
@@ -54,7 +54,7 @@ pipelex run pipe examples/a_quick_start/summarize.mthds --pipe summarize_by_step
 You can go further by generating the python structures and runner code out of this bundle in order to add validation functions to the python BaseModel.
 
 ```bash
-pipelex build runner examples/a_quick_start/summarize.mthds --pipe summarize_with_structure
+pipelex build runner bundle examples/a_quick_start/summarize.mthds --pipe summarize_with_structure
 ```
 
 This will create a new file `examples/a_quick_start/run_summarize_with_structure.py` and a `structures` directory containing the python structures.

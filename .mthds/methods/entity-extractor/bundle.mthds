@@ -1,0 +1,56 @@
+domain = "entity_extraction"
+description = "Extract named entities (persons, organizations, dates, amounts, locations, products, regulations) from any document."
+main_pipe = "extract_entities"
+
+[concept.Entity]
+description = "A named entity extracted from text: a person, organization, date, monetary amount, location, or other identifiable reference."
+
+[concept.Entity.structure]
+name = {type = "text", description = "The entity text as it appears in the source", required = true}
+entity_type = {type = "text", description = "Type of entity", required = true, choices = ["person", "organization", "date", "amount", "location", "product", "regulation", "other"]}
+context = {type = "text", description = "The surrounding sentence or phrase where the entity was found", required = true}
+normalized_value = "Normalized or canonical form of the entity (e.g. ISO date, full org name)"
+
+# ---------------------------------------------------------------------------
+# Pipes
+# ---------------------------------------------------------------------------
+
+[pipe.extract_document]
+type = "PipeExtract"
+description = "Extract text content from the input document."
+inputs = {document = "Document"}
+output = "Page[]"
+model = "@default-extract-document"
+
+[pipe.identify_entities]
+type = "PipeLLM"
+description = "Identify and extract all named entities from the document pages."
+inputs = {pages = "Page[]"}
+output = "Entity[]"
+model = "$retrieval"
+system_prompt = """
+You are a precise named entity recognition specialist. Extract every named entity from the provided text.
+
+For each entity:
+- Extract the exact text as it appears in the source
+- Classify its type: person, organization, date, amount, location, product, regulation, or other
+- Include the surrounding context (the sentence or phrase where it appears)
+- Provide a normalized form when applicable (e.g., "Jan 15, 2025" → "2025-01-15", "MSFT" → "Microsoft Corporation")
+
+Be thorough — extract ALL entities, including those mentioned in tables, headers, footers, and footnotes. Deduplicate: if the same entity appears multiple times, include it only once with the most informative context.
+"""
+prompt = """
+Extract all named entities from the following document.
+
+@pages
+"""
+
+[pipe.extract_entities]
+type = "PipeSequence"
+description = "End-to-end entity extraction: extract document content, then identify all named entities."
+inputs = {document = "Document"}
+output = "Entity[]"
+steps = [
+    {pipe = "extract_document", result = "pages"},
+    {pipe = "identify_entities", result = "entities"},
+]

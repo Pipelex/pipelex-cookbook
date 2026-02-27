@@ -1,0 +1,90 @@
+domain = "compliance_checking"
+description = "Check a document against a set of compliance rules and produce a pass/fail assessment for each rule with evidence and remediation suggestions."
+main_pipe = "check_compliance"
+
+[concept.Rule]
+description = "A compliance rule or policy requirement to check against."
+
+[concept.Rule.structure]
+rule_id = {type = "text", description = "Unique identifier for the rule", required = true}
+rule_text = {type = "text", description = "Full text of the rule or requirement", required = true}
+severity = {type = "text", description = "Severity if the rule is violated", required = true, choices = ["critical", "major", "minor", "advisory"]}
+category = "Category of the rule"
+
+[concept.ComplianceResult]
+description = "The result of checking a single compliance rule against source material."
+
+[concept.ComplianceResult.structure]
+rule_id = {type = "text", description = "Identifier of the rule that was checked", required = true}
+rule_text = {type = "text", description = "Text of the rule that was checked", required = true}
+status = {type = "text", description = "Whether the source material complies with the rule", required = true, choices = ["pass", "fail", "partial", "not_applicable"]}
+evidence = {type = "text", description = "Specific text or reasoning that supports the compliance determination", required = true}
+remediation = {type = "text", description = "Suggested action to achieve compliance if status is fail or partial, empty if pass", required = true}
+severity = {type = "text", description = "Severity of non-compliance", required = true, choices = ["critical", "major", "minor", "advisory"]}
+
+# ---------------------------------------------------------------------------
+# Pipes — Extraction
+# ---------------------------------------------------------------------------
+
+[pipe.extract_document]
+type = "PipeExtract"
+description = "Extract text content from the document to be checked."
+inputs = {document = "Document"}
+output = "Page[]"
+model = "@default-extract-document"
+
+# ---------------------------------------------------------------------------
+# Pipes — Analysis
+# ---------------------------------------------------------------------------
+
+[pipe.check_single_rule]
+type = "PipeLLM"
+description = "Check a single compliance rule against the document content."
+inputs = {rule = "Rule", pages = "Page[]"}
+output = "ComplianceResult"
+model = "$engineering-structured"
+system_prompt = """
+You are a compliance auditor. Given a specific rule and a document, determine whether the document complies with the rule.
+
+Assessment guidelines:
+- "pass": The document clearly satisfies the rule with identifiable evidence
+- "fail": The document clearly violates the rule or lacks required content
+- "partial": The document partially addresses the rule but has gaps
+- "not_applicable": The rule does not apply to this document's content or context
+
+Always cite specific evidence from the document. If the rule fails or is partial, provide a concrete, actionable remediation suggestion. Be precise — vague assessments are useless for compliance.
+"""
+prompt = """
+Check the following compliance rule against the document.
+
+## Rule
+ID: $rule.rule_id
+Severity: $rule.severity
+Rule: $rule.rule_text
+
+## Document Content
+@pages
+"""
+
+[pipe.check_all_rules]
+type = "PipeBatch"
+description = "Check every compliance rule against the document."
+inputs = {rules = "Rule[]", pages = "Page[]"}
+output = "ComplianceResult[]"
+branch_pipe_code = "check_single_rule"
+input_list_name = "rules"
+input_item_name = "rule"
+
+# ---------------------------------------------------------------------------
+# Pipes — Main Pipeline
+# ---------------------------------------------------------------------------
+
+[pipe.check_compliance]
+type = "PipeSequence"
+description = "End-to-end compliance checking: extract the document, then check each rule individually via batch processing."
+inputs = {document = "Document", rules = "Rule[]"}
+output = "ComplianceResult[]"
+steps = [
+    {pipe = "extract_document", result = "pages"},
+    {pipe = "check_all_rules", result = "results"},
+]

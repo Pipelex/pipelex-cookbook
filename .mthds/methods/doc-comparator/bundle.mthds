@@ -1,0 +1,91 @@
+domain = "document_comparison"
+description = "Compare two documents to identify similarities, differences, gaps, and overall alignment."
+main_pipe = "compare_documents"
+
+[concept.Comparison]
+description = "A structured comparison between two documents identifying similarities, differences, and overall alignment."
+
+[concept.Comparison.structure]
+document_a_summary = {type = "text", description = "Brief summary of the first document", required = true}
+document_b_summary = {type = "text", description = "Brief summary of the second document", required = true}
+similarities = {type = "list", description = "Key points where both documents agree or overlap", required = true}
+differences = {type = "list", description = "Key points where the documents diverge or contradict", required = true}
+alignment_score = {type = "text", description = "Overall degree of alignment between the two documents", required = true, choices = ["high", "moderate", "low", "contradictory"]}
+change_type = {type = "text", description = "Nature of the relationship between the documents", required = true, choices = ["revision", "variant", "complement", "unrelated"]}
+notable_gaps = {type = "list", description = "Topics covered in one document but absent from the other", required = true}
+
+# ---------------------------------------------------------------------------
+# Pipes — Extraction
+# ---------------------------------------------------------------------------
+
+[pipe.extract_document_a]
+type = "PipeExtract"
+description = "Extract text content from the first document."
+inputs = {document_a = "Document"}
+output = "Page[]"
+model = "@default-extract-document"
+
+[pipe.extract_document_b]
+type = "PipeExtract"
+description = "Extract text content from the second document."
+inputs = {document_b = "Document"}
+output = "Page[]"
+model = "@default-extract-document"
+
+[pipe.extract_both]
+type = "PipeParallel"
+description = "Extract both documents in parallel."
+inputs = {document_a = "Document", document_b = "Document"}
+output = "Page[]"
+add_each_output = true
+branches = [
+    {pipe = "extract_document_a", result = "pages_a"},
+    {pipe = "extract_document_b", result = "pages_b"},
+]
+
+# ---------------------------------------------------------------------------
+# Pipes — Analysis
+# ---------------------------------------------------------------------------
+
+[pipe.analyze_comparison]
+type = "PipeLLM"
+description = "Compare the two extracted documents and produce a structured comparison."
+inputs = {pages_a = "Page[]", pages_b = "Page[]"}
+output = "Comparison"
+model = "$writing-factual"
+system_prompt = """
+You are a document comparison specialist. Analyze two documents side by side and produce a structured comparison.
+
+Guidelines:
+- Summarize each document briefly (1-2 sentences each)
+- Identify specific similarities: shared topics, aligned conclusions, common data points
+- Identify specific differences: contradictions, divergent conclusions, different data or claims
+- Note gaps: topics addressed in one document but missing from the other
+- Assess overall alignment: high (mostly agree), moderate (some overlap), low (mostly different), contradictory (directly opposing)
+- Classify the relationship: revision (updated version), variant (different take on same topic), complement (different topics that work together), unrelated
+
+Be specific — cite actual content from each document rather than making vague comparisons.
+"""
+prompt = """
+Compare the following two documents.
+
+## Document A
+@pages_a
+
+## Document B
+@pages_b
+"""
+
+# ---------------------------------------------------------------------------
+# Pipes — Main Pipeline
+# ---------------------------------------------------------------------------
+
+[pipe.compare_documents]
+type = "PipeSequence"
+description = "End-to-end document comparison: extract both documents in parallel, then analyze their similarities, differences, and alignment."
+inputs = {document_a = "Document", document_b = "Document"}
+output = "Comparison"
+steps = [
+    {pipe = "extract_both", result = "all_pages"},
+    {pipe = "analyze_comparison", result = "comparison"},
+]

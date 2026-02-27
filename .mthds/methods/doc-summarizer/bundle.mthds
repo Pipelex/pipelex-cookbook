@@ -1,0 +1,179 @@
+domain = "document_summarization"
+description = "Deep document summarization: profile the document, extract key points with importance ranking, then synthesize into a structured summary."
+main_pipe = "summarize_document"
+
+# ---------------------------------------------------------------------------
+# Concepts
+# ---------------------------------------------------------------------------
+
+[concept.DocumentProfile]
+description = "Metadata profile of a document: its type, structure, language, and organizational characteristics."
+
+[concept.DocumentProfile.structure]
+title = {type = "text", description = "Inferred or extracted title of the document", required = true}
+document_type = {type = "text", description = "Detected type of document", required = true, choices = ["report", "contract", "letter", "invoice", "proposal", "specification", "presentation", "article", "form", "other"]}
+structure_type = {type = "text", description = "How the document is organized", required = true, choices = ["narrative", "tabular", "mixed", "legal", "technical", "conversational"]}
+language = {type = "text", description = "Primary language of the document", required = true}
+page_count_estimate = {type = "integer", description = "Estimated number of pages", required = true}
+sections_overview = {type = "text", description = "Brief listing of the main sections or headings found in the document", required = true}
+audience = "The intended audience of the document"
+
+[concept.KeyPoint]
+description = "A single key point extracted from a document with importance ranking and supporting evidence."
+
+[concept.KeyPoint.structure]
+point = {type = "text", description = "The key point stated clearly and concisely", required = true}
+importance = {type = "text", description = "How important this point is to the overall document", required = true, choices = ["critical", "high", "medium", "low"]}
+category = {type = "text", description = "Thematic category of this point", required = true, choices = ["finding", "decision", "requirement", "risk", "recommendation", "data_point", "conclusion", "context"]}
+supporting_evidence = {type = "text", description = "The specific data, quote, or reasoning from the document that supports this point", required = true}
+
+[concept.Summary]
+description = "A comprehensive structured summary synthesizing document profile, key points, and analytical insights."
+
+[concept.Summary.structure]
+title = {type = "text", description = "Title of the document", required = true}
+document_type = {type = "text", description = "Detected type of document", required = true, choices = ["report", "contract", "letter", "invoice", "proposal", "specification", "presentation", "article", "form", "other"]}
+abstract = {type = "text", description = "A concise 2-3 sentence abstract capturing purpose and main conclusion", required = true}
+key_points = {type = "list", description = "The most important points ranked by importance, drawn from the detailed key point analysis", required = true}
+themes = {type = "list", description = "Major themes or topics that run through the document", required = true}
+open_questions = {type = "list", description = "Questions left unanswered or ambiguities remaining in the document", required = true}
+audience = "The intended audience of the document"
+word_count_estimate = {type = "integer", description = "Estimated word count of the original document"}
+
+# ---------------------------------------------------------------------------
+# Pipes — Extraction
+# ---------------------------------------------------------------------------
+
+[pipe.extract_document]
+type = "PipeExtract"
+description = "Extract text content from the input document."
+inputs = {document = "Document"}
+output = "Page[]"
+model = "@default-extract-document"
+
+# ---------------------------------------------------------------------------
+# Pipes — Parallel Analysis
+# ---------------------------------------------------------------------------
+
+[pipe.profile_document]
+type = "PipeLLM"
+description = "Analyze the document structure, type, language, and organization to produce a metadata profile."
+inputs = {pages = "Page[]"}
+output = "DocumentProfile"
+model = "$writing-factual"
+system_prompt = """
+You are a document analyst specializing in structural analysis. Examine the provided document and produce a metadata profile.
+
+Focus on:
+- What is the document's title? (extract from content or infer from first page)
+- What type of document is it? (report, contract, proposal, etc.)
+- How is it structured? (narrative prose, tables and data, legal clauses, technical specs, etc.)
+- What language is it written in?
+- Approximately how many pages does it span?
+- What are the main sections or headings?
+- Who is the intended audience?
+
+Do not summarize the content — focus purely on the document's structural characteristics.
+"""
+prompt = """
+Profile the structure and metadata of the following document.
+
+@pages
+"""
+
+[pipe.extract_key_points]
+type = "PipeLLM"
+description = "Extract all key points from the document with importance ranking, categorization, and supporting evidence."
+inputs = {pages = "Page[]"}
+output = "KeyPoint[]"
+model = "$retrieval"
+system_prompt = """
+You are a senior analyst extracting key points from documents. For each key point you identify:
+
+1. State it clearly and concisely in your own words
+2. Rate its importance: critical (affects major decisions), high (significant impact), medium (notable), low (minor detail)
+3. Categorize it: finding, decision, requirement, risk, recommendation, data_point, conclusion, or context
+4. Provide the specific supporting evidence — the actual data, quote, or reasoning from the document
+
+Extraction rules:
+- Extract ALL material points, not just the obvious ones
+- Include points from tables, charts, footnotes, and appendices
+- Distinguish between stated facts and opinions/recommendations
+- A good extraction should let someone understand the document without reading it
+- Aim for 10-20 key points for a typical document, more for longer ones
+"""
+prompt = """
+Extract all key points from the following document.
+
+@pages
+"""
+
+[pipe.analyze_in_parallel]
+type = "PipeParallel"
+description = "Run document profiling and key point extraction in parallel."
+inputs = {pages = "Page[]"}
+output = "Anything"
+add_each_output = true
+branches = [
+    {pipe = "profile_document", result = "profile"},
+    {pipe = "extract_key_points", result = "key_points"},
+]
+
+# ---------------------------------------------------------------------------
+# Pipes — Synthesis
+# ---------------------------------------------------------------------------
+
+[pipe.synthesize_summary]
+type = "PipeLLM"
+description = "Synthesize the document profile and extracted key points into a comprehensive structured summary."
+inputs = {profile = "DocumentProfile", key_points = "KeyPoint[]", pages = "Page[]"}
+output = "Summary"
+model = "$writing-factual"
+system_prompt = """
+You are a senior document analyst producing the final synthesis. You have received:
+1. A structural profile of the document (type, structure, sections)
+2. A detailed list of key points with importance rankings and evidence
+
+Your job is to weave these into a coherent, high-quality summary:
+- Use the profile to set context (title, type, audience)
+- Distill the key points into a ranked list, prioritizing critical and high-importance items
+- Write a tight abstract (2-3 sentences) that captures the document's purpose and main conclusion
+- Identify the major themes that connect multiple key points
+- Flag open questions — things the document leaves ambiguous, unanswered, or assumes without evidence
+- Estimate the word count
+
+The summary should be substantially more insightful than a naive single-pass summary. It should reveal the document's structure, priorities, and gaps.
+"""
+prompt = """
+Synthesize the following analysis into a comprehensive document summary.
+
+## Document Profile
+Title: $profile.title
+Type: $profile.document_type
+Structure: $profile.structure_type
+Language: $profile.language
+Pages: $profile.page_count_estimate
+Sections: $profile.sections_overview
+Audience: $profile.audience
+
+## Key Points (ranked by importance)
+@key_points
+
+## Original Document (for reference)
+@pages
+"""
+
+# ---------------------------------------------------------------------------
+# Pipes — Main Pipeline
+# ---------------------------------------------------------------------------
+
+[pipe.summarize_document]
+type = "PipeSequence"
+description = "Deep document summarization: extract content, then profile structure and extract key points in parallel, then synthesize into a comprehensive summary with themes and open questions."
+inputs = {document = "Document"}
+output = "Summary"
+steps = [
+    {pipe = "extract_document", result = "pages"},
+    {pipe = "analyze_in_parallel", result = "analysis"},
+    {pipe = "synthesize_summary", result = "summary"},
+]

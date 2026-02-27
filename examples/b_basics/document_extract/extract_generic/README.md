@@ -9,7 +9,7 @@ Before running this example, ensure you have set up your environment. See the [C
 ## Run the pipeline
 
 ```bash
-pipelex run pipe examples/b_basics/document_extract/extract_generic/bundle.mthds -i examples/b_basics/document_extract/extract_generic/inputs.json -L examples
+pipelex run bundle examples/b_basics/document_extract/extract_generic/
 ```
 
 ## Flowchart
@@ -26,7 +26,7 @@ pipelex run pipe examples/b_basics/document_extract/extract_generic/bundle.mthds
 You can go further by generating the python structures and runner code out of this bundle in order to add validation functions to the python BaseModel.
 
 ```bash
-pipelex build runner examples/b_basics/document_extract/extract_generic/bundle.mthds -L examples/documents
+pipelex build runner bundle examples/b_basics/document_extract/extract_generic/bundle.mthds
 ```
 
 This will create a new file `examples/b_basics/document_extract/extract_generic/run_power_extractor.py` and a `structures` directory containing the python structures.

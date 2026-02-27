@@ -1,0 +1,12 @@
+[package]
+name = "rfp-qualifier"
+display_name = "RFP Qualifier"
+address = "github.com/pipelex/methods"
+version = "0.1.0"
+description = "# RFP Qualifier\n\nAn end-to-end RFP qualification pipeline that automates the evaluation of tender documents against company capabilities and produces a go/no-go recommendation.\n\n## What it does\n\nGiven an **RFP document** and a **company capabilities document**, this method:\n\n1. **Extracts** both documents in parallel into readable pages.\n2. **Parses requirements** from the RFP into a structured list of `RFPRequirement[]`, each classified by category (technical, functional, organizational, financial, legal, compliance) and priority (mandatory, important, desirable).\n3. **Assesses each requirement** individually against the company's capabilities using a `PipeBatch`, producing a `CapabilityMatch` with match level, evidence, gap description, and effort to close.\n4. **Builds a qualification matrix** synthesizing all assessments into an overall `QualificationMatrix` with go/no-go recommendation, match breakdown, critical gaps, key strengths, and win probability.\n5. **Generates an executive summary** — a concise, actionable `BidSummary` structured for leadership decision-making.\n\n## Concepts\n\n- **RFPRequirement**: A single requirement with title, description, category, and priority.\n- **CapabilityMatch**: Assessment of how well the company meets a single requirement.\n- **QualificationMatrix**: Aggregated go/no-go assessment with match counts, gaps, strengths, and win probability.\n- **BidSummary**: Executive summary with recommendation and key decision factors.\n\n## Pipeline overview\n\n`qualify_rfp` → `extract_documents` (parallel) → `parse_requirements` → `assess_all_requirements` (batch) → `build_qualification_matrix` → `generate_executive_summary`"
+license = "MIT"
+authors = ["Evotis S.A.S"]
+main_pipe = "qualify_rfp"
+
+[exports.rfp_qualification]
+pipes = ["qualify_rfp", "extract_documents", "parse_requirements", "assess_all_requirements", "build_qualification_matrix", "generate_executive_summary"]

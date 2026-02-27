@@ -1,0 +1,12 @@
+[package]
+name = "doc-summarizer"
+display_name = "Document Summarizer"
+address = "github.com/pipelex/methods"
+version = "0.1.0"
+description = "# Document Summarizer\n\nDeep document summarization: profile the document, extract key points with importance ranking, then synthesize into a structured summary with themes and open questions.\n\n## What it does\n\nGiven a **document** (PDF, Word, etc.), this method:\n\n1. **Extracts** content from the document into readable pages\n2. **In parallel**:\n   - **Profiles** the document structure, type, language, and organization → `DocumentProfile`\n   - **Extracts key points** with importance ranking (critical/high/medium/low), categorization, and supporting evidence → `KeyPoint[]`\n3. **Synthesizes** the profile and key points into a comprehensive `Summary` with abstract, ranked key points, themes, and open questions\n\n## Concepts\n\n- **DocumentProfile**: Metadata — `title`, `document_type`, `structure_type`, `language`, `sections_overview`\n- **KeyPoint**: Individual finding with `point`, `importance`, `category`, `supporting_evidence`\n- **Summary**: Final synthesis with `abstract`, `key_points[]`, `themes[]`, `open_questions[]`\n\n## Pipeline overview\n\n`summarize_document` → `extract_document` → `analyze_in_parallel` (profile + key points) → `synthesize_summary`"
+license = "MIT"
+authors = ["Evotis S.A.S"]
+main_pipe = "summarize_document"
+
+[exports.document_summarization]
+pipes = ["summarize_document", "profile_document", "extract_key_points", "synthesize_summary"]

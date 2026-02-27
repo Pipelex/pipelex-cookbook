@@ -1,0 +1,12 @@
+[package]
+name = "report-writer"
+display_name = "Report Writer"
+address = "github.com/pipelex/methods"
+version = "0.1.0"
+description = "# Report Writer\n\nGenerate a formatted report from structured JSON findings: analyze the data into a structured outline, then compose the final report using PipeCompose templating.\n\n## What it does\n\nGiven **structured findings** (as JSON) and a **report configuration**, this method:\n\n1. **Analyzes** the raw findings with an LLM to produce a `ReportStructure` — title, executive summary, key metrics, ordered sections, and conclusion\n2. **Composes** the final report using PipeCompose with a markdown template, assembling the structured parts into a polished `Report`\n\n## Configuration options\n\n- **Format**: executive_summary, detailed, bullet_points, or narrative\n- **Tone**: formal, professional, technical, or conversational\n- **Audience**: free-text description of target reader\n- **Length**: short (~250 words), medium (~500), or long (~1000+)\n\n## Concepts\n\n- **ReportConfig**: Configuration with `format`, `tone`, `audience`, `max_length`\n- **ReportStructure**: Analyzed outline with `title`, `executive_summary`, `key_metrics`, `sections[]`, `conclusion`\n- **Report**: The final formatted text\n\n## Pipeline overview\n\n`write_report` → `analyze_findings` (PipeLLM) → `compose_report` (PipeCompose with markdown template)"
+license = "MIT"
+authors = ["Evotis S.A.S"]
+main_pipe = "write_report"
+
+[exports.report_writing]
+pipes = ["write_report", "analyze_findings", "compose_report"]

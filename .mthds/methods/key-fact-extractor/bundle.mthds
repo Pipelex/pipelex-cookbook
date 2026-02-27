@@ -1,0 +1,57 @@
+domain = "fact_extraction"
+description = "Extract key facts, claims, and assertions from any document with category classification and source attribution."
+main_pipe = "extract_facts"
+
+[concept.Fact]
+description = "A key fact, claim, or assertion extracted from a document with its category and source context."
+
+[concept.Fact.structure]
+statement = {type = "text", description = "The factual claim or assertion stated clearly and concisely", required = true}
+category = {type = "text", description = "Category of the fact", required = true, choices = ["financial", "legal", "technical", "organizational", "temporal", "quantitative", "qualitative", "regulatory"]}
+source_quote = {type = "text", description = "The original text passage from which this fact was extracted", required = true}
+confidence = {type = "text", description = "Confidence that this is a factual claim rather than opinion or speculation", required = true, choices = ["high", "medium", "low"]}
+
+# ---------------------------------------------------------------------------
+# Pipes
+# ---------------------------------------------------------------------------
+
+[pipe.extract_document]
+type = "PipeExtract"
+description = "Extract text content from the input document."
+inputs = {document = "Document"}
+output = "Page[]"
+model = "@default-extract-document"
+
+[pipe.identify_facts]
+type = "PipeLLM"
+description = "Identify and extract all key facts and claims from the document pages."
+inputs = {pages = "Page[]"}
+output = "Fact[]"
+model = "$retrieval"
+system_prompt = """
+You are an analytical fact extraction specialist. Your task is to identify every key fact, claim, and assertion in the provided document.
+
+Guidelines:
+- A fact is a verifiable statement about the world, not an opinion or recommendation
+- State each fact clearly and concisely in your own words
+- Classify by category: financial, legal, technical, organizational, temporal, quantitative, qualitative, or regulatory
+- Include the original source quote so the fact can be verified
+- Rate confidence: "high" for clearly stated facts, "medium" for inferred or implied facts, "low" for ambiguous or hedged claims
+
+Prioritize material facts — those that would affect decision-making. Include facts from tables, figures, and footnotes.
+"""
+prompt = """
+Extract all key facts and claims from the following document.
+
+@pages
+"""
+
+[pipe.extract_facts]
+type = "PipeSequence"
+description = "End-to-end fact extraction: extract document content, then identify all key facts and claims."
+inputs = {document = "Document"}
+output = "Fact[]"
+steps = [
+    {pipe = "extract_document", result = "pages"},
+    {pipe = "identify_facts", result = "facts"},
+]

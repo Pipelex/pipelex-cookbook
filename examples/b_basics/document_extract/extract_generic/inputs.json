@@ -2,7 +2,7 @@
   "document": {
     "concept": "native.Document",
     "content": {
-      "url": "assets/extract_generic/fintech_article_with_text_in_images.pdf"
+      "url": "inputs/fintech_article_with_text_in_images.pdf"
     }
   }
 }

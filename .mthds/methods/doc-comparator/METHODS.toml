@@ -1,0 +1,12 @@
+[package]
+name = "doc-comparator"
+display_name = "Document Comparator"
+address = "github.com/pipelex/methods"
+version = "0.1.0"
+description = "# Document Comparator\n\nCompare two documents to identify similarities, differences, gaps, and overall alignment.\n\n## What it does\n\nGiven **two documents** (PDF, Word, etc.), this method:\n\n1. **Extracts** both documents in parallel into readable pages\n2. **Analyzes** their content side by side, producing a structured `Comparison` with similarities, differences, alignment score, relationship type, and notable gaps\n\n## Concepts\n\n- **Comparison**: Structured comparison with `similarities[]`, `differences[]`, `alignment_score`, `change_type`, and `notable_gaps[]`\n\n## Pipeline overview\n\n`compare_documents` → `extract_both` (parallel) → `analyze_comparison`"
+license = "MIT"
+authors = ["Evotis S.A.S"]
+main_pipe = "compare_documents"
+
+[exports.document_comparison]
+pipes = ["compare_documents", "analyze_comparison"]

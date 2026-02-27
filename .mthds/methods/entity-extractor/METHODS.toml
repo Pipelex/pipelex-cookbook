@@ -1,0 +1,12 @@
+[package]
+name = "entity-extractor"
+display_name = "Entity Extractor"
+address = "github.com/pipelex/methods"
+version = "0.1.0"
+description = "# Entity Extractor\n\nExtract named entities (persons, organizations, dates, amounts, locations, products, regulations) from any document.\n\n## What it does\n\nGiven a **document** (PDF, Word, etc.), this method:\n\n1. **Extracts** content from the document into readable pages\n2. **Identifies** all named entities with type classification, surrounding context, and normalized values\n\n## Concepts\n\n- **Entity**: A named entity with `name`, `entity_type`, `context`, and optional `normalized_value`\n\n## Pipeline overview\n\n`extract_entities` → `extract_document` → `identify_entities`"
+license = "MIT"
+authors = ["Evotis S.A.S"]
+main_pipe = "extract_entities"
+
+[exports.entity_extraction]
+pipes = ["extract_entities", "identify_entities"]
