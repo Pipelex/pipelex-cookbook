@@ -1,6 +1,6 @@
-# Extract Invoice
+# Extract Markdown
 
-Extract structured invoice information from PDF documents.
+Extract markdown from documents.
 
 ## Prerequisites
 
@@ -9,7 +9,7 @@ Before running this example, ensure you have set up your environment. See the [C
 ## Run the pipeline
 
 ```bash
-pipelex run pipe examples/b_basics/document_extract/extract_invoice/ -L examples/documents
+pipelex run pipe examples/b_basics/document_extract/extract_markdown/ -L examples/documents
 ```
 
 ## Flowchart
@@ -26,7 +26,7 @@ pipelex run pipe examples/b_basics/document_extract/extract_invoice/ -L examples
 You can go further by generating the python structures and runner code out of this bundle in order to add validation functions to the python BaseModel.
 
 ```bash
-pipelex build runner examples/b_basics/document_extract/extract_invoice/bundle.mthds -L examples/documents
+pipelex build runner examples/b_basics/document_extract/extract_markdown/bundle.mthds -L examples/documents
 ```
 
-This will create a new file `examples/b_basics/document_extract/extract_invoice/run_extract_invoice.py` and a `structures` directory containing the python structures.
+This will create a new file `examples/b_basics/document_extract/extract_markdown/run_extract_markdown_from_document.py` and a `structures` directory containing the python structures.

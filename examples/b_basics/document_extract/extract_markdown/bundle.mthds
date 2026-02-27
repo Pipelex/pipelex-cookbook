@@ -10,7 +10,7 @@ description = "Extract markdown from a document"
 inputs = { document = "Document" }
 output = "Text"
 steps = [
-  { pipe = "extract_markdown_pages_from_document", result = "pages" },
+  { pipe = "extract_markdown_pages", result = "pages" },
   { pipe = "write_markdown_from_pages", result = "markdown" },
 ]
 
