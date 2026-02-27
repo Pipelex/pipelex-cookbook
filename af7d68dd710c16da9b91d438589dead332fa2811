@@ -1,0 +1,27 @@
+tests/e2e/test_quick_start.py
+  92f004141b215b82 11,22
+tests/e2e/test_wip.py
+  92f004141b215b82 14,25
+tests/e2e/test_examples.py
+  92f004141b215b82 15,32,47,64,81,96,114
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.5",
+  "base_commit_sha": "af7d68dd710c16da9b91d438589dead332fa2811",
+  "prompts": {
+    "92f004141b215b82": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "489761e6-2ed1-457b-85f1-03f88d1a6967",
+        "model": "claude-4.6-opus-high-thinking"
+      },
+      "human_author": "Louis Choquel <lchoquel@users.noreply.github.com>",
+      "messages": [],
+      "total_additions": 11,
+      "total_deletions": 3,
+      "accepted_lines": 11,
+      "overriden_lines": 0
+    }
+  }
+}
