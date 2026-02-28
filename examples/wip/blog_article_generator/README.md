@@ -57,5 +57,5 @@ This pipeline uses a `PipeSequence` with two steps to go from a structured reque
 You can generate the Python structures and runner code from this bundle:
 
 ```bash
-pipelex build runner examples/wip/blog_article_generator/bundle.mthds
+pipelex build runner bundle examples/wip/blog_article_generator/bundle.mthds
 ```
