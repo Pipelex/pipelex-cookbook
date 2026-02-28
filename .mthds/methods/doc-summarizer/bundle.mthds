@@ -1,6 +1,6 @@
-domain = "document_summarization"
+domain      = "document_summarization"
 description = "Deep document summarization: profile the document, extract key points with importance ranking, then synthesize into a structured summary."
-main_pipe = "summarize_document"
+main_pipe   = "summarize_document"
 
 # ---------------------------------------------------------------------------
 # Concepts
@@ -10,46 +10,89 @@ main_pipe = "summarize_document"
 description = "Metadata profile of a document: its type, structure, language, and organizational characteristics."
 
 [concept.DocumentProfile.structure]
-title = {type = "text", description = "Inferred or extracted title of the document", required = true}
-document_type = {type = "text", description = "Detected type of document", required = true, choices = ["report", "contract", "letter", "invoice", "proposal", "specification", "presentation", "article", "form", "other"]}
-structure_type = {type = "text", description = "How the document is organized", required = true, choices = ["narrative", "tabular", "mixed", "legal", "technical", "conversational"]}
-language = {type = "text", description = "Primary language of the document", required = true}
-page_count_estimate = {type = "integer", description = "Estimated number of pages", required = true}
-sections_overview = {type = "text", description = "Brief listing of the main sections or headings found in the document", required = true}
+title = { type = "text", description = "Inferred or extracted title of the document", required = true }
+document_type = { type = "text", description = "Detected type of document", required = true, choices = [
+  "report",
+  "contract",
+  "letter",
+  "invoice",
+  "proposal",
+  "specification",
+  "presentation",
+  "article",
+  "form",
+  "other",
+] }
+structure_type = { type = "text", description = "How the document is organized", required = true, choices = [
+  "narrative",
+  "tabular",
+  "mixed",
+  "legal",
+  "technical",
+  "conversational",
+] }
+language = { type = "text", description = "Primary language of the document", required = true }
+page_count_estimate = { type = "integer", description = "Estimated number of pages", required = true }
+sections_overview = { type = "text", description = "Brief listing of the main sections or headings found in the document", required = true }
 audience = "The intended audience of the document"
 
 [concept.KeyPoint]
 description = "A single key point extracted from a document with importance ranking and supporting evidence."
 
 [concept.KeyPoint.structure]
-point = {type = "text", description = "The key point stated clearly and concisely", required = true}
-importance = {type = "text", description = "How important this point is to the overall document", required = true, choices = ["critical", "high", "medium", "low"]}
-category = {type = "text", description = "Thematic category of this point", required = true, choices = ["finding", "decision", "requirement", "risk", "recommendation", "data_point", "conclusion", "context"]}
-supporting_evidence = {type = "text", description = "The specific data, quote, or reasoning from the document that supports this point", required = true}
+point = { type = "text", description = "The key point stated clearly and concisely", required = true }
+importance = { type = "text", description = "How important this point is to the overall document", required = true, choices = [
+  "critical",
+  "high",
+  "medium",
+  "low",
+] }
+category = { type = "text", description = "Thematic category of this point", required = true, choices = [
+  "finding",
+  "decision",
+  "requirement",
+  "risk",
+  "recommendation",
+  "data_point",
+  "conclusion",
+  "context",
+] }
+supporting_evidence = { type = "text", description = "The specific data, quote, or reasoning from the document that supports this point", required = true }
 
 [concept.Summary]
 description = "A comprehensive structured summary synthesizing document profile, key points, and analytical insights."
 
 [concept.Summary.structure]
-title = {type = "text", description = "Title of the document", required = true}
-document_type = {type = "text", description = "Detected type of document", required = true, choices = ["report", "contract", "letter", "invoice", "proposal", "specification", "presentation", "article", "form", "other"]}
-abstract = {type = "text", description = "A concise 2-3 sentence abstract capturing purpose and main conclusion", required = true}
-key_points = {type = "list", description = "The most important points ranked by importance, drawn from the detailed key point analysis", required = true}
-themes = {type = "list", description = "Major themes or topics that run through the document", required = true}
-open_questions = {type = "list", description = "Questions left unanswered or ambiguities remaining in the document", required = true}
+title = { type = "text", description = "Title of the document", required = true }
+document_type = { type = "text", description = "Detected type of document", required = true, choices = [
+  "report",
+  "contract",
+  "letter",
+  "invoice",
+  "proposal",
+  "specification",
+  "presentation",
+  "article",
+  "form",
+  "other",
+] }
+abstract = { type = "text", description = "A concise 2-3 sentence abstract capturing purpose and main conclusion", required = true }
+key_points = { type = "list", description = "The most important points ranked by importance, drawn from the detailed key point analysis", required = true }
+themes = { type = "list", description = "Major themes or topics that run through the document", required = true }
+open_questions = { type = "list", description = "Questions left unanswered or ambiguities remaining in the document", required = true }
 audience = "The intended audience of the document"
-word_count_estimate = {type = "integer", description = "Estimated word count of the original document"}
+word_count_estimate = { type = "integer", description = "Estimated word count of the original document" }
 
 # ---------------------------------------------------------------------------
 # Pipes — Extraction
 # ---------------------------------------------------------------------------
 
 [pipe.extract_document]
-type = "PipeExtract"
+type        = "PipeExtract"
 description = "Extract text content from the input document."
-inputs = {document = "Document"}
-output = "Page[]"
-model = "@default-extract-document"
+inputs      = { document = "Document" }
+output      = "Page[]"
+model       = "@default-extract-document"
 
 # ---------------------------------------------------------------------------
 # Pipes — Parallel Analysis
@@ -58,7 +101,7 @@ model = "@default-extract-document"
 [pipe.profile_document]
 type = "PipeLLM"
 description = "Analyze the document structure, type, language, and organization to produce a metadata profile."
-inputs = {pages = "Page[]"}
+inputs = { pages = "Page[]" }
 output = "DocumentProfile"
 model = "$writing-factual"
 system_prompt = """
@@ -84,7 +127,7 @@ Profile the structure and metadata of the following document.
 [pipe.extract_key_points]
 type = "PipeLLM"
 description = "Extract all key points from the document with importance ranking, categorization, and supporting evidence."
-inputs = {pages = "Page[]"}
+inputs = { pages = "Page[]" }
 output = "KeyPoint[]"
 model = "$retrieval"
 system_prompt = """
@@ -111,12 +154,12 @@ Extract all key points from the following document.
 [pipe.analyze_in_parallel]
 type = "PipeParallel"
 description = "Run document profiling and key point extraction in parallel."
-inputs = {pages = "Page[]"}
+inputs = { pages = "Page[]" }
 output = "Anything"
 add_each_output = true
 branches = [
-    {pipe = "profile_document", result = "profile"},
-    {pipe = "extract_key_points", result = "key_points"},
+  { pipe = "profile_document", result = "profile" },
+  { pipe = "extract_key_points", result = "key_points" },
 ]
 
 # ---------------------------------------------------------------------------
@@ -126,7 +169,7 @@ branches = [
 [pipe.synthesize_summary]
 type = "PipeLLM"
 description = "Synthesize the document profile and extracted key points into a comprehensive structured summary."
-inputs = {profile = "DocumentProfile", key_points = "KeyPoint[]", pages = "Page[]"}
+inputs = { profile = "DocumentProfile", key_points = "KeyPoint[]", pages = "Page[]" }
 output = "Summary"
 model = "$writing-factual"
 system_prompt = """
@@ -170,10 +213,10 @@ Audience: $profile.audience
 [pipe.summarize_document]
 type = "PipeSequence"
 description = "Deep document summarization: extract content, then profile structure and extract key points in parallel, then synthesize into a comprehensive summary with themes and open questions."
-inputs = {document = "Document"}
+inputs = { document = "Document" }
 output = "Summary"
 steps = [
-    {pipe = "extract_document", result = "pages"},
-    {pipe = "analyze_in_parallel", result = "analysis"},
-    {pipe = "synthesize_summary", result = "summary"},
+  { pipe = "extract_document", result = "pages" },
+  { pipe = "analyze_in_parallel", result = "analysis" },
+  { pipe = "synthesize_summary", result = "summary" },
 ]

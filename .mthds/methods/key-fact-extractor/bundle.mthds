@@ -1,31 +1,44 @@
-domain = "fact_extraction"
+domain      = "fact_extraction"
 description = "Extract key facts, claims, and assertions from any document with category classification and source attribution."
-main_pipe = "extract_facts"
+main_pipe   = "extract_facts"
 
 [concept.Fact]
 description = "A key fact, claim, or assertion extracted from a document with its category and source context."
 
 [concept.Fact.structure]
-statement = {type = "text", description = "The factual claim or assertion stated clearly and concisely", required = true}
-category = {type = "text", description = "Category of the fact", required = true, choices = ["financial", "legal", "technical", "organizational", "temporal", "quantitative", "qualitative", "regulatory"]}
-source_quote = {type = "text", description = "The original text passage from which this fact was extracted", required = true}
-confidence = {type = "text", description = "Confidence that this is a factual claim rather than opinion or speculation", required = true, choices = ["high", "medium", "low"]}
+statement = { type = "text", description = "The factual claim or assertion stated clearly and concisely", required = true }
+category = { type = "text", description = "Category of the fact", required = true, choices = [
+  "financial",
+  "legal",
+  "technical",
+  "organizational",
+  "temporal",
+  "quantitative",
+  "qualitative",
+  "regulatory",
+] }
+source_quote = { type = "text", description = "The original text passage from which this fact was extracted", required = true }
+confidence = { type = "text", description = "Confidence that this is a factual claim rather than opinion or speculation", required = true, choices = [
+  "high",
+  "medium",
+  "low",
+] }
 
 # ---------------------------------------------------------------------------
 # Pipes
 # ---------------------------------------------------------------------------
 
 [pipe.extract_document]
-type = "PipeExtract"
+type        = "PipeExtract"
 description = "Extract text content from the input document."
-inputs = {document = "Document"}
-output = "Page[]"
-model = "@default-extract-document"
+inputs      = { document = "Document" }
+output      = "Page[]"
+model       = "@default-extract-document"
 
 [pipe.identify_facts]
 type = "PipeLLM"
 description = "Identify and extract all key facts and claims from the document pages."
-inputs = {pages = "Page[]"}
+inputs = { pages = "Page[]" }
 output = "Fact[]"
 model = "$retrieval"
 system_prompt = """
@@ -49,9 +62,9 @@ Extract all key facts and claims from the following document.
 [pipe.extract_facts]
 type = "PipeSequence"
 description = "End-to-end fact extraction: extract document content, then identify all key facts and claims."
-inputs = {document = "Document"}
+inputs = { document = "Document" }
 output = "Fact[]"
 steps = [
-    {pipe = "extract_document", result = "pages"},
-    {pipe = "identify_facts", result = "facts"},
+  { pipe = "extract_document", result = "pages" },
+  { pipe = "identify_facts", result = "facts" },
 ]

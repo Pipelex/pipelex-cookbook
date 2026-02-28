@@ -9,4 +9,11 @@ authors = ["Evotis S.A.S"]
 main_pipe = "qualify_rfp"
 
 [exports.rfp_qualification]
-pipes = ["qualify_rfp", "extract_documents", "parse_requirements", "assess_all_requirements", "build_qualification_matrix", "generate_executive_summary"]
+pipes = [
+  "qualify_rfp",
+  "extract_documents",
+  "parse_requirements",
+  "assess_all_requirements",
+  "build_qualification_matrix",
+  "generate_executive_summary",
+]

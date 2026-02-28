@@ -1,6 +1,6 @@
-domain = "report_writing"
+domain      = "report_writing"
 description = "Generate a formatted report from structured JSON findings: analyze the data, structure sections, then compose the final report using templating."
-main_pipe = "write_report"
+main_pipe   = "write_report"
 
 # ---------------------------------------------------------------------------
 # Concepts
@@ -10,24 +10,38 @@ main_pipe = "write_report"
 description = "Configuration for generating a formatted report from structured data."
 
 [concept.ReportConfig.structure]
-format = {type = "text", description = "Output format for the report", required = true, choices = ["executive_summary", "detailed", "bullet_points", "narrative"]}
-tone = {type = "text", description = "Tone of the report", required = true, choices = ["formal", "professional", "technical", "conversational"]}
-audience = {type = "text", description = "Target audience for the report", required = true}
-max_length = {description = "Approximate maximum length", choices = ["short", "medium", "long"]}
+format = { type = "text", description = "Output format for the report", required = true, choices = [
+  "executive_summary",
+  "detailed",
+  "bullet_points",
+  "narrative",
+] }
+tone = { type = "text", description = "Tone of the report", required = true, choices = [
+  "formal",
+  "professional",
+  "technical",
+  "conversational",
+] }
+audience = { type = "text", description = "Target audience for the report", required = true }
+max_length = { description = "Approximate maximum length", choices = [
+  "short",
+  "medium",
+  "long",
+] }
 
 [concept.ReportStructure]
 description = "The analyzed and structured content for a report: title, executive summary, sections, key metrics, and conclusion."
 
 [concept.ReportStructure.structure]
-title = {type = "text", description = "Report title inferred from the findings", required = true}
-executive_summary = {type = "text", description = "2-3 sentence executive summary of the findings", required = true}
-key_metrics = {type = "text", description = "The most important numbers, scores, or quantitative results from the findings, formatted as a compact list", required = true}
-sections = {type = "list", description = "Ordered list of report sections, each containing a heading and body text", required = true}
-conclusion = {type = "text", description = "Final conclusion and recommended actions based on the findings", required = true}
+title             = { type = "text", description = "Report title inferred from the findings", required = true }
+executive_summary = { type = "text", description = "2-3 sentence executive summary of the findings", required = true }
+key_metrics       = { type = "text", description = "The most important numbers, scores, or quantitative results from the findings, formatted as a compact list", required = true }
+sections          = { type = "list", description = "Ordered list of report sections, each containing a heading and body text", required = true }
+conclusion        = { type = "text", description = "Final conclusion and recommended actions based on the findings", required = true }
 
 [concept.Report]
 description = "A formatted report generated from structured findings, ready for human consumption."
-refines = "Text"
+refines     = "Text"
 
 # ---------------------------------------------------------------------------
 # Pipes — Analysis
@@ -36,7 +50,7 @@ refines = "Text"
 [pipe.analyze_findings]
 type = "PipeLLM"
 description = "Analyze raw JSON findings and produce a structured report outline with title, executive summary, sections, key metrics, and conclusion."
-inputs = {findings = "JSON", config = "ReportConfig"}
+inputs = { findings = "JSON", config = "ReportConfig" }
 output = "ReportStructure"
 model = "$engineering-structured"
 system_prompt = """
@@ -77,7 +91,7 @@ Max length: $config.max_length
 [pipe.compose_report]
 type = "PipeCompose"
 description = "Compose the final formatted report from the structured analysis using templating."
-inputs = {structure = "ReportStructure", config = "ReportConfig"}
+inputs = { structure = "ReportStructure", config = "ReportConfig" }
 output = "Report"
 template = """# $structure.title
 
@@ -108,9 +122,9 @@ $structure.conclusion
 [pipe.write_report]
 type = "PipeSequence"
 description = "End-to-end report generation: analyze raw JSON findings into a structured outline, then compose the final formatted report using templating."
-inputs = {findings = "JSON", config = "ReportConfig"}
+inputs = { findings = "JSON", config = "ReportConfig" }
 output = "Report"
 steps = [
-    {pipe = "analyze_findings", result = "structure"},
-    {pipe = "compose_report", result = "report"},
+  { pipe = "analyze_findings", result = "structure" },
+  { pipe = "compose_report", result = "report" },
 ]

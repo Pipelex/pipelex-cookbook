@@ -1,6 +1,6 @@
-domain = "due_diligence"
+domain      = "due_diligence"
 description = "Comprehensive M&A due diligence analysis: extract and analyze financial statements, contracts, and organizational structure in parallel, then synthesize into an actionable report with risk matrix and valuation considerations."
-main_pipe = "analyze_company"
+main_pipe   = "analyze_company"
 
 # ---------------------------------------------------------------------------
 # Concepts
@@ -10,30 +10,51 @@ main_pipe = "analyze_company"
 description = "A structured snapshot of a companys financial health based on analysis of financial statements."
 
 [concept.FinancialSnapshot.structure]
-revenue_trend = {type = "text", description = "Overall revenue trend", required = true, choices = ["growing", "stable", "declining"]}
-revenue_details = {type = "text", description = "Detailed revenue analysis including growth rates, key revenue streams, and year-over-year comparisons", required = true}
-gross_margin = {type = "number", description = "Gross margin percentage"}
-operating_margin = {type = "number", description = "Operating margin percentage"}
-net_margin = {type = "number", description = "Net margin percentage"}
-margin_analysis = {type = "text", description = "Detailed analysis of margin trends and drivers", required = true}
-cash_position = {type = "text", description = "Assessment of cash reserves, liquidity, and cash flow health", required = true}
-debt_level = {type = "text", description = "Analysis of debt structure, leverage ratios, and debt servicing capacity", required = true}
-red_flags = {type = "text", description = "Any financial red flags, irregularities, or concerning patterns identified", required = true}
-financial_health_rating = {type = "text", description = "Overall assessment of financial health", required = true, choices = ["strong", "adequate", "concerning", "critical"]}
+revenue_trend = { type = "text", description = "Overall revenue trend", required = true, choices = [
+  "growing",
+  "stable",
+  "declining",
+] }
+revenue_details = { type = "text", description = "Detailed revenue analysis including growth rates, key revenue streams, and year-over-year comparisons", required = true }
+gross_margin = { type = "number", description = "Gross margin percentage" }
+operating_margin = { type = "number", description = "Operating margin percentage" }
+net_margin = { type = "number", description = "Net margin percentage" }
+margin_analysis = { type = "text", description = "Detailed analysis of margin trends and drivers", required = true }
+cash_position = { type = "text", description = "Assessment of cash reserves, liquidity, and cash flow health", required = true }
+debt_level = { type = "text", description = "Analysis of debt structure, leverage ratios, and debt servicing capacity", required = true }
+red_flags = { type = "text", description = "Any financial red flags, irregularities, or concerning patterns identified", required = true }
+financial_health_rating = { type = "text", description = "Overall assessment of financial health", required = true, choices = [
+  "strong",
+  "adequate",
+  "concerning",
+  "critical",
+] }
 
 [concept.ContractualRisk]
 description = "Risk assessment for a single contract identified during due diligence review."
 
 [concept.ContractualRisk.structure]
-contract_name = {type = "text", description = "Name or identifier of the contract", required = true}
-parties = {type = "text", description = "Parties involved in the contract", required = true}
-contract_type = {type = "text", description = "Type of contract", required = true, choices = ["customer", "supplier", "partnership", "employment", "lease", "licensing", "other"]}
-change_of_control_clause = {type = "boolean", description = "Whether the contract contains a change-of-control clause that could be triggered by acquisition", required = true}
-change_of_control_details = {type = "text", description = "Details of the change-of-control clause and its implications, empty if none", required = true}
-key_dependency = {type = "boolean", description = "Whether this contract represents a critical business dependency", required = true}
-dependency_description = {type = "text", description = "Description of the dependency and its impact if lost, empty if not a key dependency", required = true}
-risk_level = {type = "text", description = "Overall risk level of this contract for the acquisition", required = true, choices = ["high", "medium", "low"]}
-risk_description = {type = "text", description = "Detailed description of the contractual risks identified", required = true}
+contract_name = { type = "text", description = "Name or identifier of the contract", required = true }
+parties = { type = "text", description = "Parties involved in the contract", required = true }
+contract_type = { type = "text", description = "Type of contract", required = true, choices = [
+  "customer",
+  "supplier",
+  "partnership",
+  "employment",
+  "lease",
+  "licensing",
+  "other",
+] }
+change_of_control_clause = { type = "boolean", description = "Whether the contract contains a change-of-control clause that could be triggered by acquisition", required = true }
+change_of_control_details = { type = "text", description = "Details of the change-of-control clause and its implications, empty if none", required = true }
+key_dependency = { type = "boolean", description = "Whether this contract represents a critical business dependency", required = true }
+dependency_description = { type = "text", description = "Description of the dependency and its impact if lost, empty if not a key dependency", required = true }
+risk_level = { type = "text", description = "Overall risk level of this contract for the acquisition", required = true, choices = [
+  "high",
+  "medium",
+  "low",
+] }
+risk_description = { type = "text", description = "Detailed description of the contractual risks identified", required = true }
 expiration_info = "Contract expiration date or renewal terms"
 termination_conditions = "Key termination conditions and notice periods"
 
@@ -41,64 +62,77 @@ termination_conditions = "Key termination conditions and notice periods"
 description = "Assessment of organizational talent, key-person risks, and team composition for due diligence."
 
 [concept.TalentAssessment.structure]
-key_person_risk = {type = "text", description = "Level of key-person dependency risk", required = true, choices = ["high", "medium", "low"]}
-key_persons = {type = "text", description = "Identified key persons whose departure would significantly impact the business, with their roles and criticality", required = true}
-team_composition = {type = "text", description = "Overview of team structure, size, departments, and skill distribution", required = true}
-organizational_gaps = {type = "text", description = "Identified gaps in organizational structure, missing roles, or understaffed functions", required = true}
-retention_risk = {type = "text", description = "Assessment of employee retention risk post-acquisition", required = true, choices = ["high", "medium", "low"]}
-retention_factors = {type = "text", description = "Key factors affecting retention: compensation competitiveness, culture alignment, equity vesting, non-compete clauses", required = true}
-culture_observations = {type = "text", description = "Observations about company culture, management style, and potential integration challenges", required = true}
+key_person_risk = { type = "text", description = "Level of key-person dependency risk", required = true, choices = [
+  "high",
+  "medium",
+  "low",
+] }
+key_persons = { type = "text", description = "Identified key persons whose departure would significantly impact the business, with their roles and criticality", required = true }
+team_composition = { type = "text", description = "Overview of team structure, size, departments, and skill distribution", required = true }
+organizational_gaps = { type = "text", description = "Identified gaps in organizational structure, missing roles, or understaffed functions", required = true }
+retention_risk = { type = "text", description = "Assessment of employee retention risk post-acquisition", required = true, choices = [
+  "high",
+  "medium",
+  "low",
+] }
+retention_factors = { type = "text", description = "Key factors affecting retention: compensation competitiveness, culture alignment, equity vesting, non-compete clauses", required = true }
+culture_observations = { type = "text", description = "Observations about company culture, management style, and potential integration challenges", required = true }
 
 [concept.DueDiligenceReport]
 description = "Comprehensive due diligence report synthesizing financial, contractual, and talent analyses into actionable M&A recommendations."
 
 [concept.DueDiligenceReport.structure]
-overall_risk_rating = {type = "text", description = "Overall risk rating for the acquisition", required = true, choices = ["low", "moderate", "high", "critical"]}
-financial_summary = {type = "text", description = "Executive summary of the financial analysis findings", required = true}
-contractual_summary = {type = "text", description = "Executive summary of contractual risks and dependencies", required = true}
-talent_summary = {type = "text", description = "Executive summary of talent and organizational assessment", required = true}
-risk_matrix = {type = "text", description = "Structured risk matrix categorizing all identified risks by domain (financial, contractual, talent) and severity (critical, high, medium, low)", required = true}
-valuation_impact = {type = "text", description = "How the identified risks and strengths should affect the valuation — adjustments, contingencies, or earnout considerations", required = true}
-deal_breakers = {type = "text", description = "Any deal-breaking issues that could prevent the acquisition from proceeding", required = true}
-opportunities = {type = "text", description = "Synergies, growth opportunities, and strategic advantages identified through the analysis", required = true}
-recommendation = {type = "text", description = "Clear proceed/do-not-proceed/proceed-with-conditions recommendation with rationale", required = true}
-next_steps = {type = "text", description = "Recommended next steps: additional due diligence areas, negotiations, conditions precedent", required = true}
+overall_risk_rating = { type = "text", description = "Overall risk rating for the acquisition", required = true, choices = [
+  "low",
+  "moderate",
+  "high",
+  "critical",
+] }
+financial_summary = { type = "text", description = "Executive summary of the financial analysis findings", required = true }
+contractual_summary = { type = "text", description = "Executive summary of contractual risks and dependencies", required = true }
+talent_summary = { type = "text", description = "Executive summary of talent and organizational assessment", required = true }
+risk_matrix = { type = "text", description = "Structured risk matrix categorizing all identified risks by domain (financial, contractual, talent) and severity (critical, high, medium, low)", required = true }
+valuation_impact = { type = "text", description = "How the identified risks and strengths should affect the valuation — adjustments, contingencies, or earnout considerations", required = true }
+deal_breakers = { type = "text", description = "Any deal-breaking issues that could prevent the acquisition from proceeding", required = true }
+opportunities = { type = "text", description = "Synergies, growth opportunities, and strategic advantages identified through the analysis", required = true }
+recommendation = { type = "text", description = "Clear proceed/do-not-proceed/proceed-with-conditions recommendation with rationale", required = true }
+next_steps = { type = "text", description = "Recommended next steps: additional due diligence areas, negotiations, conditions precedent", required = true }
 
 # ---------------------------------------------------------------------------
 # Pipes — Extraction
 # ---------------------------------------------------------------------------
 
 [pipe.extract_financials]
-type = "PipeExtract"
+type        = "PipeExtract"
 description = "Extract text content from the financial statements document."
-inputs = {financial_statements = "Document"}
-output = "Page[]"
-model = "@default-extract-document"
+inputs      = { financial_statements = "Document" }
+output      = "Page[]"
+model       = "@default-extract-document"
 
 [pipe.extract_contracts]
-type = "PipeExtract"
+type        = "PipeExtract"
 description = "Extract text content from the contracts document."
-inputs = {contracts = "Document"}
-output = "Page[]"
-model = "@default-extract-document"
+inputs      = { contracts = "Document" }
+output      = "Page[]"
+model       = "@default-extract-document"
 
 [pipe.extract_org_chart]
-type = "PipeExtract"
+type        = "PipeExtract"
 description = "Extract text and visual content from the organizational chart document."
-inputs = {org_chart = "Document"}
-output = "Page[]"
-model = "@default-extract-document"
+inputs      = { org_chart = "Document" }
+output      = "Page[]"
+model       = "@default-extract-document"
 
 [pipe.extract_all_documents]
 type = "PipeParallel"
 description = "Extract all three due diligence documents in parallel: financial statements, contracts, and org chart."
-inputs = {financial_statements = "Document", contracts = "Document", org_chart = "Document"}
+inputs = { financial_statements = "Document", contracts = "Document", org_chart = "Document" }
 output = "Page[]"
 add_each_output = true
 branches = [
-    {pipe = "extract_financials", result = "financials_pages"},
-    {pipe = "extract_contracts", result = "contracts_pages"},
-    {pipe = "extract_org_chart", result = "org_chart_pages"},
+  { pipe = "extract_financials", result = "financials_pages" },
+  { pipe = "extract_contracts", result = "contracts_pages" },
+  { pipe = "extract_org_chart", result = "org_chart_pages" },
 ]
 
 # ---------------------------------------------------------------------------
@@ -108,7 +142,7 @@ branches = [
 [pipe.analyze_financials]
 type = "PipeLLM"
 description = "Analyze extracted financial statements to produce a structured snapshot of the companys financial health, including revenue trends, margins, cash position, debt, and red flags."
-inputs = {financials_pages = "Page[]"}
+inputs = { financials_pages = "Page[]" }
 output = "FinancialSnapshot"
 model = "$writing-factual"
 system_prompt = """
@@ -131,7 +165,7 @@ Analyze the following financial statements and produce a comprehensive financial
 [pipe.analyze_contracts]
 type = "PipeLLM"
 description = "Analyze extracted contracts to identify contractual risks, change-of-control clauses, key dependencies, and termination conditions relevant to an acquisition."
-inputs = {contracts_pages = "Page[]"}
+inputs = { contracts_pages = "Page[]" }
 output = "ContractualRisk[]"
 model = "$engineering-structured"
 system_prompt = """
@@ -155,7 +189,7 @@ Review the following contract documents and produce a risk assessment for each s
 [pipe.analyze_org]
 type = "PipeLLM"
 description = "Analyze the organizational structure to assess key-person risks, team composition, gaps, retention risks, and culture fit for acquisition integration."
-inputs = {org_chart_pages = "Page[]"}
+inputs = { org_chart_pages = "Page[]" }
 output = "TalentAssessment"
 model = "$writing-factual"
 system_prompt = """
@@ -179,13 +213,13 @@ Analyze the following organizational chart and structure documents. Assess the t
 [pipe.analyze_all]
 type = "PipeParallel"
 description = "Run all three due diligence analyses in parallel: financial, contractual, and talent assessment."
-inputs = {financials_pages = "Page[]", contracts_pages = "Page[]", org_chart_pages = "Page[]"}
+inputs = { financials_pages = "Page[]", contracts_pages = "Page[]", org_chart_pages = "Page[]" }
 output = "DueDiligenceReport"
 add_each_output = true
 branches = [
-    {pipe = "analyze_financials", result = "financial_snapshot"},
-    {pipe = "analyze_contracts", result = "contractual_risks"},
-    {pipe = "analyze_org", result = "talent_assessment"},
+  { pipe = "analyze_financials", result = "financial_snapshot" },
+  { pipe = "analyze_contracts", result = "contractual_risks" },
+  { pipe = "analyze_org", result = "talent_assessment" },
 ]
 
 # ---------------------------------------------------------------------------
@@ -195,7 +229,7 @@ branches = [
 [pipe.synthesize_report]
 type = "PipeLLM"
 description = "Synthesize all three analyses into a comprehensive due diligence report with risk matrix, valuation impact, and actionable recommendation."
-inputs = {financial_snapshot = "FinancialSnapshot", contractual_risks = "ContractualRisk[]", talent_assessment = "TalentAssessment"}
+inputs = { financial_snapshot = "FinancialSnapshot", contractual_risks = "ContractualRisk[]", talent_assessment = "TalentAssessment" }
 output = "DueDiligenceReport"
 model = "$engineering-structured"
 system_prompt = """
@@ -245,10 +279,10 @@ Culture: $talent_assessment.culture_observations
 [pipe.analyze_company]
 type = "PipeSequence"
 description = "End-to-end due diligence analysis pipeline: extract all documents in parallel, analyze financial, contractual, and talent dimensions in parallel, then synthesize into a comprehensive due diligence report."
-inputs = {financial_statements = "Document", contracts = "Document", org_chart = "Document"}
+inputs = { financial_statements = "Document", contracts = "Document", org_chart = "Document" }
 output = "DueDiligenceReport"
 steps = [
-    {pipe = "extract_all_documents", result = "all_pages"},
-    {pipe = "analyze_all", result = "all_analyses"},
-    {pipe = "synthesize_report", result = "report"},
+  { pipe = "extract_all_documents", result = "all_pages" },
+  { pipe = "analyze_all", result = "all_analyses" },
+  { pipe = "synthesize_report", result = "report" },
 ]

@@ -9,4 +9,9 @@ authors = ["Evotis S.A.S"]
 main_pipe = "summarize_document"
 
 [exports.document_summarization]
-pipes = ["summarize_document", "profile_document", "extract_key_points", "synthesize_summary"]
+pipes = [
+  "summarize_document",
+  "profile_document",
+  "extract_key_points",
+  "synthesize_summary",
+]

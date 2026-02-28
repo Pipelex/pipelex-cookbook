@@ -1,21 +1,21 @@
-domain = "candidate_screening"
+domain      = "candidate_screening"
 description = "Screening candidates by matching CVs against job offers and generating appropriate responses."
-main_pipe = "screen_candidate"
+main_pipe   = "screen_candidate"
 
 [concept.MatchResult]
 description = "A structured assessment of whether a candidate's CV matches a job offer."
 
 [concept.MatchResult.structure]
-is_match = { type = "boolean", description = "Whether the candidate's profile is a good match for the job offer", required = true }
+is_match       = { type = "boolean", description = "Whether the candidate's profile is a good match for the job offer", required = true }
 match_analysis = { type = "text", description = "Brief explanation of the reasoning behind the match or mismatch determination", required = true }
 
 [concept.Email]
 description = "A professional email message."
-refines = "Text"
+refines     = "Text"
 
 [concept.InterviewQuestion]
 description = "A tailored interview question for a candidate based on their profile and the job requirements."
-refines = "Text"
+refines     = "Text"
 
 [pipe.screen_candidate]
 type = "PipeSequence"
@@ -25,25 +25,25 @@ Main pipeline orchestrator for end-to-end candidate screening: extract the CV, a
 inputs = { cv = "Document", job_offer = "Document" }
 output = "Anything"
 steps = [
-    { pipe = "extract_cv", result = "cv_pages" },
-    { pipe = "extract_job_offer", result = "job_offer_pages" },
-    { pipe = "analyze_match", result = "match_result" },
-    { pipe = "route_on_match", result = "decision_output" },
+  { pipe = "extract_cv", result = "cv_pages" },
+  { pipe = "extract_job_offer", result = "job_offer_pages" },
+  { pipe = "analyze_match", result = "match_result" },
+  { pipe = "route_on_match", result = "decision_output" },
 ]
 
 [pipe.extract_cv]
-type = "PipeExtract"
+type        = "PipeExtract"
 description = "Extract text content from the candidate's CV document into pages."
-inputs = { cv = "Document" }
-output = "Page[]"
-model = "@default-extract-document"
+inputs      = { cv = "Document" }
+output      = "Page[]"
+model       = "@default-extract-document"
 
 [pipe.extract_job_offer]
-type = "PipeExtract"
+type        = "PipeExtract"
 description = "Extract text content from the job offer document into pages."
-inputs = { job_offer = "Document" }
-output = "Page[]"
-model = "@default-extract-document"
+inputs      = { job_offer = "Document" }
+output      = "Page[]"
+model       = "@default-extract-document"
 
 [pipe.analyze_match]
 type = "PipeLLM"

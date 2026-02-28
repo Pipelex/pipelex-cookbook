@@ -1,6 +1,6 @@
-domain = "rfp_qualification"
+domain      = "rfp_qualification"
 description = "Qualifying RFP and tender responses by matching requirements against company capabilities and producing a go/no-go recommendation with executive summary."
-main_pipe = "qualify_rfp"
+main_pipe   = "qualify_rfp"
 
 # ---------------------------------------------------------------------------
 # Concepts
@@ -10,67 +10,96 @@ main_pipe = "qualify_rfp"
 description = "A single requirement extracted from an RFP or tender document."
 
 [concept.RFPRequirement.structure]
-title = {type = "text", description = "Short title summarizing the requirement", required = true}
-description = {type = "text", description = "Full description of what is required", required = true}
-category = {type = "text", description = "Requirement category", required = true, choices = ["technical", "functional", "organizational", "financial", "legal", "compliance"]}
-priority = {type = "text", description = "Priority level as stated or inferred from the RFP", required = true, choices = ["mandatory", "important", "desirable"]}
+title = { type = "text", description = "Short title summarizing the requirement", required = true }
+description = { type = "text", description = "Full description of what is required", required = true }
+category = { type = "text", description = "Requirement category", required = true, choices = [
+  "technical",
+  "functional",
+  "organizational",
+  "financial",
+  "legal",
+  "compliance",
+] }
+priority = { type = "text", description = "Priority level as stated or inferred from the RFP", required = true, choices = [
+  "mandatory",
+  "important",
+  "desirable",
+] }
 
 [concept.CapabilityMatch]
 description = "Assessment of how well company capabilities meet a single RFP requirement."
 
 [concept.CapabilityMatch.structure]
-requirement_title = {type = "text", description = "Title of the assessed requirement", required = true}
-match_level = {type = "text", description = "How well the company meets this requirement", required = true, choices = ["full_match", "partial_match", "no_match"]}
-evidence = {type = "text", description = "Specific company capabilities, past projects, or certifications that support the match", required = true}
-gap_description = {type = "text", description = "Description of what is missing or weak if partial or no match, empty string if full match", required = true}
-effort_to_close = {description = "Estimated effort to close the gap if any", choices = ["none", "low", "medium", "high"]}
+requirement_title = { type = "text", description = "Title of the assessed requirement", required = true }
+match_level = { type = "text", description = "How well the company meets this requirement", required = true, choices = [
+  "full_match",
+  "partial_match",
+  "no_match",
+] }
+evidence = { type = "text", description = "Specific company capabilities, past projects, or certifications that support the match", required = true }
+gap_description = { type = "text", description = "Description of what is missing or weak if partial or no match, empty string if full match", required = true }
+effort_to_close = { description = "Estimated effort to close the gap if any", choices = [
+  "none",
+  "low",
+  "medium",
+  "high",
+] }
 
 [concept.QualificationMatrix]
 description = "Aggregated go/no-go qualification assessment across all RFP requirements."
 
 [concept.QualificationMatrix.structure]
-go_recommendation = {type = "boolean", description = "Whether the company should bid on this RFP", required = true}
-confidence = {type = "text", description = "Confidence in the recommendation", required = true, choices = ["high", "medium", "low"]}
-total_requirements = {type = "integer", description = "Total number of requirements analyzed", required = true}
-fully_matched = {type = "integer", description = "Number of requirements fully matched", required = true}
-partially_matched = {type = "integer", description = "Number of requirements partially matched", required = true}
-not_matched = {type = "integer", description = "Number of requirements not matched at all", required = true}
-critical_gaps = {type = "text", description = "Summary of the most important unmet mandatory requirements", required = true}
-key_strengths = {type = "text", description = "Summary of the strongest competitive advantages for this bid", required = true}
-win_probability = {type = "text", description = "Estimated probability of winning the bid", required = true, choices = ["high", "moderate", "low", "very_low"]}
+go_recommendation = { type = "boolean", description = "Whether the company should bid on this RFP", required = true }
+confidence = { type = "text", description = "Confidence in the recommendation", required = true, choices = [
+  "high",
+  "medium",
+  "low",
+] }
+total_requirements = { type = "integer", description = "Total number of requirements analyzed", required = true }
+fully_matched = { type = "integer", description = "Number of requirements fully matched", required = true }
+partially_matched = { type = "integer", description = "Number of requirements partially matched", required = true }
+not_matched = { type = "integer", description = "Number of requirements not matched at all", required = true }
+critical_gaps = { type = "text", description = "Summary of the most important unmet mandatory requirements", required = true }
+key_strengths = { type = "text", description = "Summary of the strongest competitive advantages for this bid", required = true }
+win_probability = { type = "text", description = "Estimated probability of winning the bid", required = true, choices = [
+  "high",
+  "moderate",
+  "low",
+  "very_low",
+] }
 strategic_considerations = "Strategic factors beyond requirement matching: relationship, market positioning, learning opportunity"
 
 [concept.BidSummary]
 description = "An executive summary recommending whether to bid and outlining the key decision factors."
-refines = "Text"
+refines     = "Text"
 
 # ---------------------------------------------------------------------------
 # Pipes — Extraction
 # ---------------------------------------------------------------------------
 
 [pipe.extract_rfp]
-type = "PipeExtract"
+type        = "PipeExtract"
 description = "Extract text content from the RFP or tender document."
-inputs = {rfp = "Document"}
-output = "Page[]"
-model = "@default-extract-document"
+inputs      = { rfp = "Document" }
+output      = "Page[]"
+model       = "@default-extract-document"
 
 [pipe.extract_capabilities]
-type = "PipeExtract"
+type        = "PipeExtract"
 description = "Extract text content from the company capabilities document."
-inputs = {capabilities = "Document"}
-output = "Page[]"
-model = "@default-extract-document"
+inputs      = { capabilities = "Document" }
+output      = "Page[]"
+model       = "@default-extract-document"
 
 [pipe.extract_documents]
 type = "PipeParallel"
 description = "Extract both the RFP and capabilities documents concurrently."
-inputs = {rfp = "Document", capabilities = "Document"}
+inputs = { rfp = "Document", capabilities = "Document" }
 output = "Page[]"
 add_each_output = true
 branches = [
-    {pipe = "extract_rfp", result = "rfp_pages"},
-    {pipe = "extract_capabilities", result = "capabilities_pages"},
+  { pipe = "extract_rfp", result = "rfp_pages" },
+  { pipe = "extract_capabilities", result = "capabilities_pages" },
 ]
 
 # ---------------------------------------------------------------------------
@@ -80,7 +109,7 @@ branches = [
 [pipe.parse_requirements]
 type = "PipeLLM"
 description = "Parse the RFP document into a structured list of individual requirements, each classified by category and priority."
-inputs = {rfp_pages = "Page[]"}
+inputs = { rfp_pages = "Page[]" }
 output = "RFPRequirement[]"
 model = "$engineering-structured"
 system_prompt = """
@@ -97,7 +126,7 @@ Analyze the following RFP document and extract every individual requirement. For
 [pipe.assess_single_requirement]
 type = "PipeLLM"
 description = "Assess how well the companys capabilities meet a single RFP requirement."
-inputs = {requirement = "RFPRequirement", capabilities_pages = "Page[]"}
+inputs = { requirement = "RFPRequirement", capabilities_pages = "Page[]" }
 output = "CapabilityMatch"
 model = "$engineering-structured"
 system_prompt = """
@@ -124,18 +153,18 @@ Description: $requirement.description
 """
 
 [pipe.assess_all_requirements]
-type = "PipeBatch"
-description = "Assess every RFP requirement against the companys capabilities."
-inputs = {requirements = "RFPRequirement[]", capabilities_pages = "Page[]"}
-output = "CapabilityMatch[]"
+type             = "PipeBatch"
+description      = "Assess every RFP requirement against the companys capabilities."
+inputs           = { requirements = "RFPRequirement[]", capabilities_pages = "Page[]" }
+output           = "CapabilityMatch[]"
 branch_pipe_code = "assess_single_requirement"
-input_list_name = "requirements"
-input_item_name = "requirement"
+input_list_name  = "requirements"
+input_item_name  = "requirement"
 
 [pipe.build_qualification_matrix]
 type = "PipeLLM"
 description = "Synthesize all individual capability assessments into an overall go/no-go qualification matrix."
-inputs = {rfp_pages = "Page[]", capability_matches = "CapabilityMatch[]"}
+inputs = { rfp_pages = "Page[]", capability_matches = "CapabilityMatch[]" }
 output = "QualificationMatrix"
 model = "$engineering-structured"
 system_prompt = """
@@ -166,7 +195,7 @@ Based on the following individual requirement assessments and the original RFP, 
 [pipe.generate_executive_summary]
 type = "PipeLLM"
 description = "Generate an executive summary that synthesizes the qualification matrix into an actionable recommendation for leadership."
-inputs = {qualification_matrix = "QualificationMatrix", rfp_pages = "Page[]"}
+inputs = { qualification_matrix = "QualificationMatrix", rfp_pages = "Page[]" }
 output = "BidSummary"
 model = "$writing-creative"
 system_prompt = """
@@ -202,12 +231,12 @@ Strategic considerations: $qualification_matrix.strategic_considerations
 [pipe.qualify_rfp]
 type = "PipeSequence"
 description = "End-to-end RFP qualification pipeline: extract documents, parse requirements, assess each against capabilities, build a qualification matrix, and generate an executive summary."
-inputs = {rfp = "Document", capabilities = "Document"}
+inputs = { rfp = "Document", capabilities = "Document" }
 output = "BidSummary"
 steps = [
-    {pipe = "extract_documents", result = "all_pages"},
-    {pipe = "parse_requirements", result = "requirements"},
-    {pipe = "assess_all_requirements", result = "capability_matches"},
-    {pipe = "build_qualification_matrix", result = "qualification_matrix"},
-    {pipe = "generate_executive_summary", result = "executive_summary"},
+  { pipe = "extract_documents", result = "all_pages" },
+  { pipe = "parse_requirements", result = "requirements" },
+  { pipe = "assess_all_requirements", result = "capability_matches" },
+  { pipe = "build_qualification_matrix", result = "qualification_matrix" },
+  { pipe = "generate_executive_summary", result = "executive_summary" },
 ]

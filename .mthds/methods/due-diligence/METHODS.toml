@@ -9,4 +9,9 @@ authors = ["Evotis S.A.S"]
 main_pipe = "analyze_company"
 
 [exports.due_diligence]
-pipes = ["analyze_company", "extract_all_documents", "analyze_all", "synthesize_report"]
+pipes = [
+  "analyze_company",
+  "extract_all_documents",
+  "analyze_all",
+  "synthesize_report",
+]

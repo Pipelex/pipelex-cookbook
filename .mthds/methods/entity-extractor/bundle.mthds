@@ -1,14 +1,23 @@
-domain = "entity_extraction"
+domain      = "entity_extraction"
 description = "Extract named entities (persons, organizations, dates, amounts, locations, products, regulations) from any document."
-main_pipe = "extract_entities"
+main_pipe   = "extract_entities"
 
 [concept.Entity]
 description = "A named entity extracted from text: a person, organization, date, monetary amount, location, or other identifiable reference."
 
 [concept.Entity.structure]
-name = {type = "text", description = "The entity text as it appears in the source", required = true}
-entity_type = {type = "text", description = "Type of entity", required = true, choices = ["person", "organization", "date", "amount", "location", "product", "regulation", "other"]}
-context = {type = "text", description = "The surrounding sentence or phrase where the entity was found", required = true}
+name = { type = "text", description = "The entity text as it appears in the source", required = true }
+entity_type = { type = "text", description = "Type of entity", required = true, choices = [
+  "person",
+  "organization",
+  "date",
+  "amount",
+  "location",
+  "product",
+  "regulation",
+  "other",
+] }
+context = { type = "text", description = "The surrounding sentence or phrase where the entity was found", required = true }
 normalized_value = "Normalized or canonical form of the entity (e.g. ISO date, full org name)"
 
 # ---------------------------------------------------------------------------
@@ -16,16 +25,16 @@ normalized_value = "Normalized or canonical form of the entity (e.g. ISO date, f
 # ---------------------------------------------------------------------------
 
 [pipe.extract_document]
-type = "PipeExtract"
+type        = "PipeExtract"
 description = "Extract text content from the input document."
-inputs = {document = "Document"}
-output = "Page[]"
-model = "@default-extract-document"
+inputs      = { document = "Document" }
+output      = "Page[]"
+model       = "@default-extract-document"
 
 [pipe.identify_entities]
 type = "PipeLLM"
 description = "Identify and extract all named entities from the document pages."
-inputs = {pages = "Page[]"}
+inputs = { pages = "Page[]" }
 output = "Entity[]"
 model = "$retrieval"
 system_prompt = """
@@ -48,9 +57,9 @@ Extract all named entities from the following document.
 [pipe.extract_entities]
 type = "PipeSequence"
 description = "End-to-end entity extraction: extract document content, then identify all named entities."
-inputs = {document = "Document"}
+inputs = { document = "Document" }
 output = "Entity[]"
 steps = [
-    {pipe = "extract_document", result = "pages"},
-    {pipe = "identify_entities", result = "entities"},
+  { pipe = "extract_document", result = "pages" },
+  { pipe = "identify_entities", result = "entities" },
 ]
