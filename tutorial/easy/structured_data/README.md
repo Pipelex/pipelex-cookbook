@@ -46,7 +46,7 @@ Generate a creative book idea. Provide a compelling title, genre, synopsis, and 
 
 **Run it:**
 ```bash
-pipelex run pipe tutorial/easy/structured_data/1_structured_output.mthds
+pipelex run bundle tutorial/easy/structured_data/1_structured_output.mthds
 ```
 
 ---
@@ -117,7 +117,7 @@ steps = [
 
 **Run it:**
 ```bash
-pipelex run pipe tutorial/easy/structured_data/2_using_object_fields.mthds
+pipelex run bundle tutorial/easy/structured_data/2_using_object_fields.mthds
 ```
 
 ---

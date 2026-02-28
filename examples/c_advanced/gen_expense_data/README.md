@@ -54,7 +54,7 @@ pipelex run bundle examples/c_advanced/gen_expense_data/bundle.mthds \
   -i examples/c_advanced/gen_expense_data/inputs.json
 
 # Run with custom number of employees
-pipelex run pipe examples/c_advanced/gen_expense_data/bundle.mthds \
+pipelex run bundle examples/c_advanced/gen_expense_data/bundle.mthds \
   -i examples/c_advanced/gen_expense_data/inputs.json \
   --override nb_employees.content.number=10
 ```

@@ -9,7 +9,7 @@ Before running this example, ensure you have set up your environment. See the [C
 ## Run the pipeline
 
 ```bash
-pipelex run pipe examples/wip/blog_article_generator/bundle.mthds -i examples/wip/blog_article_generator/inputs.json
+pipelex run bundle examples/wip/blog_article_generator/bundle.mthds -i examples/wip/blog_article_generator/inputs.json
 ```
 
 ## Example input
