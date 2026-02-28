@@ -50,22 +50,22 @@ Run any example from the repository root using the CLI:
 
 ```bash
 # Quick start - Hello World (no inputs needed)
-pipelex run pipe examples/a_quick_start/hello_world.mthds
+pipelex run bundle examples/a_quick_start/hello_world.mthds
 
 # Quick start - Summarization with inputs
-pipelex run pipe examples/a_quick_start/summarize.mthds --pipe summarize_with_structure -i examples/a_quick_start/inputs.json
+pipelex run bundle examples/a_quick_start/summarize.mthds --pipe summarize_with_structure -i examples/a_quick_start/inputs.json
 
 # Document extraction - Gantt chart
-pipelex run pipe examples/b_basics/document_extract/extract_gantt/bundle.mthds -i examples/b_basics/document_extract/extract_gantt/inputs.json
+pipelex run bundle examples/b_basics/document_extract/extract_gantt/bundle.mthds -i examples/b_basics/document_extract/extract_gantt/inputs.json
 
 # Document extraction - Invoice
-pipelex run pipe examples/b_basics/document_extract/extract_invoice/bundle.mthds -i examples/b_basics/document_extract/extract_invoice/inputs.json
+pipelex run bundle examples/b_basics/document_extract/extract_invoice/bundle.mthds -i examples/b_basics/document_extract/extract_invoice/inputs.json
 
 # Document extraction - Table
-pipelex run pipe examples/b_basics/document_extract/extract_table/bundle.mthds -i examples/b_basics/document_extract/extract_table/inputs.json
+pipelex run bundle examples/b_basics/document_extract/extract_table/bundle.mthds -i examples/b_basics/document_extract/extract_table/inputs.json
 
 # Advanced features - Synthetic data generation
-pipelex run pipe examples/c_advanced/gen_synthetic_data/bundle.mthds -i examples/c_advanced/gen_synthetic_data/inputs.json
+pipelex run bundle examples/c_advanced/gen_synthetic_data/bundle.mthds -i examples/c_advanced/gen_synthetic_data/inputs.json
 ```
 
 Results will be saved as JSON files in the current directory (or specify `-o path/to/output.json`).

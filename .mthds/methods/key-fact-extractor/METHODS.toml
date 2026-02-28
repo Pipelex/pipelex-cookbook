@@ -1,0 +1,12 @@
+[package]
+name = "key-fact-extractor"
+display_name = "Key Fact Extractor"
+address = "github.com/pipelex/methods"
+version = "0.1.0"
+description = "# Key Fact Extractor\n\nExtract key facts, claims, and assertions from any document with category classification and source attribution.\n\n## What it does\n\nGiven a **document** (PDF, Word, etc.), this method:\n\n1. **Extracts** content from the document into readable pages\n2. **Identifies** all key facts and claims, classifying each by category (financial, legal, technical, etc.) with the original source quote and a confidence rating\n\n## Concepts\n\n- **Fact**: A factual claim with `statement`, `category`, `source_quote`, and `confidence`\n\n## Pipeline overview\n\n`extract_facts` → `extract_document` → `identify_facts`"
+license = "MIT"
+authors = ["Evotis S.A.S"]
+main_pipe = "extract_facts"
+
+[exports.fact_extraction]
+pipes = ["extract_facts", "identify_facts"]

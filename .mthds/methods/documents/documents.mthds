@@ -1,0 +1,27 @@
+domain      = "documents"
+description = "The domain of documents made of pages that contain text and images"
+
+[pipe.extract_markdown_pages]
+type            = "PipeExtract"
+description     = "Extract page text markdown from a document"
+inputs          = { document = "Document" }
+output          = "Page[]"
+model           = "azure-document-intelligence"
+max_page_images = 0
+page_views      = false
+
+[pipe.extract_page_contents]
+type            = "PipeExtract"
+description     = "Extract page contents (text and images) from a document as well as full page views"
+inputs          = { document = "Document" }
+output          = "Page[]"
+max_page_images = 5
+page_views      = false
+
+[pipe.extract_page_contents_and_views]
+type            = "PipeExtract"
+description     = "Extract page contents (text and images) from a document as well as full page views"
+inputs          = { document = "Document" }
+output          = "Page[]"
+max_page_images = 5
+page_views      = true

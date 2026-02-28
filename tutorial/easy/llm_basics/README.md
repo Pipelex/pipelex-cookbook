@@ -35,7 +35,7 @@ Generate a one-paragraph creative story idea about a robot learning to paint.
 
 **Run it:**
 ```bash
-pipelex run pipe tutorial/easy/llm_basics/1_hello_world.mthds
+pipelex run bundle tutorial/easy/llm_basics/1_hello_world.mthds
 ```
 
 The flowchart shows one pipe producing a single output:
@@ -99,7 +99,7 @@ steps = [
 
 **Run it:**
 ```bash
-pipelex run pipe tutorial/easy/llm_basics/2_chaining_llm_calls.mthds
+pipelex run bundle tutorial/easy/llm_basics/2_chaining_llm_calls.mthds
 ```
 
 The flowchart shows the first pipe producing an output, which becomes the input to the second pipe:
@@ -150,7 +150,7 @@ Keep it under 100 words.
 
 **Run it:**
 ```bash
-pipelex run pipe tutorial/easy/llm_basics/3_using_inputs.mthds -i tutorial/easy/llm_basics/inputs.json
+pipelex run bundle tutorial/easy/llm_basics/3_using_inputs.mthds -i tutorial/easy/llm_basics/inputs.json
 ```
 
 The flowchart shows an external input being passed into the pipe:
@@ -235,7 +235,7 @@ steps = [
 
 **Run it:**
 ```bash
-pipelex run pipe tutorial/easy/llm_basics/4_using_templates.mthds
+pipelex run bundle tutorial/easy/llm_basics/4_using_templates.mthds
 ```
 
 The flowchart shows three pipes chained together - two LLM pipes feeding into a compose pipe that formats the final output:

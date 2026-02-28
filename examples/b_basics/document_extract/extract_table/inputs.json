@@ -2,7 +2,7 @@
   "table_screenshot": {
     "concept": "tables.TableScreenshot",
     "content": {
-      "url": "assets/extract_table/table_1.png"
+      "url": "inputs/table_image.png"
     }
   }
 }
