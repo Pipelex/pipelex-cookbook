@@ -1,0 +1,27 @@
+examples/wip/blog_article_generator/README.md
+  a1ece64355ec3069 60
+examples/wip/advisory_board/README.md
+  a1ece64355ec3069 29
+examples/c_advanced/gen_synthetic_data/README.md
+  a1ece64355ec3069 29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.5",
+  "base_commit_sha": "bbed6f315cd25994aef5033a0609f2f50a230c86",
+  "prompts": {
+    "a1ece64355ec3069": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e7a0c5f2-5a7e-4026-bc70-9c0594bad016",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Louis Choquel <lchoquel@users.noreply.github.com>",
+      "messages": [],
+      "total_additions": 3,
+      "total_deletions": 3,
+      "accepted_lines": 3,
+      "overriden_lines": 0
+    }
+  }
+}
