@@ -9,7 +9,7 @@ Before running this example, ensure you have set up your environment. See the [C
 ## Run the pipeline
 
 ```bash
-pipelex run pipe examples/wip/advisory_board/bundle.mthds -i examples/wip/advisory_board/inputs.json -L examples/wip/advisory_board
+pipelex run bundle examples/wip/advisory_board/bundle.mthds -i examples/wip/advisory_board/inputs.json -L examples/wip/advisory_board
 ```
 
 ## Flowchart
@@ -26,7 +26,7 @@ pipelex run pipe examples/wip/advisory_board/bundle.mthds -i examples/wip/adviso
 You can go further by generating the python structures and runner code out of this bundle in order to add validation functions to the python BaseModel.
 
 ```bash
-pipelex build runner examples/wip/advisory_board/bundle.mthds -L examples/wip/advisory_board 
+pipelex build runner bundle examples/wip/advisory_board/bundle.mthds -L examples/wip/advisory_board
 ```
 
 This will create a new file `examples/wip/advisory_board/run_master_advisory_orchestrator.py` and a `structures` directory containing the python structures.

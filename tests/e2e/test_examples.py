@@ -12,11 +12,8 @@ class TestExamples:
             [
                 pipelex_cmd,
                 "run",
-                "examples/b_basics/document_extract/extract_dpe/bundle.mthds",
-                "-i",
-                "examples/b_basics/document_extract/extract_dpe/inputs.json",
-                "-L",
-                "examples/documents",
+                "bundle",
+                "examples/b_basics/document_extract/extract_dpe/",
             ],
             capture_output=True,
             text=True,
@@ -28,6 +25,7 @@ class TestExamples:
             [
                 pipelex_cmd,
                 "run",
+                "bundle",
                 "examples/b_basics/document_extract/extract_gantt/bundle.mthds",
                 "-i",
                 "examples/b_basics/document_extract/extract_gantt/inputs.json",
@@ -42,11 +40,10 @@ class TestExamples:
             [
                 pipelex_cmd,
                 "run",
+                "bundle",
                 "examples/b_basics/document_extract/extract_generic/bundle.mthds",
                 "-i",
                 "examples/b_basics/document_extract/extract_generic/inputs.json",
-                "-L",
-                "examples",
             ],
             capture_output=True,
             text=True,
@@ -58,11 +55,10 @@ class TestExamples:
             [
                 pipelex_cmd,
                 "run",
+                "bundle",
                 "examples/b_basics/document_extract/extract_proof_of_purchase/bundle.mthds",
                 "-i",
                 "examples/b_basics/document_extract/extract_proof_of_purchase/inputs.json",
-                "-L",
-                "examples/documents",
             ],
             capture_output=True,
             text=True,
@@ -74,6 +70,7 @@ class TestExamples:
             [
                 pipelex_cmd,
                 "run",
+                "bundle",
                 "examples/b_basics/document_extract/extract_table/bundle.mthds",
                 "-i",
                 "examples/b_basics/document_extract/extract_table/inputs.json",
@@ -88,11 +85,10 @@ class TestExamples:
             [
                 pipelex_cmd,
                 "run",
+                "bundle",
                 "examples/b_basics/document_extract/extract_invoice/bundle.mthds",
                 "-i",
                 "examples/b_basics/document_extract/extract_invoice/inputs.json",
-                "-L",
-                "examples/documents",
             ],
             capture_output=True,
             text=True,
@@ -105,7 +101,7 @@ class TestExamples:
             pytest.skip("OPENAI_API_KEY is not set")
         else:
             result = subprocess.run(
-                [pipelex_cmd, "run", "examples/c_advanced/using_inference_plugins/hello_plugin.mthds"],
+                [pipelex_cmd, "run", "bundle", "examples/c_advanced/using_inference_plugins/hello_plugin.mthds"],
                 capture_output=True,
                 text=True,
             )

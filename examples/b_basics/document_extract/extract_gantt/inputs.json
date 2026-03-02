@@ -2,7 +2,7 @@
   "gantt_chart_image": {
     "concept": "gantt.GanttChartImage",
     "content": {
-      "url": "assets/gantt/gantt_tree_house.png"
+      "url": "inputs/gantt_tree_house.png"
     }
   }
 }

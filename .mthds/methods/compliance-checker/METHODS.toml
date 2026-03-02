@@ -1,0 +1,12 @@
+[package]
+name = "compliance-checker"
+display_name = "Compliance Checker"
+address = "github.com/pipelex/methods"
+version = "0.1.0"
+description = "# Compliance Checker\n\nCheck a document against a set of compliance rules and produce a pass/fail assessment for each rule with evidence and remediation.\n\n## What it does\n\nGiven a **document** and a set of **rules** (`Rule[]`), this method:\n\n1. **Extracts** the document content into readable pages\n2. **Checks each rule** individually via batch processing, producing a `ComplianceResult` with status (pass/fail/partial/not_applicable), evidence, remediation suggestion, and severity\n\n## Concepts\n\n- **Rule**: A compliance rule with `rule_id`, `rule_text`, `severity`, and `category`\n- **ComplianceResult**: Assessment result with `status`, `evidence`, `remediation`, and `severity`\n\n## Pipeline overview\n\n`check_compliance` → `extract_document` → `check_all_rules` (batch over rules) → `check_single_rule`"
+license = "MIT"
+authors = ["Evotis S.A.S"]
+main_pipe = "check_compliance"
+
+[exports.compliance_checking]
+pipes = ["check_compliance", "check_all_rules", "check_single_rule"]

@@ -40,7 +40,7 @@ PIPELEX_GATEWAY_API_KEY=your_api_key_here
 **3. Run your first tutorial**
 
 ```bash
-pipelex run pipe tutorial/easy/llm_basics/1_hello_world.mthds
+pipelex run bundle tutorial/easy/llm_basics/1_hello_world.mthds
 ```
 
 ## Key Concepts

@@ -1,5 +1,24 @@
 # Changelog
 
+## [v0.11.0] - 2026-02-27
+
+- Bump `pipelex` to `0.18.3`. See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+
+### Breaking Changes
+
+- **CLI**: `pipelex run pipe` → `pipelex run bundle`, `pipelex build runner` → `pipelex build runner bundle`
+- **Removed `-L` flag**: Pipe references now use address-based resolution (e.g., `github.com/Pipelex/methods/documents->documents.extract_page_contents_and_views`)
+
+### Added
+
+- **10 method packages** in `.mthds/methods/`: compliance-checker, cv-analyzer, doc-comparator, doc-summarizer, documents, due-diligence, entity-extractor, key-fact-extractor, report-writer, rfp-qualifier
+
+### Changed
+
+- Moved example input assets into per-example `inputs/` subdirectories, making each example self-contained
+- Replaced shared `examples/documents/documents.mthds` with the `documents` method package
+- Updated all e2e tests for new CLI syntax
+
 ## [v0.10.0] - 2026-02-25
 
 - Bumper to Chicago release of Pipelex, version `0.18.0`. See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)

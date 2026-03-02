@@ -2,7 +2,7 @@
   "document": {
     "concept": "native.Document",
     "content": {
-      "url": "assets/extract_dpe/dpe_single_page.pdf"
+      "url": "inputs/dpe_single_page.pdf"
     }
   }
 }
