@@ -1,0 +1,34 @@
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.12",
+  "base_commit_sha": "d81583e29d31318cff0b6795fee4ebf9c6239bb4",
+  "prompts": {
+    "81ec3ce4a35e4f37": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "83d725d9-3b7e-47d8-82a1-25b8dd16361b",
+        "model": "claude-4.6-opus-high-thinking"
+      },
+      "human_author": "Louis Choquel <lchoquel@users.noreply.github.com>",
+      "messages": [],
+      "total_additions": 3,
+      "total_deletions": 3,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    },
+    "e587dd0ad3b162e4": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "ef1f555d-26db-49cc-b453-bcca1d1e94a5",
+        "model": "composer-1.5"
+      },
+      "human_author": "Louis Choquel <lchoquel@users.noreply.github.com>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 0,
+      "accepted_lines": 0,
+      "overriden_lines": 1
+    }
+  }
+}
