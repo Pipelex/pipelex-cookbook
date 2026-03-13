@@ -3,6 +3,7 @@
 ## [v0.12.0] - 2026-03-12
 
 - Bump `pipelex` to `0.20.5`. See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+- Update Method dependencies to the latest versions.
 
 ## [v0.11.1] - 2026-03-01
 

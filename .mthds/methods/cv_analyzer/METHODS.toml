@@ -1,9 +1,12 @@
 [package]
-name = "cv-analyzer"
+name = "cv_analyzer"
 display_name = "CV Analyzer"
 address = "github.com/pipelex/methods"
-version = "0.0.1"
+version = "0.0.3"
 description = "# CV Analyzer\n\nAn end-to-end candidate screening pipeline that automates the process of evaluating CVs against job offers and generating appropriate follow-up actions.\n\n## What it does\n\nGiven a **candidate CV** (as a document) and a **job offer** (as text), this method:\n\n1. **Extracts** the CV content from the uploaded document into readable pages.\n2. **Analyzes the match** between the candidate's profile and the job requirements using an LLM acting as an HR expert. This produces a structured `MatchResult` containing a boolean `is_match` flag and a detailed `match_analysis` explanation.\n3. **Routes conditionally** based on the match result:\n   - **If the candidate matches**: generates **5 tailored interview questions** that probe relevant experience, skills, and cultural fit, focusing on strengths and gaps identified in the analysis.\n   - **If the candidate does not match**: drafts a **professional refusal email** that is courteous, respectful, and references specific reasons from the analysis.\n\n## Concepts\n\n- **MatchResult**: A structured assessment with `is_match` (boolean) and `match_analysis` (text explanation).\n- **Email**: A professional email message.\n- **InterviewQuestion**: A tailored interview question for a candidate.\n\n## Pipeline overview\n\n`screen_candidate` → `extract_cv` → `analyze_match` → `route_on_match` → (`generate_interview_questions` | `write_refusal_email`)"
 license = "MIT"
 authors = ["Evotis S.A.S"]
 main_pipe = "screen_candidate"
+
+[exports.candidate_screening]
+pipes = ["screen_candidate"]

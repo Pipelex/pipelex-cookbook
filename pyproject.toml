@@ -19,7 +19,7 @@ classifiers = [
 
 dependencies = [
   "beautifulsoup4==4.13.4",
-  "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal,docling]==0.20.5",
+  "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal,docling]==0.20.8",
   "weasyprint==68.0",
 ]
 
@@ -59,6 +59,7 @@ include = ["examples*", "utils*"]
 
 [tool.uv]
 required-version = ">=0.7.2"
+
 
 [tool.mypy]
 check_untyped_defs = true
