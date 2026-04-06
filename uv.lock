@@ -2251,7 +2251,7 @@ wheels = [
 
 [[package]]
 name = "mthds"
-version = "0.1.1"
+version = "0.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
@@ -2262,9 +2262,9 @@ dependencies = [
     { name = "tomlkit" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/88/f3/dad8e15a09a336e79255420f00d8a1bafbd9e449b4f193534c696f33c1d2/mthds-0.1.1.tar.gz", hash = "sha256:409d744b13987c2890e9fcdb005e35e0b8497b8288ecbfbdda2e26d5401483b9", size = 112278, upload-time = "2026-03-12T18:08:16.805Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/c6/e8/69d60b665f10a28c5efede63ccf95bdf75954701023e38138dc97da5862a/mthds-0.2.0.tar.gz", hash = "sha256:95952b489e0a6336667086a3eddb0f761f81d4af29f32de28b4182b33d265fc9", size = 112564, upload-time = "2026-03-24T13:33:51.927Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/96/5a/8ebd5ec801bd37323c2a0cf8b7b57bc09775fa768ab8c67c475824521ea4/mthds-0.1.1-py3-none-any.whl", hash = "sha256:2742a0d0d886315de4a60866fb7995fcef682b1f56df37026f36c24ebdc86ca0", size = 49146, upload-time = "2026-03-12T18:08:15.338Z" },
+    { url = "https://files.pythonhosted.org/packages/cc/64/3fe70f33f0f9c6237336f368cf0a24d28fce60fc1d486f0df308b36d3beb/mthds-0.2.0-py3-none-any.whl", hash = "sha256:72f6765ef48caff24211c0fc3523f61a7118ae829bd54caf1b9eba7fb4e4f281", size = 49346, upload-time = "2026-03-24T13:33:50.479Z" },
 ]
 
 [[package]]
@@ -3243,7 +3243,7 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.20.8"
+version = "0.23.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -3264,7 +3264,6 @@ dependencies = [
     { name = "opentelemetry-sdk" },
     { name = "opentelemetry-semantic-conventions" },
     { name = "pillow" },
-    { name = "pipelex-tools" },
     { name = "polyfactory" },
     { name = "portkey-ai" },
     { name = "posthog" },
@@ -3281,9 +3280,9 @@ dependencies = [
     { name = "typer" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/04/d0/0c4ca229b21dc049f75155a3e34b3beefa0a2c79f73c29738f67330a6d9c/pipelex-0.20.8.tar.gz", hash = "sha256:31d1e168883ebee770bf56e882e1a7983b2a750b6176cb3bd399a67c5820ea2f", size = 723202, upload-time = "2026-03-13T15:33:58.339Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/dd/f5/2a0ad1daccf4305abc82a5367ced54074c5d1a39b3b50715cbb18baff007/pipelex-0.23.5.tar.gz", hash = "sha256:d509c8dad4408fff9188e262a2e62a08ce76808aa61aa08db426a27236c95e28", size = 698826, upload-time = "2026-04-05T23:33:13.37Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/40/bf/e939aec764330ef873a37dd37c728254e3b2a62a780ef4e3b5b2f143e394/pipelex-0.20.8-py3-none-any.whl", hash = "sha256:95aad89c0ca848d4a3a7fcae80677e80ca1ed57978966a33dbabd27919367251", size = 1068022, upload-time = "2026-03-13T15:33:56.415Z" },
+    { url = "https://files.pythonhosted.org/packages/d6/46/8a6f5a06fb4dfa340af8174376f80e41ee1c019af04270d69c35b92f54d0/pipelex-0.23.5-py3-none-any.whl", hash = "sha256:61e2e52149b02137cadc003aad5b8515a96ab6258f3ea08dd3e6335c8d6d9a75", size = 1042465, upload-time = "2026-04-05T23:33:11.338Z" },
 ]
 
 [package.optional-dependencies]
@@ -3313,7 +3312,7 @@ mistralai = [
 
 [[package]]
 name = "pipelex-cookbook"
-version = "0.12.0"
+version = "0.12.1"
 source = { editable = "." }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -3328,6 +3327,7 @@ compat = [
 dev = [
     { name = "boto3-stubs" },
     { name = "mypy" },
+    { name = "pipelex-tools" },
     { name = "pyright" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
@@ -3351,7 +3351,8 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal", "docling"], specifier = "==0.20.8" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal", "docling"], specifier = "==0.23.5" },
+    { name = "pipelex-tools", marker = "extra == 'dev'", specifier = ">=0.3.2" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.405" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.1" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },
@@ -3373,17 +3374,17 @@ provides-extras = ["compat", "dev"]
 
 [[package]]
 name = "pipelex-tools"
-version = "0.3.1"
+version = "0.3.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/19/3a/1e871a5b1746e1e2e7d93cb95b737b01b43979132ef6e2b1f493ff0faa55/pipelex_tools-0.3.1.tar.gz", hash = "sha256:72aef8a1800ae7a1c866c34c1657c72ccb823648d1f03f95c6775e1b83473cae", size = 165394, upload-time = "2026-03-09T14:26:51.02Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/08/aa/99faab239abbb94f34de7fa2c5b915f2493cfc41d496dbf3fb6717f4d1db/pipelex_tools-0.3.2.tar.gz", hash = "sha256:a0f50c039a66e9bd889ec6f27dc6c9d139289e08fc48164588333906d6252535", size = 166104, upload-time = "2026-03-19T12:15:24.726Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/84/a3/a2511f228da30fc497d2fc557b5c4b497624cbb650a4e93d83d6caf59883/pipelex_tools-0.3.1-py3-none-macosx_10_12_x86_64.whl", hash = "sha256:23d1b2333dec2d9a6f0258a32f7f9ad6aa9a9f0e8831e3b67bddb2d13e32587c", size = 5148025, upload-time = "2026-03-09T14:26:36.166Z" },
-    { url = "https://files.pythonhosted.org/packages/ba/23/e46c6b91442dda5893985ea986b7059fcfd8e6fff4522b4a0178eb835350/pipelex_tools-0.3.1-py3-none-macosx_11_0_arm64.whl", hash = "sha256:9fb2aca00e4ff7b05111e73b73a6bc812f8c4bb363685861e136f8671454cfbf", size = 4891057, upload-time = "2026-03-09T14:26:38.746Z" },
-    { url = "https://files.pythonhosted.org/packages/cb/95/3d5f8486e3723e2995a5d5f39ad6231b28ae94f99ac0047b7fd9a8614b00/pipelex_tools-0.3.1-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:371cdb2877feee5527a02b87dc2d12606b3baa90ee4be31caa9389aa55844fe7", size = 5024827, upload-time = "2026-03-09T14:26:40.577Z" },
-    { url = "https://files.pythonhosted.org/packages/eb/bc/a55b906e45f440a995c92c9a421e5c602b9fb885d9d3b4ea10f46d339465/pipelex_tools-0.3.1-py3-none-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:f4d77f28ad8504ab4df977d36c34eaedff95d4a998a4f7bd4b4cfb80045e8edb", size = 5278822, upload-time = "2026-03-09T14:26:43.344Z" },
-    { url = "https://files.pythonhosted.org/packages/69/7b/a6e1bccbaeeb6b5c77cb804571650272c8161af39c1f486997a3a0607a9b/pipelex_tools-0.3.1-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:50a50131cbdbc4d75a8088f255fccd87def35fcbc98f5a038e76db10f1ebfe02", size = 5287864, upload-time = "2026-03-09T14:26:45.474Z" },
-    { url = "https://files.pythonhosted.org/packages/64/8a/d16b495f3706c9e3a3565b484396c206fa32596d3aec7262e3f47d3ba796/pipelex_tools-0.3.1-py3-none-win32.whl", hash = "sha256:782f735530eec884e1389d1707d19370bcb87390e6ff90c9e499b5a1142a9718", size = 4659317, upload-time = "2026-03-09T14:26:47.208Z" },
-    { url = "https://files.pythonhosted.org/packages/09/c1/5a5049ead77a3b4126c99b70905cb5ac36d8ec4955a53b8023bbe8c08d97/pipelex_tools-0.3.1-py3-none-win_amd64.whl", hash = "sha256:f569e3d5a2e80bc450f7a632a1b78d6be493cda3d19f5f0bf08460afa9471345", size = 5469911, upload-time = "2026-03-09T14:26:49.055Z" },
+    { url = "https://files.pythonhosted.org/packages/f3/65/725fb73c6674b132efed88cf2aff63af206f49b9da1199b2c5e7d49fe77e/pipelex_tools-0.3.2-py3-none-macosx_10_12_x86_64.whl", hash = "sha256:8306ae964f55b335efa1e3ba69f0e7ad11bc7c4c24b0cc36e83a154a24086439", size = 5147969, upload-time = "2026-03-19T12:15:08.996Z" },
+    { url = "https://files.pythonhosted.org/packages/b7/4c/79c57a1406d2f1b0d9eea80d60556dcfb52a8c41a7d0e6ec719e28103af4/pipelex_tools-0.3.2-py3-none-macosx_11_0_arm64.whl", hash = "sha256:97b2749a5c633d3023b93d5b348c440b45563cb72698438e459fe767402225a8", size = 4893870, upload-time = "2026-03-19T12:15:11.828Z" },
+    { url = "https://files.pythonhosted.org/packages/53/46/7ca720d104f4660ffdb95ec30237ab88c4691716e4e67174145ea7d31699/pipelex_tools-0.3.2-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e9fe437d39ed316ef784fa9ca7507984fc9c7490d110f320ad322601c6bb3dc0", size = 5026135, upload-time = "2026-03-19T12:15:13.866Z" },
+    { url = "https://files.pythonhosted.org/packages/3b/25/cd52544f54905b09e9d53745e6297bd096d3a88bc281d5b46d18f68e4d93/pipelex_tools-0.3.2-py3-none-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:1d38c335e1b3b861843ca02c0eb90a4c6d9ca04291d8d489678e4003c4c0e844", size = 5295755, upload-time = "2026-03-19T12:15:16.02Z" },
+    { url = "https://files.pythonhosted.org/packages/3e/98/007bc52cf7e907403d5a0f80ece8cede3103243e737fab1e64bf98ac73ca/pipelex_tools-0.3.2-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:160b65cfcfece6912cb6cd6a8ca331e5b7ba4516d6f95de5b28042aa68ed750a", size = 5287854, upload-time = "2026-03-19T12:15:18.605Z" },
+    { url = "https://files.pythonhosted.org/packages/d7/20/7f5f4bc156d30b9da75aaca5f6f525b00a8b7cf6e8d3c453a64512b7e6e7/pipelex_tools-0.3.2-py3-none-win32.whl", hash = "sha256:d001358c45caa83a7d2274a32d0551be97a433dd44576d2e427537a072ad5b79", size = 4672199, upload-time = "2026-03-19T12:15:20.694Z" },
+    { url = "https://files.pythonhosted.org/packages/de/ca/11725dbb93722be2e6970f2cedcbc52e0a441f1eba9f6ef3fcfaf884dea9/pipelex_tools-0.3.2-py3-none-win_amd64.whl", hash = "sha256:18830a579858c81c345959a9fa336a14e7b4589857d6f8c8a9b579d3b98120f2", size = 5468483, upload-time = "2026-03-19T12:15:23.124Z" },
 ]
 
 [[package]]
