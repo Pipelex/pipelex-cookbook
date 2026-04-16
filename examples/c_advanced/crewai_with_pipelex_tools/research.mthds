@@ -1,0 +1,85 @@
+domain        = "research"
+description   = "Typed research pipeline exposed to CrewAI as a tool."
+system_prompt = "You are a rigorous research analyst. Cite reasoning and be concise."
+main_pipe     = "deep_research"
+
+# ── Concepts ───────────────────────────────────────────────────────────────
+
+[concept.ResearchQuestion]
+description = "A well-formed research question to investigate."
+refines     = "Text"
+
+[concept.SourceSummary]
+description = "A summary of findings from a single source, framed by an angle."
+
+[concept.SourceSummary.structure]
+angle   = { type = "text", description = "The angle or perspective of this source.", required = true }
+summary = { type = "text", description = "Concise summary of the source findings.", required = true }
+
+[concept.FactCheck]
+description = "A structured fact-check verdict on a source summary."
+
+[concept.FactCheck.structure]
+claim      = { type = "text", description = "The main claim being evaluated.", required = true }
+verdict    = { type = "text", description = "One of: supported, refuted, unverifiable.", required = true }
+confidence = { type = "text", description = "Confidence from 0.0 to 1.0.", required = true }
+reasoning  = { type = "text", description = "Why this verdict was reached.", required = true }
+
+[concept.ResearchBrief]
+description = "A final research brief synthesizing verified sources."
+
+# ── Pipes ──────────────────────────────────────────────────────────────────
+
+[pipe.gather_sources]
+type = "PipeLLM"
+description = "Gather 3 distinct source summaries from different angles."
+inputs = { question = "ResearchQuestion" }
+output = "SourceSummary[3]"
+prompt = """
+Research the question below from 3 different angles. For each angle produce a
+SourceSummary with a clear `angle` label and a `summary` paragraph.
+
+Question: @question
+"""
+
+[pipe.verify_claim]
+type = "PipeLLM"
+description = "Fact-check the main claim of a single source summary."
+inputs = { summary = "SourceSummary" }
+output = "FactCheck"
+prompt = """
+Evaluate the main claim in this source. Return a FactCheck with claim,
+verdict (supported / refuted / unverifiable), confidence (0.0-1.0), and reasoning.
+
+Angle:   $summary.angle
+Summary: $summary.summary
+"""
+
+[pipe.synthesize_brief]
+type = "PipeLLM"
+description = "Synthesize summaries and fact-checks into a final research brief."
+inputs = { summaries = "SourceSummary", checks = "FactCheck" }
+output = "ResearchBrief"
+prompt = """
+Synthesize a research brief from the source summaries and fact-checks below.
+Distinguish supported claims from refuted or unverifiable ones.
+
+## Summaries
+@summaries
+
+## Fact-checks
+@checks
+
+Produce an executive_summary, key_findings, and open_questions.
+"""
+
+[pipe.deep_research]
+type = "PipeSequence"
+description = "Full research pipeline: gather -> batch fact-check -> synthesize."
+inputs = { question = "ResearchQuestion" }
+output = "ResearchBrief"
+steps = [
+  { pipe = "gather_sources", result = "summaries" },
+  { pipe = "verify_claim", batch_over = "summaries", batch_as = "summary", result = "checks" },
+  { pipe = "synthesize_brief", result = "brief" },
+]
