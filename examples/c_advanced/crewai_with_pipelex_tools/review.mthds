@@ -1,0 +1,71 @@
+domain        = "review"
+description   = "Analyze a product review and compose a deterministic customer email."
+system_prompt = "You are a rigorous product-review analyst."
+main_pipe     = "prepare_customer_email"
+
+# ── Concepts ───────────────────────────────────────────────────────────────
+
+[concept.ProductReview]
+description = "A raw customer product review."
+refines     = "Text"
+
+[concept.ReviewAnalysis]
+description = "Structured analysis of a product review."
+
+[concept.CustomerEmail]
+description = "A customer-facing email body composed from a ReviewAnalysis."
+refines     = "Text"
+
+# ── Pipes ──────────────────────────────────────────────────────────────────
+
+[pipe.analyze_review]
+type = "PipeLLM"
+description = "Extract sentiment, themes, complaints, feature requests, and praise from a review."
+inputs = { review = "ProductReview" }
+output = "ReviewAnalysis"
+prompt = """
+Analyze the following product review. Produce a ReviewAnalysis with:
+- sentiment (positive / neutral / negative)
+- overall_score (0.0 - 1.0)
+- key_themes: short descriptors of what the reviewer talks about
+- complaints: specific complaints raised
+- feature_requests: features explicitly or implicitly requested
+- standout_praise: things the reviewer liked
+
+Review:
+@review
+"""
+
+[pipe.compose_email]
+type = "PipeCompose"
+description = "Render a deterministic customer email body from the review analysis."
+inputs = { analysis = "ReviewAnalysis" }
+output = "CustomerEmail"
+template = """
+Hi there,
+
+Thanks for taking the time to share your review — we really appreciate it.
+
+What you loved:
+{% for item in analysis.standout_praise %}- {{ item }}
+{% endfor %}
+What we'll work on:
+{% for item in analysis.complaints %}- {{ item }}
+{% endfor %}
+Feature requests we've logged for the product team:
+{% for item in analysis.feature_requests %}- {{ item }}
+{% endfor %}
+
+Warm regards,
+The Customer Success Team
+"""
+
+[pipe.prepare_customer_email]
+type = "PipeSequence"
+description = "Analyze a review and compose the customer email body."
+inputs = { review = "ProductReview" }
+output = "CustomerEmail"
+steps = [
+  { pipe = "analyze_review", result = "analysis" },
+  { pipe = "compose_email", result = "email" },
+]
