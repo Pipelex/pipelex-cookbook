@@ -2,7 +2,7 @@
 
 ## [v0.12.1] - 2026-04-06
 
-- Bump `pipelex` to `0.23.5`. See `Pipelex` changelog [here](https://docs.pipelex.com/changelog/)
+- Bump `pipelex` to `0.24.0`. See `Pipelex` changelog [here](https://docs.pipelex.com/latest/changelog/)
 - Add Pipelex Gateway model reference docs
 - Add release skill for Claude Code
 - Update pipelex.toml config and tutorial README

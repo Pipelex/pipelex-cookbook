@@ -7,7 +7,6 @@
     "mypy.runUsingActiveInterpreter": true,
     "search.exclude": {
         ".mypy_cache/*": true,
-        "**/dev_context": true
     },
     "files.exclude": {
         "**/__pycache__": true,
