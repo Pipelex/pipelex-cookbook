@@ -54,4 +54,9 @@ uv pip install -e ".[crewai]"
 uv run python examples/c_advanced/crewai_with_pipelex_tools/run_crew_with_pipelex.py
 ```
 
-Requires `PIPELEX_GATEWAY_API_KEY` and `OPENAI_API_KEY` in `.env`. After the run, check `reports/report.md` and `outbox.txt`.
+Requires two API keys in `.env`:
+
+- `PIPELEX_GATEWAY_API_KEY` — drives the Pipelex pipeline (`pipelex login` to get one)
+- `OPENAI_API_KEY` — drives the CrewAI agent reasoning
+
+After the run, check `reports/report.md` and `outbox.txt`.
