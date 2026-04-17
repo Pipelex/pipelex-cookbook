@@ -44,3 +44,5 @@ telemetry_override.toml
 
 # Claude AI
 examples/c_advanced/gen_expense_data/output*
+examples/c_advanced/crewai_with_pipelex_tools/outbox.txt
+outbox.txt
