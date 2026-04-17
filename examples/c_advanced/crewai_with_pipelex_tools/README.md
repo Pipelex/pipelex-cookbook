@@ -1,38 +1,50 @@
 # CrewAI with Pipelex as a Typed Tool
 
-A CrewAI crew where a validated MTHDS pipeline sits between vanilla CrewAI agents.
+## What's happening here
+
+**Pipelex is a tool for AI agents.** It lets you define repeatable, typed LLM workflows in `.mthds` files — and any agent (CrewAI, LangGraph, custom) can call them as a single function. Think of it as a stored procedure for LLMs: define the steps once, get the same structured output every time. No prompt drift, no missing fields, no format surprises.
+
+**CrewAI is the agent orchestration layer.** It decides *when* to call the Pipelex tool, passes results between agents, and handles side effects (saving files, sending emails, hitting APIs) — things Pipelex intentionally doesn't do.
+
+```
+Pipelex                                        CrewAI
+"What to compute and how to format it"         "When to run it and what to do with the result"
+
+- Validated inputs/outputs (Pydantic)           - Agent decides to call the tool
+- Typed LLM calls (PipeLLM)                     - Passes result to next agent
+- Batch fan-out (PipeBatch)                     - Side effects: save file, send email
+- Deterministic templates (PipeCompose)         - Could loop, retry, branch (agent reasoning)
+- Same structure every run
+```
+
+Pipelex replaces the part of agent workflows where you need **reliability** — structured extraction, fact-checking, templated output. CrewAI handles the part that needs **flexibility** — deciding what to do next, interacting with external systems. Neither replaces the other.
 
 ## The crew
 
-1. **Email Prep** (Pipelex-backed) — calls `prepare_customer_email`, a `PipeSequence` that runs a `PipeLLM` (analyze the review → typed `ReviewAnalysis`) followed by a `PipeCompose` (render a deterministic email body via a Jinja template). Same template, same structure every time.
-2. **Email Dispatcher** (vanilla CrewAI) — has a `send_email` tool that writes to `outbox.txt` (a side effect Pipelex intentionally doesn't do). Takes the composed body from the prior task and dispatches it.
+1. **Report Creator** (Pipelex-backed) — calls `prepare_report`, a single `PipeSequence` that chains:
+   - `gather_sources` (PipeLLM) → 3 typed `SourceSummary`s
+   - `verify_claim` (PipeBatch) → batch fact-check each summary → `FactCheck`s
+   - `synthesize_brief` (PipeLLM) → typed `ResearchBrief`
+   - `compose_report` (PipeCompose) → deterministic markdown report (same structure every run)
+2. **Publisher** (vanilla CrewAI) — `save_report` writes a `.md` file, `send_email` writes to `outbox.txt`. Side effects Pipelex intentionally doesn't do.
 
-The two agents run sequentially. The split is clean:
-
-| Layer | Responsibility | Example |
+| Layer | Responsibility | Pipes used |
 |---|---|---|
-| Pipelex `PipeLLM` | Typed, validated LLM extraction | review → `ReviewAnalysis` |
-| Pipelex `PipeCompose` | Deterministic template rendering (no LLM) | `ReviewAnalysis` → email body |
-| CrewAI | Agent reasoning, tool choice, **side effects / external I/O** | send email, post to Slack, hit an API |
+| Pipelex `PipeLLM` | LLM extraction + fact-checking | gather, verify, synthesize |
+| Pipelex `PipeBatch` | Fan-out over a list | verify each summary |
+| Pipelex `PipeCompose` | Deterministic Jinja template (no LLM) | compose_report |
+| CrewAI | Agent reasoning + side effects | save_report, send_email |
 
 ## Flow to build one of these
 
-1. Author the bundle with the MTHDS skills: `/mthds-build`, `/mthds-check`.
-2. Generate Pydantic structures:
-   ```bash
-   pipelex build structures review.mthds
-   ```
-   Output lands in `structures/<domain>__<concept>.py`. Remove the inline `[concept.X.structure]` block from the `.mthds` — the Python class is now the source of truth.
-3. Wrap the pipe in a CrewAI `@tool` function that returns the Pydantic. Drop it into a crew with whatever other agents you need.
-
-## Why
-
-Don't re-parse `.mthds` in Python to plug into another framework — you lose validation, typed outputs, and batching. Let Pipelex own the bundle and expose it to CrewAI as one typed tool, then compose it with any other CrewAI agents / tools.
+1. Author the bundle: `/mthds-build`, `/mthds-check`.
+2. Generate Pydantic structures: `pipelex build structures research_report.mthds`.
+3. Wrap the pipe in a `@tool` function. Drop it into a crew with other agents.
 
 ## Files
 
-- `review.mthds` — bundle with the `analyze_review` pipe producing a typed `ReviewAnalysis`
-- `structures/review__review_analysis.py` — Pydantic `ReviewAnalysis(StructuredContent)`
+- `research_report.mthds` — full bundle
+- `structures/research_report__research_brief.py` — Pydantic `ResearchBrief(StructuredContent)`
 - `run_crew_with_pipelex.py` — two-agent sequential crew
 
 ## Install + run
@@ -42,4 +54,4 @@ uv pip install -e ".[crewai]"
 uv run python examples/c_advanced/crewai_with_pipelex_tools/run_crew_with_pipelex.py
 ```
 
-Requires `PIPELEX_GATEWAY_API_KEY` (Pipelex inference) and `OPENAI_API_KEY` (CrewAI agent reasoning) in `.env`. After the run, check `outbox.txt` — that's the customer email the CrewAI agent "sent".
+Requires `PIPELEX_GATEWAY_API_KEY` and `OPENAI_API_KEY` in `.env`. After the run, check `reports/report.md` and `outbox.txt`.
