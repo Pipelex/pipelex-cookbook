@@ -23,9 +23,7 @@ Welcome to the Pipelex tutorials! Learn how to build AI pipelines step by step.
 **1. Install Pipelex**
 
 ```bash
-pip install pipelex
-# or
-uv pip install pipelex
+uv tool install pipelex
 ```
 
 **2. Get your API key**
