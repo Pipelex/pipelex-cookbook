@@ -50,25 +50,40 @@ Pass empty text to omit.
 
 ## Output
 
-The output structure is supplied by the caller — pass any concept declared in the bundle as `dynamic_output_concept_code` when executing the pipeline.
+The output structure is supplied by the caller — pass any concept declared in the bundle as `dynamic_output_concept_ref` when executing the pipeline.
 
 For this example, we declare `ReferenceCount` (tailored to the question "how many references are from its own research center?"):
 
 - `count` — the integer answer
 - `explanation` — short prose justification grounded in the cited passages
 
+> **This is a real structured output, not a JSON-shaped string.** `count` is a Python `int` you can do arithmetic on (`result.count + 1`, `sum(...)`), validated by Pydantic at parse time — not a number embedded in free text that you'd have to regex out. The whole point of declaring `ReferenceCount` as a concept is that the LLM is forced into that schema and the runner returns a typed object.
+
+![Result](./result.png)
+
 The bundle also declares `DocumentAnswer` for callers who want the rich envelope with status enum, supporting passages, contradictions, caveats, and confidence.
 
 ## Usage
 
-Run via the CLI:
+Three ways to run it — pick whichever fits your workflow. All three resolve the same dynamic output concept (`document_qa.ReferenceCount`) and produce the same typed `ReferenceCount` object.
+
+### Via the `mthds` CLI
+
+```bash
+mthds run bundle examples/b_basics/document_extract/answer_from_documents/ \
+  -O document_qa.ReferenceCount
+```
+
+### Via the `pipelex` CLI
 
 ```bash
 pipelex run bundle examples/b_basics/document_extract/answer_from_documents/ \
-  -i examples/b_basics/document_extract/answer_from_documents/inputs.json
+  -O document_qa.ReferenceCount
 ```
 
-Or run the Python runner — it passes the output concept string through `execute_pipeline`:
+`-O` (long form: `--dynamic-output-concept`) tells the runner which structured concept to populate. The bundle declares its main pipe's output as `Dynamic`, so the concept is selected at run time. `inputs.json` is auto-detected from the bundle directory; pass `-i path/to/inputs.json` to override.
+
+### Via the Python runner
 
 ```bash
 python examples/b_basics/document_extract/answer_from_documents/run_answer_from_documents.py
@@ -79,9 +94,11 @@ The runner specifies the output concept dynamically:
 ```python
 response = await runner.execute_pipeline(
     pipe_code="answer_from_documents",
-    dynamic_output_concept_code="document_qa.ReferenceCount",
+    dynamic_output_concept_ref="document_qa.ReferenceCount",
     inputs={...},
 )
+result = response.pipe_output.main_stuff_as(content_type=ReferenceCount)
+# result.count is a real int — assert isinstance(result.count, int)
 ```
 
 To get a different output shape, swap the concept string (e.g. `"document_qa.DocumentAnswer"`) — the bundle is unchanged.
