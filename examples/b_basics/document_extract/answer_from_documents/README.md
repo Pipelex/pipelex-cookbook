@@ -11,24 +11,6 @@ One of the benefits of Pipelex is the ability to use a different model for each 
 
 Given any set of documents and any question, returns a structured answer with verbatim citations, principled abstention, and an explicit status that distinguishes full answers, partial answers, and every flavor of "I don't know."
 
-## Why this exists
-
-Most document-QA systems fail in one of three ways: they answer confidently from world knowledge when the documents do not contain the answer, they hallucinate citations (page numbers that don't exist, quotes that paraphrase rather than quote), or they give a single-shape answer regardless of whether evidence was sufficient, partial, or absent.
-
-`answer_from_documents` is designed to fail _visibly_ and _truthfully_. Every answer is grounded in verbatim passages. When the documents can't support a confident answer, the method tells you why, with a specific status.
-
-## What it does
-
-Takes a list of documents, a question, and optional context. Returns a `DocumentAnswer` with a strict short-form answer, the supporting passages quoted verbatim, and a status that distinguishes confident answers from each kind of abstention.
-
-Internally runs a five-step pipeline — one user-facing call:
-
-1. **Extract** pages from each document in the input list.
-2. **Analyze the question** — classify its type, decide whether it's answerable from documents at all, decompose compound questions into sub-questions, and generate reformulations that help retrieval find evidence when documents use different vocabulary.
-3. **Retrieve passages** — a long-context pass that reads the full document set and pulls verbatim quotes for each sub-question. Returns an empty list if nothing is relevant (never pads).
-4. **Verify and assess** — check coverage against every sub-question, surface contradictions across sources, and judge sufficiency (sufficient / partial / insufficient / none).
-5. **Synthesize** — produce the final answer with a calibrated status, every factual claim traceable to a cited passage.
-
 ## Inputs
 
 | Input       | Type         | Required           | Purpose                                                                      |
@@ -62,6 +44,24 @@ For this example, we declare `ReferenceCount` (tailored to the question "how man
 ![Result](./result.png)
 
 The bundle also declares `DocumentAnswer` for callers who want the rich envelope with status enum, supporting passages, contradictions, caveats, and confidence.
+
+## Why this exists
+
+Most document-QA systems fail in one of three ways: they answer confidently from world knowledge when the documents do not contain the answer, they hallucinate citations (page numbers that don't exist, quotes that paraphrase rather than quote), or they give a single-shape answer regardless of whether evidence was sufficient, partial, or absent.
+
+`answer_from_documents` is designed to fail _visibly_ and _truthfully_. Every answer is grounded in verbatim passages. When the documents can't support a confident answer, the method tells you why, with a specific status.
+
+## What it does
+
+Takes a list of documents, a question, and optional context. Returns a `DocumentAnswer` with a strict short-form answer, the supporting passages quoted verbatim, and a status that distinguishes confident answers from each kind of abstention.
+
+Internally runs a five-step pipeline — one user-facing call:
+
+1. **Extract** pages from each document in the input list.
+2. **Analyze the question** — classify its type, decide whether it's answerable from documents at all, decompose compound questions into sub-questions, and generate reformulations that help retrieval find evidence when documents use different vocabulary.
+3. **Retrieve passages** — a long-context pass that reads the full document set and pulls verbatim quotes for each sub-question. Returns an empty list if nothing is relevant (never pads).
+4. **Verify and assess** — check coverage against every sub-question, surface contradictions across sources, and judge sufficiency (sufficient / partial / insufficient / none).
+5. **Synthesize** — produce the final answer with a calibrated status, every factual claim traceable to a cited passage.
 
 ## Usage
 
