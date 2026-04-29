@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.12.2] - 2026-04-29
+
+- Bump `pipelex` to `0.25.1`. See `Pipelex` changelog [here](https://docs.pipelex.com/latest/changelog/)
+- Add `answer_from_documents` example demonstrating document retrieval and Q&A
+- Update inference deck configuration
+
 ## [v0.12.1] - 2026-04-06
 
 - Bump `pipelex` to `0.24.0`. See `Pipelex` changelog [here](https://docs.pipelex.com/latest/changelog/)

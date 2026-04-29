@@ -1,4 +1,0 @@
-
-[llm.presets]
-
-synthesizing-data = { model = "gpt-4o-mini", temperature = 0.9 }
