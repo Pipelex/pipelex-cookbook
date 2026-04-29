@@ -1,0 +1,22 @@
+{
+  "documents": {
+    "concept": "native.Document",
+    "content": [
+      {
+        "url": "https://huggingface.co/datasets/yubo2333/MMLongBench-Doc/resolve/main/documents/PH_2016.06.08_Economy-Final.pdf"
+      }
+    ]
+  },
+  "question": {
+    "concept": "native.Text",
+    "content": {
+      "text": "Among all 12 references in this report, how many are from its own research center?"
+    }
+  },
+  "context": {
+    "concept": "native.Text",
+    "content": {
+      "text": ""
+    }
+  }
+}

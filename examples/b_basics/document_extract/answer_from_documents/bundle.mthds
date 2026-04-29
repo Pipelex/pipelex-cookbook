@@ -1,0 +1,288 @@
+domain      = "document_qa"
+description = "Answer any question from any set of documents with grounded citations and principled abstention. Uses a 5-step pipeline — extract, analyze question, retrieve evidence with verbatim quotes, verify and assess, then synthesize an answer with an explicit status enum that distinguishes 'answered', 'partial', 'insufficient evidence', 'not in documents', and 'not answerable from documents'."
+main_pipe   = "answer_from_documents"
+
+# ---------------------------------------------------------------------------
+# Concepts
+# ---------------------------------------------------------------------------
+
+[concept.QuestionAnalysis]
+description = "Structured understanding of the user's question: its type, whether it is answerable from documents at all, its decomposition into sub-questions, key entities to search for, alternative phrasings to boost retrieval recall, and any ambiguities that may block a confident answer."
+
+[concept.QuestionAnalysis.structure]
+question_type = { type = "text", description = "The cognitive type of the question, which determines whether and how documents can answer it", required = true, choices = [
+  "factual",
+  "comparative",
+  "aggregative",
+  "temporal",
+  "causal",
+  "procedural",
+  "definitional",
+  "counterfactual",
+  "opinion",
+  "out_of_scope",
+] }
+is_answerable_from_documents = { type = "boolean", description = "Whether a factual answer could in principle be derived from documents. False for counterfactual, opinion, and out_of_scope questions.", required = true }
+sub_questions = { type = "list", description = "Decomposition of a compound question into independently-answerable sub-questions. For simple questions, a single-item list containing the original question.", required = true }
+key_entities = { type = "list", description = "Named entities, concepts, or terms the question centers on. Used to guide retrieval.", required = true }
+reformulations = { type = "list", description = "Alternative phrasings and synonyms for the question's key terms. Improves retrieval recall when documents use different vocabulary.", required = true }
+ambiguities = { type = "list", description = "Aspects of the question that are ambiguous and may require clarification from the user. Empty list if the question is fully specified." }
+
+[concept.DocumentPassage]
+description = "A verbatim passage extracted from a source document, with full citation metadata, used as grounded evidence for downstream synthesis."
+
+[concept.DocumentPassage.structure]
+document_identifier    = { type = "text", description = "The filename, title, or URL identifying which document the passage is from. Use whatever identifying information is available in the page content.", required = true }
+page_number            = { type = "integer", description = "The page number within the source document. Use 1 if the document has no clear pagination." }
+quote                  = { type = "text", description = "The exact text from the source, copied verbatim. No paraphrasing, no ellipsis beyond what is in the source, no reformatting beyond preserving the original words.", required = true }
+relevance_reasoning    = { type = "text", description = "Brief explanation of how this passage relates to the question or one of its sub-questions. One or two sentences.", required = true }
+sub_question_addressed = { type = "text", description = "Which sub-question from the question analysis this passage helps address. Use the full text of the sub-question." }
+
+[concept.EvidenceAssessment]
+description = "A critical assessment of the retrieved evidence — whether it is sufficient to answer the question, which sub-questions have coverage, and whether any contradictions were detected across sources."
+
+[concept.EvidenceAssessment.structure]
+sufficiency = { type = "text", description = "Overall sufficiency of the evidence relative to the question", required = true, choices = [
+  "sufficient",
+  "partial",
+  "insufficient",
+  "none",
+] }
+covered_sub_questions = { type = "list", description = "Sub-questions for which at least one retrieved passage provides evidence.", required = true }
+uncovered_sub_questions = { type = "list", description = "Sub-questions for which no retrieved passage provides evidence. Empty list if coverage is complete.", required = true }
+contradictions = { type = "list", description = "Specific contradictions detected across the retrieved passages — where two or more passages make incompatible claims about the same fact. Each item describes the conflict and cites the conflicting passages." }
+notes = { type = "text", description = "Any other observations about the evidence: gaps, weak inferences, or quality concerns." }
+
+[concept.ReferenceCount]
+description = "Specific output structure for this example's question — how many references in the report come from the report's own research center. Demonstrates how to output a typed structure tailored to the question rather than a free-form text answer."
+
+[concept.ReferenceCount.structure]
+count       = { type = "integer", description = "The number of references coming from the report's own research center.", required = true }
+explanation = { type = "text", description = "Short prose justification grounded in the cited passages.", required = true }
+
+[concept.DocumentAnswer]
+description = "The final grounded answer to the user's question, with a principled status enum that distinguishes confident answers from every flavor of abstention."
+
+[concept.DocumentAnswer.structure]
+status = { type = "text", description = "The outcome of the answer attempt. Distinguishes full answers, partial answers, and the different reasons for abstention.", required = true, choices = [
+  "answered",
+  "partial_answer",
+  "insufficient_evidence",
+  "not_in_documents",
+  "not_answerable_from_documents",
+] }
+answer = { type = "text", description = "The strictest, shortest grounded value answering the question — a bare scalar, name, yes/no, or JSON array for lists — with no prose or preamble. For any abstention status (insufficient_evidence, not_in_documents, not_answerable_from_documents), the literal string 'Not answerable'. Never empty.", required = true }
+explanation = { type = "text", description = "Optional prose reasoning and elaboration behind the answer. For abstentions, explains why. Empty when the answer stands alone." }
+supporting_passages = { type = "list", description = "Every passage used to construct the answer. Empty list when nothing was cited.", required = true }
+contradictions_noted = { type = "list", description = "Any contradictions the answer had to navigate, surfaced to the user. Empty list if none." }
+caveats = { type = "text", description = "What was missing, what assumptions were made, or what the user should know about the answer's limits. For abstentions, this explains the reason.", required = true }
+confidence = { type = "text", description = "Qualitative confidence in the answer, grounded in evidence sufficiency — not in the model's prior.", required = true, choices = [
+  "high",
+  "medium",
+  "low",
+  "none",
+] }
+
+# ---------------------------------------------------------------------------
+# Pipes — Extraction
+# ---------------------------------------------------------------------------
+
+[pipe.extract_one_document]
+type        = "PipeExtract"
+description = "Extract text content from a single document into pages."
+inputs      = { document = "Document" }
+output      = "Page[]"
+model       = "@default-extract-document"
+
+# ---------------------------------------------------------------------------
+# Pipes — Analysis
+# ---------------------------------------------------------------------------
+
+[pipe.analyze_question]
+type = "PipeLLM"
+description = "Analyze the user's question before retrieval: classify its type, decide whether it is answerable from documents at all, decompose compound questions, identify key entities, and produce reformulations that will help the retrieval step find evidence even when documents use different terminology. Optional context, when provided, is used to disambiguate domain-specific terms and scope the question appropriately."
+inputs = { question = "Text", context = "Text" }
+output = "QuestionAnalysis"
+model = "$writing-factual"
+system_prompt = """
+You are a precise question analyst. Before any documents are searched, your job is to understand the user's question deeply and set up the retrieval that follows for success.
+
+Classify the question type:
+- factual: asks for a specific fact stated in documents (dates, names, numbers, definitions)
+- comparative: asks which of two or more things is X-er, or how they differ
+- aggregative: requires counting, summing, or ranking across many items
+- temporal: asks about sequence, duration, or change over time
+- causal: asks why, or about cause-and-effect relationships
+- procedural: asks how to do something, step-by-step
+- definitional: asks what something is or means
+- counterfactual: asks about hypothetical scenarios ("what if")
+- opinion: asks for subjective judgment or evaluation
+- out_of_scope: clearly cannot be answered from documents (weather, current news, personal advice)
+
+Decide is_answerable_from_documents:
+- TRUE for factual, comparative, aggregative, temporal, causal, procedural, definitional
+- FALSE for counterfactual, opinion, out_of_scope
+- Be honest — do not force a question into an answerable type just to be helpful
+
+Decompose into sub_questions:
+- A compound question like "Who signed the most contracts in 2024 and what was their total value?" breaks into: (1) Which contracts were signed in 2024? (2) Who signed each? (3) What was the value of each? (4) Who has the highest count and total?
+- A simple question becomes a single-item list containing itself
+
+Identify key_entities: the specific people, organizations, dates, amounts, places, or concepts the question centers on.
+
+Generate reformulations: alternative phrasings. If the question asks about "revenue", include "turnover", "top line", "sales". If it asks about "Q3 2024", include "third quarter 2024", "July-September 2024". This is the single most valuable thing you produce — it prevents retrieval from missing passages that use different vocabulary.
+
+Flag ambiguities: things that genuinely need clarification (not things you can guess from context). "How much did we make?" has ambiguity about time period and metric. "What is the deadline?" has ambiguity if the documents describe several deadlines.
+
+If context is provided, use it to:
+- Disambiguate domain-specific terms (e.g., "revenue" may mean gross vs. net depending on the industry stated in context)
+- Interpret references that would otherwise be ambiguous
+- Narrow the scope of the question
+Context is background — it is NOT a document to answer from, and you must not cite it.
+
+Be rigorous. This analysis is the map that guides everything after it.
+"""
+prompt = """
+@context
+
+Analyze the following question.
+
+Question: @question
+"""
+
+# ---------------------------------------------------------------------------
+# Pipes — Retrieval
+# ---------------------------------------------------------------------------
+
+[pipe.retrieve_passages]
+type = "PipeLLM"
+description = "Read the full document set and extract every passage that could help answer the question or any of its sub-questions. Quotes must be verbatim. Returns an empty list if no passage is genuinely relevant — never pads with tangential content. Optional context, when provided, helps prioritize which passages matter but is not itself a retrieval source."
+inputs = { pages = "Page[]", question = "Text", analysis = "QuestionAnalysis", context = "Text" }
+output = "DocumentPassage[]"
+model = "@best-gemini"
+system_prompt = """
+You are a rigorous evidence extractor. You are given a question, its analysis, and the full text of one or more documents. Find every passage that could contribute to answering the question.
+
+Absolute rules:
+
+1. Verbatim only. Every quote must be copied exactly from the source. Never paraphrase. Never normalize punctuation or casing. Never summarize inside a quote. If you cannot extract an exact quote, do not include the passage.
+
+2. Cite precisely. For each passage, identify the source document (by filename, title, URL, or the most stable identifying information visible in the page content) and the page number. If a document has no pagination, use 1.
+
+3. Empty is a valid answer. If no passages in the documents are genuinely relevant, return an empty list. Do NOT include marginal or tangential passages just to return something. A clean empty list is infinitely more useful than padded noise.
+
+4. Use the sub-questions as retrieval targets. Each passage should address a specific sub-question from the analysis. Include passages for every sub-question that has evidence in the documents.
+
+5. Use the reformulations. The documents may use different vocabulary than the question. A question about "revenue" may find evidence under "turnover", "top line", or "sales receipts". Search broadly using the reformulations provided in the analysis.
+
+6. Include passages that complicate the answer, not only supporting ones. If a document contradicts or qualifies a claim, that passage is evidence too. The synthesis step depends on seeing the full picture.
+
+7. Include enough context. A quote that makes sense in isolation beats a fragment that requires the surrounding paragraph. Err on the side of longer quotes.
+
+8. Never invent. Never fill gaps with plausible-sounding content that is not in the documents.
+
+9. Context handling. If background context is provided, use it to better understand what the question is really asking and to judge relevance. Context is NOT a source — you never cite it and passages in it never appear in supporting_passages. Only the documents are citable.
+"""
+prompt = """
+@context
+
+@question
+
+Question analysis:
+@analysis
+
+Documents:
+@pages
+
+Extract every passage in the documents that helps answer the question or any of its sub-questions. Quote verbatim. Return an empty list if nothing is genuinely relevant.
+"""
+
+# ---------------------------------------------------------------------------
+# Pipes — Verification and Assessment
+# ---------------------------------------------------------------------------
+
+[pipe.verify_and_assess]
+type = "PipeLLM"
+description = "Critically assess the retrieved passages before synthesis: check coverage against sub-questions, surface contradictions across sources, and judge whether the evidence is sufficient, partial, or insufficient. This is the gate that prevents confidently-wrong answers."
+inputs = { passages = "DocumentPassage[]", analysis = "QuestionAnalysis" }
+output = "EvidenceAssessment"
+model = "$writing-factual"
+system_prompt = """
+You are a critical reviewer. You are given a set of retrieved passages and the original question analysis. Your job is to assess the evidence honestly — not to defend it and not to dismiss it.
+
+Do each of these:
+
+1. Coverage check. For each sub-question in the analysis, determine whether any retrieved passage provides evidence for it. Populate covered_sub_questions and uncovered_sub_questions accordingly. Together they must partition the full sub-question list.
+
+2. Contradiction scan. Identify every case where two or more passages make incompatible claims about the same fact (different dates for the same event, different amounts, conflicting definitions). Describe each contradiction concretely and reference the conflicting passages by their content.
+
+3. Sufficiency judgment. Choose one:
+   - sufficient: every sub-question has strong evidence; the synthesis step can produce a confident answer
+   - partial: some sub-questions have evidence but others do not; a partial answer is possible
+   - insufficient: the passages touch the topic but do not contain enough to answer confidently, even in part
+   - none: no passages, or passages are irrelevant — the question cannot be answered from these documents
+
+4. Notes. Mention any quality concerns: passages that are vague, passages that require inference to connect to the question, passages that might be outdated if the question is temporal.
+
+Be strict. It is far better to flag insufficiency here than to let the synthesis step produce a confident but ungrounded answer.
+"""
+prompt = """
+Question analysis:
+@analysis
+
+Retrieved passages:
+@passages
+
+Assess the evidence. Check coverage against every sub-question, surface contradictions, and judge overall sufficiency.
+"""
+
+# ---------------------------------------------------------------------------
+# Pipes — Synthesis
+# ---------------------------------------------------------------------------
+
+[pipe.synthesize_answer]
+type = "PipeLLM"
+description = "Produce the final grounded, typed answer. Every claim must trace to a cited passage. The output structure is supplied dynamically by the caller — pass a concept string at runtime via dynamic_output_concept_code (e.g. 'document_qa.ReferenceCount' or 'document_qa.DocumentAnswer') to control the shape. Optional context, when provided, informs tone and framing but is never cited — citations only come from documents."
+inputs = { question = "Text", analysis = "QuestionAnalysis", passages = "DocumentPassage[]", assessment = "EvidenceAssessment", context = "Text" }
+output = "Dynamic"
+model = "$writing-factual"
+system_prompt = """
+You produce a grounded, typed answer from retrieved passages, conforming to the output structure requested by the caller. Use only the passages as evidence; never outside knowledge or the context.
+
+Be faithful to the requested output structure: every required field must be populated and every value must be supportable by the cited passages. If the requested structure has an abstention/status field, map the evidence assessment to it honestly. If it has fields for explanation, citations, or confidence, ground them strictly in the passages. If the structure is a narrow shape (a single integer, a single name, a list), return only that — never pad with prose.
+
+Preserve units and symbols from the source (e.g. "%", "$", "km") — do not strip them. Never invent. If the evidence is insufficient and the structure has no abstention field, set numeric fields to 0 and explain why in any text field available.
+
+Context, if provided, is background for interpretation only — never cited and never counted as evidence.
+"""
+prompt = """
+@?context.text
+
+Question: @question
+
+Question analysis:
+@analysis
+
+Retrieved passages:
+@passages
+
+Evidence assessment:
+@assessment
+"""
+
+# ---------------------------------------------------------------------------
+# Pipes — Main Pipeline
+# ---------------------------------------------------------------------------
+
+[pipe.answer_from_documents]
+type = "PipeSequence"
+description = "End-to-end document question answering with grounded citations. The output structure is supplied dynamically by the caller via dynamic_output_concept_code — pass any concept declared in the bundle (e.g. 'document_qa.ReferenceCount' for this example, or 'document_qa.DocumentAnswer' for the rich envelope). When context is provided, it is treated as background information to disambiguate the question and guide synthesis — never as a document to answer from or cite."
+inputs = { documents = "Document[]", question = "Text", context = "Text" }
+output = "Dynamic"
+steps = [
+  { pipe = "extract_one_document", batch_over = "documents", batch_as = "document", result = "pages" },
+  { pipe = "analyze_question", result = "analysis" },
+  { pipe = "retrieve_passages", result = "passages" },
+  { pipe = "verify_and_assess", result = "assessment" },
+  { pipe = "synthesize_answer", result = "answer" },
+]

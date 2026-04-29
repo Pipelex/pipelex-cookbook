@@ -19,7 +19,7 @@ classifiers = [
 
 dependencies = [
   "beautifulsoup4==4.13.4",
-  "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal,docling]==0.24.0",
+  "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal,docling]==0.25.1",
   "weasyprint==68.0",
 ]
 
