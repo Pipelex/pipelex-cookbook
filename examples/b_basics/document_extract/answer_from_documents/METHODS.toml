@@ -1,0 +1,19 @@
+[package]
+name = "answer_from_documents"
+address = "github.com/pipelex/mthds-std"
+display_name = "Answer From Documents"
+version = "0.1.0"
+description = "# mthds-std: answer_from_documents\n\nThe standard-library primitive for grounded document question answering. Given any set of documents and any question, returns a structured answer with verbatim citations, principled abstention, and an explicit status that distinguishes full answers, partial answers, and every flavor of 'I don't know'.\n\n## Pipeline\n\n1. Extract pages from each document\n2. Analyze the question (type, decomposition, reformulations)\n3. Retrieve verbatim passages with a long-context pass\n4. Verify evidence and assess sufficiency\n5. Synthesize an answer with calibrated status and confidence\n\n## Status enum\n\n- answered — confident full answer with evidence\n- partial_answer — covered sub-questions answered, uncovered ones declared\n- insufficient_evidence — topic touched but evidence too thin\n- not_in_documents — no relevant passages found\n- not_answerable_from_documents — question type (counterfactual, opinion, out of scope) cannot be answered from documents\n\n## Concepts\n\n- QuestionAnalysis, DocumentPassage, EvidenceAssessment, DocumentAnswer"
+authors = ["Evotis S.A.S"]
+license = "MIT"
+mthds_version = ">=1.0.0"
+main_pipe = "answer_from_documents"
+
+[exports.document_qa]
+pipes = [
+  "answer_from_documents",
+  "analyze_question",
+  "retrieve_passages",
+  "verify_and_assess",
+  "synthesize_answer",
+]
