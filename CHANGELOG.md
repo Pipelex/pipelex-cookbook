@@ -1,7 +1,5 @@
 # Changelog
 
-## [Unreleased]
-
 ## [v0.12.3] - 2026-04-30
 
 - **E2E tests now auto-discover every `examples/**/*.mthds` bundle.** Replaced the hand-rolled `tests/e2e/test_examples.py`, `test_quick_start.py`, and `test_wip.py` with a single parametrized `tests/e2e/test_bundles.py` that runs `pipelex run bundle` (dry-run) on every bundle as an independent test node. The previous suite required someone to manually add a `def test_xxx` per bundle, so newly added examples (e.g. `gen_synthetic_data`, `gen_expense_data`, `crewai_with_pipelex_tools`) were silently uncovered and broken bundles passed CI. Auto-discovery closes that gap permanently. `examples/wip/` is excluded.

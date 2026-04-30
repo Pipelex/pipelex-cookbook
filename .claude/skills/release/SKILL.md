@@ -68,11 +68,13 @@ Check if `CHANGELOG.md` already contains a `## [v{TARGET_VERSION}] -` entry.
 
 - **If exists**: show the existing entry and ask the user whether to keep it or edit it.
 
-- **If missing**: check the `## Unreleased` section in `CHANGELOG.md`.
+- **If missing**: check whether `CHANGELOG.md` has an `## [Unreleased]` or `## Unreleased` section.
 
-  - **If `## Unreleased` has content** (items under `### Added`, `### Changed`, `### Removed`, etc.): convert the `## Unreleased` heading to `## [v{TARGET_VERSION}] - {TODAY'S DATE in YYYY-MM-DD}`, keeping all existing subsections and their content intact. Then insert a fresh empty `## Unreleased` heading above the new versioned entry. Present the result to the user for approval.
+  - **If the Unreleased section has content** (items under `### Added`, `### Changed`, `### Removed`, etc.): convert the Unreleased heading to `## [v{TARGET_VERSION}] - {TODAY'S DATE in YYYY-MM-DD}`, keeping all existing subsections and their content intact. Remove the Unreleased heading entirely — do **not** re-insert an empty `## [Unreleased]` section. Present the result to the user for approval.
 
-  - **If `## Unreleased` is empty or absent**: run `git log main..HEAD --oneline` (or `git log --oneline -20` if on `main`) to review recent commits. Draft a changelog entry from those commits and propose it to the user for approval. Insert the approved entry formatted as:
+  - **If the Unreleased section is empty**: remove it entirely, then proceed as if it were absent.
+
+  - **If the Unreleased section is absent**: run `git log main..HEAD --oneline` (or `git log --oneline -20` if on `main`) to review recent commits. Draft a changelog entry from those commits and propose it to the user for approval. Insert the approved entry right after the `# Changelog` heading, formatted as:
 
     ```markdown
     ## [v{TARGET_VERSION}] - {TODAY'S DATE in YYYY-MM-DD}
@@ -81,7 +83,7 @@ Check if `CHANGELOG.md` already contains a `## [v{TARGET_VERSION}] -` entry.
     - Item two
     ```
 
-The user may accept, edit, or rewrite the proposed entry.
+This project does **not** use an `## [Unreleased]` placeholder — never add one. The user may accept, edit, or rewrite the proposed entry.
 
 ## Step 7 — Validate Lint & Type Checks
 
