@@ -7,16 +7,16 @@ from pipelex.core.stuffs.list_content import ListContent
 from pipelex.system.registries.func_registry import pipe_func
 
 from examples.wip.validate_expense_data.data import SPENDING_LIMITS
-from examples.wip.validate_expense_data.structures.expense_validator__expense import Expense
-from examples.wip.validate_expense_data.structures.expense_validator__expense_report import ExpenseReport
-from examples.wip.validate_expense_data.structures.expense_validator__expense_validation_result import ExpenseValidationResult
-from examples.wip.validate_expense_data.structures.expense_validator__purpose_quality_check import PurposeQualityCheck
-from examples.wip.validate_expense_data.structures.expense_validator__reasonable_amount_check import ReasonableAmountCheck
-from examples.wip.validate_expense_data.structures.expense_validator__receipt_match_check import ReceiptMatchCheck
-from examples.wip.validate_expense_data.structures.expense_validator__spending_limit_check import SpendingLimitCheck
-from examples.wip.validate_expense_data.structures.expense_validator__timelines_check import TimelinesCheck
-from examples.wip.validate_expense_data.structures.expense_validator__validation_report import ValidationReport
-from examples.wip.validate_expense_data.structures.expense_validator__weekend_check import WeekendCheck
+from examples.wip.validate_expense_data.structures.expense_validator__expense import expense_validator__Expense
+from examples.wip.validate_expense_data.structures.expense_validator__expense_report import expense_validator__ExpenseReport
+from examples.wip.validate_expense_data.structures.expense_validator__expense_validation_result import expense_validator__ExpenseValidationResult
+from examples.wip.validate_expense_data.structures.expense_validator__purpose_quality_check import expense_validator__PurposeQualityCheck
+from examples.wip.validate_expense_data.structures.expense_validator__reasonable_amount_check import expense_validator__ReasonableAmountCheck
+from examples.wip.validate_expense_data.structures.expense_validator__receipt_match_check import expense_validator__ReceiptMatchCheck
+from examples.wip.validate_expense_data.structures.expense_validator__spending_limit_check import expense_validator__SpendingLimitCheck
+from examples.wip.validate_expense_data.structures.expense_validator__timelines_check import expense_validator__TimelinesCheck
+from examples.wip.validate_expense_data.structures.expense_validator__validation_report import expense_validator__ValidationReport
+from examples.wip.validate_expense_data.structures.expense_validator__weekend_check import expense_validator__WeekendCheck
 
 # Maximum days allowed for expense submission (company policy)
 SUBMISSION_DEADLINE_DAYS = 30
@@ -31,16 +31,16 @@ LATE_GRACE_PERIOD_DAYS = 45
 
 
 @pipe_func("extract_expenses_list")
-async def extract_expenses_list(working_memory: WorkingMemory) -> ListContent[Expense]:
+async def extract_expenses_list(working_memory: WorkingMemory) -> ListContent[expense_validator__Expense]:
     """
     Extracts the expenses list from the parsed expense report.
     """
-    report = working_memory.get_stuff_as("report", ExpenseReport)
+    report = working_memory.get_stuff_as("report", expense_validator__ExpenseReport)
     return ListContent(items=report.expenses)
 
 
 @pipe_func("check_spending_limit")
-async def check_spending_limit(working_memory: WorkingMemory) -> SpendingLimitCheck:
+async def check_spending_limit(working_memory: WorkingMemory) -> expense_validator__SpendingLimitCheck:
     """
     Checks if expense amount is within spending limits for employee seniority and category.
 
@@ -49,8 +49,8 @@ async def check_spending_limit(working_memory: WorkingMemory) -> SpendingLimitCh
     - Higher seniority = higher limits
     - Amount exceeding limit results in rejection or cap
     """
-    report = working_memory.get_stuff_as("report", ExpenseReport)
-    expense = working_memory.get_stuff_as("expense", Expense)
+    report = working_memory.get_stuff_as("report", expense_validator__ExpenseReport)
+    expense = working_memory.get_stuff_as("expense", expense_validator__Expense)
 
     # Get the limit for this seniority and category
     seniority_limits = SPENDING_LIMITS.get(report.employee.seniority, SPENDING_LIMITS["Junior"])
@@ -59,7 +59,7 @@ async def check_spending_limit(working_memory: WorkingMemory) -> SpendingLimitCh
     within_limit = expense.total_amount <= limit_amount
     exceeded_by = max(0.0, expense.total_amount - limit_amount)
 
-    return SpendingLimitCheck(
+    return expense_validator__SpendingLimitCheck(
         expense_id=expense.expense_id,
         within_limit=within_limit,
         limit_amount=limit_amount,
@@ -71,7 +71,7 @@ async def check_spending_limit(working_memory: WorkingMemory) -> SpendingLimitCh
 
 
 @pipe_func("check_weekend")
-async def check_weekend(working_memory: WorkingMemory) -> WeekendCheck:
+async def check_weekend(working_memory: WorkingMemory) -> expense_validator__WeekendCheck:
     """
     Checks if expense occurred on a weekend.
 
@@ -81,7 +81,7 @@ async def check_weekend(working_memory: WorkingMemory) -> WeekendCheck:
     - Travel/accommodation on weekends may be acceptable if part of business trip
     """
 
-    expense = working_memory.get_stuff_as("expense", Expense)
+    expense = working_memory.get_stuff_as("expense", expense_validator__Expense)
 
     day_of_week = expense.expense_date.strftime("%A")
     weekday_num = expense.expense_date.weekday()
@@ -89,7 +89,7 @@ async def check_weekend(working_memory: WorkingMemory) -> WeekendCheck:
 
     if is_weekday:
         policy_status = "compliant"
-        message = f"Expense on {day_of_week} - valid business day"
+        message = f"expense_validator__Expense on {day_of_week} - valid business day"
     else:
         # Check if category might be acceptable on weekends
         if expense.category in ["travel", "accommodation"]:
@@ -99,7 +99,7 @@ async def check_weekend(working_memory: WorkingMemory) -> WeekendCheck:
             policy_status = "requires_approval"
             message = f"Weekend expense on {day_of_week} - requires prior manager approval per company policy"
 
-    return WeekendCheck(
+    return expense_validator__WeekendCheck(
         expense_id=expense.expense_id,
         is_weekday=is_weekday,
         day_of_week=day_of_week,
@@ -109,7 +109,7 @@ async def check_weekend(working_memory: WorkingMemory) -> WeekendCheck:
 
 
 @pipe_func("check_timeliness")
-async def check_timeliness(working_memory: WorkingMemory) -> TimelinesCheck:
+async def check_timeliness(working_memory: WorkingMemory) -> expense_validator__TimelinesCheck:
     """
     Checks if expense was submitted within the allowed timeframe.
 
@@ -118,7 +118,7 @@ async def check_timeliness(working_memory: WorkingMemory) -> TimelinesCheck:
     - Grace period of 45 days with warning
     - Beyond 45 days: rejected as too late
     """
-    expense = working_memory.get_stuff_as("expense", Expense)
+    expense = working_memory.get_stuff_as("expense", expense_validator__Expense)
 
     # Calculate days since expense
     today = date.today()
@@ -141,7 +141,7 @@ async def check_timeliness(working_memory: WorkingMemory) -> TimelinesCheck:
         message = f"Submitted {days_since} days after expense - exceeds {LATE_GRACE_PERIOD_DAYS}-day \
             maximum, may require special approval"
 
-    return TimelinesCheck(
+    return expense_validator__TimelinesCheck(
         expense_id=expense.expense_id,
         is_timely=is_timely,
         days_since_expense=days_since,
@@ -152,7 +152,7 @@ async def check_timeliness(working_memory: WorkingMemory) -> TimelinesCheck:
 
 
 @pipe_func("compose_expense_result")
-async def compose_expense_result(working_memory: WorkingMemory) -> ExpenseValidationResult:
+async def compose_expense_result(working_memory: WorkingMemory) -> expense_validator__ExpenseValidationResult:
     """
     Composes the final validation result for a single expense based on all checks.
 
@@ -164,13 +164,13 @@ async def compose_expense_result(working_memory: WorkingMemory) -> ExpenseValida
     - Purpose quality (warning or requires clarification)
     - Reasonable amount (warning only)
     """
-    expense = working_memory.get_stuff_as("expense", Expense)
-    receipt_check = working_memory.get_stuff_as("receipt_check", ReceiptMatchCheck)
-    limit_check = working_memory.get_stuff_as("limit_check", SpendingLimitCheck)
-    weekend_check = working_memory.get_stuff_as("weekend_check", WeekendCheck)
-    timeliness_check = working_memory.get_stuff_as("timeliness_check", TimelinesCheck)
-    purpose_check = working_memory.get_stuff_as("purpose_check", PurposeQualityCheck)
-    reasonable_check = working_memory.get_stuff_as("reasonable_check", ReasonableAmountCheck)
+    expense = working_memory.get_stuff_as("expense", expense_validator__Expense)
+    receipt_check = working_memory.get_stuff_as("receipt_check", expense_validator__ReceiptMatchCheck)
+    limit_check = working_memory.get_stuff_as("limit_check", expense_validator__SpendingLimitCheck)
+    weekend_check = working_memory.get_stuff_as("weekend_check", expense_validator__WeekendCheck)
+    timeliness_check = working_memory.get_stuff_as("timeliness_check", expense_validator__TimelinesCheck)
+    purpose_check = working_memory.get_stuff_as("purpose_check", expense_validator__PurposeQualityCheck)
+    reasonable_check = working_memory.get_stuff_as("reasonable_check", expense_validator__ReasonableAmountCheck)
 
     rejection_reasons: list[str] = []
     warnings: list[str] = []
@@ -266,7 +266,7 @@ async def compose_expense_result(working_memory: WorkingMemory) -> ExpenseValida
     if merchant == "<UNKNOWN>" and receipt_check.has_receipt:
         merchant = receipt_check.extracted_merchant
 
-    return ExpenseValidationResult(
+    return expense_validator__ExpenseValidationResult(
         expense_id=expense.expense_id,
         expense_category=expense.category,
         expense_merchant=merchant,
@@ -281,12 +281,12 @@ async def compose_expense_result(working_memory: WorkingMemory) -> ExpenseValida
 
 
 @pipe_func("compose_validation_report")
-async def compose_validation_report(working_memory: WorkingMemory) -> ValidationReport:
+async def compose_validation_report(working_memory: WorkingMemory) -> expense_validator__ValidationReport:
     """
     Composes the final validation report with summary statistics and executive notes.
     """
-    report = working_memory.get_stuff_as("report", ExpenseReport)
-    validations_stuff = working_memory.get_stuff_as_list("expense_validations", ExpenseValidationResult)
+    report = working_memory.get_stuff_as("report", expense_validator__ExpenseReport)
+    validations_stuff = working_memory.get_stuff_as_list("expense_validations", expense_validator__ExpenseValidationResult)
 
     # Calculate summary statistics
     total_claimed = sum(r.claimed_amount for r in validations_stuff.items)
@@ -304,7 +304,9 @@ async def compose_validation_report(working_memory: WorkingMemory) -> Validation
     # Generate executive summary notes
     summary_parts: list[str] = []
 
-    summary_parts.append(f"Expense report for {report.employee.full_name} ({report.employee.seniority} - {report.employee.department})")
+    summary_parts.append(
+        f"expense_validator__Expense report for {report.employee.full_name} ({report.employee.seniority} - {report.employee.department})"
+    )
     summary_parts.append(f"Total: {num_expenses} expenses, ${total_claimed:.2f} claimed")
 
     if expenses_approved > 0:
@@ -328,7 +330,7 @@ async def compose_validation_report(working_memory: WorkingMemory) -> Validation
 
     summary_notes = ". ".join(summary_parts) + "."
 
-    return ValidationReport(
+    return expense_validator__ValidationReport(
         employee=report.employee,
         expense_results=validations_stuff.items,
         total_claimed=total_claimed,
