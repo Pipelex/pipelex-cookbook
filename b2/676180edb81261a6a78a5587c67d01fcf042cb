@@ -1,0 +1,14 @@
+examples/wip/validate_expense_data/funcs.py
+  ai_agent 307
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "b2676180edb81261a6a78a5587c67d01fcf042cb",
+  "prompts": {},
+  "humans": {
+    "h_39660369d4ad8c": {
+      "author": "Louis Choquel <lchoquel@users.noreply.github.com>"
+    }
+  }
+}
