@@ -304,9 +304,7 @@ async def compose_validation_report(working_memory: WorkingMemory) -> expense_va
     # Generate executive summary notes
     summary_parts: list[str] = []
 
-    summary_parts.append(
-        f"Expense report for {report.employee.full_name} ({report.employee.seniority} - {report.employee.department})"
-    )
+    summary_parts.append(f"Expense report for {report.employee.full_name} ({report.employee.seniority} - {report.employee.department})")
     summary_parts.append(f"Total: {num_expenses} expenses, ${total_claimed:.2f} claimed")
 
     if expenses_approved > 0:
