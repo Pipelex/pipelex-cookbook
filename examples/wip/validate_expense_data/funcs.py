@@ -89,7 +89,7 @@ async def check_weekend(working_memory: WorkingMemory) -> expense_validator__Wee
 
     if is_weekday:
         policy_status = "compliant"
-        message = f"expense_validator__Expense on {day_of_week} - valid business day"
+        message = f"Expense on {day_of_week} - valid business day"
     else:
         # Check if category might be acceptable on weekends
         if expense.category in ["travel", "accommodation"]:
@@ -305,7 +305,7 @@ async def compose_validation_report(working_memory: WorkingMemory) -> expense_va
     summary_parts: list[str] = []
 
     summary_parts.append(
-        f"expense_validator__Expense report for {report.employee.full_name} ({report.employee.seniority} - {report.employee.department})"
+        f"Expense report for {report.employee.full_name} ({report.employee.seniority} - {report.employee.department})"
     )
     summary_parts.append(f"Total: {num_expenses} expenses, ${total_claimed:.2f} claimed")
 
