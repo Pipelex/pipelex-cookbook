@@ -1,0 +1,16 @@
+uv.lock
+  ai_agent 4295,4406
+pyproject.toml
+  h_39660369d4ad8c 27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "8acc872066445bc2de603b84e08764840b029194",
+  "prompts": {},
+  "humans": {
+    "h_39660369d4ad8c": {
+      "author": "Louis Choquel <lchoquel@users.noreply.github.com>"
+    }
+  }
+}
