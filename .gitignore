@@ -37,6 +37,7 @@ gcp_credentials.json
 .pipelex/pipelex_service.toml
 .pipelex/storage/*
 .pipelex/inference/deck/*.bak.*
+.pipelex/traces
 
 # macOS
 .DS_Store

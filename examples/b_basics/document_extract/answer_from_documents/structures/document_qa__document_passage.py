@@ -16,7 +16,7 @@ from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
 
 
-class DocumentPassage(StructuredContent):
+class document_qa__DocumentPassage(StructuredContent):
     """A verbatim passage extracted from a source document, with full citation metadata, used as grounded evidence for downstream synthesis."""
 
     document_identifier: str = Field(

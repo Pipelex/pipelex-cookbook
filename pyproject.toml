@@ -23,6 +23,9 @@ dependencies = [
   "weasyprint==68.0",
 ]
 
+[tool.uv.sources]
+pipelex = { git = "https://github.com/Pipelex/pipelex.git", branch = "dev" }
+
 [project.optional-dependencies]
 compat = ["backports.strenum>=1.3.0 ; python_version < '3.11'"]
 crewai = ["crewai>=0.80.0"]
@@ -61,7 +64,6 @@ include = ["examples*", "utils*"]
 
 [tool.uv]
 required-version = ">=0.7.2"
-
 
 [tool.mypy]
 check_untyped_defs = true

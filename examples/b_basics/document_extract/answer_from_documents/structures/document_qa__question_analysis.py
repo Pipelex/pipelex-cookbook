@@ -16,7 +16,7 @@ from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
 
 
-class QuestionAnalysis(StructuredContent):
+class document_qa__QuestionAnalysis(StructuredContent):
     """
     Structured understanding of the user's question: its type, whether it is answerable from documents at all, its
     decomposition into sub-questions, key entities to search for, alternative phrasings to boost retrieval recall, and any

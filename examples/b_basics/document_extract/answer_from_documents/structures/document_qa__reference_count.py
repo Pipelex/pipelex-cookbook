@@ -14,7 +14,7 @@ from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
 
 
-class ReferenceCount(StructuredContent):
+class document_qa__ReferenceCount(StructuredContent):
     """
     Specific output structure for this example's question — how many references in the report come from the report's own
     research center. Demonstrates how to output a typed structure tailored to the question rather than a free-form text
