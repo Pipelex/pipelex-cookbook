@@ -1,0 +1,63 @@
+domain      = "summarize_people"
+description = "Read people from a CSV, summarize each as a one-sentence persona, and write the result back to CSV"
+main_pipe   = "summarize_people"
+
+[concept.Person]
+description = "A person record read from a CSV row"
+[concept.Person.structure]
+name       = { type = "text", required = true, description = "Full name" }
+job        = { type = "text", required = true, description = "Occupation" }
+country    = { type = "text", required = true, description = "Country of origin" }
+birth_year = { type = "integer", required = true, description = "Year of birth" }
+death_year = { type = "integer", required = false, description = "Year of death, if deceased" }
+
+[concept.PersonSummary]
+description = "A person row reduced to name + country plus a one-sentence persona summary"
+[concept.PersonSummary.structure]
+name    = { type = "text", required = true, description = "Full name" }
+country = { type = "text", required = true, description = "Country of origin" }
+summary = { type = "text", required = true, description = "One-sentence persona summary" }
+
+# Batch over the list — the branch pipe runs once per person
+[pipe.summarize_people]
+type             = "PipeBatch"
+description      = "Summarize each person in the list"
+inputs           = { people = "Person[]" }
+output           = "PersonSummary[]"
+branch_pipe_code = "summarize_person"
+input_list_name  = "people"
+input_item_name  = "person"
+
+# Per-person branch: describe (LLM) then compose the row
+[pipe.summarize_person]
+type = "PipeSequence"
+description = "Describe one person, then compose their summary row"
+inputs = { person = "Person" }
+output = "PersonSummary"
+steps = [
+  { pipe = "describe_person", result = "description" },
+  { pipe = "compose_person_summary", result = "person_summary" },
+]
+
+# LLM produces ONLY the description text
+[pipe.describe_person]
+type = "PipeLLM"
+description = "Write a one-sentence persona summary for a person"
+inputs = { person = "Person" }
+output = "Text"
+prompt = """
+Write a single vivid sentence summarizing this person as a persona, drawing on their job, country, and lifespan.
+@person
+"""
+
+# Compose the output row from selected original fields + the description (drops job, birth_year, death_year)
+[pipe.compose_person_summary]
+type        = "PipeCompose"
+description = "Build the summary row from selected Person fields plus the generated description"
+inputs      = { person = "Person", description = "Text" }
+output      = "PersonSummary"
+
+[pipe.compose_person_summary.construct]
+name    = { from = "person.name" }
+country = { from = "person.country" }
+summary = { from = "description" }
