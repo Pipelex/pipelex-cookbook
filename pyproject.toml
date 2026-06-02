@@ -24,7 +24,9 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-pipelex = { git = "https://github.com/Pipelex/pipelex.git", rev = "11a10ed73e22d91a0ddf75979b9f0ac06bcc5f13" }
+# pipelex = { git = "https://github.com/Pipelex/pipelex.git", rev = "ba448fcf44117cb5e1b961b87348cae6e74b755e" }
+# pipelex = { path = "../_csv", editable = true }
+pipelex = { path = "../pipelex", editable = true }
 
 [project.optional-dependencies]
 compat = ["backports.strenum>=1.3.0 ; python_version < '3.11'"]

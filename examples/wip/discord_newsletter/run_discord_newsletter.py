@@ -1,4 +1,5 @@
 import asyncio
+from pathlib import Path
 from typing import List
 
 from pipelex import pretty_print
@@ -12,7 +13,7 @@ from examples.wip.discord_newsletter.structures.discord_newsletter__html_newslet
 from utils.results_utils import output_result
 
 SAMPLE_NAME = "discord_newsletter"
-DISCORD_EXTRACT_PATH = "assets/discord_newsletter/discord_extract.json"
+DISCORD_EXTRACT_PATH = Path("assets/discord_newsletter/discord_extract.json")
 
 
 async def write_discord_newsletter() -> discord_newsletter__HtmlNewsletter:
