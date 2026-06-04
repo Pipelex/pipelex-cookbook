@@ -43,7 +43,7 @@ prompt = """
 Research the question below from 3 different angles. For each angle produce a
 SourceSummary with a clear `angle` label and a `summary` paragraph.
 
-Question: @question
+Question: $question
 """
 
 [pipe.verify_claim]

@@ -2042,11 +2042,11 @@ wheels = [
 
 [[package]]
 name = "idna"
-version = "3.11"
+version = "3.18"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/6f/6d/0703ccc57f3a7233505399edb88de3cbd678da106337b9fcde432b65ed60/idna-3.11.tar.gz", hash = "sha256:795dafcc9c04ed0c1fb032c2aa73654d8e8c5023a7df64a53f39190ada629902", size = 194582, upload-time = "2025-10-12T14:55:20.501Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/cd/63/9496c57188a2ee585e0f1db071d75089a11e98aa86eb99d9d7618fc1edce/idna-3.18.tar.gz", hash = "sha256:ffb385a7e039654cef1ab9ef32c6fafe283c0c0467bba1d9029738ce4a14a848", size = 196711, upload-time = "2026-06-02T14:34:07.794Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0e/61/66938bbb5fc52dbdf84594873d5b51fb1f7c7794e9c0f5bd885f30bc507b/idna-3.11-py3-none-any.whl", hash = "sha256:771a87f49d9defaf64091e6e6fe9c18d4833f140bd19464795bc32d966ca37ea", size = 71008, upload-time = "2025-10-12T14:55:18.883Z" },
+    { url = "https://files.pythonhosted.org/packages/1e/5e/d4e9f1a599fb8e573b7b87160658329fbf28d19eac2718f51fc3def3aa5a/idna-3.18-py3-none-any.whl", hash = "sha256:7f952cbe720b688055e3f87de14f5c3e5fdaa8bc3928985c4077ca689de849a2", size = 65455, upload-time = "2026-06-02T14:34:06.319Z" },
 ]
 
 [[package]]
@@ -2447,14 +2447,14 @@ wheels = [
 
 [[package]]
 name = "kajson"
-version = "0.5.0"
+version = "0.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/91/9c/28a44cc51f328fe1076ea2114b6b7791ef49c54c24a07f11f86f83438da0/kajson-0.5.0.tar.gz", hash = "sha256:029b6a1b60ea28ec95b6f614656d1e48600e27c1f27a39c6e5681cd721854f64", size = 21969, upload-time = "2026-05-04T12:20:12.734Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8d/54/83c3b00f270c39037b699398e42e16837ef1109c8af47ac668fe3c14a817/kajson-0.6.0.tar.gz", hash = "sha256:7544a544e6f135f129015c9475ff2cc0a7fc8e76d6eea1d8d37f2e438ab4d936", size = 22567, upload-time = "2026-05-30T19:06:08.084Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2e/f4/6460fb07535ef71f87416e1d603f7eaaa9d2970161bec3e37fe08af74b45/kajson-0.5.0-py3-none-any.whl", hash = "sha256:53334fd7122e470ee560255eb5a8390b5ad60ea99bc0d6b75122b323379b553a", size = 28398, upload-time = "2026-05-04T12:20:11.202Z" },
+    { url = "https://files.pythonhosted.org/packages/e9/fb/e325ef3bd84f2d40286a09fe78447a0a20e3a6ec12ce28e0d4ecc8bce620/kajson-0.6.0-py3-none-any.whl", hash = "sha256:77ddb0e12b274479ced061d84da091a250fdeb3f4dd7444ae0c6ca929ba73431", size = 29024, upload-time = "2026-05-30T19:06:06.645Z" },
 ]
 
 [[package]]
@@ -4291,14 +4291,15 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.27.0"
-source = { git = "https://github.com/Pipelex/pipelex.git?branch=dev#5ce13d1c591b69e365d9204f0c7fd8b05ef35734" }
+version = "0.31.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
     { name = "datamodel-code-generator" },
     { name = "filetype" },
     { name = "httpx" },
+    { name = "idna" },
     { name = "instructor" },
     { name = "jinja2" },
     { name = "json2html" },
@@ -4316,11 +4317,13 @@ dependencies = [
     { name = "polyfactory" },
     { name = "portkey-ai" },
     { name = "posthog" },
+    { name = "protobuf" },
     { name = "pydantic" },
     { name = "pypdfium2" },
     { name = "python-dotenv" },
     { name = "pyyaml" },
     { name = "reportlab" },
+    { name = "requests" },
     { name = "rich" },
     { name = "semantic-version" },
     { name = "shortuuid" },
@@ -4328,6 +4331,11 @@ dependencies = [
     { name = "tomlkit" },
     { name = "typer" },
     { name = "typing-extensions" },
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/37/bd/2706e8f21d6cf3c316249cc8b904e8b7a9f752b4dbf0924a46ce3425fbfa/pipelex-0.31.0.tar.gz", hash = "sha256:9ca55fcec6bd40e7f26710a4af608dab6f335f95309df058112825ab37bb9846", size = 942312, upload-time = "2026-06-04T15:28:54.494Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4d/71/5f2733a960b16eda98961a87cabe78c48501f38b9f65dc9949051e80fb60/pipelex-0.31.0-py3-none-any.whl", hash = "sha256:01af0620f6d58d904488148b5819106b356e1011c7ee8c029f38ae5e0de7d4c3", size = 1355011, upload-time = "2026-06-04T15:28:52.312Z" },
 ]
 
 [package.optional-dependencies]
@@ -4360,7 +4368,7 @@ mistralai = [
 
 [[package]]
 name = "pipelex-cookbook"
-version = "0.12.3"
+version = "0.13.0"
 source = { editable = "." }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -4403,7 +4411,7 @@ requires-dist = [
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "crewai", marker = "extra == 'crewai'", specifier = ">=0.80.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal", "docling"], git = "https://github.com/Pipelex/pipelex.git?branch=dev" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal", "docling"], specifier = "==0.31.0" },
     { name = "pipelex-tools", marker = "extra == 'dev'", specifier = ">=0.3.2" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.405" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.1" },
@@ -7022,11 +7030,11 @@ wheels = [
 
 [[package]]
 name = "urllib3"
-version = "2.6.3"
+version = "2.7.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c7/24/5f1b3bdffd70275f6661c76461e25f024d5a38a46f04aaca912426a2b1d3/urllib3-2.6.3.tar.gz", hash = "sha256:1b62b6884944a57dbe321509ab94fd4d3b307075e0c2eae991ac71ee15ad38ed", size = 435556, upload-time = "2026-01-07T16:24:43.925Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/53/0c/06f8b233b8fd13b9e5ee11424ef85419ba0d8ba0b3138bf360be2ff56953/urllib3-2.7.0.tar.gz", hash = "sha256:231e0ec3b63ceb14667c67be60f2f2c40a518cb38b03af60abc813da26505f4c", size = 433602, upload-time = "2026-05-07T16:13:18.596Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/39/08/aaaad47bc4e9dc8c725e68f9d04865dbcb2052843ff09c97b08904852d84/urllib3-2.6.3-py3-none-any.whl", hash = "sha256:bf272323e553dfb2e87d9bfd225ca7b0f467b919d7bbd355436d3fd37cb0acd4", size = 131584, upload-time = "2026-01-07T16:24:42.685Z" },
+    { url = "https://files.pythonhosted.org/packages/7f/3e/5db95bcf282c52709639744ca2a8b149baccf648e39c8cc87553df9eae0c/urllib3-2.7.0-py3-none-any.whl", hash = "sha256:9fb4c81ebbb1ce9531cce37674bbc6f1360472bc18ca9a553ede278ef7276897", size = 131087, upload-time = "2026-05-07T16:13:17.151Z" },
 ]
 
 [[package]]
