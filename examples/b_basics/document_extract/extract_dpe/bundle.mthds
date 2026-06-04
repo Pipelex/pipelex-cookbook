@@ -50,7 +50,6 @@ description = "Write markdown from page content of a 'Diagnostic de Performance 
 inputs = { "page_content.page_view" = "Image", page_content = "Page" }
 output = "Text"
 model = "$vision"
-structuring_method = "preliminary_text"
 system_prompt = """You are a multimodal LLM, expert at converting images into perfect markdown."""
 prompt = """
 You are given an image of a French 'Diagnostic de Performance Energetique': $page_content.page_view

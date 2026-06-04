@@ -147,7 +147,7 @@ prompt = """
 
 Analyze the following question.
 
-Question: @question
+Question: $question
 """
 
 # ---------------------------------------------------------------------------
@@ -258,7 +258,7 @@ Context, if provided, is background for interpretation only — never cited and 
 prompt = """
 @?context.text
 
-Question: @question
+Question: $question
 
 Question analysis:
 @analysis

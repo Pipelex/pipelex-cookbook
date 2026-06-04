@@ -1,4 +1,5 @@
 import asyncio
+from pathlib import Path
 from typing import List
 
 from pipelex import pretty_print
@@ -7,15 +8,15 @@ from pipelex.pipelex import Pipelex
 from pipelex.pipeline.runner import PipelexRunner
 from pipelex.tools.misc.json_utils import load_json_list_from_path
 
-from examples.wip.discord_newsletter.structures.discord_newsletter__discord_channel_update import DiscordChannelUpdate
-from examples.wip.discord_newsletter.structures.discord_newsletter__html_newsletter import HtmlNewsletter
+from examples.wip.discord_newsletter.structures.discord_newsletter__discord_channel_update import discord_newsletter__DiscordChannelUpdate
+from examples.wip.discord_newsletter.structures.discord_newsletter__html_newsletter import discord_newsletter__HtmlNewsletter
 from utils.results_utils import output_result
 
 SAMPLE_NAME = "discord_newsletter"
-DISCORD_EXTRACT_PATH = "assets/discord_newsletter/discord_extract.json"
+DISCORD_EXTRACT_PATH = Path("assets/discord_newsletter/discord_extract.json")
 
 
-async def write_discord_newsletter() -> HtmlNewsletter:
+async def write_discord_newsletter() -> discord_newsletter__HtmlNewsletter:
     """
     Generate a newsletter from Discord channel data.
 
@@ -29,12 +30,12 @@ async def write_discord_newsletter() -> HtmlNewsletter:
 
     # Make it a list of structured content by validating against our models
     # This converts raw JSON dicts into typed Pydantic objects
-    discord_channel_updates: List[DiscordChannelUpdate] = [
-        DiscordChannelUpdate.model_validate(channel_data) for channel_data in discord_channel_updates_data
+    discord_channel_updates: List[discord_newsletter__DiscordChannelUpdate] = [
+        discord_newsletter__DiscordChannelUpdate.model_validate(channel_data) for channel_data in discord_channel_updates_data
     ]
 
     # Run the pipeline with the typed input
-    # The pipeline will receive a list of DiscordChannelUpdate objects
+    # The pipeline will receive a list of discord_newsletter__DiscordChannelUpdate objects
     runner = PipelexRunner()
     response = await runner.execute_pipeline(
         pipe_code="write_discord_newsletter",
@@ -44,7 +45,7 @@ async def write_discord_newsletter() -> HtmlNewsletter:
     )
     pipe_output = response.pipe_output
 
-    return pipe_output.main_stuff_as(content_type=HtmlNewsletter)
+    return pipe_output.main_stuff_as(content_type=discord_newsletter__HtmlNewsletter)
 
 
 if __name__ == "__main__":

@@ -16,7 +16,7 @@ from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
 
 
-class DocumentAnswer(StructuredContent):
+class document_qa__DocumentAnswer(StructuredContent):
     """
     The final grounded answer to the user's question, with a principled status enum that distinguishes confident answers
     from every flavor of abstention.

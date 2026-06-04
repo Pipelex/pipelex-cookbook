@@ -16,7 +16,7 @@ from pipelex.core.stuffs.structured_content import StructuredContent
 from pydantic import Field
 
 
-class EvidenceAssessment(StructuredContent):
+class document_qa__EvidenceAssessment(StructuredContent):
     """
     A critical assessment of the retrieved evidence — whether it is sufficient to answer the question, which sub-questions
     have coverage, and whether any contradictions were detected across sources.

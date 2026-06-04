@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Optional
 
 from pipelex.system.environment import get_optional_env
@@ -12,7 +13,7 @@ def optional_sample_text_from_path(filename: str) -> Optional[str]:
     if examples_path is None:
         print(f"The examples path var `SAMPLES_PATH` is not defined in env, we won't use text from a file for '{filename}'")
         return None
-    path = f"{examples_path}/{filename}"
+    path = Path(examples_path) / filename
     text = failable_load_text_from_path(path=path)
     if not text:
         print(f"No text file found at'{path}'")

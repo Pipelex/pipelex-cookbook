@@ -12,8 +12,10 @@ from pipelex.pipelex import Pipelex
 from pipelex.pipeline.runner import PipelexRunner
 from weasyprint import CSS, HTML
 
-from examples.c_advanced.gen_expense_data.structures.expense_data_generation__employee_expense_report import EmployeeExpenseReport
-from examples.c_advanced.gen_expense_data.structures.expense_data_generation__nb_of_employees import NbOfEmployees
+from examples.c_advanced.gen_expense_data.structures.expense_data_generation__employee_expense_report import (
+    expense_data_generation__EmployeeExpenseReport,
+)
+from examples.c_advanced.gen_expense_data.structures.expense_data_generation__nb_of_employees import expense_data_generation__NbOfEmployees
 
 OUTPUT_DIR = Path(__file__).parent / "output"
 
@@ -24,22 +26,22 @@ def to_snake_case(text: str) -> str:
     return text.strip("_")
 
 
-async def run_generate_expense_dataset() -> list[EmployeeExpenseReport]:
+async def run_generate_expense_dataset() -> list[expense_data_generation__EmployeeExpenseReport]:
     runner = PipelexRunner()
     response = await runner.execute_pipeline(
         pipe_code="generate_expense_dataset",
         inputs={
             "nb_employees": {
                 "concept": "expense_data_generation.NbOfEmployees",
-                "content": NbOfEmployees(number=10),
+                "content": expense_data_generation__NbOfEmployees(number=10),
             },
         },
     )
     pipe_output = response.pipe_output
-    return pipe_output.main_stuff_as_items(item_type=EmployeeExpenseReport)
+    return pipe_output.main_stuff_as_items(item_type=expense_data_generation__EmployeeExpenseReport)
 
 
-async def export_single_report(report: EmployeeExpenseReport) -> None:
+async def export_single_report(report: expense_data_generation__EmployeeExpenseReport) -> None:
     """Export a single employee expense report to a folder with PDF."""
     # Create folder for employee
     folder = OUTPUT_DIR / report.employee.employee_id
@@ -64,7 +66,7 @@ async def export_single_report(report: EmployeeExpenseReport) -> None:
     )
 
 
-async def export_to_folders(reports: list[EmployeeExpenseReport]):
+async def export_to_folders(reports: list[expense_data_generation__EmployeeExpenseReport]):
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     # Export all reports in parallel

@@ -39,7 +39,7 @@ type = "PipeLLM"
 description = "Describe a slide"
 inputs = { page = "Page" }
 output = "Slide"
-model = "gemini-3.0-pro"
+model = "@best-gemini"
 system_prompt = """
 You are a professional presentation designer. You excel in describing slides with the details that matter.
 """

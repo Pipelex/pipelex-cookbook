@@ -1,6 +1,6 @@
 [project]
 name = "pipelex-cookbook"
-version = "0.12.3"
+version = "0.13.0"
 description = "Cookbook for Pipelex, the open standard for repeatable AI methods. Write business logic, not API calls."
 authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
@@ -19,7 +19,7 @@ classifiers = [
 
 dependencies = [
   "beautifulsoup4==4.13.4",
-  "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal,docling]==0.25.2",
+  "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal,docling]==0.31.0",
   "weasyprint==68.0",
 ]
 
@@ -30,7 +30,7 @@ dev = [
   "boto3-stubs>=1.35.24",
   "mypy>=1.11.2",
   "pipelex-tools>=0.3.2",
-  "pyright>=1.1.405",
+  "pyright>=1.1.410",
   "pytest>=9.0.1",
   "pytest-cov>=6.1.1",
   "pytest-mock>=3.14.0",
@@ -61,7 +61,6 @@ include = ["examples*", "utils*"]
 
 [tool.uv]
 required-version = ">=0.7.2"
-
 
 [tool.mypy]
 check_untyped_defs = true

@@ -6,10 +6,10 @@ from pipelex.core.stuffs.text_content import TextContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.runner import PipelexRunner
 
-from examples.b_basics.document_extract.answer_from_documents.structures.document_qa__reference_count import ReferenceCount
+from examples.b_basics.document_extract.answer_from_documents.structures.document_qa__reference_count import document_qa__ReferenceCount
 
 
-async def run_answer_from_documents() -> ReferenceCount:
+async def run_answer_from_documents() -> document_qa__ReferenceCount:
     runner = PipelexRunner()
     response = await runner.execute_pipeline(
         pipe_code="answer_from_documents",
@@ -33,7 +33,7 @@ async def run_answer_from_documents() -> ReferenceCount:
             },
         },
     )
-    return response.pipe_output.main_stuff_as(content_type=ReferenceCount)
+    return response.pipe_output.main_stuff_as(content_type=document_qa__ReferenceCount)
 
 
 if __name__ == "__main__":

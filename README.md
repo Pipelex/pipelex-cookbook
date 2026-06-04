@@ -92,6 +92,9 @@ pipelex run bundle examples/b_basics/document_extract/extract_invoice/invoice.mt
 
 # Multi-step text summarization
 pipelex run bundle examples/a_quick_start/summarize.mthds --pipe summarize_by_steps -i examples/a_quick_start/inputs.json
+
+# Read a CSV, summarize each person, and write the results back to CSV
+pipelex run bundle examples/b_basics/csv/summarize_people/summarize_people.mthds -i examples/b_basics/csv/summarize_people/inputs.json --save-csv results/people_summaries.csv
 ```
 
 ## 5. Known Limitations
@@ -391,6 +394,9 @@ The cookbook contains production-ready examples covering various use cases:
 ### Visual Data Extraction
 - **Gantt Chart** - Extract project timelines from visual diagrams
 - **Table Extraction** - Extract structured tables from images
+
+### Tabular Data
+- **Summarize People (CSV)** - Read a CSV, summarize each row with an LLM, and write the results back to CSV
 
 ### Advanced Methods
 - **Data Synthesis** - Generate synthetic data based on schemas

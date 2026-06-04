@@ -2,7 +2,7 @@
     "[python]": {
         "editor.defaultFormatter": "charliermarsh.ruff"
     },
-    "ruff.configuration": "--config=pyproject.toml",
+    "ruff.configuration": "pyproject.toml",
     "mypy.enabled": true,
     "mypy.runUsingActiveInterpreter": true,
     "search.exclude": {
