@@ -1,15 +1,12 @@
 # Pipelex Gateway — Available Models (Plain Text)
 
 This file lists the LLMs, document extraction models, and image generation models currently available through Pipelex Gateway.
-For configuration details, see the [documentation](https://docs.pipelex.com/latest/home/5-setup/configure-ai-providers/#option-1-pipelex-gateway-easiest-for-getting-started).
+For configuration details, see the [documentation](https://docs.pipelex.com/latest/setup/configure-ai-providers/#option-1-pipelex-gateway-easiest-and-most-powerful-for-getting-started).
 
 **Note:** This is the plain-text readable version. See `pipelex_gateway_models.md` for the HTML-styled version.
 
 ## Language Models (LLM)
 
-- **claude-3.7-sonnet**
-  - inputs: text, images, pdf
-  - outputs: text, structured
 - **claude-4-opus**
   - inputs: text, images, pdf
   - outputs: text, structured
@@ -31,13 +28,16 @@ For configuration details, see the [documentation](https://docs.pipelex.com/late
 - **claude-4.6-opus**
   - inputs: text, images, pdf
   - outputs: text, structured
-- **deepseek-v3.1**
-  - inputs: text
+- **claude-4.6-sonnet**
+  - inputs: text, images, pdf
+  - outputs: text, structured
+- **claude-4.7-opus**
+  - inputs: text, images, pdf
+  - outputs: text, structured
+- **claude-4.8-opus**
+  - inputs: text, images, pdf
   - outputs: text, structured
 - **deepseek-v3.2**
-  - inputs: text
-  - outputs: text, structured
-- **deepseek-v3.2-speciale**
   - inputs: text
   - outputs: text, structured
 - **gemini-2.5-flash**
@@ -49,10 +49,25 @@ For configuration details, see the [documentation](https://docs.pipelex.com/late
 - **gemini-2.5-pro**
   - inputs: text, images, pdf
   - outputs: text, structured
-- **gemini-3.0-flash-preview**
+- **gemini-3.0-flash**
   - inputs: text, images, pdf
   - outputs: text, structured
-- **gemini-3.0-pro**
+- **gemini-3.1-flash-lite**
+  - inputs: text, images, pdf
+  - outputs: text, structured
+- **gemini-3.1-pro**
+  - inputs: text, images, pdf
+  - outputs: text, structured
+- **gemini-3.5-flash**
+  - inputs: text, images, pdf
+  - outputs: text, structured
+- **gemini-flash-latest**
+  - inputs: text, images, pdf
+  - outputs: text, structured
+- **gemini-flash-lite-latest**
+  - inputs: text, images, pdf
+  - outputs: text, structured
+- **gemini-pro-latest**
   - inputs: text, images, pdf
   - outputs: text, structured
 - **gpt-4.1**
@@ -101,6 +116,21 @@ For configuration details, see the [documentation](https://docs.pipelex.com/late
   - inputs: text, images, pdf
   - outputs: text, structured
 - **gpt-5.3-codex**
+  - inputs: text, images, pdf
+  - outputs: text, structured
+- **gpt-5.4**
+  - inputs: text, images, pdf
+  - outputs: text, structured
+- **gpt-5.4-mini**
+  - inputs: text, images, pdf
+  - outputs: text, structured
+- **gpt-5.4-nano**
+  - inputs: text, images, pdf
+  - outputs: text, structured
+- **gpt-5.4-pro**
+  - inputs: text, images, pdf
+  - outputs: text, structured
+- **gpt-5.5**
   - inputs: text, images, pdf
   - outputs: text, structured
 - **gpt-oss-120b**
@@ -163,15 +193,15 @@ For configuration details, see the [documentation](https://docs.pipelex.com/late
 - **deepseek-ocr**
   - inputs: image
   - outputs: pages
+- **linkup-fetch**
+  - inputs: web_page
+  - outputs: pages
 
 
 **About extracted pages:** Each page contains Markdown text (based on AI-interpreted layout) and optional extracted images. A single image input is treated as one page. Pipelex also wraps the `pypdfium2` library for raw text (without any AI interpretation) and images extraction and page views rendering. All these elements can be used as inputs into downstream pipes, including LLM prompts.
 
 ## Image Generation Models
 
-- **flux-2-pro**
-  - inputs: text, images
-  - outputs: image
 - **gpt-image-1**
   - inputs: text, images
   - outputs: image
@@ -179,6 +209,9 @@ For configuration details, see the [documentation](https://docs.pipelex.com/late
   - inputs: text
   - outputs: image
 - **gpt-image-1.5**
+  - inputs: text, images
+  - outputs: image
+- **gpt-image-2**
   - inputs: text, images
   - outputs: image
 - **nano-banana**
@@ -193,6 +226,6 @@ For configuration details, see the [documentation](https://docs.pipelex.com/late
 
 
 > **AUTO-GENERATED FILE** - Do not edit manually.
-> Last updated: 2026-03-03T22:21:10Z
+> Last updated: 2026-06-04T11:47:03Z
 >
 > Run `pipelex-dev update-gateway-models` or `make ugm` to regenerate.

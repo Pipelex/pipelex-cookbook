@@ -19,14 +19,9 @@ classifiers = [
 
 dependencies = [
   "beautifulsoup4==4.13.4",
-  "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal,docling]==0.30.0",
+  "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal,docling]==0.31.0",
   "weasyprint==68.0",
 ]
-
-[tool.uv.sources]
-# pipelex = { git = "https://github.com/Pipelex/pipelex.git", rev = "ba448fcf44117cb5e1b961b87348cae6e74b755e" }
-pipelex = { path = "../_csv", editable = true }
-# pipelex = { path = "../pipelex", editable = true }
 
 [project.optional-dependencies]
 compat = ["backports.strenum>=1.3.0 ; python_version < '3.11'"]
