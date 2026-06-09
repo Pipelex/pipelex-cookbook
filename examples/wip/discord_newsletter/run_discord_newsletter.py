@@ -3,7 +3,6 @@ from pathlib import Path
 from typing import List
 
 from pipelex import pretty_print
-from pipelex.hub import get_report_delegate
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.runner import PipelexRunner
 from pipelex.tools.misc.json_utils import load_json_list_from_path
@@ -52,9 +51,6 @@ if __name__ == "__main__":
     with Pipelex.make(library_dirs=["examples/wip/discord_newsletter"]):
         # Run sample using asyncio
         html_newsletter = asyncio.run(write_discord_newsletter())
-
-        # Display cost report (tokens used and cost)
-        get_report_delegate().generate_report()
 
         # Output results
         pretty_print(html_newsletter, title="Discord Newsletter")

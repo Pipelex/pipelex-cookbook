@@ -1,6 +1,6 @@
 [project]
 name = "pipelex-cookbook"
-version = "0.13.0"
+version = "0.13.1"
 description = "Cookbook for Pipelex, the open standard for repeatable AI methods. Write business logic, not API calls."
 authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
@@ -19,7 +19,7 @@ classifiers = [
 
 dependencies = [
   "beautifulsoup4==4.13.4",
-  "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal,docling]==0.31.0",
+  "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal,docling]==0.32.0",
   "weasyprint==68.0",
 ]
 
@@ -77,15 +77,25 @@ ignore_missing_imports = true
 module = ["json2html", "weasyprint"]
 
 [tool.pyright]
+venvPath = "."
+venv = ".venv"
+pythonVersion = "3.11"
 analyzeUnannotatedFunctions = true
 deprecateTypingAliases = false
 disableBytesTypePromotions = true
 enableExperimentalFeatures = false
 enableTypeIgnoreComments = true
-exclude = ["**/node_modules", "**/__pycache__"]
+exclude = [
+  "**/__pycache__",
+  ".venv",
+  ".git",
+  "build",
+  "dist",
+  "**/node_modules",
+  "**/.*",
+]
 extraPaths = ["./tests"]
 include = ["utils", "examples", "tests"]
-pythonVersion = "3.11"
 reportAbstractUsage = "error"
 reportArgumentType = "error"
 reportAssertAlwaysTrue = "error"

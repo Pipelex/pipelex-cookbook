@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.13.1] - 2026-06-09
+
+- Bump `pipelex` to `0.32.0`. See the [Pipelex changelog](https://docs.pipelex.com/latest/changelog/) for upstream changes.
+- Update the `discord_newsletter` example for the reworked reporting API: the removed `get_report_delegate().generate_report()` call was dropped (`ReportingProtocol` no longer exposes it — cost reporting is now rendered by the `pipelex run` CLI).
+- Point pyright at the project virtualenv via `venvPath`/`venv` and tidy its `exclude` list so type checking resolves dependencies correctly.
+
 ## [v0.13.0] - 2026-06-04
 
 Bumps `pipelex` from `0.25.2` to `0.31.0` and re-syncs the bundled inference kit to `0.31.0`. See the [Pipelex changelog](https://docs.pipelex.com/latest/changelog/) for the full set of upstream changes.
