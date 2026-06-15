@@ -35,7 +35,7 @@ async def extract_expenses_list(working_memory: WorkingMemory) -> ListContent[ex
     """
     Extracts the expenses list from the parsed expense report.
     """
-    report = working_memory.get_stuff_as("report", expense_validator__ExpenseReport)
+    report = working_memory.get_stuff_as("report", content_type=expense_validator__ExpenseReport)
     return ListContent(items=report.expenses)
 
 
@@ -49,8 +49,8 @@ async def check_spending_limit(working_memory: WorkingMemory) -> expense_validat
     - Higher seniority = higher limits
     - Amount exceeding limit results in rejection or cap
     """
-    report = working_memory.get_stuff_as("report", expense_validator__ExpenseReport)
-    expense = working_memory.get_stuff_as("expense", expense_validator__Expense)
+    report = working_memory.get_stuff_as("report", content_type=expense_validator__ExpenseReport)
+    expense = working_memory.get_stuff_as("expense", content_type=expense_validator__Expense)
 
     # Get the limit for this seniority and category
     seniority_limits = SPENDING_LIMITS.get(report.employee.seniority, SPENDING_LIMITS["Junior"])
@@ -81,7 +81,7 @@ async def check_weekend(working_memory: WorkingMemory) -> expense_validator__Wee
     - Travel/accommodation on weekends may be acceptable if part of business trip
     """
 
-    expense = working_memory.get_stuff_as("expense", expense_validator__Expense)
+    expense = working_memory.get_stuff_as("expense", content_type=expense_validator__Expense)
 
     day_of_week = expense.expense_date.strftime("%A")
     weekday_num = expense.expense_date.weekday()
@@ -118,7 +118,7 @@ async def check_timeliness(working_memory: WorkingMemory) -> expense_validator__
     - Grace period of 45 days with warning
     - Beyond 45 days: rejected as too late
     """
-    expense = working_memory.get_stuff_as("expense", expense_validator__Expense)
+    expense = working_memory.get_stuff_as("expense", content_type=expense_validator__Expense)
 
     # Calculate days since expense
     today = date.today()
@@ -164,13 +164,13 @@ async def compose_expense_result(working_memory: WorkingMemory) -> expense_valid
     - Purpose quality (warning or requires clarification)
     - Reasonable amount (warning only)
     """
-    expense = working_memory.get_stuff_as("expense", expense_validator__Expense)
-    receipt_check = working_memory.get_stuff_as("receipt_check", expense_validator__ReceiptMatchCheck)
-    limit_check = working_memory.get_stuff_as("limit_check", expense_validator__SpendingLimitCheck)
-    weekend_check = working_memory.get_stuff_as("weekend_check", expense_validator__WeekendCheck)
-    timeliness_check = working_memory.get_stuff_as("timeliness_check", expense_validator__TimelinesCheck)
-    purpose_check = working_memory.get_stuff_as("purpose_check", expense_validator__PurposeQualityCheck)
-    reasonable_check = working_memory.get_stuff_as("reasonable_check", expense_validator__ReasonableAmountCheck)
+    expense = working_memory.get_stuff_as("expense", content_type=expense_validator__Expense)
+    receipt_check = working_memory.get_stuff_as("receipt_check", content_type=expense_validator__ReceiptMatchCheck)
+    limit_check = working_memory.get_stuff_as("limit_check", content_type=expense_validator__SpendingLimitCheck)
+    weekend_check = working_memory.get_stuff_as("weekend_check", content_type=expense_validator__WeekendCheck)
+    timeliness_check = working_memory.get_stuff_as("timeliness_check", content_type=expense_validator__TimelinesCheck)
+    purpose_check = working_memory.get_stuff_as("purpose_check", content_type=expense_validator__PurposeQualityCheck)
+    reasonable_check = working_memory.get_stuff_as("reasonable_check", content_type=expense_validator__ReasonableAmountCheck)
 
     rejection_reasons: list[str] = []
     warnings: list[str] = []
@@ -285,8 +285,8 @@ async def compose_validation_report(working_memory: WorkingMemory) -> expense_va
     """
     Composes the final validation report with summary statistics and executive notes.
     """
-    report = working_memory.get_stuff_as("report", expense_validator__ExpenseReport)
-    validations_stuff = working_memory.get_stuff_as_list("expense_validations", expense_validator__ExpenseValidationResult)
+    report = working_memory.get_stuff_as("report", content_type=expense_validator__ExpenseReport)
+    validations_stuff = working_memory.get_stuff_as_list("expense_validations", item_type=expense_validator__ExpenseValidationResult)
 
     # Calculate summary statistics
     total_claimed = sum(r.claimed_amount for r in validations_stuff.items)

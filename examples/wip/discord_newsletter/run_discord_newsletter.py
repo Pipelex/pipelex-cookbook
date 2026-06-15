@@ -4,7 +4,7 @@ from typing import List
 
 from pipelex import pretty_print
 from pipelex.pipelex import Pipelex
-from pipelex.pipeline.runner import PipelexRunner
+from pipelex.pipeline.runner import PipelexMTHDSProtocol
 from pipelex.tools.misc.json_utils import load_json_list_from_path
 
 from examples.wip.discord_newsletter.structures.discord_newsletter__discord_channel_update import discord_newsletter__DiscordChannelUpdate
@@ -35,8 +35,8 @@ async def write_discord_newsletter() -> discord_newsletter__HtmlNewsletter:
 
     # Run the pipeline with the typed input
     # The pipeline will receive a list of discord_newsletter__DiscordChannelUpdate objects
-    runner = PipelexRunner()
-    response = await runner.execute_pipeline(
+    runner = PipelexMTHDSProtocol()
+    response = await runner.execute(
         pipe_code="write_discord_newsletter",
         inputs={
             "discord_channel_updates": discord_channel_updates,

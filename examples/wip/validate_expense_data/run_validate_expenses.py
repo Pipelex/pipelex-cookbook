@@ -9,7 +9,7 @@ import asyncio
 from pipelex import pretty_print
 from pipelex.core.stuffs.document_content import DocumentContent
 from pipelex.pipelex import Pipelex
-from pipelex.pipeline.runner import PipelexRunner
+from pipelex.pipeline.runner import PipelexMTHDSProtocol
 
 
 async def validate_expense_report_from_pdf(pdf_path: str) -> None:
@@ -29,8 +29,8 @@ async def validate_expense_report_from_pdf(pdf_path: str) -> None:
     print(f"Validating expense report from: {pdf_path}")
     print(f"{'=' * 60}\n")
 
-    runner = PipelexRunner()
-    response = await runner.execute_pipeline(
+    runner = PipelexMTHDSProtocol()
+    response = await runner.execute(
         pipe_code="validate_expense_report",
         inputs={
             "document": DocumentContent(url=pdf_path),
