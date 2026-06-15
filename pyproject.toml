@@ -64,7 +64,7 @@ required-version = ">=0.7.2"
 
 [tool.uv.sources]
 # Temporary: track the keyword-only-arguments refactor branch of pipelex until it is released to PyPI.
-pipelex = { git = "https://github.com/Pipelex/pipelex.git", rev = "529b908255e0eb513038a2d92a58730185a22b74" }
+pipelex = { git = "https://github.com/Pipelex/pipelex.git", rev = "755b82117fd4c26ba090455cfd571099cf05708b" }
 
 [tool.mypy]
 check_untyped_defs = true

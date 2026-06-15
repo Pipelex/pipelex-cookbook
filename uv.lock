@@ -4332,7 +4332,7 @@ wheels = [
 [[package]]
 name = "pipelex"
 version = "0.33.0"
-source = { git = "https://github.com/Pipelex/pipelex.git?rev=529b908255e0eb513038a2d92a58730185a22b74#529b908255e0eb513038a2d92a58730185a22b74" }
+source = { git = "https://github.com/Pipelex/pipelex.git?rev=755b82117fd4c26ba090455cfd571099cf05708b#755b82117fd4c26ba090455cfd571099cf05708b" }
 dependencies = [
     { name = "aiofiles" },
     { name = "backports-strenum", marker = "python_full_version < '3.11'" },
@@ -4447,7 +4447,7 @@ requires-dist = [
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "crewai", marker = "extra == 'crewai'", specifier = ">=0.80.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal", "docling"], git = "https://github.com/Pipelex/pipelex.git?rev=529b908255e0eb513038a2d92a58730185a22b74" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal", "docling"], git = "https://github.com/Pipelex/pipelex.git?rev=755b82117fd4c26ba090455cfd571099cf05708b" },
     { name = "pipelex-tools", marker = "extra == 'dev'", specifier = ">=0.3.2" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.410" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.1" },
