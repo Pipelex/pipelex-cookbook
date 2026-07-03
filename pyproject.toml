@@ -19,7 +19,7 @@ classifiers = [
 
 dependencies = [
   "beautifulsoup4==4.13.4",
-  "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal,docling]==0.33.0",
+  "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal,docling]==0.36.0",
   "weasyprint==68.0",
 ]
 
@@ -61,10 +61,6 @@ include = ["examples*", "utils*"]
 
 [tool.uv]
 required-version = ">=0.7.2"
-
-[tool.uv.sources]
-# Temporary: track the keyword-only-arguments refactor branch of pipelex until it is released to PyPI.
-pipelex = { git = "https://github.com/Pipelex/pipelex.git", rev = "0e32c8c02600e17bbe146331f9b701ccc03a1ca1" }
 
 [tool.mypy]
 check_untyped_defs = true
