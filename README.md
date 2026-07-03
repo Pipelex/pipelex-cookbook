@@ -401,6 +401,7 @@ The cookbook contains production-ready examples covering various use cases:
 
 ### Advanced Methods
 - **Data Synthesis** - Generate synthetic data based on schemas
+- **Using Inference Plugins** - Serve a model from an installable inference-backend plugin (zero keys, deterministic)
 - **Advisory Board** (WIP) - Multi-agent advisory system
 - **Newsletter Generation** (WIP) - Automated newsletter creation
 

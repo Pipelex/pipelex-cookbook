@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- **`using_inference_plugins` is now a real plugin demo.** The example used to reference a model handle (`llm_plugin_example_using_openai`) that was defined nowhere — "plugin" in its name was pre-plugin-system vocabulary for a custom model config entry, and it could only ever dry-run. It now demonstrates the actual Pipelex plugin system: a complete `hello-inference-plugin` package (in the example directory) registers an inference backend for `sdk = "hello"` through the `pipelex.plugins` entry-point group, and its deterministic worker answers with a canned haiku — so the example runs end-to-end with **no API key and no network**. New `[hello]` backend + `backends/hello.toml` model `hello-1` in `.pipelex/inference/`, routed via an `optional_routes` entry in the active routing profile; the example ships a README covering install, discovery (`pipelex plugins list`, `pipelex show models hello`), the run, and the fail-loud path when the plugin is uninstalled. Requires `pipelex` > 0.36.0 (routing-profile `optional_routes` fix upstream).
+- **`test_bundles.py` special-case rules dropped.** The example no longer needs an OpenAI key nor a GHA exclusion: its dry run passes without the plugin installed, so both stale entries are gone and the bundle is auto-discovered like any other.
+
 ## [v0.14.0] - 2026-07-03
 
 - Bump `pipelex` to `0.36.0`, completing the migration to the keyword-only-arguments refactor now released upstream (non-subject function parameters across the `pipelex/` public surface are keyword-only).

@@ -20,14 +20,10 @@ EXTRA_ARGS: dict[str, list[str]] = {}
 EXCLUDED_DIRS = ("examples/wip",)
 
 # Bundles requiring an LLM provider key (skipped when key is missing).
-NEEDS_OPENAI_KEY = {
-    "examples/c_advanced/using_inference_plugins/hello_plugin.mthds",
-}
+NEEDS_OPENAI_KEY: set[str] = set()
 
 # Bundles tagged gha_disabled (skipped on GitHub Actions).
-GHA_DISABLED = {
-    "examples/c_advanced/using_inference_plugins/hello_plugin.mthds",
-}
+GHA_DISABLED: set[str] = set()
 
 
 def _discover_test_cases() -> list[ParameterSet]:
