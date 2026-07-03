@@ -18,7 +18,7 @@ from crewai import Agent, Crew, Process, Task  # type: ignore[import-untyped]
 from crewai.tools import tool  # type: ignore[import-untyped]  # pyright: ignore[reportUnknownVariableType]
 from pipelex import pretty_print
 from pipelex.pipelex import Pipelex
-from pipelex.pipeline.runner import PipelexRunner
+from pipelex.pipeline.runner import PipelexMTHDSProtocol
 
 from examples.c_advanced.crewai_with_pipelex_tools.structures.research_report__research_brief import ResearchBrief
 
@@ -38,7 +38,7 @@ _session: dict[str, Any] = {}
 def run_research(question: str) -> ResearchBrief:
     """Research a question with fact-checking. Returns a typed ResearchBrief."""
     response = asyncio.run(
-        PipelexRunner().execute_pipeline(
+        PipelexMTHDSProtocol().execute(
             pipe_code="deep_research",
             inputs={"question": {"concept": f"{DOMAIN}.ResearchQuestion", "content": {"text": question}}},
         )
@@ -55,7 +55,7 @@ def compose_report() -> str:
     brief = _session["brief"]
     question = _session["question"]
     response = asyncio.run(
-        PipelexRunner().execute_pipeline(
+        PipelexMTHDSProtocol().execute(
             pipe_code="compose_report",
             inputs={
                 "brief": {"concept": f"{DOMAIN}.ResearchBrief", "content": brief},

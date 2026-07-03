@@ -4,14 +4,14 @@ from pipelex import pretty_print
 from pipelex.core.stuffs.document_content import DocumentContent
 from pipelex.core.stuffs.text_content import TextContent
 from pipelex.pipelex import Pipelex
-from pipelex.pipeline.runner import PipelexRunner
+from pipelex.pipeline.runner import PipelexMTHDSProtocol
 
 from examples.b_basics.document_extract.answer_from_documents.structures.document_qa__reference_count import document_qa__ReferenceCount
 
 
 async def run_answer_from_documents() -> document_qa__ReferenceCount:
-    runner = PipelexRunner()
-    response = await runner.execute_pipeline(
+    runner = PipelexMTHDSProtocol()
+    response = await runner.execute(
         pipe_code="answer_from_documents",
         dynamic_output_concept_ref="document_qa.ReferenceCount",
         inputs={

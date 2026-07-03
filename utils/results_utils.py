@@ -39,5 +39,5 @@ def output_result(
     content: str,
 ):
     result_file_path = get_results_file_path(sample_name, file_name)
-    save_text_to_path(content, result_file_path)
+    save_text_to_path(text=content, path=result_file_path)
     pretty_print(f"file://{result_file_path.resolve()}", title=title)

@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.14.0] - 2026-07-03
+
+- Bump `pipelex` to `0.36.0`, completing the migration to the keyword-only-arguments refactor now released upstream (non-subject function parameters across the `pipelex/` public surface are keyword-only).
+- Migrate the examples and integration test off the removed `PipelexRunner` class: `PipelexRunner` → `PipelexMTHDSProtocol`, `execute_pipeline()` → `execute()` (the runner is now the MTHDS Protocol implementation; `response.pipe_output` is unchanged).
+- Update the `validate_expense_data` example's `WorkingMemory.get_stuff_as` / `get_stuff_as_list` calls to pass `content_type` / `item_type` by keyword.
+- `output_result` now calls `save_text_to_path(text=..., path=...)` by keyword (the writer's `path` is now keyword-only).
+- Remove the experimental `is_reporting_enabled` feature flag from `.pipelex/pipelex.toml`.
+
 ## [v0.13.1] - 2026-06-09
 
 - Bump `pipelex` to `0.32.0`. See the [Pipelex changelog](https://docs.pipelex.com/latest/changelog/) for upstream changes.

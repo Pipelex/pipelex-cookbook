@@ -92,7 +92,7 @@ python examples/b_basics/document_extract/answer_from_documents/run_answer_from_
 The runner specifies the output concept dynamically:
 
 ```python
-response = await runner.execute_pipeline(
+response = await runner.execute(
     pipe_code="answer_from_documents",
     dynamic_output_concept_ref="document_qa.ReferenceCount",
     inputs={...},

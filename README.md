@@ -313,18 +313,19 @@ Create an `inputs.json` file with your PDF URLs:
 ```python
 import asyncio
 import json
-from pipelex.pipeline.execute import execute_pipeline
+from pipelex.pipeline.runner import PipelexMTHDSProtocol
 from pipelex.pipelex import Pipelex
 
 async def run_pipeline():
     with open("inputs.json", encoding="utf-8") as f:
         inputs = json.load(f)
 
-    pipe_output = await execute_pipeline(
+    runner = PipelexMTHDSProtocol()
+    response = await runner.execute(
         pipe_code="cv_match",
         inputs=inputs
     )
-    print(pipe_output.main_stuff_as_str)
+    print(response.pipe_output.main_stuff_as_str)
 
 Pipelex.make()
 asyncio.run(run_pipeline())

@@ -62,5 +62,5 @@ class TestResultsUtils:
         output_result(sample_name, title, file_name, content)
 
         mock_get_results_file_path.assert_called_once_with(sample_name, file_name)
-        mock_save_text.assert_called_once_with(content, expected_file_path)
+        mock_save_text.assert_called_once_with(text=content, path=expected_file_path)
         mock_pretty_print.assert_called_once_with(f"file://{expected_file_path.resolve()}", title=title)
