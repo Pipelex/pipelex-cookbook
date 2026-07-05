@@ -162,7 +162,7 @@ description = """
 Executes parallel extraction of text content from both the CV PDF and job offer PDF simultaneously to optimize processing time.
 """
 inputs = { cv_pdf = "PDF", job_offer_pdf = "PDF" }
-output = "Dynamic"
+output = "Composite"
 branches = [
     { pipe = "extract_cv_text", result = "cv_pages" },
     { pipe = "extract_job_offer_text", result = "job_offer_pages" },

@@ -181,6 +181,17 @@ domain = "parallel_execution"
 description = "Learn how to run pipes in parallel"
 main_pipe = "generate_poems_parallel"
 
+# A PipeParallel combines its branch outputs into a single named composite.
+# The declared output must be "Composite" (untyped) or a structured concept
+# whose fields match the branch `result` names — here, one field per poem.
+[concept.PoemSet]
+description = "A set of three poems generated in parallel: a haiku, a limerick, and a sonnet excerpt."
+
+[concept.PoemSet.structure]
+haiku    = { type = "concept", concept_ref = "Text", description = "A haiku about the ocean", required = true }
+limerick = { type = "concept", concept_ref = "Text", description = "A limerick about a programmer", required = true }
+sonnet   = { type = "concept", concept_ref = "Text", description = "The first four lines of a sonnet about nature", required = true }
+
 [pipe]
 
 # Three independent pipes that can run in parallel
@@ -212,7 +223,7 @@ Write the first 4 lines of a sonnet about nature.
 [pipe.generate_poems_parallel]
 type = "PipeParallel"
 description = "Generate different poem types in parallel"
-output = "Dynamic"
+output = "PoemSet"
 branches = [
     { pipe = "generate_haiku", result = "haiku" },
     { pipe = "generate_limerick", result = "limerick" },
@@ -222,9 +233,10 @@ add_each_output = true
 ```
 
 **What you need to know:**
-- `PipeParallel` runs all pipes at the same time
-- `parallels` - List of pipes to run in parallel
-- `add_each_output = true` - Add each result to working memory
+- `PipeParallel` runs all its branches at the same time
+- `branches` - the pipes to run in parallel, each with a `result` name
+- `output` must be `"Composite"` (untyped) or a structured concept whose fields match the branch `result` names — a parallel always combines its branches into one named composite (it can't be a scalar like `"Text"` or a list like `"Text[]"`)
+- `add_each_output = true` - also add each branch result to working memory by name
 - Use this when pipes don't depend on each other
 
 **Run it:**
