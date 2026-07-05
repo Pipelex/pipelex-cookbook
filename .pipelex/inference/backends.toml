@@ -47,6 +47,10 @@ display_name = "Google AI"
 enabled = false
 api_key = "${GOOGLE_API_KEY}"
 
+[hello]
+display_name = "Hello (plugin demo)"
+enabled = true                       # No API key needed: served by the hello-inference-plugin example (examples/c_advanced/using_inference_plugins/)
+
 [groq]
 display_name = "Groq"
 enabled = false

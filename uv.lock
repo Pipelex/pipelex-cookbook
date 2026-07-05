@@ -4331,7 +4331,7 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.36.0"
+version = "0.37.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -4373,9 +4373,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b9/3e/51aa5abb42fdf9191d42545d326306deb0c1953c0db3c5ac20988a8014cd/pipelex-0.36.0.tar.gz", hash = "sha256:ef07cd050c69406762a66ddfd203d84006050247017eac7fddb185301e76a098", size = 977043, upload-time = "2026-06-30T14:50:43.96Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5e/d1/e6d4fe47995bc67643dce9f21bcda5eb119ce82db9b6e405fec84f1da51c/pipelex-0.37.0.tar.gz", hash = "sha256:3b61ed7b81bde72536e97367928278263e1bd79cdd357e43a1261a4f070b1ec7", size = 990808, upload-time = "2026-07-04T15:19:30.197Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3f/12/3b0c9ec0de691b07bf17b8e03a53847ad7a2be386b4e2d5e5f40617d8b39/pipelex-0.36.0-py3-none-any.whl", hash = "sha256:aea61bb549ee1f2418e2f0c4b6f80243454105cc129cbebea318d80a1d929c6a", size = 1396810, upload-time = "2026-06-30T14:50:41.944Z" },
+    { url = "https://files.pythonhosted.org/packages/b5/d2/fe855c96dcbf03373bcf152acbe5b6bab33b8e0aec540a1dae8461857cd4/pipelex-0.37.0-py3-none-any.whl", hash = "sha256:bd50fcaaa3a89681a061c5a03c925d0b74436653f7344d2e9970dbb44a3de7c2", size = 1410381, upload-time = "2026-07-04T15:19:28.222Z" },
 ]
 
 [package.optional-dependencies]
@@ -4408,7 +4408,7 @@ mistralai = [
 
 [[package]]
 name = "pipelex-cookbook"
-version = "0.14.0"
+version = "0.15.0"
 source = { editable = "." }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -4451,7 +4451,7 @@ requires-dist = [
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "crewai", marker = "extra == 'crewai'", specifier = ">=0.80.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal", "docling"], specifier = "==0.36.0" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal", "docling"], specifier = "==0.37.0" },
     { name = "pipelex-tools", marker = "extra == 'dev'", specifier = ">=0.3.2" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.410" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.1" },

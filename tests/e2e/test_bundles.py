@@ -1,3 +1,4 @@
+import importlib.util
 import subprocess
 from pathlib import Path
 
@@ -20,14 +21,15 @@ EXTRA_ARGS: dict[str, list[str]] = {}
 EXCLUDED_DIRS = ("examples/wip",)
 
 # Bundles requiring an LLM provider key (skipped when key is missing).
-NEEDS_OPENAI_KEY = {
-    "examples/c_advanced/using_inference_plugins/hello_plugin.mthds",
+NEEDS_OPENAI_KEY: set[str] = set()
+
+# Bundles requiring an installed inference-backend plugin (skipped when the package is absent).
+NEEDS_PLUGIN: dict[str, str] = {
+    "examples/c_advanced/using_inference_plugins/hello_plugin.mthds": "hello_inference_plugin",
 }
 
 # Bundles tagged gha_disabled (skipped on GitHub Actions).
-GHA_DISABLED = {
-    "examples/c_advanced/using_inference_plugins/hello_plugin.mthds",
-}
+GHA_DISABLED: set[str] = set()
 
 
 def _discover_test_cases() -> list[ParameterSet]:
@@ -51,6 +53,10 @@ class TestBundles:
     def test_dry_run(self, pipelex_cmd: str, bundle_path: str, pipe: str):
         if bundle_path in NEEDS_OPENAI_KEY and not get_optional_env("OPENAI_API_KEY"):
             pytest.skip("OPENAI_API_KEY is not set")
+
+        required_plugin = NEEDS_PLUGIN.get(bundle_path)
+        if required_plugin and importlib.util.find_spec(required_plugin) is None:
+            pytest.skip(f"plugin package '{required_plugin}' is not installed")
 
         cmd = [pipelex_cmd, "run", "bundle", bundle_path]
 

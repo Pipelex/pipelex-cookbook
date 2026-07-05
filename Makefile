@@ -47,7 +47,8 @@ make export-requirements      - Export production requirements.txt (no dev depen
 make export-requirements-dev  - Export requirements-dev.txt (all dependencies including dev)
 make er                       - Shorthand -> export-requirements
 make erd                      - Shorthand -> export-requirements-dev
-make validate                 - Run the setup sequence to validate the config and libraries
+make validate                 - Validate config, libraries, and every shipped .mthds bundle
+make validate-bundles         - Static-validate all .mthds bundles (tutorial, examples, methods)
 
 make format                   - format with ruff and plxt
 make lint                     - lint with ruff and plxt
@@ -107,7 +108,7 @@ export HELP
 	test test-xdist t test-quiet tq test-with-prints tp test-inference ti \
 	codex-tests gha-tests \
 	run-all-tests run-manual-trigger-gha-tests run-gha_disabled-tests \
-	validate v check c cc agent-check agent-test \
+	validate validate-bundles v check c cc agent-check agent-test \
 	merge-check-ruff-lint merge-check-ruff-format merge-check-plxt-format merge-check-plxt-lint merge-check-mypy merge-check-pyright \
 	li check-unused-imports fix-unused-imports check-uv check-TODOs
 
@@ -161,6 +162,7 @@ install: env-verbose
 	$(call PRINT_TITLE,"Installing dependencies")
 	@. $(VIRTUAL_ENV)/bin/activate && \
 	uv sync --all-extras && \
+	uv pip install -e examples/c_advanced/using_inference_plugins/hello_inference_plugin && \
 	echo "Installed Pipelex cookbook dependencies in ${VIRTUAL_ENV} and initialized Pipelex libraries";
 
 lock: env-verbose
@@ -189,9 +191,13 @@ er: export-requirements
 erd: export-requirements-dev
 	@echo "> done: erd = export-requirements-dev"
 
-validate: env
+validate: env validate-bundles
 	$(call PRINT_TITLE,"Running setup sequence")
 	$(VENV_PIPELEX) validate --all
+
+validate-bundles: env
+	$(call PRINT_TITLE,"Validating all shipped .mthds bundles")
+	$(VENV_PYTEST) tests/e2e/test_validate_bundles.py --disable-inference -o log_cli=false -q
 
 ##############################################################################################
 ############################      Cleaning                        ############################

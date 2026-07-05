@@ -1,6 +1,6 @@
 [project]
 name = "pipelex-cookbook"
-version = "0.14.0"
+version = "0.15.0"
 description = "Cookbook for Pipelex, the open standard for repeatable AI methods. Write business logic, not API calls."
 authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
@@ -19,7 +19,7 @@ classifiers = [
 
 dependencies = [
   "beautifulsoup4==4.13.4",
-  "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal,docling]==0.36.0",
+  "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal,docling]==0.37.0",
   "weasyprint==68.0",
 ]
 
@@ -64,7 +64,12 @@ required-version = ">=0.7.2"
 
 [tool.mypy]
 check_untyped_defs = true
-exclude = "^.*\\.venv/.*$"
+# The hello_inference_plugin example is its own installable distribution: mypy must resolve it
+# as the installed `hello_inference_plugin` package, not rediscover its files under examples/.
+exclude = [
+  "^.*\\.venv/.*$",
+  "^examples/c_advanced/using_inference_plugins/hello_inference_plugin/.*$",
+]
 mypy_path = "."
 packages = ["utils", "examples", "tests"]
 plugins = ["pydantic.mypy"]
