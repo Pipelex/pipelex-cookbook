@@ -6,11 +6,13 @@ from _pytest.mark import ParameterSet
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
-# Roots whose every .mthds bundle is release-gated by static validation: the tutorials and the
-# examples. `pipelex validate --all` only checks the configured library pipelines, so without
-# this gate a breaking MTHDS language change sails through green here and only fails in a
-# reader's terminal.
-VALIDATED_ROOTS = ("tutorial", "examples")
+# Roots whose every .mthds bundle is release-gated by static validation: the tutorials, the
+# examples, and the installed method packages. `pipelex validate --all` only checks the
+# configured library pipelines, so without this gate a breaking MTHDS language change sails
+# through green here and only fails in a reader's terminal. Covering `.mthds/methods` also
+# validates the installed `documents` library directly — its `extract_page_contents` pipe is
+# referenced by no example, so it would otherwise never be exercised.
+VALIDATED_ROOTS = ("tutorial", "examples", ".mthds/methods")
 
 # Folders excluded from the gate, keyed by repo-relative prefix, each with the reason it is
 # skipped. Excluded bundles are still discovered and reported as SKIP (with this reason) so an
