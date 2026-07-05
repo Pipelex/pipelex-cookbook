@@ -162,6 +162,7 @@ install: env-verbose
 	$(call PRINT_TITLE,"Installing dependencies")
 	@. $(VIRTUAL_ENV)/bin/activate && \
 	uv sync --all-extras && \
+	uv pip install -e examples/c_advanced/using_inference_plugins/hello_inference_plugin && \
 	echo "Installed Pipelex cookbook dependencies in ${VIRTUAL_ENV} and initialized Pipelex libraries";
 
 lock: env-verbose
