@@ -1,0 +1,32 @@
+################################################################################
+# Hello Backend Configuration (plugin demo)
+################################################################################
+#
+# This file declares the model served by the `hello-inference-plugin` example
+# package (examples/c_advanced/using_inference_plugins/). The `sdk = "hello"`
+# token is what routes the model to the plugin's worker factory: the plugin
+# registers an inference backend for (family="llm", sdk="hello"), and this
+# model spec selects it.
+#
+# The backend is software-only and deterministic — no API key, no network.
+#
+################################################################################
+
+################################################################################
+# MODEL DEFAULTS
+################################################################################
+
+[defaults]
+model_type = "llm"
+sdk = "hello"
+thinking_mode = "none"
+
+################################################################################
+# LANGUAGE MODELS
+################################################################################
+
+[hello-1]
+model_id = "hello-1"
+inputs = ["text"]
+outputs = ["text"]
+costs = {}

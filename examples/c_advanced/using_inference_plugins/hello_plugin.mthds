@@ -1,7 +1,5 @@
-
-
 domain      = "hello_plugin"
-description = "Using an LLM Plugin"
+description = "Using a model served by an inference-backend plugin"
 main_pipe   = "hello_plugin"
 
 [pipe]
@@ -9,7 +7,7 @@ main_pipe   = "hello_plugin"
 type = "PipeLLM"
 description = "Write text about Hello World."
 output = "Text"
-model = { model = "llm_plugin_example_using_openai", temperature = 0.5 }
+model = { model = "hello-1", temperature = 0.5 }
 prompt = """
 Write a haiku about Hello World.
 """
