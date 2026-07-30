@@ -1,5 +1,16 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- **Swept onto `pipelex` 0.41.0** (`pipelex[...]==0.37.0` → `==0.41.0`, crossing four release cycles). The address moves that reach this repo are small — `pipelex.hub` is deleted with no shim, so `get_storage_provider` and `get_console` come from `pipelex.runtime_hub`, and `PipeRunMode` moved to `pipelex.system.pipe_run_mode`.
+- **Dropped Python 3.10.** `requires-python` is now `>=3.11,<3.15`, the 3.10 classifier is gone, and both CI matrices drop it. Not cleanup — pipelex requires `>=3.11` as of this pin, so advertising 3.10 made the lock unsolvable outright.
+
+### Known issues
+
+- **Six e2e/integration tests remain red, for two pre-existing causes that are out of the sweep's scope.** Measured against the pre-sweep tree, this suite was already failing 48 tests — the pinned 0.37.0 runtime could not boot against the config shape on disk at all — so the sweep is a large net improvement (48 → 6) rather than a regression. What remains: (1) an upstream `pipelex` structure-codegen bug — a concept field named `date` of type `date` generates a class whose annotation is shadowed by its own field assignment (`unsupported operand type(s) for |: 'FieldInfo' and 'NoneType'`), hitting `extract_gantt` and `extract_invoice`; it is not a 0.41.0 regression (identically broken on 0.37.0 and 0.40.0) and the fix belongs in pipelex's generator, not in a renamed cookbook field that would hide it from every user of `type = "date"`; and (2) `examples/a_quick_start/hello_world.mthds` declares no inputs but is run with one, which is content that has fallen behind the language. Full analysis, including the repro across pipelex versions and the suggested generator fix, in `wip/pipelex-0.41.0-sweep-residual-failures.md`.
+
 ## [v0.15.0] - 2026-07-05
 
 ### Added
