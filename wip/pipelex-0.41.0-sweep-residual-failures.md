@@ -2,6 +2,8 @@
 
 Written during the workspace-wide sweep onto `pipelex` 0.41.0. This repo's pin crossed four release cycles (`==0.37.0` → `==0.41.0`). The address fixes landed and the suite improved sharply, but six tests remain red for two causes, **neither of which is an address fix and neither of which this sweep should fix**.
 
+> **Resolved 2026-08-01 — the suite is green.** Both causes were closed in a follow-up pass, on Louis's call, with the pin now at `==0.42.0`. Cause 1 was worked around here by renaming the colliding fields; the generator bug itself is handed off to `pipelex` in [`wip/bugs/structure-field-name-shadows-type.md`](../../wip/bugs/structure-field-name-shadows-type.md) at the workspace root — **read that one, not the fix options below, which measurement has since corrected**. Cause 2 turned out to be a test-harness bug rather than stale bundle content. Details per cause below.
+
 ## Baseline: the suite was already red before the sweep
 
 Measured, not assumed. With the pre-sweep tree checked out (`pipelex==0.37.0`) and the venv reinstalled:
@@ -47,15 +49,14 @@ class gantt__Milestone(StructuredContent):
 
 **Not a 0.41.0 regression.** The shape is broken identically on 0.37.0, 0.40.0 and 0.41.0 — verified by building the emitted class under each version. It is plain Python scoping, so no pipelex release fixed or introduced it; the sweep only made it *reachable*, because on 0.37.0 these bundles never got as far as codegen (the boot failure above stopped them first).
 
-**Fix belongs in `pipelex`, not here.** Options for whoever picks it up, roughly in order of preference:
+**Fix belongs in `pipelex`, not here.** ⚠ The three options originally sketched here were ranked by reasoning, not measurement, and two of them are wrong: module-qualification (then ranked first) still breaks on a field named `datetime`, and `from __future__ import annotations` (then ranked second) does not help at all, because pydantic resolves the deferred string against the class namespace too. The reserved-alias option, then ranked last, is the one that holds. The measured comparison and the suggested shape of the fix now live in [`wip/bugs/structure-field-name-shadows-type.md`](../../wip/bugs/structure-field-name-shadows-type.md) at the workspace root — **use that doc**, this paragraph is kept only so the superseded ranking is not re-derived from scratch.
 
-1. Emit a module-qualified annotation (`datetime.date | None` with `import datetime`), which no field name can shadow. Fixes the whole class of collisions at once.
-2. Emit `from __future__ import annotations` and ensure the resolver evaluates against module globals rather than the class namespace.
-3. Import the type under a reserved alias (`from datetime import date as _pipelex_date`).
+**What was done here (2026-08-01).** Still broken on 0.42.0, and the cookbook consumes released pipelex from PyPI, so no upstream fix can turn this suite green today. Louis's call: rename the two colliding fields to unblock, and hand the generator bug off as the doc above rather than patching `pipelex` in the same pass.
 
-Option 1 is the one that generalizes: the collision is not specific to `date`, and an allowlist of "risky field names" would rot.
+- `Milestone.date` → `milestone_date` (also matches the sibling `GanttTaskDetails.start_date` / `end_date`)
+- `Invoice.date` → `issue_date` (reads better beside `invoice_id` / `invoice_number` anyway)
 
-Renaming the cookbook's field to dodge the collision would hide a bug every user of `type = "date"` can hit, so it is deliberately **not** done here.
+No allowlist or skip was added: the `test_validate` gate still runs both bundles, so if someone renames a field back onto its own type name, it fails loudly with the same codegen error rather than silently regressing.
 
 ## Cause 2 — stale bundle content in `hello_world.mthds`
 
@@ -66,7 +67,9 @@ Failed to execute pipeline 'hello_world': Input 'text' is not declared by this p
 Declared inputs: (none).
 ```
 
-This is authored content that has fallen behind the language: inputs must now be declared on the pipe. It is a genuine cookbook fix, but it is content authoring rather than an address re-point, so it is out of this sweep's scope — and it is the *quick-start* example, which deserves a deliberate edit rather than a drive-by one. Worth checking the other quick-start examples in the same pass.
+This was read at the time as authored content fallen behind the language, and deferred as a deliberate quick-start edit.
+
+**It was neither (2026-08-01).** `hello_world` is correct as authored — it takes no inputs, and the README runs it with no `-i`. The bug was in the *test harness*: `test_bundles.py` attached `<bundle dir>/inputs.json` to every bundle in a folder, and `examples/a_quick_start/` holds two bundles — `hello_world`, which declares no inputs, and `summarize`, which that `inputs.json` actually belongs to. So the suite handed `summarize`'s `text` to `hello_world`, and passing a pipe an input it does not declare is (correctly) an error. Fixed by a `NO_INPUTS` opt-out in the harness, which makes the test run the bundle exactly the way the README documents it. No bundle content changed.
 
 ## What the sweep did change here
 

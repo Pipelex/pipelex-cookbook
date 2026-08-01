@@ -17,7 +17,7 @@ description = "Invoice information extracted from text, supporting both formal b
 [concept.Invoice.structure]
 invoice_id        = { type = "text", description = "Unique identifier for the invoice" }
 invoice_number    = { type = "text", description = "Invoice number as shown on the document" }
-date              = { type = "date", description = "Date when the invoice was issued" }
+issue_date        = { type = "date", description = "Date when the invoice was issued" }
 time              = { type = "text", description = "Time of the transaction if available" }
 amount_incl_tax   = { type = "number", description = "Total amount including taxes" }
 amount_excl_tax   = { type = "number", description = "Net amount excluding taxes" }

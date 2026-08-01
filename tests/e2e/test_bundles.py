@@ -17,6 +17,14 @@ PIPES_OVERRIDES: dict[str, list[str]] = {
 # Extra CLI args by bundle path (e.g. -L for local libraries).
 EXTRA_ARGS: dict[str, list[str]] = {}
 
+# Bundles that must run without inputs, even though their folder holds an inputs.json meant for a
+# sibling bundle (a_quick_start ships both hello_world, which declares no inputs, and summarize,
+# which the inputs.json belongs to). Passing a pipe an input it does not declare is an error, so
+# the folder-level lookup below would break these — this is also exactly how the READMEs run them.
+NO_INPUTS: set[str] = {
+    "examples/a_quick_start/hello_world.mthds",
+}
+
 # Folders excluded from auto-discovery (relative to repo root).
 EXCLUDED_DIRS = ("examples/wip",)
 
@@ -64,7 +72,7 @@ class TestBundles:
             cmd.extend(["--pipe", pipe])
 
         inputs_rel = Path(bundle_path).parent / "inputs.json"
-        if (REPO_ROOT / inputs_rel).is_file():
+        if bundle_path not in NO_INPUTS and (REPO_ROOT / inputs_rel).is_file():
             cmd.extend(["-i", inputs_rel.as_posix()])
 
         cmd.extend(EXTRA_ARGS.get(bundle_path, []))
