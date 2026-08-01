@@ -14,6 +14,7 @@ VENV_PYRIGHT := $(VIRTUAL_ENV)/bin/pyright
 VENV_MYPY := $(VIRTUAL_ENV)/bin/mypy
 VENV_PIPELEX := $(VIRTUAL_ENV)/bin/pipelex
 VENV_PLXT := RUST_LOG=warn "$(VIRTUAL_ENV)/bin/plxt"
+HEARTBEAT_INTERVAL ?= 20
 
 UV_MIN_VERSION = $(shell grep -m1 'required-version' pyproject.toml | sed -E 's/.*= *"([^<>=, ]+).*/\1/')
 
@@ -33,6 +34,27 @@ define PRINT_TITLE
     $(eval PADDED_TITLE := $(FULL_TITLE)$(PADDING))
     @echo ""
     @echo "$(PADDED_TITLE)"
+endef
+
+# Run command $(1) in the background, printing a "$(2) still running (Ns elapsed)" line every
+# HEARTBEAT_INTERVAL seconds so long-running targets show progress instead of going silent.
+# Leaves the command's exit status in $$exit_code for the caller to act on.
+define WAIT_WITH_HEARTBEAT
+	start_time=$$(date +%s); \
+	$(1) & \
+	cmd_pid=$$!; \
+	( while kill -0 "$$cmd_pid" 2>/dev/null; do \
+		sleep $(HEARTBEAT_INTERVAL); \
+		if kill -0 "$$cmd_pid" 2>/dev/null; then \
+			elapsed=$$(( $$(date +%s) - $$start_time )); \
+			echo "• $(2) still running ($${elapsed}s elapsed)"; \
+		fi; \
+	done ) & \
+	heartbeat_pid=$$!; \
+	wait "$$cmd_pid"; \
+	exit_code=$$?; \
+	kill "$$heartbeat_pid" 2>/dev/null || true; \
+	wait "$$heartbeat_pid" 2>/dev/null || true
 endef
 
 define HELP
@@ -330,8 +352,7 @@ ti: test-inference
 agent-test: env
 	@echo "• Running unit tests..."
 	@tmpfile=$$(mktemp); \
-	$(VENV_PYTEST) -m $(USUAL_PYTEST_MARKERS) -o log_level=WARNING --tb=short -q > "$$tmpfile" 2>&1; \
-	exit_code=$$?; \
+	$(call WAIT_WITH_HEARTBEAT,$(VENV_PYTEST) -m $(USUAL_PYTEST_MARKERS) -o log_level=WARNING --tb=short -q > "$$tmpfile" 2>&1,agent-test); \
 	if [ $$exit_code -ne 0 ]; then grep -vE '\[\s*[0-9]+%\]\s*$$' "$$tmpfile"; fi; \
 	rm -f "$$tmpfile"; \
 	if [ $$exit_code -eq 0 ]; then echo "• All tests passed."; fi; \
