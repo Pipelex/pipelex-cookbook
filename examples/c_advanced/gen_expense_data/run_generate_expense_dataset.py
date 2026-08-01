@@ -7,9 +7,9 @@ sys.path.insert(0, str(Path(__file__).parent))
 import asyncio
 import re
 
-from pipelex.hub import get_storage_provider
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.runner import PipelexMTHDSProtocol
+from pipelex.runtime_hub import get_storage_provider
 from weasyprint import CSS, HTML
 
 from examples.c_advanced.gen_expense_data.structures.expense_data_generation__employee_expense_report import (

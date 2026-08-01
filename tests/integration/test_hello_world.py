@@ -1,6 +1,6 @@
 import pytest
-from pipelex.pipe_run.pipe_run_mode import PipeRunMode
 from pipelex.pipeline.runner import PipelexMTHDSProtocol
+from pipelex.system.pipe_run_mode import PipeRunMode
 
 
 @pytest.mark.asyncio

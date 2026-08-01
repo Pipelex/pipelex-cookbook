@@ -1,5 +1,26 @@
 # Changelog
 
+## [v0.16.0] - 2026-08-01
+
+### Added
+
+- **Test Heartbeat Scripting:** Added a `WAIT_WITH_HEARTBEAT` function to the `Makefile`. Running `make agent-test` now prints a heartbeat message (`• agent-test still running (Ns elapsed)`) every 20 seconds to prevent long-running tests from appearing hung.
+- **WIP Documentation:** Added `wip/pipelex-0.41.0-sweep-residual-failures.md` documenting the investigation, upstream bugs, and local resolutions for test failures encountered during the `pipelex` upgrade.
+
+### Changed
+
+- **Pipelex Upgrade:** Upgraded `pipelex` from `0.37.0` to `0.42.0`, migrating `get_storage_provider` and `get_console` imports to `pipelex.runtime_hub` and `PipeRunMode` to `pipelex.system.pipe_run_mode`.
+- **Bundle Field Renames (Codegen Workaround):** Renamed example bundle fields to avoid an upstream `pipelex` structure generator bug where field names shadow Python type annotations (e.g., `date: date`): `Milestone.date` → `milestone_date` in `extract_gantt`, and `Invoice.date` → `issue_date` in `extract_invoice`.
+- **Dependency Updates:** Bumped `pyright` dev dependency to `>=1.1.411`.
+
+### Fixed
+
+- **Test Harness Input Bug:** Fixed an issue in `tests/e2e/test_bundles.py` where a folder's `inputs.json` was incorrectly passed to bundles that declare no inputs (e.g., `hello_world`). Added a `NO_INPUTS` opt-out so bundles are tested exactly as their READMEs document. This, together with the bundle field renames, restored the e2e and integration suites to a passing state.
+
+### Removed
+
+- **Python 3.10 Support (Breaking):** Dropped support for Python 3.10, as the updated `pipelex` dependency now requires `>=3.11`. Updated `requires-python` to `>=3.11,<3.15`, removed the 3.10 classifier, and removed 3.10 from the GitHub Actions CI matrices (`lint-check.yml` and `tests-check.yml`).
+
 ## [v0.15.0] - 2026-07-05
 
 ### Added
