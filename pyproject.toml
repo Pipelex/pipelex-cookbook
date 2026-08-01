@@ -1,6 +1,6 @@
 [project]
 name = "pipelex-cookbook"
-version = "0.15.0"
+version = "0.16.0"
 description = "Cookbook for Pipelex, the open standard for repeatable AI methods. Write business logic, not API calls."
 authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]

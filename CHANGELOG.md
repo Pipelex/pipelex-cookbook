@@ -1,17 +1,25 @@
 # Changelog
 
-## [Unreleased]
+## [v0.16.0] - 2026-08-01
+
+### Added
+
+- **Test Heartbeat Scripting:** Added a `WAIT_WITH_HEARTBEAT` function to the `Makefile`. Running `make agent-test` now prints a heartbeat message (`• agent-test still running (Ns elapsed)`) every 20 seconds to prevent long-running tests from appearing hung.
+- **WIP Documentation:** Added `wip/pipelex-0.41.0-sweep-residual-failures.md` documenting the investigation, upstream bugs, and local resolutions for test failures encountered during the `pipelex` upgrade.
 
 ### Changed
 
-- **Swept onto `pipelex` 0.42.0** (`pipelex[...]==0.37.0` → `==0.42.0`, crossing five release cycles). The address moves that reach this repo are small — `pipelex.hub` is deleted with no shim, so `get_storage_provider` and `get_console` come from `pipelex.runtime_hub`, and `PipeRunMode` moved to `pipelex.system.pipe_run_mode`.
-- **Dropped Python 3.10.** `requires-python` is now `>=3.11,<3.15`, the 3.10 classifier is gone, and both CI matrices drop it. Not cleanup — pipelex requires `>=3.11` as of this pin, so advertising 3.10 made the lock unsolvable outright.
-
-- **`make agent-test` prints a heartbeat while it runs.** The target ran silent for minutes, which reads as a hang to an agent (and to a human). It now emits `• agent-test still running (Ns elapsed)` every `HEARTBEAT_INTERVAL` seconds (default 20, overridable). Silent-on-success / output-on-failure behavior is unchanged.
+- **Pipelex Upgrade:** Upgraded `pipelex` from `0.37.0` to `0.42.0`, migrating `get_storage_provider` and `get_console` imports to `pipelex.runtime_hub` and `PipeRunMode` to `pipelex.system.pipe_run_mode`.
+- **Bundle Field Renames (Codegen Workaround):** Renamed example bundle fields to avoid an upstream `pipelex` structure generator bug where field names shadow Python type annotations (e.g., `date: date`): `Milestone.date` → `milestone_date` in `extract_gantt`, and `Invoice.date` → `issue_date` in `extract_invoice`.
+- **Dependency Updates:** Bumped `pyright` dev dependency to `>=1.1.411`.
 
 ### Fixed
 
-- **The e2e and integration suites are green again.** The sweep left them red; both causes are now closed. (1) **Structure fields renamed off their own type name** — `Milestone.date` → `milestone_date` in `extract_gantt`, `Invoice.date` → `issue_date` in `extract_invoice`. A field named `date` of type `date` makes pipelex's structure generator emit a class whose annotation is shadowed by its own field assignment (`unsupported operand type(s) for |: 'FieldInfo' and 'NoneType'`), which broke both bundles' validation and, through library setup, the `hello_world` integration test. The generator bug is upstream, unfixed as of 0.42.0, and handed off in the workspace-root `wip/bugs/structure-field-name-shadows-type.md`; these renames are the local workaround, and the `test_validate` gate still covers both bundles, so a rename back would fail loudly rather than regress silently. (2) **`test_bundles.py` no longer hands a folder's `inputs.json` to a bundle that declares no inputs** — `examples/a_quick_start/` ships both `hello_world` (no inputs) and `summarize` (which the `inputs.json` belongs to), so the folder-level lookup was passing `hello_world` an input it does not declare. A `NO_INPUTS` opt-out makes the test run the bundle exactly as its README documents. No bundle content changed.
+- **Test Harness Input Bug:** Fixed an issue in `tests/e2e/test_bundles.py` where a folder's `inputs.json` was incorrectly passed to bundles that declare no inputs (e.g., `hello_world`). Added a `NO_INPUTS` opt-out so bundles are tested exactly as their READMEs document. This, together with the bundle field renames, restored the e2e and integration suites to a passing state.
+
+### Removed
+
+- **Python 3.10 Support (Breaking):** Dropped support for Python 3.10, as the updated `pipelex` dependency now requires `>=3.11`. Updated `requires-python` to `>=3.11,<3.15`, removed the 3.10 classifier, and removed 3.10 from the GitHub Actions CI matrices (`lint-check.yml` and `tests-check.yml`).
 
 ## [v0.15.0] - 2026-07-05
 
