@@ -1,5 +1,5 @@
 from pipelex.cogt.model_backends.backend import InferenceBackend
-from pipelex.hub import get_console
+from pipelex.runtime_hub import get_console
 from rich import box
 from rich.table import Table
 

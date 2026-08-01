@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pipelex.pipelex
 import pytest
-from pipelex.pipe_run.pipe_run_mode import PipeRunMode
 from pipelex.pipe_run.pipe_run_params import FORCE_DRY_RUN_MODE_ENV_KEY
+from pipelex.system.pipe_run_mode import PipeRunMode
 from rich import print
 
 

@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- **Swept onto `pipelex` 0.42.0** (`pipelex[...]==0.37.0` → `==0.42.0`, crossing five release cycles). The address moves that reach this repo are small — `pipelex.hub` is deleted with no shim, so `get_storage_provider` and `get_console` come from `pipelex.runtime_hub`, and `PipeRunMode` moved to `pipelex.system.pipe_run_mode`.
+- **Dropped Python 3.10.** `requires-python` is now `>=3.11,<3.15`, the 3.10 classifier is gone, and both CI matrices drop it. Not cleanup — pipelex requires `>=3.11` as of this pin, so advertising 3.10 made the lock unsolvable outright.
+
+- **`make agent-test` prints a heartbeat while it runs.** The target ran silent for minutes, which reads as a hang to an agent (and to a human). It now emits `• agent-test still running (Ns elapsed)` every `HEARTBEAT_INTERVAL` seconds (default 20, overridable). Silent-on-success / output-on-failure behavior is unchanged.
+
+### Fixed
+
+- **The e2e and integration suites are green again.** The sweep left them red; both causes are now closed. (1) **Structure fields renamed off their own type name** — `Milestone.date` → `milestone_date` in `extract_gantt`, `Invoice.date` → `issue_date` in `extract_invoice`. A field named `date` of type `date` makes pipelex's structure generator emit a class whose annotation is shadowed by its own field assignment (`unsupported operand type(s) for |: 'FieldInfo' and 'NoneType'`), which broke both bundles' validation and, through library setup, the `hello_world` integration test. The generator bug is upstream, unfixed as of 0.42.0, and handed off in the workspace-root `wip/bugs/structure-field-name-shadows-type.md`; these renames are the local workaround, and the `test_validate` gate still covers both bundles, so a rename back would fail loudly rather than regress silently. (2) **`test_bundles.py` no longer hands a folder's `inputs.json` to a bundle that declares no inputs** — `examples/a_quick_start/` ships both `hello_world` (no inputs) and `summarize` (which the `inputs.json` belongs to), so the folder-level lookup was passing `hello_world` an input it does not declare. A `NO_INPUTS` opt-out makes the test run the bundle exactly as its README documents. No bundle content changed.
+
 ## [v0.15.0] - 2026-07-05
 
 ### Added
