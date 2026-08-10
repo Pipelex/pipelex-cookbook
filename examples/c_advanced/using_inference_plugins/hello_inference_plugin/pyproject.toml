@@ -6,9 +6,14 @@ requires-python = ">=3.10"
 dependencies = ["pipelex"]
 
 # This is the whole plugin wiring: once this distribution is installed,
-# Pipelex discovers the plugin automatically through the `pipelex.plugins`
+# Pipelex discovers the plugin automatically through the `pipelex.plugins.kernel`
 # entry-point group — no config, no enable-list. Presence is the source of truth.
-[project.entry-points."pipelex.plugins"]
+#
+# The *group* declares the layer. An inference backend constructs a worker, never a Pipe, so it is
+# kernel-layer and belongs in the kernel group — which is also the group a kernel-only boot reads.
+# Published under `pipelex.plugins.interpreter` instead, this plugin would simply never be found by
+# such a boot. The pre-split single `pipelex.plugins` group is retired and now fails startup.
+[project.entry-points."pipelex.plugins.kernel"]
 hello_inference = "hello_inference_plugin.hello_plugin:HelloInferencePlugin"
 
 [build-system]

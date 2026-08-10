@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- **`hello-inference-plugin` now publishes under the `pipelex.plugins.kernel` entry-point group (Breaking).** Pipelex split plugin discovery by layer: `pipelex.plugins.kernel` for plugins whose adapters are all kernel-layer, `pipelex.plugins.interpreter` for anything that constructs a `Pipe`-aware object. An inference backend constructs a worker, never a `Pipe`, so the example plugin is kernel-layer — and being in the kernel group is what makes it discoverable by a kernel-only boot. The single `pipelex.plugins` group is retired: a Pipelex carrying the split fails startup on any plugin still declared there, so this change must be installed together with the Pipelex release that carries layer-split discovery. The example's `pyproject.toml` and README now explain what the group choice means, since demonstrating the plugin seam is the whole point of the example.
+
 ## [v0.16.0] - 2026-08-01
 
 ### Added

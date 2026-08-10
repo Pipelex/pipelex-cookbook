@@ -6,7 +6,7 @@ This example shows how Pipelex discovers **inference-backend plugins**: installa
 
 - `hello_plugin.mthds` — a one-pipe method whose model handle `hello-1` resolves to the plugin's backend.
 - `hello_inference_plugin/` — the plugin package:
-  - `pyproject.toml` declares the `pipelex.plugins` entry point. That single line is the whole integration: once the package is installed, Pipelex discovers the plugin automatically — presence is the source of truth, there is no enable-list.
+  - `pyproject.toml` declares the `pipelex.plugins.kernel` entry point. That single line is the whole integration: once the package is installed, Pipelex discovers the plugin automatically — presence is the source of truth, there is no enable-list.
   - `hello_inference_plugin/hello_plugin.py` — the `HelloInferencePlugin` class (`name`, `targets_api`, and a side-effect-free `register` that contributes an inference backend for `(family="llm", sdk="hello")` plus an optional model lister).
   - `hello_inference_plugin/hello_llm_worker.py` — the worker: subclasses `LLMWorkerAbstract` and implements `_gen_text` deterministically.
   - `hello_inference_plugin/hello_list.py` — the optional lister behind `pipelex show models hello`.
