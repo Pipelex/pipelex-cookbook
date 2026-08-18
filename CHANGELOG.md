@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.17.0] - 2026-08-18
+
+### Changed
+
+- **Pipelex upgraded from `0.42.0` to `0.46.4`, and the workspace configuration migrated with it (Breaking).** Running `pipelex migrate` moved `.pipelex/pipelex.toml` off the flat `pipelex.*` and `cogt.*` namespaces onto the new `interpreter.*`, `inference.*` and `runtime.*` sections, so pipeline execution, model and LLM settings, and storage, logging and reporting each live under the layer that owns them. The backend TOMLs dropped the `prompting_target` key, which pipelex no longer reads, and a `pipelex`-written `.pipelex/.gitignore` keeps the timestamped `*.bak.<stamp>` copies the migration leaves behind out of version control while deliberately leaving `*.rescue.<stamp>` files visible in `git status`. Anyone carrying local edits under `.pipelex/` needs to re-run the migration against their own copy.
+- **`hello-inference-plugin` now publishes under the `pipelex.plugins.kernel` entry-point group (Breaking).** Pipelex split plugin discovery by layer: `pipelex.plugins.kernel` for plugins whose adapters are all kernel-layer, `pipelex.plugins.interpreter` for anything that constructs a `Pipe`-aware object. An inference backend constructs a worker, never a `Pipe`, so the example plugin is kernel-layer — and being in the kernel group is what makes it discoverable by a kernel-only boot. The single `pipelex.plugins` group is retired: a Pipelex carrying the split fails startup on any plugin still declared there, so this change must be installed together with the Pipelex release that carries layer-split discovery. The example's `pyproject.toml` and README now explain what the group choice means, since demonstrating the plugin seam is the whole point of the example.
+
+### Fixed
+
+- **`advisory_board` qualifies its `present_as_markdown` pipe reference with the presentation domain.** Unqualified, the reference resolved against `master_advisory_orchestrator`'s own `advisory_orchestrator` domain, which broke library loading for the entire test suite rather than only for that one example.
+- **`hello-inference-plugin` declares `requires-python = ">=3.11"`.** It still claimed `>=3.10`, a floor the cookbook dropped in v0.16.0, so the example advertised a Python it is no longer tested on.
+
 ## [v0.16.0] - 2026-08-01
 
 ### Added

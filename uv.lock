@@ -7,14 +7,14 @@ resolution-markers = [
     "python_full_version >= '3.14' and sys_platform == 'emscripten'",
     "python_full_version >= '3.14' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'win32'",
     "python_full_version == '3.13.*' and sys_platform == 'darwin'",
-    "python_full_version == '3.12.*' and sys_platform == 'darwin'",
-    "python_full_version < '3.12' and sys_platform == 'darwin'",
     "python_full_version == '3.13.*' and sys_platform == 'win32'",
     "python_full_version == '3.13.*' and sys_platform == 'emscripten'",
     "python_full_version == '3.13.*' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'win32'",
+    "python_full_version == '3.12.*' and sys_platform == 'darwin'",
     "python_full_version == '3.12.*' and sys_platform == 'win32'",
     "python_full_version == '3.12.*' and sys_platform == 'emscripten'",
     "python_full_version == '3.12.*' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'win32'",
+    "python_full_version < '3.12' and sys_platform == 'darwin'",
     "python_full_version < '3.12' and sys_platform == 'win32'",
     "python_full_version < '3.12' and sys_platform == 'emscripten'",
     "python_full_version < '3.12' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'win32'",
@@ -2015,10 +2015,10 @@ resolution-markers = [
     "python_full_version >= '3.14' and sys_platform == 'emscripten'",
     "python_full_version >= '3.14' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'win32'",
     "python_full_version == '3.13.*' and sys_platform == 'darwin'",
-    "python_full_version == '3.12.*' and sys_platform == 'darwin'",
     "python_full_version == '3.13.*' and sys_platform == 'win32'",
     "python_full_version == '3.13.*' and sys_platform == 'emscripten'",
     "python_full_version == '3.13.*' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'win32'",
+    "python_full_version == '3.12.*' and sys_platform == 'darwin'",
     "python_full_version == '3.12.*' and sys_platform == 'win32'",
     "python_full_version == '3.12.*' and sys_platform == 'emscripten'",
     "python_full_version == '3.12.*' and sys_platform != 'darwin' and sys_platform != 'emscripten' and sys_platform != 'win32'",
@@ -3792,10 +3792,11 @@ wheels = [
 
 [[package]]
 name = "pipelex"
-version = "0.42.0"
+version = "0.46.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
+    { name = "annotated-types" },
     { name = "datamodel-code-generator" },
     { name = "filetype" },
     { name = "httpx" },
@@ -3833,9 +3834,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/22/5e/ccf07098883f1550e3e8af18ede0d2a6dcd065e4b81b829eb6776949a784/pipelex-0.42.0.tar.gz", hash = "sha256:531ffe69a39e772626ab144543841afe28d6bc07b1df6c4dfcf96296250a3b88", size = 1200697, upload-time = "2026-08-01T07:32:57.341Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b2/5f/3747963f8e1c5a2c2f0c4b452962df1ef5da3e2e4feee32bf3f7e6916637/pipelex-0.46.4.tar.gz", hash = "sha256:6ed3e41c41335757ecd55980473ba83c5c807405b29ee5e43fe8d3ebadf5611e", size = 1415544, upload-time = "2026-08-18T18:35:54.415Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ab/b9/cf24f0579725a8e97aadf7b93c98240a22518767eecce4b6e7dc1f6aa40c/pipelex-0.42.0-py3-none-any.whl", hash = "sha256:cf6b352a5c75cbf5fbe24d19014135b827bb3f4eeba28299bdf604691acfb003", size = 1677825, upload-time = "2026-08-01T07:32:55.098Z" },
+    { url = "https://files.pythonhosted.org/packages/29/21/48790f2874a8155e9b4e3fc60d8f7daa05c088f4d21872f8a6e4368c781a/pipelex-0.46.4-py3-none-any.whl", hash = "sha256:b5d9914938cff19d8d0a5bb958537bc7f103cf965afc5897adc13b93b41fab3f", size = 1950918, upload-time = "2026-08-18T18:35:52.717Z" },
 ]
 
 [package.optional-dependencies]
@@ -3868,7 +3869,7 @@ mistralai = [
 
 [[package]]
 name = "pipelex-cookbook"
-version = "0.16.0"
+version = "0.17.0"
 source = { editable = "." }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -3908,7 +3909,7 @@ requires-dist = [
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "crewai", marker = "extra == 'crewai'", specifier = ">=0.80.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
-    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal", "docling"], specifier = "==0.42.0" },
+    { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal", "docling"], specifier = "==0.46.4" },
     { name = "pipelex-tools", marker = "extra == 'dev'", specifier = ">=0.3.2" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.411" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.1" },

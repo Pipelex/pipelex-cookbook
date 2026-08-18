@@ -140,7 +140,7 @@ steps = [
   { pipe = "consult_board", batch_over = "selected_advisory_boards", batch_as = "advisory_board", result = "board_consultations" },
   { pipe = "analyze_board_responses", result = "response_analysis" },
   { pipe = "generate_strategic_report", result = "strategic_report" },
-  { pipe = "present_as_markdown", result = "strategic_report_markdown" },
+  { pipe = "presentation.present_as_markdown", result = "strategic_report_markdown" },
 ]
 
 [pipe.classify_business_problem]
