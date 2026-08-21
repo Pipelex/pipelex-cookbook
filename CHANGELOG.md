@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- **Tooling:** Pinned `ruff` to an exact `0.16.4`, replacing the `>=0.6.8` floor. The exact pin matches what the Ruff VS Code extension now bundles, which matters because Ruff 0.16 lints `pyproject.toml` itself: the extension syncs the config file to the language server, and a pre-0.16 binary parses it as Python source and paints phantom `invalid-syntax` diagnostics on lines like `requires-python`. A floor let the editor and the CLI resolve to different binaries; an exact pin cannot. This is a dev dependency, so no example changes behaviour, and the upgrade produced no lint findings. It did reformat the Python examples embedded in `README.md`, because Ruff 0.16 formats Python code blocks inside Markdown, which earlier versions skipped.
+- **Regenerated `requirements.txt` and `requirements-dev.txt` from `uv.lock`.** Both exports had drifted a long way from the lockfile — `requirements-dev.txt` still pinned `ruff==0.12.1`, the oldest pin anywhere in the workspace — so the pip-install path was handing users a dependency set that no longer matched what `uv sync` installs. They are generated files, so they were refreshed with the `make export-requirements` and `make export-requirements-dev` targets rather than edited by hand.
+
 ## [v0.17.0] - 2026-08-18
 
 ### Changed

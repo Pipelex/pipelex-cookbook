@@ -36,7 +36,7 @@ dev = [
   "pytest-sugar>=1.0.0",
   "pytest_asyncio>=0.24.0",
   "pytest-xdist>= 3.6.1",
-  "ruff>=0.6.8",
+  "ruff==0.16.4",
   "types-aioboto3[bedrock,bedrock-runtime]>=13.4.0",
   "types-aiofiles>=24.1.0.20240626",
   "types-beautifulsoup4>=4.12.0.20240907",
