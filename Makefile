@@ -20,6 +20,10 @@ UV_MIN_VERSION = $(shell grep -m1 'required-version' pyproject.toml | sed -E 's/
 
 USUAL_PYTEST_MARKERS := "(dry_runnable or not inference) and not (needs_output or pipelex_api)"
 
+# Extras that are opt-in: they serve a single example and would otherwise be pulled into every
+# install and into requirements-dev.txt. Install them by hand, e.g. `uv pip install -e ".[crewai]"`.
+OPT_IN_EXTRAS := --no-extra crewai
+
 define PRINT_TITLE
     $(eval PROJECT_PART := [$(PROJECT_NAME)])
     $(eval TARGET_PART := ($@))
@@ -63,10 +67,10 @@ Usage:
 
 make env                      - Create python virtual env
 make lock                     - Refresh uv.lock without updating anything
-make install                  - Create local virtualenv & install all dependencies
+make install                  - Create local virtualenv & install all dependencies (except opt-in extras)
 make update                   - Upgrade dependencies via uv
 make export-requirements      - Export production requirements.txt (no dev dependencies)
-make export-requirements-dev  - Export requirements-dev.txt (all dependencies including dev)
+make export-requirements-dev  - Export requirements-dev.txt (dev dependencies, except opt-in extras)
 make er                       - Shorthand -> export-requirements
 make erd                      - Shorthand -> export-requirements-dev
 make validate                 - Validate config, libraries, and every shipped .mthds bundle
@@ -183,7 +187,7 @@ env-verbose: check-uv-verbose
 install: env-verbose
 	$(call PRINT_TITLE,"Installing dependencies")
 	@. $(VIRTUAL_ENV)/bin/activate && \
-	uv sync --all-extras && \
+	uv sync --all-extras $(OPT_IN_EXTRAS) && \
 	uv pip install -e examples/c_advanced/using_inference_plugins/hello_inference_plugin && \
 	echo "Installed Pipelex cookbook dependencies in ${VIRTUAL_ENV} and initialized Pipelex libraries";
 
@@ -204,8 +208,8 @@ export-requirements: env-verbose
 
 export-requirements-dev: env-verbose
 	$(call PRINT_TITLE,"Exporting development requirements")
-	@uv export --all-extras --output-file requirements-dev.txt && \
-	echo "Exported all requirements (including dev) to requirements-dev.txt";
+	@uv export --all-extras $(OPT_IN_EXTRAS) --output-file requirements-dev.txt && \
+	echo "Exported dev requirements (opt-in extras excluded) to requirements-dev.txt";
 
 er: export-requirements
 	@echo "> done: er = export-requirements"

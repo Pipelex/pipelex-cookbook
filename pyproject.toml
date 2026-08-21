@@ -36,7 +36,7 @@ dev = [
   "pytest-sugar>=1.0.0",
   "pytest_asyncio>=0.24.0",
   "pytest-xdist>= 3.6.1",
-  "ruff>=0.6.8",
+  "ruff==0.16.4",
   "types-aioboto3[bedrock,bedrock-runtime]>=13.4.0",
   "types-aiofiles>=24.1.0.20240626",
   "types-beautifulsoup4>=4.12.0.20240907",
@@ -80,6 +80,13 @@ warn_unused_configs = true
 ignore_missing_imports = true
 module = ["json2html", "weasyprint"]
 
+# CrewAI comes from the opt-in `crewai` extra, so it is absent from a default install and mypy
+# cannot resolve the imports in `examples/c_advanced/crewai_with_pipelex_tools`. It is untyped
+# even when installed, so silencing the missing import costs nothing either way.
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = ["crewai", "crewai.*"]
+
 [tool.pyright]
 venvPath = "."
 venv = ".venv"
@@ -97,6 +104,11 @@ exclude = [
   "dist",
   "**/node_modules",
   "**/.*",
+  # This example is the only consumer of the opt-in `crewai` extra, which the default install
+  # deliberately skips. Without the package on the path pyright resolves every CrewAI symbol to
+  # `Unknown` and reports the whole file, so it is excluded rather than littered with per-line
+  # suppressions. mypy still checks it: it tolerates the unresolved import on its own.
+  "examples/c_advanced/crewai_with_pipelex_tools/run_crew_with_pipelex.py",
 ]
 extraPaths = ["./tests"]
 include = ["utils", "examples", "tests"]
