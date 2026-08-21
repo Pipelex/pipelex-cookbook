@@ -80,6 +80,13 @@ warn_unused_configs = true
 ignore_missing_imports = true
 module = ["json2html", "weasyprint"]
 
+# CrewAI comes from the opt-in `crewai` extra, so it is absent from a default install and mypy
+# cannot resolve the imports in `examples/c_advanced/crewai_with_pipelex_tools`. It is untyped
+# even when installed, so silencing the missing import costs nothing either way.
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = ["crewai", "crewai.*"]
+
 [tool.pyright]
 venvPath = "."
 venv = ".venv"
