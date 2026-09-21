@@ -48,16 +48,28 @@ source .venv/bin/activate
 pip install .  # or uv sync
 ```
 
-## 2. Get Your API Key (Free)
+## 2. Bring Your Own API Keys
 
-Sign up at [app.pipelex.com](https://app.pipelex.com) to get **free API credits** with access to **all models** (text, vision, OCR, image generation).
+Pipelex runs your methods with your own provider credentials. Copy `.env.example` to `.env` and fill in the key of every provider you intend to use:
 
-Add your key to `.env`:
 ```bash
-PIPELEX_GATEWAY_API_KEY=your_api_key_here
+cp .env.example .env
 ```
 
-Want to bring your own API keys or use local models? See [Configure AI Providers](https://docs.pipelex.com/pages/setup/configure-ai-providers/).
+```bash
+OPENAI_API_KEY=your_openai_key_here
+ANTHROPIC_API_KEY=your_anthropic_key_here
+```
+
+If you would rather manage a single key, set an [OpenRouter](https://openrouter.ai) key instead — it reaches models from many providers at once:
+
+```bash
+OPENROUTER_API_KEY=your_openrouter_key_here
+```
+
+For the full list of supported providers, their environment variables and how to pick which model each pipe uses, see [Configure AI Providers](https://docs.pipelex.com/get-started/configure-ai-providers/).
+
+Prefer not to run methods locally at all? Run `pipelex login` to get a Pipelex API key and execute them on the hosted Pipelex API instead.
 
 ## 3. Learn Pipelex
 

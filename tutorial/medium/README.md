@@ -8,7 +8,7 @@ Take your Pipelex skills to the next level.
 
 Control which LLM to use and how it behaves.
 
-**To change default models and presets**, edit `.pipelex/inference/deck/base_deck.toml`. See the [full list of available models](https://docs.pipelex.com/home/5-setup/gateway-models/) and the [Inference Backend Configuration](https://docs.pipelex.com/home/7-configuration/config-technical/inference-backend-config/) documentation for details.
+**To change default models and presets**, edit `.pipelex/inference/deck/base_deck.toml`. See [Configure AI Providers](https://docs.pipelex.com/get-started/configure-ai-providers/) for the providers you can use and the models each one serves, and the [Inference Backend Configuration](https://docs.pipelex.com/home/7-configuration/config-technical/inference-backend-config/) documentation for details.
 
 **File: `1_model_config.mthds`**
 

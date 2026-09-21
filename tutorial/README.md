@@ -26,14 +26,17 @@ Welcome to the Pipelex tutorials! Learn how to build AI pipelines step by step.
 uv tool install pipelex
 ```
 
-**2. Get your API key**
+**2. Set your provider API keys**
 
-Sign up at [app.pipelex.com](https://app.pipelex.com) to get **free API credits** with access to all models.
+Pipelex runs your methods with your own provider credentials. Copy `.env.example` to `.env` and fill in the key of every provider you intend to use, or set a single [OpenRouter](https://openrouter.ai) key to reach models from many providers at once:
 
-Add your key to `.env`:
 ```bash
-PIPELEX_GATEWAY_API_KEY=your_api_key_here
+OPENAI_API_KEY=your_openai_key_here
+# or, for many providers with one key:
+OPENROUTER_API_KEY=your_openrouter_key_here
 ```
+
+See [Configure AI Providers](https://docs.pipelex.com/get-started/configure-ai-providers/) for the full list. To run your methods on the hosted Pipelex API instead of locally, run `pipelex login` to get a Pipelex API key.
 
 **3. Run your first tutorial**
 

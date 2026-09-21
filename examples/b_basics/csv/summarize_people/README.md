@@ -13,7 +13,7 @@ CSV input/output works with **flat** concepts only — every field must be a sca
 
 ## Run it
 
-Writes the summaries to a CSV (needs `PIPELEX_GATEWAY_API_KEY` in your `.env`):
+Writes the summaries to a CSV (needs a provider API key in your `.env`, for example `OPENAI_API_KEY` or `OPENROUTER_API_KEY`):
 
 ```bash
 pipelex run bundle examples/b_basics/csv/summarize_people/summarize_people.mthds \
