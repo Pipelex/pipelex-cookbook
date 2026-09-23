@@ -48,28 +48,31 @@ source .venv/bin/activate
 pip install .  # or uv sync
 ```
 
-## 2. Bring Your Own API Keys
+## 2. Give Pipelex access to AI models
 
-Pipelex runs your methods with your own provider credentials. Copy `.env.example` to `.env` and fill in the key of every provider you intend to use:
+You have two ways to run the examples: bring your own provider keys, or run them on the hosted Pipelex API.
+
+### Option A: Bring your own API keys
+
+Copy `.env.example` to `.env` and fill in the key of every provider you intend to use:
 
 ```bash
 cp .env.example .env
 ```
 
+The cookbook ships ready for [OpenRouter](https://openrouter.ai) — one key, models from many providers — so `OPENROUTER_API_KEY` is all you need to start.
+
+To run on another provider, a key is not enough: switch its backend on in [`.pipelex/inference/backends.toml`](./.pipelex/inference/backends.toml) and point `active` in [`.pipelex/inference/routing_profiles.toml`](./.pipelex/inference/routing_profiles.toml) at the matching profile. See [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/).
+
+### Option B: Run on the hosted Pipelex API
+
+Prefer not to hold a key per provider? Sign up at [app.pipelex.com](https://app.pipelex.com/), create a Pipelex API key, and run your methods on Pipelex's infrastructure instead — one credential, one bill, and the inference credentials are ours rather than yours.
+
 ```bash
-OPENAI_API_KEY=your_openai_key_here
-ANTHROPIC_API_KEY=your_anthropic_key_here
+PIPELEX_API_KEY=plx_sk_your_key_here
 ```
 
-If you would rather manage a single key, set an [OpenRouter](https://openrouter.ai) key instead — it reaches models from many providers at once:
-
-```bash
-OPENROUTER_API_KEY=your_openrouter_key_here
-```
-
-For the full list of supported providers, their environment variables and how to pick which model each pipe uses, see [Configure AI Providers](https://docs.pipelex.com/get-started/configure-ai-providers/).
-
-Prefer not to run methods locally at all? Run `pipelex login` to get a Pipelex API key and execute them on the hosted Pipelex API instead.
+`pipelex login` opens the browser and saves that key for you.
 
 ## 3. Learn Pipelex
 

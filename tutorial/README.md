@@ -36,7 +36,9 @@ OPENAI_API_KEY=your_openai_key_here
 OPENROUTER_API_KEY=your_openrouter_key_here
 ```
 
-See [Configure AI Providers](https://docs.pipelex.com/get-started/configure-ai-providers/) for the full list. To run your methods on the hosted Pipelex API instead of locally, run `pipelex login` to get a Pipelex API key.
+A key alone is not enough for any provider other than OpenRouter: its backend also has to be switched on and routed to. See [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/).
+
+Rather not hold provider keys at all? Sign up at [app.pipelex.com](https://app.pipelex.com/), create a Pipelex API key, and run your methods on the hosted Pipelex API instead.
 
 **3. Run your first tutorial**
 

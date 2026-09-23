@@ -18,6 +18,11 @@ VALIDATED_ROOTS = ("tutorial", "examples", ".mthds/methods")
 # skipped. Excluded bundles are still discovered and reported as SKIP (with this reason) so an
 # exclusion never silently reads as "everything passes".
 EXCLUDED_DIRS: dict[str, str] = {
+    "examples/b_basics/generate_visuals/design_slides": (
+        "needs an image-generation backend loaded: it names `nano-banana-pro` directly, and no "
+        "image-generation model resolves without a provider credential now that the gateway's "
+        "keyless catalog is gone. It validates locally once GOOGLE_API_KEY is set"
+    ),
     "examples/wip": (
         "work-in-progress: advisory_board is a multi-file bundle and validate_expense_data is a "
         "PipeFunc bundle whose Python functions are only registered at runtime, so neither is "

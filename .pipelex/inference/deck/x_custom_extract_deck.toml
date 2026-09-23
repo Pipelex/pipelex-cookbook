@@ -4,11 +4,11 @@
 #
 # This file allows you to override or complete the base model decks.
 #
-# ADVANCED USERS ONLY: This file is for users who bring their own API keys and connect directly
-# to AI providers (Azure, Mistral, etc.) without using the Pipelex Gateway.
+# ADVANCED USERS ONLY: This file is for users who want a model handle to resolve to something
+# other than what the shipped deck gives it, across the backends they enabled (Azure, Mistral, etc.).
 #
-# If you're using the standard Pipelex Gateway setup, you don't need to modify this file.
-# The Gateway handles model routing automatically and supports all available models.
+# If the shipped deck already resolves to models your enabled backends serve, you don't need
+# to modify this file.
 #
 # Waterfalls are useful when using multiple backends directly - they define ordered lists
 # of models that are resolved at configuration time based on which backends are available.
@@ -38,3 +38,20 @@
 #     "mistral-document-ai-2505",
 # ]
 ####################################################################################################
+
+####################################################################################################
+# Aliases — override the shipped extraction defaults
+####################################################################################################
+#
+# The shipped deck resolves document extraction to `azure-document-intelligence`, which the
+# backend catalogs here do not carry. Mistral's OCR model is the extraction model the cookbook
+# runs on: set MISTRAL_API_KEY in your .env file.
+
+[extract.aliases]
+default-premium = "mistral-ocr"
+default-extract-document = "mistral-ocr"
+default-extract-image = "mistral-ocr"
+
+# Methods vendored from github.com/Pipelex/methods name `azure-document-intelligence` directly
+# rather than through an alias, so the handle itself is pointed at the model the cookbook runs on.
+azure-document-intelligence = "mistral-ocr"

@@ -4,7 +4,7 @@
 # Simply change the 'active' field to switch profiles,
 # or you can add your own custom profiles.
 #
-# Documentation: https://docs.pipelex.com
+# Documentation: https://docs.pipelex.com/latest/get-started/configure-ai-providers/
 # Support: https://go.pipelex.com/discord
 # =========================================================================================
 
@@ -12,24 +12,40 @@
 # which routing profile you select. See the documentation for details.
 
 # Which profile to use (change this to switch routing)
-active = "all_pipelex_gateway"
+active = "cookbook_byok"
 
-# We recommend using the "all_pipelex_gateway" profile to get a head start with all models.
-# To use the Pipelex Gateway backend:
-# 1. Get your API key at https://app.pipelex.com (free credits included)
-# 2. Add it to your .env file: PIPELEX_GATEWAY_API_KEY=your-key-here
-# 3. Run `pipelex init` and accept the Gateway terms of service
+# The cookbook ships with OpenRouter active, because one OpenRouter key reaches models from many
+# providers at once. To run on a provider of your own instead:
+# 1. Put that provider's key in your .env file (see .env.example)
+# 2. Set `enabled = true` for its backend in backends.toml
+# 3. Point `active` above at the matching profile, for instance "all_anthropic" or "all_openai"
+# A profile whose backend is not enabled is refused at startup, and the error names the backend.
 
 # =========================================================================================
 # Routing Profiles
 # =========================================================================================
 
-[profiles.all_pipelex_gateway]
-description = "Use Pipelex Gateway for all its supported models"
-default = "pipelex_gateway"
+[profiles.cookbook_byok]
+description = "Language models through OpenRouter, and every other kind of model through the provider that serves it"
+default = "openrouter"
 # Route the plugin-demo model to its own backend (see examples/c_advanced/using_inference_plugins/).
 # An optional route only applies when the target backend is enabled, so this stays inert otherwise.
 optional_routes = { "hello-1" = "hello" }
+
+[profiles.cookbook_byok.routes]
+# OpenRouter serves language models only, so document extraction, image generation and web
+# search each go to the provider that serves them. Swap any of these for a provider you prefer.
+"mistral-ocr*" = "mistral"
+"mistral-document-ai*" = "mistral"
+"linkup-*" = "linkup"
+"nano-banana" = "google"
+"nano-banana-pro" = "google"
+"nano-banana-2" = "google"
+"gemini-*" = "google"
+"imagen-*" = "google"
+"gpt-image-*" = "openai"
+"*-sdxl" = "fal"
+"flux-*" = "fal"
 
 [profiles.all_anthropic]
 description = "Use Anthropic backend for all its supported models"
@@ -124,7 +140,7 @@ default = "internal"
 # =========================================================================================
 [profiles.example_routing_using_patterns]
 description = "Example routing profile using patterns"
-default = "pipelex_gateway"
+default = "openrouter"
 
 [profiles.example_routing_using_patterns.routes]
 # Pattern matching: "model-pattern" = "backend-name"
@@ -144,17 +160,17 @@ default = "pipelex_gateway"
 description = "Example routing profile using specific models"
 
 [profiles.example_routing_using_specific_models.routes]
-"gpt-5-nano" = "pipelex_gateway"
+"gpt-5-nano" = "openrouter"
 "gpt-4o-mini" = "blackboxai"
 "gpt-5-mini" = "openai"
 "gpt-5-chat" = "azure_openai"
 
-"claude-4-sonnet" = "pipelex_gateway"
+"claude-4-sonnet" = "openrouter"
 "claude-3.7-sonnet" = "blackboxai"
 
-"gemini-2.5-flash-lite" = "pipelex_gateway"
+"gemini-2.5-flash-lite" = "openrouter"
 "gemini-2.5-flash" = "blackboxai"
 "gemini-2.5-pro" = "vertexai"
 
-"grok-3" = "pipelex_gateway"
+"grok-3" = "openrouter"
 "grok-3-mini" = "xai"
