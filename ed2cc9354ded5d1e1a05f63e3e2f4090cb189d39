@@ -1,0 +1,29 @@
+pyproject.toml
+  h_39660369d4ad8c 27
+uv.lock
+  ai_agent 4295,4406
+examples/wip/validate_expense_data/funcs.py
+  s_37e98914853f9d::t_74229c9b72af8b 308
+  s_37e98914853f9d::t_b3fb3ff6066811 92
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "ed2cc9354ded5d1e1a05f63e3e2f4090cb189d39",
+  "prompts": {},
+  "humans": {
+    "h_39660369d4ad8c": {
+      "author": "Louis Choquel <lchoquel@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_37e98914853f9d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6d9c6770-6bb5-40a9-abed-60056d27dd4c",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Louis Choquel <lchoquel@users.noreply.github.com>"
+    }
+  }
+}

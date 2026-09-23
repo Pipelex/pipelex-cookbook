@@ -1,0 +1,111 @@
+examples/c_advanced/gen_expense_data/structures/expense_data_generation__purchased_item.py
+  s_3e7e9ddd3904f8::t_7c21b8d13f5077 6-7,17
+examples/wip/discord_newsletter/structures/discord_newsletter__channel_summary.py
+  s_3e7e9ddd3904f8::t_f7f4cd51c11df3 6-7,19,24,26-27
+examples/wip/validate_expense_data/structures/expense_validator__purpose_quality_check.py
+  s_3e7e9ddd3904f8::t_05d20f61416946 6-7,19
+examples/wip/discord_newsletter/structures/discord_newsletter__discord_channel_update.py
+  s_3e7e9ddd3904f8::t_f7f4cd51c11df3 6-7,21,26
+examples/wip/validate_expense_data/structures/expense_validator__spending_limit_check.py
+  s_3e7e9ddd3904f8::t_05d20f61416946 6-7,17
+examples/c_advanced/gen_expense_data/structures/expense_data_generation__expense_with_receipt.py
+  s_3e7e9ddd3904f8::t_7c21b8d13f5077 6-7,20,23-24
+examples/c_advanced/gen_expense_data/structures/expense_data_generation__receipt_prompt.py
+  s_3e7e9ddd3904f8::t_7c21b8d13f5077 6-7,16
+examples/b_basics/document_extract/answer_from_documents/structures/document_qa__question_analysis.py
+  s_3e7e9ddd3904f8::t_be3fb254047cd1 19
+examples/c_advanced/gen_expense_data/structures/expense_data_generation__receipt_content.py
+  s_3e7e9ddd3904f8::t_7c21b8d13f5077 6-7,19
+examples/c_advanced/gen_expense_data/structures/expense_data_generation__employee_expense_report.py
+  s_3e7e9ddd3904f8::t_7c21b8d13f5077 6-7,23,26-27
+examples/c_advanced/gen_expense_data/structures/expense_data_generation__nb_of_employees.py
+  s_3e7e9ddd3904f8::t_7c21b8d13f5077 6-7,16
+examples/wip/validate_expense_data/structures/expense_validator__employee.py
+  s_3e7e9ddd3904f8::t_05d20f61416946 6-7,19
+examples/wip/validate_expense_data/structures/expense_validator__receipt_match_check.py
+  s_3e7e9ddd3904f8::t_05d20f61416946 6-7,19
+examples/c_advanced/gen_expense_data/structures/expense_data_generation__receipt_header.py
+  s_3e7e9ddd3904f8::t_7c21b8d13f5077 6-7,19
+examples/wip/discord_newsletter/structures/discord_newsletter__discord_message.py
+  s_3e7e9ddd3904f8::t_f7f4cd51c11df3 6-7,22,27-28
+examples/b_basics/document_extract/answer_from_documents/structures/document_qa__document_passage.py
+  s_3e7e9ddd3904f8::t_be3fb254047cd1 19
+examples/b_basics/document_extract/answer_from_documents/structures/document_qa__evidence_assessment.py
+  s_3e7e9ddd3904f8::t_be3fb254047cd1 19
+examples/wip/validate_expense_data/structures/expense_validator__weekend_check.py
+  s_3e7e9ddd3904f8::t_05d20f61416946 6-7,19
+examples/c_advanced/gen_expense_data/run_generate_expense_dataset.py
+  s_3e7e9ddd3904f8::t_f96af083725a4a 15-17
+  s_3e7e9ddd3904f8::t_0d14f5e1912725 18,29,36,41,44,69
+examples/b_basics/document_extract/answer_from_documents/structures/document_qa__reference_count.py
+  s_3e7e9ddd3904f8::t_be3fb254047cd1 17
+examples/c_advanced/gen_expense_data/structures/expense_data_generation__company_category.py
+  s_3e7e9ddd3904f8::t_7c21b8d13f5077 6-7,21,45
+examples/wip/discord_newsletter/run_discord_newsletter.py
+  s_3e7e9ddd3904f8::t_0d14f5e1912725 10-11,18,32-33,37,47
+examples/wip/discord_newsletter/structures/discord_newsletter__attachment.py
+  s_3e7e9ddd3904f8::t_f7f4cd51c11df3 6-7,17
+examples/wip/validate_expense_data/structures/expense_validator__reasonable_amount_check.py
+  s_3e7e9ddd3904f8::t_05d20f61416946 6-7,19
+examples/c_advanced/gen_expense_data/structures/expense_data_generation__expense_metadata.py
+  s_3e7e9ddd3904f8::t_7c21b8d13f5077 6-7,17
+examples/c_advanced/gen_expense_data/structures/expense_data_generation__receipt_items_and_totals.py
+  s_3e7e9ddd3904f8::t_7c21b8d13f5077 6-7,21,24
+examples/wip/validate_expense_data/structures/expense_validator__expense_report.py
+  s_3e7e9ddd3904f8::t_05d20f61416946 6-7,22,25-26
+examples/wip/validate_expense_data/structures/expense_validator__expense.py
+  s_3e7e9ddd3904f8::t_05d20f61416946 6-7,20
+examples/c_advanced/gen_expense_data/structures/expense_data_generation__company_profile.py
+  s_3e7e9ddd3904f8::t_7c21b8d13f5077 6-7,19
+examples/b_basics/document_extract/answer_from_documents/structures/document_qa__document_answer.py
+  s_3e7e9ddd3904f8::t_be3fb254047cd1 19
+examples/c_advanced/gen_expense_data/structures/expense_data_generation__receipt.py
+  s_3e7e9ddd3904f8::t_7c21b8d13f5077 6-7,16
+examples/c_advanced/gen_expense_data/structures/expense_data_generation__employee.py
+  s_3e7e9ddd3904f8::t_7c21b8d13f5077 6-7,19
+examples/wip/validate_expense_data/structures/expense_validator__expense_report_pdf.py
+  s_3e7e9ddd3904f8::t_05d20f61416946 6-7,16
+examples/wip/validate_expense_data/structures/expense_validator__expense_validation_result.py
+  s_3e7e9ddd3904f8::t_05d20f61416946 6-7,19
+examples/wip/validate_expense_data/structures/expense_validator__validation_report.py
+  s_3e7e9ddd3904f8::t_05d20f61416946 6-7,22,25-26
+examples/c_advanced/gen_expense_data/structures/expense_data_generation__expense.py
+  s_3e7e9ddd3904f8::t_7c21b8d13f5077 6-7,19
+.gitignore
+  h_39660369d4ad8c 40
+examples/wip/validate_expense_data/funcs.py
+  s_3e7e9ddd3904f8::t_43ddb711ecdb80 10-19,34,38,43,52-53,62,74,84,92,102,112,121,144,155,167-173,269,284,288-289,307-309,333
+examples/b_basics/document_extract/answer_from_documents/run_answer_from_documents.py
+  s_3e7e9ddd3904f8::t_0d14f5e1912725 9,12,36
+examples/wip/validate_expense_data/structures/expense_validator__receipt_image.py
+  s_3e7e9ddd3904f8::t_05d20f61416946 6-7,16
+examples/wip/discord_newsletter/structures/discord_newsletter__html_newsletter.py
+  s_3e7e9ddd3904f8::t_f7f4cd51c11df3 6-7,16
+examples/wip/validate_expense_data/structures/expense_validator__timelines_check.py
+  s_3e7e9ddd3904f8::t_05d20f61416946 6-7,19
+examples/wip/discord_newsletter/structures/discord_newsletter__embed.py
+  s_3e7e9ddd3904f8::t_f7f4cd51c11df3 6-7,17
+examples/c_advanced/gen_expense_data/structures/expense_data_generation__expense_scenario.py
+  s_3e7e9ddd3904f8::t_7c21b8d13f5077 6-7,19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "5888c6e2a2b5345a9dea3b331be9d2e55f00c192",
+  "prompts": {},
+  "humans": {
+    "h_39660369d4ad8c": {
+      "author": "Louis Choquel <lchoquel@users.noreply.github.com>"
+    }
+  },
+  "sessions": {
+    "s_3e7e9ddd3904f8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d8da009d-86eb-4f86-b0f2-845613d009a0",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Louis Choquel <lchoquel@users.noreply.github.com>"
+    }
+  }
+}
