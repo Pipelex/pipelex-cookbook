@@ -1,0 +1,44 @@
+.pipelex/inference/routing_profiles.toml
+  s_177b6af8a168a6::t_f8a8fd5103985e 49
+  s_177b6af8a168a6::t_e7446f0258c331 7,15,17-22,28-30,35-48,143,163,168,171,175
+README.md
+  s_177b6af8a168a6::t_4f241185764f2c 51,53-56,66-69,72,75
+  s_177b6af8a168a6::t_98e2a69db25cc4 57,63,65
+tutorial/medium/README.md
+  s_177b6af8a168a6::t_5355160c36b536 11
+.pipelex/inference/deck/x_custom_llm_deck.toml
+  s_177b6af8a168a6::t_e7446f0258c331 7-8,10-11
+.pipelex/telemetry.toml
+  s_177b6af8a168a6::t_e7446f0258c331 10
+tutorial/README.md
+  s_177b6af8a168a6::t_5355160c36b536 40
+  s_177b6af8a168a6::t_98e2a69db25cc4 39,41
+tests/e2e/test_validate_bundles.py
+  s_177b6af8a168a6::t_6a7e4a62db6d58 21-25
+.env.example
+  s_177b6af8a168a6::t_98e2a69db25cc4 5-6
+  s_177b6af8a168a6::t_4f241185764f2c 4,11-13
+CHANGELOG.md
+  s_177b6af8a168a6::t_faa53fcc78abdb 8,10
+  s_177b6af8a168a6::t_f5d1a2d00e4247 9,11
+.pipelex/inference/backends.toml
+  s_177b6af8a168a6::t_e7446f0258c331 8-11,17,22,40,45,65,70,79,84
+.pipelex/inference/deck/x_custom_extract_deck.toml
+  s_177b6af8a168a6::t_e7446f0258c331 7-8,10-11,41-57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "97cd6bec02e046da003cfa25bd06a3e78d4e6824",
+  "prompts": {},
+  "sessions": {
+    "s_177b6af8a168a6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6d0cb6e4-df5b-45ba-ab3c-25e38f06b2ed",
+        "model": "claude-opus-5"
+      },
+      "human_author": "thomashebrard <thomas@pipelex.com>"
+    }
+  }
+}
