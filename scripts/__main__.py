@@ -35,7 +35,7 @@ def main(argv: list[str] | None = None) -> int:
         "render": "Write every methods/<name>/README.md from its package and cookbook.toml",
         "check-render": "Fail when a committed page differs from a fresh render",
         "check-lockstep": "Fail when a manifest's version is not the cookbook's",
-        "check-links": "Fetch every raw sample URL in the packages and on the pages",
+        "check-links": "Fetch every sample URL in the packages and every raw URL on the pages",
         "refresh": "Validate every package on production and write its contract.json (needs PIPELEX_API_KEY)",
         "check-methods": "Validate every package on production from its files, and check its contract snapshot (needs PIPELEX_API_KEY)",
     }
@@ -97,7 +97,7 @@ def _check_links(cookbook: Cookbook) -> int:
     if broken:
         print(f"{len(broken)} broken link(s)")
         return 1
-    print(f"✓ {len(verdicts)} raw link(s) checked")
+    print(f"✓ {len(verdicts)} link(s) checked")
     return 0
 
 

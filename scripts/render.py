@@ -27,6 +27,13 @@ DEFAULT_YOURS_CHANGE = "adapt what it does to my case"
 _PLANTED_FACT_PATTERN = re.compile(r"\bF\d+\b")
 _TYPESCRIPT_IDENTIFIER_PATTERN = re.compile(r"^[A-Za-z_$][A-Za-z0-9_$]*$")
 
+# The input form's kind for each input, as a reader says it. The kind `list` only restates the multiplicity, so a list is phrased from its
+# concept instead.
+_KIND_NOUNS = {"prose": "text", "list": None}
+# A concept refining the native `Text` carries a single `text` field, which says nothing the concept's own description does not.
+_TEXT_ONLY_FIELDS = ["text"]
+_NATIVE_PREFIX = "native."
+
 _SCALAR_PHRASES = {
     "text": ("text", "texts"),
     "date": ("a date", "dates"),
@@ -153,8 +160,12 @@ def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageCon
         samples=samples,
         has_file_inputs=bool(samples),
         takes=[_input_line(contract_input) for contract_input in contract.inputs],
-        returns=_described(_output_phrase(contract), description=contract.output.description),
-        returns_fields=[_field_line(contract_field) for contract_field in contract.output.fields],
+        returns=_described(
+            _output_phrase(contract), description=None if contract.output.concept.startswith(_NATIVE_PREFIX) else contract.output.description
+        ),
+        returns_fields=[]
+        if [contract_field.name for contract_field in contract.output.fields] == _TEXT_ONLY_FIELDS
+        else [_field_line(contract_field) for contract_field in contract.output.fields],
         chatbot=chatbot,
         inputs_typescript=_indent_continuation(typescript_literal(snippet_inputs), prefix="  "),
         inputs_python=_indent_continuation(python_literal(snippet_inputs), prefix="            "),
@@ -209,7 +220,7 @@ def python_literal(value: JsonValue, *, indent: int = 0) -> str:
         case int() | float():
             return repr(value)
         case str():
-            return json.dumps(value, ensure_ascii=False)
+            return _python_string(value)
         case list():
             if not value:
                 return "[]"
@@ -218,8 +229,16 @@ def python_literal(value: JsonValue, *, indent: int = 0) -> str:
         case dict():
             if not value:
                 return "{}"
-            entries = [f"{inner}{json.dumps(key, ensure_ascii=False)}: {python_literal(item, indent=indent + 1)}," for key, item in value.items()]
+            entries = [f"{inner}{_python_string(key)}: {python_literal(item, indent=indent + 1)}," for key, item in value.items()]
             return "{\n" + "\n".join(entries) + f"\n{padding}}}"
+
+
+def _python_string(text: str) -> str:
+    """Quote a string as ruff does: in double quotes, unless it holds more double quotes than single ones, where single quotes escape less."""
+    double_quoted = json.dumps(text, ensure_ascii=False)
+    if text.count('"') <= text.count("'"):
+        return double_quoted
+    return "'" + double_quoted[1:-1].replace('\\"', '"').replace("'", "\\'") + "'"
 
 
 def _snippet_inputs(inputs: dict[str, JsonValue]) -> dict[str, JsonValue]:
@@ -238,25 +257,36 @@ def _snippet_inputs(inputs: dict[str, JsonValue]) -> dict[str, JsonValue]:
 
 
 def _samples(*, package: MethodPackage) -> list[Sample]:
+    """The files the sample inputs name, one per URL: an input holding a list of files gives each its own numbered label."""
     samples: list[Sample] = []
     for input_name, content in _snippet_inputs(package.inputs).items():
-        if isinstance(content, dict):
-            url = content.get("url")
-            if isinstance(url, str):
-                label = package.editorial.sample_labels.get(input_name) or f"sample {input_name.replace('_', ' ')}"
-                samples.append(Sample(label=label, url=url))
+        urls = _file_urls(content)
+        label = package.editorial.sample_labels.get(input_name) or f"sample {input_name.replace('_', ' ')}"
+        for index, url in enumerate(urls, start=1):
+            samples.append(Sample(label=label if len(urls) == 1 else f"{label} {index}", url=url))
     return samples
+
+
+def _file_urls(content: JsonValue) -> list[str]:
+    """The URLs of a file input, given as one `{"url": …}` object or as a list of them."""
+    if isinstance(content, dict):
+        url = content.get("url")
+        return [url] if isinstance(url, str) else []
+    if isinstance(content, list):
+        return [url for item in content if isinstance(item, dict) and isinstance(url := item.get("url"), str)]
+    return []
 
 
 def _input_line(contract_input: ContractInput) -> str:
     concept = f"`{short_concept(contract_input.concept)}`"
+    kind = _KIND_NOUNS.get(contract_input.kind, contract_input.kind) if contract_input.kind else None
     what: str
-    if contract_input.kind:
+    if kind:
         match contract_input.multiplicity:
             case "variable" | "fixed":
-                what = f"a list of {contract_input.kind}s ({concept})"
+                what = f"a list of {kind}s ({concept})"
             case _:
-                what = f"{_with_article(contract_input.kind)} ({concept})"
+                what = f"{_with_article(kind)} ({concept})"
     else:
         match contract_input.multiplicity:
             case "variable" | "fixed":
@@ -265,7 +295,9 @@ def _input_line(contract_input: ContractInput) -> str:
                 what = concept
     if not contract_input.required:
         what = f"{what}, optional"
-    return _described(f"`{contract_input.name}`, {what}", description=contract_input.description)
+    # A native concept's description only restates its type ("A text"), so only a method's own concept is described.
+    description = None if contract_input.concept.startswith(_NATIVE_PREFIX) else contract_input.description
+    return _described(f"`{contract_input.name}`, {what}", description=description)
 
 
 def _output_phrase(contract: Contract) -> str:

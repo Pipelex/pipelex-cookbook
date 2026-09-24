@@ -1,10 +1,12 @@
 """CrewAI crew with Pipelex research pipeline + vanilla dispatch.
 
-Agent 1 (Researcher) calls Pipelex `deep_research` → typed ResearchBrief (Pydantic).
+Agent 1 (Researcher) calls Pipelex `deep_research` → typed ResearchBrief.
 Agent 2 (Publisher) calls Pipelex `compose_report` (PipeCompose, deterministic template)
   then dispatches via send_email + save_report (side effects).
 
-The ResearchBrief Pydantic structure is shared: Pipelex produces it, CrewAI consumes it.
+The pipes and the ResearchBrief concept come from the `research_report` method in
+methods/research_report/: Pipelex validates the brief against the concept's structure,
+and the tool hands CrewAI its content as a dict.
 """
 
 from __future__ import annotations
@@ -17,14 +19,14 @@ from typing import Any
 from crewai import Agent, Crew, Process, Task  # type: ignore[import-untyped]
 from crewai.tools import tool  # type: ignore[import-untyped]  # pyright: ignore[reportUnknownVariableType]
 from pipelex import pretty_print
+from pipelex.core.stuffs.structured_content import StructuredContent
 from pipelex.pipelex import Pipelex
 from pipelex.pipeline.runner import PipelexMTHDSProtocol
 
-from examples.c_advanced.crewai_with_pipelex_tools.structures.research_report__research_brief import ResearchBrief
-
-BUNDLE_DIR = Path(__file__).parent
-OUTBOX_FILE = BUNDLE_DIR / "outbox.txt"
-REPORTS_DIR = BUNDLE_DIR / "reports"
+EXAMPLE_DIR = Path(__file__).parent
+METHOD_DIR = Path(__file__).resolve().parents[3] / "methods" / "research_report"
+OUTBOX_FILE = EXAMPLE_DIR / "outbox.txt"
+REPORTS_DIR = EXAMPLE_DIR / "reports"
 DOMAIN = "research_report"
 
 # Shared state between tools — typed Pipelex outputs that CrewAI tools can reference.
@@ -35,15 +37,15 @@ _session: dict[str, Any] = {}
 
 
 @tool("run_research")  # pyright: ignore[reportUntypedFunctionDecorator]
-def run_research(question: str) -> ResearchBrief:
-    """Research a question with fact-checking. Returns a typed ResearchBrief."""
+def run_research(question: str) -> dict[str, Any]:
+    """Research a question with fact-checking. Returns the ResearchBrief's fields."""
     response = asyncio.run(
         PipelexMTHDSProtocol().execute(
             pipe_code="deep_research",
             inputs={"question": {"concept": f"{DOMAIN}.ResearchQuestion", "content": {"text": question}}},
         )
     )
-    brief = response.pipe_output.main_stuff_as(ResearchBrief)
+    brief = response.pipe_output.main_stuff_as(content_type=StructuredContent).model_dump()
     _session["brief"] = brief
     _session["question"] = question
     return brief
@@ -93,7 +95,7 @@ def save_report(filename: str, content: str) -> str:
 
 
 def main() -> None:
-    with Pipelex.make(library_dirs=[str(BUNDLE_DIR)]):
+    with Pipelex.make(library_dirs=[str(METHOD_DIR)]):
         researcher = Agent(
             role="Researcher",
             goal="Produce a typed ResearchBrief on a given question.",
@@ -117,9 +119,8 @@ def main() -> None:
 
         research_task = Task(
             description="Research this question: {question}",
-            expected_output="A typed ResearchBrief.",
+            expected_output="The ResearchBrief returned by run_research: executive_summary, key_findings and open_questions.",
             agent=researcher,
-            output_pydantic=ResearchBrief,
         )
         publish_task = Task(
             description=(

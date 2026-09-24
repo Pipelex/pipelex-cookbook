@@ -1,0 +1,79 @@
+domain      = "extract_slides"
+description = "The domain of extracting slides from documents"
+main_pipe   = "extract_slides"
+
+[concept]
+
+[concept.Slide]
+description = "A slide from a presentation"
+
+[concept.Slide.structure]
+title         = { type = "text", description = "The title of the slide", required = true }
+text_markdown = { type = "text", description = "The content of the slide as markdown" }
+description   = { type = "text", description = "A description of the slide: layout of the text, description of the graphics" }
+
+[pipe]
+
+[pipe.extract_slides]
+type = "PipeSequence"
+description = "Describe every slide of a presentation and gather the descriptions in one markdown text"
+inputs = { document = "Document" }
+output = "Text"
+steps = [
+  { pipe = "extract_text_and_views_from_document", result = "pages" },
+  { pipe = "describe_slide", batch_over = "pages", batch_as = "page", result = "slides" },
+  { pipe = "concatenate_slide_descriptions", result = "slides_description" },
+]
+
+# Slide decks are digital PDFs, so their text layer holds every word exactly, even where the design
+# draws one text box over another, which OCR of the rendered page turns into gibberish.
+# The page views, rendered sharp enough for small print, give the model the layout and the graphics.
+[pipe.extract_text_and_views_from_document]
+type           = "PipeExtract"
+description    = "Extract each slide's text layer and a rendered view of the slide from a PDF deck"
+inputs         = { document = "Document" }
+output         = "Page[]"
+page_views     = true
+page_views_dpi = 150
+model          = "@default-text-from-pdf"
+
+
+[pipe.describe_slide]
+type = "PipeLLM"
+description = "Describe a slide"
+inputs = { page = "Page" }
+output = "Slide"
+model = "@default-premium"
+system_prompt = """
+You are a professional presentation designer. You excel in describing slides with the details that matter.
+"""
+prompt = """
+Describe this slide:
+{{ page.text_and_images.text | tag("extracted_text") }}
+
+Rendered slide: $page.page_view
+
+- Give the slide's title: the title shown on the slide when it has one, otherwise devise one.
+- Copy (and if required cleanup) the extracted text as markdown, except the title and html comments like `<!-- PageHeader="Use-Cases" -->` if there are any. Keep every word and every figure exactly as the slide gives them. Where the extracted text is out of order, for instance where a label is drawn over the sentence it introduces and the two come out interleaved, put the words back in order using the rendered slide, without dropping any.
+- A chart's axis ticks, gridline values and bare legend entries are not text to copy: leave them out of the markdown, and describe the chart, its title, its categories and the values it shows, in the description.
+- Complete with the description of the slide: layout of the text, description of the graphics.
+"""
+
+[pipe.concatenate_slide_descriptions]
+type = "PipeCompose"
+description = "Concatenate slide descriptions"
+inputs = { slides = "Slide[]" }
+output = "Text"
+template = """
+{% for slide in slides %}
+# {{ slide.title }}
+
+$slide.text_markdown
+
+> **Description:**
+$slide.description
+{% if not loop.last %}
+---
+{% endif %}
+{% endfor %}
+"""

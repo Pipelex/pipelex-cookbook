@@ -79,7 +79,7 @@ make validate-bundles         - Static-validate all .mthds bundles (tutorial, ex
 make render                   - Write every methods/<name>/README.md from its package and cookbook.toml
 make check-render             - Fail when a committed method page differs from a fresh render
 make check-lockstep           - Fail when a method manifest's version is not the cookbook's
-make check-links              - Fetch every raw sample URL in the packages and on the pages
+make check-links              - Fetch every sample URL in the packages and every raw URL on the pages
 make check-cookbook           - The checks that need no key: check-render check-lockstep check-links (what CI runs)
 make refresh                  - Validate every method on production and write its contract.json (needs PIPELEX_API_KEY)
 make check-methods            - Validate every method on production from its files (needs PIPELEX_API_KEY)

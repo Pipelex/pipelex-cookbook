@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from scripts.checks import check_links, lockstep_problems, stale_pages
+from scripts.checks import check_links, collect_urls, lockstep_problems, stale_pages
 from scripts.cookbook import load_cookbook
 from scripts.render import render_pages
 from tests.tooling.test_data import WIDGETS_SAMPLE_URL, MakeCookbook
@@ -73,3 +73,37 @@ class TestChecks:
 
         verdicts = {verdict.url: verdict for verdict in check_links(cookbook=load_cookbook(root), rendered={}, fetch_status=not_found)}
         assert verdicts[url].ok is True
+
+    def test_a_sample_hosted_elsewhere_must_answer(self, make_cookbook: MakeCookbook):
+        root = make_cookbook()
+        url = "https://example.com/datasets/report.pdf"
+        (root / "methods" / "extract_widgets" / "inputs.json").write_text(f'{{"catalogue": [{{"url": "{url}"}}]}}', encoding="utf-8")
+        cookbook = load_cookbook(root)
+
+        def not_found(url: str) -> int:
+            return 404
+
+        def found(url: str) -> int:
+            return 200
+
+        assert {verdict.url: verdict.ok for verdict in check_links(cookbook=cookbook, rendered={}, fetch_status=not_found)} == {url: False}
+        assert {verdict.url: verdict.ok for verdict in check_links(cookbook=cookbook, rendered={}, fetch_status=found)} == {url: True}
+
+    def test_a_url_closing_a_sentence_on_a_page_drops_the_full_stop(self, make_cookbook: MakeCookbook):
+        cookbook = load_cookbook(make_cookbook())
+        url = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_widgets/catalogue.png"
+        page = cookbook.root / "methods" / "extract_widgets" / "README.md"
+        found = collect_urls(cookbook=cookbook, rendered={page: f"Run it on {url}."})
+        assert url in found
+        assert f"{url}." not in found
+
+    def test_a_link_into_the_cookbook_that_fails_otherwise_than_404_is_broken(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        cookbook = load_cookbook(make_cookbook())
+        rendered = render_pages(cookbook=cookbook, templates_dir=templates_dir)
+        inputs_url = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.9.0/methods/count_words/inputs.json"
+
+        def server_error(url: str) -> int:
+            return 500
+
+        verdicts = {verdict.url: verdict for verdict in check_links(cookbook=cookbook, rendered=rendered, fetch_status=server_error)}
+        assert verdicts[inputs_url].ok is False
