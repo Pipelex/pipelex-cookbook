@@ -1,0 +1,13 @@
+[package]
+name = "extract_gantt"
+display_name = "Gantt Chart Extraction"
+address = "github.com/Pipelex/pipelex-cookbook"
+version = "0.17.0"
+description = "Read a Gantt chart image and return every task with its start and end dates, and every milestone with its date."
+authors = ["Evotis S.A.S"]
+license = "MIT"
+mthds_version = ">=1.0.0"
+main_pipe = "extract_gantt_by_steps"
+
+[exports.gantt]
+pipes = ["extract_gantt_by_steps", "transcript_gantt_direct"]

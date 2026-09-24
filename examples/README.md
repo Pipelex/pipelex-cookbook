@@ -11,7 +11,6 @@ examples/
 ├── b_basics/              # Core functionality examples
 │   └── document_extract/  # Document extraction examples
 │       ├── extract_dpe/
-│       ├── extract_gantt/
 │       ├── extract_generic/
 │       ├── extract_invoice/
 │       ├── extract_proof_of_purchase/
@@ -29,7 +28,7 @@ examples/
 
 ## Document Extraction Examples (`b_basics/document_extract/`)
 
-- `extract_gantt/` - Extract structured data from Gantt chart images
+- [Gantt chart extraction](../methods/extract_gantt/) - Extract structured data from Gantt chart images, now a method runnable by address in `methods/extract_gantt/`
 - `extract_invoice/` - Extract structured data from invoice documents
 - `extract_table/` - Extract HTML tables from image screenshots
 - `extract_proof_of_purchase/` - Extract key information from receipts and invoices
@@ -54,9 +53,6 @@ pipelex run bundle examples/a_quick_start/hello_world.mthds
 
 # Quick start - Summarization with inputs
 pipelex run bundle examples/a_quick_start/summarize.mthds --pipe summarize_with_structure -i examples/a_quick_start/inputs.json
-
-# Document extraction - Gantt chart
-pipelex run bundle examples/b_basics/document_extract/extract_gantt/bundle.mthds -i examples/b_basics/document_extract/extract_gantt/inputs.json
 
 # Document extraction - Invoice
 pipelex run bundle examples/b_basics/document_extract/extract_invoice/bundle.mthds -i examples/b_basics/document_extract/extract_invoice/inputs.json
