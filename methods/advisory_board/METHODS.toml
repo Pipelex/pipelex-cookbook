@@ -1,0 +1,16 @@
+[package]
+name = "advisory_board"
+display_name = "Advisory Board"
+address = "github.com/Pipelex/pipelex-cookbook"
+version = "0.17.0"
+description = "Put a business problem to a panel of expert advisory boards and return one strategic report, in Markdown, that reconciles their advice."
+authors = ["Evotis S.A.S"]
+license = "MIT"
+mthds_version = ">=1.0.0"
+main_pipe = "master_advisory_orchestrator"
+
+[exports.advisory_orchestrator]
+pipes = ["master_advisory_orchestrator"]
+
+[exports.presentation]
+pipes = ["present_as_markdown"]
