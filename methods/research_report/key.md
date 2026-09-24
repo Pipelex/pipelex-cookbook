@@ -1,6 +1,6 @@
 # Key: ev_battery_density
 
-Inputs: the inline `question` "What are the most promising approaches to improving battery energy density for electric vehicles?", the question the example has always shipped with. The method researches it from three angles, fact-checks each angle's main claim, and renders its brief through a fixed Markdown template, so this key checks the template's structure and the substance a sound answer carries.
+Inputs: the inline `question` "What are the most promising approaches to improving battery energy density for electric vehicles?", the question the example has always shipped with. The method drafts it from three angles out of the model's own knowledge, looks at each angle's main claim a second time, and renders its brief through a fixed Markdown template, so this key checks the template's structure and the substance a sound answer carries.
 
 ## Planted facts
 F1. The question is about the energy density of electric-vehicle batteries, not about charging speed, price or charging infrastructure.

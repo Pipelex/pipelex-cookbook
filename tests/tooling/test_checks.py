@@ -1,6 +1,10 @@
 from pathlib import Path
 
-from scripts.checks import check_links, collect_urls, lockstep_problems, stale_pages
+import httpx
+import pytest
+
+from scripts import checks
+from scripts.checks import check_links, collect_urls, http_status, lockstep_problems, stale_pages
 from scripts.cookbook import load_cookbook
 from scripts.render import render_pages
 from tests.tooling.test_data import WIDGETS_SAMPLE_URL, MakeCookbook
@@ -107,3 +111,36 @@ class TestChecks:
 
         verdicts = {verdict.url: verdict for verdict in check_links(cookbook=cookbook, rendered=rendered, fetch_status=server_error)}
         assert verdicts[inputs_url].ok is False
+
+
+def _served_by(monkeypatch: pytest.MonkeyPatch, answer: dict[str, int]) -> list[str]:
+    """Serve every request from `answer`, a status per method, and return the methods asked, in order."""
+    methods: list[str] = []
+    real_client = httpx.Client
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        methods.append(request.method)
+        return httpx.Response(answer[request.method])
+
+    def serving_client(*, follow_redirects: bool, timeout: float) -> httpx.Client:
+        return real_client(transport=httpx.MockTransport(handler), follow_redirects=follow_redirects, timeout=timeout)
+
+    monkeypatch.setattr(checks.httpx, "Client", serving_client)
+    return methods
+
+
+class TestHttpStatus:
+    def test_a_url_answering_head_is_not_fetched(self, monkeypatch: pytest.MonkeyPatch):
+        methods = _served_by(monkeypatch, {"HEAD": 200, "GET": 500})
+        assert http_status("https://example.com/report.pdf") == 200
+        assert methods == ["HEAD"]
+
+    @pytest.mark.parametrize("head_status", [403, 404, 405, 501])
+    def test_a_host_refusing_head_is_asked_with_get(self, monkeypatch: pytest.MonkeyPatch, head_status: int):
+        methods = _served_by(monkeypatch, {"HEAD": head_status, "GET": 200})
+        assert http_status("https://example.com/report.pdf") == 200
+        assert methods == ["HEAD", "GET"]
+
+    def test_a_url_missing_for_get_too_is_missing(self, monkeypatch: pytest.MonkeyPatch):
+        _served_by(monkeypatch, {"HEAD": 404, "GET": 404})
+        assert http_status("https://example.com/report.pdf") == 404

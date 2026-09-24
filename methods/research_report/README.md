@@ -2,7 +2,7 @@
 
 # Research report
 
-Read a research question and return a Markdown report with an executive summary, key findings and open questions, after researching three angles and fact-checking each.
+Read a research question and return a Markdown report with an executive summary, key findings and open questions, drafted from three angles out of the model's own knowledge without searching any source, so it is a first draft to check rather than verified research.
 
 `github.com/Pipelex/pipelex-cookbook/research_report@v0.17.0` · [bundle.mthds](bundle.mthds)
 

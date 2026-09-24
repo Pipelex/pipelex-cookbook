@@ -46,7 +46,7 @@ Each of these methods runs on the hosted Pipelex API by its address, from a chat
 - **[Slide deck extraction](methods/extract_slides/)**: Read a slide deck in PDF and return one Markdown text giving each slide its title, its text and a description of its layout and charts.
 - **[Synthetic expense data generation](methods/gen_expense_data/)**: Take a number of employees and return, for each, three or four expense claims with a photographed receipt image and a label saying whether the claim is legitimate or a weekend, inflated, mismatched or vague one, plus an HTML expense report.
 - **[Synthetic data generation](methods/gen_synthetic_data/)**: Read a description of a record and a count, and return that many varied synthetic records, here student profiles with their performance, learning style, background, interests and preferences.
-- **[Research report](methods/research_report/)**: Read a research question and return a Markdown report with an executive summary, key findings and open questions, after researching three angles and fact-checking each.
+- **[Research report](methods/research_report/)**: Read a research question and return a Markdown report with an executive summary, key findings and open questions, drafted from three angles out of the model's own knowledge without searching any source, so it is a first draft to check rather than verified research.
 
 More methods, ready to run the same way, are in the [Pipelex method library](https://github.com/Pipelex/methods).
 
@@ -433,7 +433,7 @@ The cookbook contains production-ready examples covering various use cases:
 - **[Expense Data Synthesis](methods/gen_expense_data/)** - Generate labelled expense claims with receipt images
 - **Using Inference Plugins** - Serve a model from an installable inference-backend plugin (zero keys, deterministic)
 - **[Advisory Board](methods/advisory_board/)** - Consult expert advisory boards on a business problem
-- **[Research Report](methods/research_report/)** - Research a question and fact-check a Markdown report, also given to a CrewAI crew as a tool
+- **[Research Report](methods/research_report/)** - Draft a Markdown report on a question from the model's own knowledge, also given to a CrewAI crew as a tool
 - **[Blog Article](methods/blog_article_generator/)** - Write an SEO-optimized blog article for a given audience, tone and length
 - **[Discord Newsletter](methods/discord_newsletter/)** - Turn a week of Discord messages into an HTML newsletter
 

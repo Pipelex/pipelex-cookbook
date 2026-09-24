@@ -396,7 +396,7 @@ CRITICAL: For weekend_expense scenarios, the target_date will be a weekend date 
 
 [pipe.stamp_receipt_header]
 type        = "PipeCompose"
-description = "Completes the receipt header with a transaction number drawn at random, so that no two receipts share one"
+description = "Completes the receipt header with a transaction number of five digits drawn at random for each receipt"
 inputs      = { receipt_timing = "ReceiptTiming" }
 output      = "ReceiptHeader"
 
