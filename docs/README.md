@@ -29,7 +29,7 @@ Each cookbook method is a package in `methods/<name>/`, laid out like the packag
 
 What a page says about its method comes from the package:
 
-- **The address** is `address/name@tag`, where the tag is `v` followed by the version in `pyproject.toml`. On `dev` that is the latest release, since each release is merged back into `dev`; on a release branch it is the release being cut, and the release commit re-renders every page. A method added since the last release therefore names a tag it is not in yet, which the checks report as not published rather than as broken.
+- **The address** is `address/name@tag`, where the tag is `v` followed by the version in `pyproject.toml`. On `dev` that is the latest release, since each release is merged back into `dev`; on a release branch it is the release being cut, and the release commit re-renders every page. A method added since the last release therefore names that release's tag, which does not hold it: the checks report it as not published rather than as broken, and the next release re-renders its page at the new tag.
 - **"Takes" and "Returns"** come from the contract snapshot.
 - **The samples and the code snippets' inputs** come from `inputs.json`.
 - **"What you get"** is the answer key's `## Must` lines. The page shows them without the planted facts, so each Must line states its facts in full; the renderer refuses one that cites a planted fact such as `F2`.
@@ -77,7 +77,7 @@ The "Takes" and "Returns" lines come from production: `POST /v1/validate` answer
 |---|---|---|
 | `make check-render` | Nothing | Every committed page equals a fresh render |
 | `make check-lockstep` | Nothing | Every manifest carries the cookbook's version |
-| `make check-links` | The network | Every raw URL in the packages and on the pages answers. A URL into this repository must name a file this checkout holds; if it does not answer yet, it is reported as not published, since a release brings it there |
+| `make check-links` | The network | Every raw URL in the packages and on the pages answers. A URL into this repository must name a file this checkout holds; if it does not answer, it is reported as not published, since the next release publishes it |
 | `make check-methods` | `PIPELEX_API_KEY` | Every package validates on production from its files, and its contract snapshot is current |
 | `make refresh` | `PIPELEX_API_KEY` | Rewrites every contract snapshot from production |
 

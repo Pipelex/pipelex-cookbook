@@ -133,8 +133,12 @@ def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageCon
     chatbot_template = editorial.chatbot or (DEFAULT_CHATBOT_WITH_SAMPLES if samples else DEFAULT_CHATBOT_WITHOUT_SAMPLES)
     try:
         chatbot = chatbot_template.format(address=address, samples=" and ".join(sample.url for sample in samples), inputs_url=inputs_url)
-    except (KeyError, IndexError) as exc:
-        msg = f"the chatbot sentence of `{package.name}` in cookbook.toml uses an unknown placeholder: {exc}"
+    except (KeyError, IndexError, AttributeError, ValueError) as exc:
+        # `str.format` raises KeyError or IndexError for an unknown placeholder, AttributeError for `{address.x}` and ValueError for a stray brace.
+        msg = (
+            f"the chatbot sentence of `{package.name}` in cookbook.toml does not format; "
+            f"its placeholders are {{address}}, {{samples}} and {{inputs_url}}, and a literal brace is written doubled: {exc}"
+        )
         raise CookbookLayoutError(msg) from exc
 
     return PageContext(
@@ -219,10 +223,14 @@ def python_literal(value: JsonValue, *, indent: int = 0) -> str:
 
 
 def _snippet_inputs(inputs: dict[str, JsonValue]) -> dict[str, JsonValue]:
-    """The inputs as code passes them: `inputs.json` may wrap a value as `{"concept": …, "content": …}`, and the code passes the content."""
+    """The inputs as code passes them: `inputs.json` may wrap a value as `{"concept": …, "content": …}`, and the code passes the content.
+
+    Only a dict whose keys are exactly `concept` and `content` is that wrapper, as the runtime reads it: a structured input whose concept has a
+    field named `content` is passed whole.
+    """
     snippet_inputs: dict[str, JsonValue] = {}
     for input_name, input_value in inputs.items():
-        if isinstance(input_value, dict) and "content" in input_value:
+        if isinstance(input_value, dict) and set(input_value) == {"concept", "content"}:
             snippet_inputs[input_name] = input_value["content"]
         else:
             snippet_inputs[input_name] = input_value

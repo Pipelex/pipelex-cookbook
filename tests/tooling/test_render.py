@@ -70,6 +70,25 @@ class TestRender:
         with pytest.raises(CookbookLayoutError, match="run `make refresh`"):
             render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir)
 
+    def test_a_chatbot_sentence_that_does_not_format_is_refused(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        root = make_cookbook()
+        settings_path = root / "cookbook.toml"
+        settings_path.write_text(
+            settings_path.read_text(encoding="utf-8").replace(
+                'app_dir = "widgets-app"', 'chatbot = "Run {address} on {samples"\napp_dir = "widgets-app"'
+            ),
+            encoding="utf-8",
+        )
+        with pytest.raises(CookbookLayoutError, match="does not format"):
+            render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir)
+
+    def test_only_an_exact_concept_wrapper_is_unwrapped_in_the_snippets(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        root = make_cookbook()
+        inputs_path = root / "methods" / "count_words" / "inputs.json"
+        inputs_path.write_text('{"text": {"title": "Fox", "content": "The quick brown fox"}}', encoding="utf-8")
+        page = render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir)[root / "methods" / "count_words" / "README.md"]
+        assert '"title": "Fox"' in page
+
     def test_snippet_literals_follow_each_language(self):
         value: JsonValue = {"document": {"url": "https://example.com/a.pdf", "pages": [1, 2], "ocr": True, "note": None}, "two words": "x"}
         assert typescript_literal(value) == (

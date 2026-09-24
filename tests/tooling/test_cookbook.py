@@ -46,3 +46,11 @@ class TestCookbookLoading:
         (root / "methods" / "count_words" / "key.md").unlink()
         with pytest.raises(CookbookLayoutError, match="holds no key.md"):
             load_cookbook(root)
+
+    def test_a_broken_contract_snapshot_is_refused_unless_contracts_are_left_unread(self, make_cookbook: MakeCookbook):
+        root = make_cookbook()
+        (root / "methods" / "count_words" / "contract.json").write_text("{not json", encoding="utf-8")
+        with pytest.raises(CookbookLayoutError, match="make refresh"):
+            load_cookbook(root)
+        cookbook = load_cookbook(root, read_contracts=False)
+        assert [package.contract for package in cookbook.packages] == [None, None]

@@ -83,12 +83,15 @@ asyncio.run(main())
 <details>
 <summary>Any HTTP client</summary>
 
+The start call answers at once with the run's id; the results call answers 202 while the run is going, 200 with the results once it has completed, and 409 if it failed. The snippet uses `jq` to read the id.
+
 ```bash
-curl -s https://api.pipelex.com/v1/start \
+RUN_ID=$(curl -s https://api.pipelex.com/v1/start \
   -H "Authorization: Bearer $PIPELEX_API_KEY" -H "Content-Type: application/json" \
-  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.17.0", "inputs": {"gantt_chart_image": {"url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_gantt/gantt_tree_house.png"}}}'
-# 202 → {"pipeline_run_id": "..."}
-curl -s https://api.pipelex.com/v1/runs/$RUN_ID/results -H "Authorization: Bearer $PIPELEX_API_KEY"
+  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.17.0", "inputs": {"gantt_chart_image": {"url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_gantt/gantt_tree_house.png"}}}' | jq -r .pipeline_run_id)
+until [ "$(curl -s -o results.json -w '%{http_code}' https://api.pipelex.com/v1/runs/$RUN_ID/results \
+  -H "Authorization: Bearer $PIPELEX_API_KEY")" != 202 ]; do sleep 5; done
+cat results.json
 ```
 
 </details>

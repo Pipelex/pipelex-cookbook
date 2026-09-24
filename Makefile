@@ -74,7 +74,7 @@ make export-requirements-dev  - Export requirements-dev.txt (dev dependencies, e
 make er                       - Shorthand -> export-requirements
 make erd                      - Shorthand -> export-requirements-dev
 make validate                 - Validate config, libraries, and every shipped .mthds bundle
-make validate-bundles         - Static-validate all .mthds bundles (tutorial, examples, methods)
+make validate-bundles         - Static-validate all .mthds bundles (tutorial, examples, methods, installed library)
 
 make render                   - Write every methods/<name>/README.md from its package and cookbook.toml
 make check-render             - Fail when a committed method page differs from a fresh render

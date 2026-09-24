@@ -3,6 +3,7 @@
 import re
 from collections.abc import Callable
 from pathlib import Path
+from urllib.parse import unquote
 
 import httpx
 from pydantic import BaseModel, ConfigDict, JsonValue
@@ -64,8 +65,9 @@ def collect_raw_urls(*, cookbook: Cookbook, rendered: dict[Path, str]) -> dict[s
 def check_links(*, cookbook: Cookbook, rendered: dict[Path, str], fetch_status: Callable[[str], int]) -> list[LinkVerdict]:
     """Check every raw URL.
 
-    A URL into the cookbook itself must name a file this checkout holds, whichever ref it names, since the file reaches that ref when a release
-    brings it there: a URL on `main` or at a tag that does not answer yet is reported as not published, not as broken. Any other URL must answer.
+    A URL into the cookbook itself must name a file this checkout holds, whichever ref it names. When it does not answer, it is reported as not
+    published rather than as broken: a file added since the last release is on neither `main` nor that release's tag, and the next release both
+    publishes it and re-renders every page at its own tag. Any other URL must answer.
 
     Args:
         cookbook: The cookbook.
@@ -78,7 +80,8 @@ def check_links(*, cookbook: Cookbook, rendered: dict[Path, str], fetch_status: 
         status = fetch_status(url)
         answered = 200 <= status < 300
         if url.lower().startswith(own_prefix):
-            ref, _, local_path = url[len(own_prefix) :].partition("/")
+            ref, _, url_path = url[len(own_prefix) :].partition("/")
+            local_path = unquote(url_path)
             if not (cookbook.root / local_path).is_file():
                 verdicts.append(LinkVerdict(url=url, found_in=found_in, ok=False, note=f"no file at {local_path} in this checkout"))
             elif answered:
@@ -89,7 +92,7 @@ def check_links(*, cookbook: Cookbook, rendered: dict[Path, str], fetch_status: 
                         url=url,
                         found_in=found_in,
                         ok=True,
-                        note=f"not published at {ref} yet (HTTP {status}); the file is here, so a release brings it",
+                        note=f"not published at {ref} (HTTP {status}); the file is in this checkout, and the next release publishes it",
                     )
                 )
         elif answered:

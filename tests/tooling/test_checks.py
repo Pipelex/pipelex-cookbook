@@ -52,10 +52,24 @@ class TestChecks:
         # The inputs file is here, so an unanswered URL at the page's tag is only not published yet.
         inputs_url = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.9.0/methods/count_words/inputs.json"
         assert verdicts[inputs_url].ok is True
-        assert verdicts[inputs_url].note.startswith("not published at v0.9.0 yet")
+        assert verdicts[inputs_url].note.startswith("not published at v0.9.0")
 
         sample_path = cookbook.root / "assets" / "extract_widgets" / "catalogue.png"
         sample_path.parent.mkdir(parents=True)
         sample_path.write_bytes(b"png")
         verdicts = {verdict.url: verdict for verdict in check_links(cookbook=cookbook, rendered=rendered, fetch_status=not_found)}
         assert verdicts[WIDGETS_SAMPLE_URL].ok is True
+
+    def test_a_link_into_the_cookbook_names_its_local_file_percent_decoded(self, make_cookbook: MakeCookbook):
+        root = make_cookbook()
+        url = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_widgets/spring%20catalogue.png"
+        (root / "methods" / "extract_widgets" / "inputs.json").write_text(f'{{"catalogue": {{"url": "{url}"}}}}', encoding="utf-8")
+        sample_path = root / "assets" / "extract_widgets" / "spring catalogue.png"
+        sample_path.parent.mkdir(parents=True)
+        sample_path.write_bytes(b"png")
+
+        def not_found(url: str) -> int:
+            return 404
+
+        verdicts = {verdict.url: verdict for verdict in check_links(cookbook=load_cookbook(root), rendered={}, fetch_status=not_found)}
+        assert verdicts[url].ok is True

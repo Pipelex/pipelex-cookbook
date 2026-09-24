@@ -60,7 +60,11 @@ class HostedClient:
             # A non-2xx carries no verdict: the request, the key or the server failed. The body names why; the key is never part of it.
             msg = f"{url} answered HTTP {response.status_code} without a verdict: {response.text[:2000]}"
             raise HostedApiError(msg)
-        verdict: object = response.json()
+        try:
+            verdict: object = response.json()
+        except ValueError as exc:
+            msg = f"{url} answered 200 with a body that is not JSON: {response.text[:2000]}"
+            raise HostedApiError(msg) from exc
         if not isinstance(verdict, dict) or "is_valid" not in verdict:
             msg = f"{url} answered 200 without a verdict"
             raise HostedApiError(msg)

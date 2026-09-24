@@ -101,8 +101,13 @@ class Cookbook(BaseModel):
         return f"{self.settings.address}/{package.name}@{self.tag}"
 
 
-def load_cookbook(root: Path) -> Cookbook:
+def load_cookbook(root: Path, *, read_contracts: bool = True) -> Cookbook:
     """Load the cookbook rooted at `root`.
+
+    Args:
+        root: The repository root.
+        read_contracts: Whether to read each package's `contract.json`. `make refresh` rewrites the snapshots, so it loads without them and
+            recovers from a snapshot that no longer loads.
 
     Raises:
         CookbookLayoutError: A file is missing or malformed, a package's identity is wrong, or `cookbook.toml` names a method that does not exist.
@@ -111,7 +116,7 @@ def load_cookbook(root: Path) -> Cookbook:
     settings = _load_settings(root / COOKBOOK_FILE)
     methods_dir = root / METHODS_DIR
     package_dirs = sorted(child for child in methods_dir.iterdir() if child.is_dir()) if methods_dir.is_dir() else []
-    packages = [_load_package(directory=package_dir, settings=settings) for package_dir in package_dirs]
+    packages = [_load_package(directory=package_dir, settings=settings, read_contract=read_contracts) for package_dir in package_dirs]
     known_names = {package.name for package in packages}
     unknown_entries = sorted(set(settings.methods) - known_names)
     if unknown_entries:
@@ -143,7 +148,7 @@ def _load_settings(path: Path) -> CookbookSettings:
         raise CookbookLayoutError(msg) from exc
 
 
-def _load_package(*, directory: Path, settings: CookbookSettings) -> MethodPackage:
+def _load_package(*, directory: Path, settings: CookbookSettings, read_contract: bool) -> MethodPackage:
     manifest_path = directory / MANIFEST_FILE
     if not manifest_path.is_file():
         msg = f"{directory} holds no {MANIFEST_FILE}: every directory under {METHODS_DIR}/ is a method package"
@@ -175,7 +180,7 @@ def _load_package(*, directory: Path, settings: CookbookSettings) -> MethodPacka
         raise CookbookLayoutError(msg)
     key = parse_key(key_path.read_text(encoding="utf-8"), source=str(key_path))
     contract_path = directory / CONTRACT_FILE
-    contract = load_contract(contract_path) if contract_path.is_file() else None
+    contract = load_contract(contract_path) if read_contract and contract_path.is_file() else None
 
     return MethodPackage(
         directory=directory,

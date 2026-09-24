@@ -44,7 +44,7 @@ def main(argv: list[str] | None = None) -> int:
     arguments = parser.parse_args(argv)
     root = Path(arguments.root).resolve()
     try:
-        cookbook = load_cookbook(root)
+        cookbook = load_cookbook(root, read_contracts=arguments.command != "refresh")
         return commands[arguments.command](cookbook)
     except CookbookError as exc:
         print(f"✗ {exc}", file=sys.stderr)
