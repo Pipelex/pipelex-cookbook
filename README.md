@@ -85,10 +85,10 @@ Or explore other cookbook examples:
 
 ```bash
 # Extract data from a Gantt chart image
-pipelex run bundle examples/b_basics/document_extract/extract_gantt/gantt.mthds -i examples/b_basics/document_extract/extract_gantt/inputs.json
+pipelex run bundle examples/b_basics/document_extract/extract_gantt/bundle.mthds -i examples/b_basics/document_extract/extract_gantt/inputs.json
 
 # Extract and summarize invoice information
-pipelex run bundle examples/b_basics/document_extract/extract_invoice/invoice.mthds -i examples/b_basics/document_extract/extract_invoice/inputs.json
+pipelex run bundle examples/b_basics/document_extract/extract_invoice/bundle.mthds -i examples/b_basics/document_extract/extract_invoice/inputs.json
 
 # Multi-step text summarization
 pipelex run bundle examples/a_quick_start/summarize.mthds --pipe summarize_by_steps -i examples/a_quick_start/inputs.json
