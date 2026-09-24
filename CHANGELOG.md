@@ -8,6 +8,10 @@
 - **The `crewai` extra is now opt-in: `make install` no longer installs it, and it is out of `requirements-dev.txt`.** The extra exists for a single example, `examples/c_advanced/crewai_with_pipelex_tools`, but `uv sync --all-extras` pulled its whole dependency closure into every developer environment and into the exported dev requirements — CrewAI drags in `chromadb`, `onnxruntime`, `litellm`, `kubernetes`, `grpcio` and dozens more, which is most of what the export listed. Both the sync and the export now pass `--no-extra crewai` through the new `OPT_IN_EXTRAS` variable in the `Makefile`, so the dev dependency set drops by more than fifty packages. Anyone running that example installs it explicitly with `uv pip install -e ".[crewai]"`, exactly as the example's README already instructs. The example's `run_crew_with_pipelex.py` is now excluded from pyright, because with CrewAI off the path pyright can only infer `Unknown` for every symbol it imports; mypy still checks the file, with `ignore_missing_imports` set for the `crewai` modules so the absent package is not an error.
 - **Regenerated `requirements.txt` and `requirements-dev.txt` from `uv.lock`.** Both exports had drifted a long way from the lockfile — `requirements-dev.txt` still pinned `ruff==0.12.1`, the oldest pin anywhere in the workspace — so the pip-install path was handing users a dependency set that no longer matched what `uv sync` installs. They are generated files, so they were refreshed with the `make export-requirements` and `make export-requirements-dev` targets rather than edited by hand.
 
+### Fixed
+
+- **The Gantt and invoice run commands in `README.md`**: they named `gantt.mthds` and `invoice.mthds`, which do not exist, and now name each example's `bundle.mthds`, so both commands run as written.
+
 ## [v0.17.0] - 2026-08-18
 
 ### Changed
