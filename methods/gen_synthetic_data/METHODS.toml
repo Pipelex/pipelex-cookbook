@@ -1,0 +1,13 @@
+[package]
+name = "gen_synthetic_data"
+display_name = "Synthetic Data Generation"
+address = "github.com/Pipelex/pipelex-cookbook"
+version = "0.18.0"
+description = "Turn a description of a record into a set of varied synthetic records: first the cases worth covering, then one filled record per case."
+authors = ["Evotis S.A.S"]
+license = "MIT"
+mthds_version = ">=1.0.0"
+main_pipe = "generate_synthetic_data_samples"
+
+[exports.synthetic_data_generation]
+pipes = ["generate_synthetic_data_samples"]

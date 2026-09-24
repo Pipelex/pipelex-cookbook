@@ -1,0 +1,131 @@
+domain      = "blog_article_generator"
+description = "Generate SEO optimized blog articles dynamically"
+main_pipe   = "generate_blog_article"
+
+############################################################
+# CONCEPTS
+############################################################
+
+[concept]
+ArticleContent = "The body of a blog article, in Markdown"
+
+[concept.BlogArticleRequest]
+description = "Structured request describing the blog article to generate"
+
+[concept.BlogArticleRequest.structure]
+text = { type = "text", description = "Free-form instruction for the article", required = true }
+topic = { type = "text", description = "The main topic of the blog article", required = true }
+audience = { type = "text", description = "Target audience for the article", required = true }
+tone = { type = "text", description = "Writing tone", choices = [
+  "Casual",
+  "Professional",
+  "Humorous",
+  "Academic",
+], required = true }
+length = { type = "text", description = "Desired article length", choices = [
+  "Short",
+  "Medium",
+  "Long",
+], required = true }
+
+[concept.ArticleOutline]
+description = "SEO optimized blog outline"
+
+[concept.ArticleOutline.structure]
+seo_title        = { type = "text", description = "The article's title for search engines, at most 60 characters", required = true }
+meta_description = { type = "text", description = "The summary search engines show under the title, at most 155 characters", required = true }
+headings         = { type = "list", item_type = "text", description = "The headings of the article's sections, in order", required = true }
+
+[concept.BlogArticle]
+description = "Final blog article, with the metadata search engines read"
+
+[concept.BlogArticle.structure]
+seo_title        = { type = "text", description = "The article's title for search engines", required = true }
+meta_description = { type = "text", description = "The summary search engines show under the title", required = true }
+content          = { type = "text", description = "The full article in Markdown", required = true }
+
+############################################################
+# MAIN PIPE
+############################################################
+
+[pipe.generate_blog_article]
+type = "PipeSequence"
+description = "Generate a complete blog article from a blog article request"
+inputs = { user_prompt = "BlogArticleRequest" }
+output = "BlogArticle"
+steps = [
+  { pipe = "create_outline", result = "outline" },
+  { pipe = "write_article", result = "article" },
+  { pipe = "assemble_blog_article", result = "blog_article" },
+]
+
+############################################################
+# STEP 1 - CREATE OUTLINE
+############################################################
+
+[pipe.create_outline]
+type = "PipeLLM"
+description = "Create an SEO-friendly blog outline from the blog article request"
+inputs = { user_prompt = "BlogArticleRequest" }
+output = "ArticleOutline"
+prompt = """
+Create an SEO-friendly blog outline based on the following request:
+
+@user_prompt
+
+Return:
+- seo_title: at most 60 characters, naming the topic
+- meta_description: one or two sentences of at most 155 characters in all, naming the topic
+- headings: the section headings, in order, written for the audience and in the requested tone; about 3 for a Short article, 5 for a Medium one and 7 for a Long one
+"""
+
+############################################################
+# STEP 2 - WRITE ARTICLE
+############################################################
+
+[pipe.write_article]
+type = "PipeLLM"
+description = "Write the full blog article in markdown, following the outline and the request"
+inputs = { user_prompt = "BlogArticleRequest", outline = "ArticleOutline" }
+output = "ArticleContent"
+prompt = """
+Write a full blog article in markdown format, following this request:
+
+@user_prompt
+
+And this outline:
+
+@outline
+
+Rules:
+- Start with the SEO title as the single level-1 heading, then write one level-2 section per outline heading, in order
+- Write for the requested audience, and follow the free-form instruction
+- Hold the requested tone from the first line to the last:
+  - Casual: talk to the reader as a friend would, as "you", with contractions throughout (it's, don't, you'll, they're, isn't) and everyday words
+  - Professional: clear, precise and courteous, without slang
+  - Humorous: playful, with jokes and funny comparisons that stay on the topic
+  - Academic: formal and precise, with terms defined and claims qualified
+- Match the requested length, section by section:
+  - Short: about 500 words in all, with an introduction of about 60 words and sections of about 130 words each
+  - Medium: about 1,000 words in all, with an introduction of about 100 words and sections of about 180 words each
+  - Long: about 2,000 words in all and never under 1,600, with an introduction of about 150 words and sections of 250 to 300 words each
+  - Develop every section to its budget with explanations and examples: a Long article whose sections run to only 150 words is too short
+- SEO optimized: use the topic's name and close variants naturally in the headings and the text
+- Include engaging, concrete examples, and keep every fact accurate
+- Output only the article: no meta description, no SEO notes, no keyword list, no placeholder, and no code fence around it
+"""
+
+############################################################
+# STEP 3 - ASSEMBLE
+############################################################
+
+[pipe.assemble_blog_article]
+type        = "PipeCompose"
+description = "Gather the article and its SEO metadata in the final blog article"
+inputs      = { outline = "ArticleOutline", article = "ArticleContent" }
+output      = "BlogArticle"
+
+[pipe.assemble_blog_article.construct]
+seo_title        = { from = "outline.seo_title" }
+meta_description = { from = "outline.meta_description" }
+content          = { from = "article" }

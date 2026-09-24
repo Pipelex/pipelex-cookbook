@@ -1,0 +1,13 @@
+[package]
+name = "extract_generic"
+display_name = "Generic Document Extraction"
+address = "github.com/Pipelex/pipelex-cookbook"
+version = "0.18.0"
+description = "Read any document and return each page as Markdown, including the text that only appears inside its images and diagrams."
+authors = ["Evotis S.A.S"]
+license = "MIT"
+mthds_version = ">=1.0.0"
+main_pipe = "power_extractor"
+
+[exports.extract_generic]
+pipes = ["power_extractor"]

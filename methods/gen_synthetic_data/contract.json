@@ -1,0 +1,103 @@
+{
+  "pipe": "synthetic_data_generation.generate_synthetic_data_samples",
+  "inputs": [
+    {
+      "name": "data_description",
+      "concept": "synthetic_data_generation.DataDescription",
+      "kind": "prose",
+      "description": "A specification of the synthetic data to be produced, including its purpose, structure, and characteristics.\n",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    },
+    {
+      "name": "nb_samples",
+      "concept": "synthetic_data_generation.NbOfSamples",
+      "kind": "number",
+      "description": "How many samples to generate",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    }
+  ],
+  "output": {
+    "concept": "synthetic_data_generation.Sample",
+    "description": "A complete synthetic data record representing a student profile.",
+    "multiplicity": "variable",
+    "item_count": null,
+    "fields": [
+      {
+        "name": "student_name",
+        "type": "text",
+        "description": "The name of the student",
+        "required": true
+      },
+      {
+        "name": "current_performance",
+        "type": "text",
+        "description": "The student's current performance level",
+        "required": true
+      },
+      {
+        "name": "learns_best_with",
+        "type": "text",
+        "description": "The learning modality that works best for this student",
+        "required": true
+      },
+      {
+        "name": "pace",
+        "type": "text",
+        "description": "The student's learning pace",
+        "required": true
+      },
+      {
+        "name": "complexity",
+        "type": "text",
+        "description": "The level of complexity the student prefers",
+        "required": true
+      },
+      {
+        "name": "strengths",
+        "type": "text",
+        "description": "Subjects or topics the student is good at",
+        "required": true
+      },
+      {
+        "name": "needs_help_with",
+        "type": "text",
+        "description": "Areas where the student struggles",
+        "required": true
+      },
+      {
+        "name": "prior_knowledge",
+        "type": "text",
+        "description": "Relevant topics the student already knows",
+        "required": true
+      },
+      {
+        "name": "hobbies_interests",
+        "type": "text",
+        "description": "The student's hobbies and interests",
+        "required": true
+      },
+      {
+        "name": "career_goals",
+        "type": "text",
+        "description": "The student's career aspirations",
+        "required": true
+      },
+      {
+        "name": "example_style",
+        "type": "text",
+        "description": "The student's preferred example style",
+        "required": true
+      },
+      {
+        "name": "question_format",
+        "type": "text",
+        "description": "The student's preferred question format",
+        "required": true
+      }
+    ]
+  }
+}

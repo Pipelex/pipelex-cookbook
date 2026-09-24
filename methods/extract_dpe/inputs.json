@@ -1,0 +1,8 @@
+{
+  "document": {
+    "concept": "dpe.DpeDocument",
+    "content": {
+      "url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_dpe/dpe_single_page.pdf"
+    }
+  }
+}

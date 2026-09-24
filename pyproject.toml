@@ -1,6 +1,6 @@
 [project]
 name = "pipelex-cookbook"
-version = "0.17.0"
+version = "0.18.0"
 description = "Cookbook for Pipelex, the open standard for repeatable AI methods. Write business logic, not API calls."
 authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
@@ -18,8 +18,11 @@ classifiers = [
 
 dependencies = [
   "beautifulsoup4==4.13.4",
+  "httpx>=0.28.1",
+  "jinja2>=3.1.6",
+  "mthds>=0.8.1",
   "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal,docling]==0.46.4",
-  "weasyprint==68.0",
+  "pydantic>=2.13.2",
 ]
 
 [project.optional-dependencies]
@@ -36,7 +39,7 @@ dev = [
   "pytest-sugar>=1.0.0",
   "pytest_asyncio>=0.24.0",
   "pytest-xdist>= 3.6.1",
-  "ruff>=0.6.8",
+  "ruff==0.16.4",
   "types-aioboto3[bedrock,bedrock-runtime]>=13.4.0",
   "types-aiofiles>=24.1.0.20240626",
   "types-beautifulsoup4>=4.12.0.20240907",
@@ -56,7 +59,7 @@ Repository = "https://github.com/Pipelex/pipelex-cookbook"
 Documentation = "https://docs.pipelex.com/pages/cookbook-examples/"
 
 [tool.setuptools.packages.find]
-include = ["examples*", "utils*"]
+include = ["examples*", "scripts*", "utils*"]
 
 [tool.uv]
 required-version = ">=0.7.2"
@@ -70,15 +73,18 @@ exclude = [
   "^examples/c_advanced/using_inference_plugins/hello_inference_plugin/.*$",
 ]
 mypy_path = "."
-packages = ["utils", "examples", "tests"]
+packages = ["utils", "examples", "scripts", "tests"]
 plugins = ["pydantic.mypy"]
 python_version = "3.11"
 warn_return_any = true
 warn_unused_configs = true
 
+# CrewAI comes from the opt-in `crewai` extra, so it is absent from a default install and mypy
+# cannot resolve the imports in `examples/c_advanced/crewai_with_pipelex_tools`. It is untyped
+# even when installed, so silencing the missing import costs nothing either way.
 [[tool.mypy.overrides]]
 ignore_missing_imports = true
-module = ["json2html", "weasyprint"]
+module = ["crewai", "crewai.*"]
 
 [tool.pyright]
 venvPath = "."
@@ -97,9 +103,14 @@ exclude = [
   "dist",
   "**/node_modules",
   "**/.*",
+  # This example is the only consumer of the opt-in `crewai` extra, which the default install
+  # deliberately skips. Without the package on the path pyright resolves every CrewAI symbol to
+  # `Unknown` and reports the whole file, so it is excluded rather than littered with per-line
+  # suppressions. mypy still checks it: it tolerates the unresolved import on its own.
+  "examples/c_advanced/crewai_with_pipelex_tools/run_crew_with_pipelex.py",
 ]
 extraPaths = ["./tests"]
-include = ["utils", "examples", "tests"]
+include = ["utils", "examples", "scripts", "tests"]
 reportAbstractUsage = "error"
 reportArgumentType = "error"
 reportAssertAlwaysTrue = "error"

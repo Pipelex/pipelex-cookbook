@@ -1,0 +1,13 @@
+[package]
+name = "blog_article_generator"
+display_name = "Blog Article Generator"
+address = "github.com/Pipelex/pipelex-cookbook"
+version = "0.18.0"
+description = "Write an SEO-optimized blog article, with its title and meta description, from a topic, an audience, a tone and a length."
+authors = ["Evotis S.A.S"]
+license = "MIT"
+mthds_version = ">=1.0.0"
+main_pipe = "generate_blog_article"
+
+[exports.blog_article_generator]
+pipes = ["generate_blog_article"]

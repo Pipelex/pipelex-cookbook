@@ -7,21 +7,20 @@ from _pytest.mark import ParameterSet
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 # Roots whose every .mthds bundle is release-gated by static validation: the tutorials, the
-# examples, and the installed method packages. `pipelex validate --all` only checks the
-# configured library pipelines, so without this gate a breaking MTHDS language change sails
-# through green here and only fails in a reader's terminal. Covering `.mthds/methods` also
+# examples, the cookbook's own method packages, and the installed library packages. `pipelex
+# validate --all` only checks the configured library pipelines, so without this gate a breaking
+# MTHDS language change sails through green here and only fails in a reader's terminal. Covering `.mthds/methods` also
 # validates the installed `documents` library directly — its `extract_page_contents` pipe is
 # referenced by no example, so it would otherwise never be exercised.
-VALIDATED_ROOTS = ("tutorial", "examples", ".mthds/methods")
+VALIDATED_ROOTS = ("tutorial", "examples", "methods", ".mthds/methods")
 
 # Folders excluded from the gate, keyed by repo-relative prefix, each with the reason it is
 # skipped. Excluded bundles are still discovered and reported as SKIP (with this reason) so an
 # exclusion never silently reads as "everything passes".
 EXCLUDED_DIRS: dict[str, str] = {
     "examples/wip": (
-        "work-in-progress: advisory_board is a multi-file bundle and validate_expense_data is a "
-        "PipeFunc bundle whose Python functions are only registered at runtime, so neither is "
-        "statically validatable in this gate"
+        "work-in-progress: validate_expense_data is a PipeFunc bundle whose Python functions are "
+        "only registered at runtime, so it is not statically validatable in this gate"
     ),
 }
 

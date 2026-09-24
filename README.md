@@ -30,6 +30,28 @@ Learn by doing with production-ready examples.</p>
     <br/>
 </div>
 
+<!-- BEGIN methods, written by `make render` from methods/ and cookbook.toml: never edit this region by hand -->
+
+# ⚡ Methods you can run by address
+
+Each of these methods runs on the hosted Pipelex API by its address, from a chatbot, your code or an app, with nothing to install. Its page shows every way to use it, with a sample to try it on.
+
+- **[Advisory board consultation](methods/advisory_board/)**: Read a business problem told in plain words, consult five to ten expert advisory boards on it, and return one strategic report in Markdown with their consensus, the choices they disagree on, a phased roadmap, risks, resources and success metrics.
+- **[Document question answering](methods/answer_from_documents/)**: Read a set of documents and a question, and return a short answer with the verbatim passages it rests on, a confidence level, and a status saying whether the documents answer it fully, in part, or not at all.
+- **[Blog article generation](methods/blog_article_generator/)**: Read a topic, an audience, a tone and a length, and return an SEO-optimized blog article in Markdown with its SEO title and meta description.
+- **[Discord newsletter](methods/discord_newsletter/)**: Read a week of Discord channel messages and return an HTML newsletter with a weekly summary, the new members, a section per channel and the geographic hubs.
+- **[Energy diagnostic (DPE) extraction](methods/extract_dpe/)**: Read a French energy performance diagnostic (DPE) and return the dwelling's address, the issue and expiry dates, the energy and CO₂ classes with their figures per m², and the estimated yearly energy costs.
+- **[Gantt chart extraction](methods/extract_gantt/)**: Read a Gantt chart image and return every task with its start and end dates, and every milestone with its date.
+- **[Generic document extraction](methods/extract_generic/)**: Read any document and return each page as Markdown, including the text that only appears inside its images and diagrams.
+- **[Slide deck extraction](methods/extract_slides/)**: Read a slide deck in PDF and return one Markdown text giving each slide its title, its text and a description of its layout and charts.
+- **[Synthetic expense data generation](methods/gen_expense_data/)**: Take a number of employees and return, for each, three or four expense claims with a photographed receipt image and a label saying whether the claim is legitimate or a weekend, inflated, mismatched or vague one, plus an HTML expense report.
+- **[Synthetic data generation](methods/gen_synthetic_data/)**: Read a description of a record and a count, and return that many varied synthetic records, here student profiles with their performance, learning style, background, interests and preferences.
+- **[Research report](methods/research_report/)**: Read a research question and return a Markdown report with an executive summary, key findings and open questions, drafted from three angles out of the model's own knowledge without searching any source, so it is a first draft to check rather than verified research.
+
+More methods, ready to run the same way, are in the [Pipelex method library](https://github.com/Pipelex/methods).
+
+<!-- END methods -->
+
 # 🚀 Quick Start
 
 ## 1. Clone and Install
@@ -81,14 +103,11 @@ Try the hello world example:
 pipelex run bundle examples/a_quick_start/hello_world.mthds
 ```
 
-Or explore other cookbook examples:
+Or explore other cookbook examples. The Gantt chart extraction is now a method you can run by address, from a chatbot, your code or an app: see [its page](methods/extract_gantt/).
 
 ```bash
-# Extract data from a Gantt chart image
-pipelex run bundle examples/b_basics/document_extract/extract_gantt/gantt.mthds -i examples/b_basics/document_extract/extract_gantt/inputs.json
-
 # Extract and summarize invoice information
-pipelex run bundle examples/b_basics/document_extract/extract_invoice/invoice.mthds -i examples/b_basics/document_extract/extract_invoice/inputs.json
+pipelex run bundle examples/b_basics/document_extract/extract_invoice/bundle.mthds -i examples/b_basics/document_extract/extract_invoice/inputs.json
 
 # Multi-step text summarization
 pipelex run bundle examples/a_quick_start/summarize.mthds --pipe summarize_by_steps -i examples/a_quick_start/inputs.json
@@ -316,16 +335,15 @@ import json
 from pipelex.pipeline.runner import PipelexMTHDSProtocol
 from pipelex.pipelex import Pipelex
 
+
 async def run_pipeline():
     with open("inputs.json", encoding="utf-8") as f:
         inputs = json.load(f)
 
     runner = PipelexMTHDSProtocol()
-    response = await runner.execute(
-        pipe_code="cv_match",
-        inputs=inputs
-    )
+    response = await runner.execute(pipe_code="cv_match", inputs=inputs)
     print(response.pipe_output.main_stuff_as_str)
+
 
 Pipelex.make()
 asyncio.run(run_pipeline())
@@ -358,18 +376,27 @@ We **highly** recommend installing our extension for `.mthds` files into your ID
 
 ```
 .
+├── methods/                   # Cookbook methods runnable by address, each with its generated page
+│   ├── advisory_board/
+│   ├── answer_from_documents/
+│   ├── blog_article_generator/
+│   ├── discord_newsletter/
+│   ├── extract_dpe/
+│   ├── extract_gantt/
+│   ├── extract_generic/
+│   ├── extract_slides/
+│   ├── gen_expense_data/
+│   ├── gen_synthetic_data/
+│   └── research_report/
 ├── examples/                  # Production-ready examples
 │   ├── a_quick_start/         # Getting started tutorials
 │   ├── b_basics/              # Core functionality examples
 │   │   └── document_extract/  # Document extraction examples
-│   │       ├── extract_dpe/
-│   │       ├── extract_gantt/
-│   │       ├── extract_generic/
 │   │       ├── extract_invoice/
 │   │       ├── extract_proof_of_purchase/
 │   │       └── extract_table/
 │   ├── c_advanced/            # Advanced features
-│   │   ├── gen_synthetic_data/
+│   │   ├── crewai_with_pipelex_tools/
 │   │   └── using_inference_plugins/
 │   └── wip/                   # Work in progress examples
 ├── assets/                    # Sample data files for examples
@@ -389,21 +416,26 @@ The cookbook contains production-ready examples covering various use cases:
 ### Document Processing
 - **Invoice Extractor** - Extract structured data from invoices
 - **Expense Report** - Process and validate expense reports
-- **DPE Extraction** - Extract energy performance diagnostics
-- **Generic Document** - Extract content from any document type
+- **[DPE Extraction](methods/extract_dpe/)** - Extract energy performance diagnostics
+- **[Generic Document](methods/extract_generic/)** - Extract content from any document type
+- **[Slide Deck](methods/extract_slides/)** - Extract each slide's title, text, layout and charts
+- **[Document Question Answering](methods/answer_from_documents/)** - Answer a question from documents, with the passages it rests on
 
 ### Visual Data Extraction
-- **Gantt Chart** - Extract project timelines from visual diagrams
+- **[Gantt Chart](methods/extract_gantt/)** - Extract project timelines from visual diagrams
 - **Table Extraction** - Extract structured tables from images
 
 ### Tabular Data
 - **Summarize People (CSV)** - Read a CSV, summarize each row with an LLM, and write the results back to CSV
 
 ### Advanced Methods
-- **Data Synthesis** - Generate synthetic data based on schemas
+- **[Data Synthesis](methods/gen_synthetic_data/)** - Generate synthetic data based on schemas
+- **[Expense Data Synthesis](methods/gen_expense_data/)** - Generate labelled expense claims with receipt images
 - **Using Inference Plugins** - Serve a model from an installable inference-backend plugin (zero keys, deterministic)
-- **Advisory Board** (WIP) - Multi-agent advisory system
-- **Newsletter Generation** (WIP) - Automated newsletter creation
+- **[Advisory Board](methods/advisory_board/)** - Consult expert advisory boards on a business problem
+- **[Research Report](methods/research_report/)** - Draft a Markdown report on a question from the model's own knowledge, also given to a CrewAI crew as a tool
+- **[Blog Article](methods/blog_article_generator/)** - Write an SEO-optimized blog article for a given audience, tone and length
+- **[Discord Newsletter](methods/discord_newsletter/)** - Turn a week of Discord messages into an HTML newsletter
 
 Each example includes:
 - Complete `.mthds` pipeline definition

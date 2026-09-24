@@ -1,0 +1,40 @@
+{
+  "pipe": "expense_data_generation.generate_expense_dataset",
+  "inputs": [
+    {
+      "name": "nb_employees",
+      "concept": "expense_data_generation.NbOfEmployees",
+      "kind": "number",
+      "description": "How many employees to generate",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    }
+  ],
+  "output": {
+    "concept": "expense_data_generation.EmployeeExpenseReport",
+    "description": "An employee with their list of expenses, receipts, and HTML report",
+    "multiplicity": "variable",
+    "item_count": null,
+    "fields": [
+      {
+        "name": "employee",
+        "type": "Employee",
+        "description": "The employee",
+        "required": true
+      },
+      {
+        "name": "expenses_with_receipts",
+        "type": "list[ExpenseWithReceipt]",
+        "description": "List of expenses with receipts",
+        "required": true
+      },
+      {
+        "name": "html_report",
+        "type": "HtmlContent",
+        "description": "HTML formatted expense report",
+        "required": true
+      }
+    ]
+  }
+}

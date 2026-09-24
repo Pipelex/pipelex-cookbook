@@ -1,0 +1,8 @@
+## Run it on your own machine
+
+With the Pipelex runtime and your own provider keys ([set it up](https://docs.pipelex.com/latest/get-started/run-it-yourself/)):
+
+```bash
+curl -sLo inputs.json {{ page.inputs_url }}
+pipelex run method {{ page.address }} --inputs inputs.json
+```

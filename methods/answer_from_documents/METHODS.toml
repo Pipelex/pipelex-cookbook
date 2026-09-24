@@ -1,0 +1,19 @@
+[package]
+name = "answer_from_documents"
+display_name = "Document Question Answering"
+address = "github.com/Pipelex/pipelex-cookbook"
+version = "0.18.0"
+description = "Answer a question from a set of documents with verbatim cited passages, a confidence level, and a status that says whether the documents answer it fully, in part, or not at all, and why."
+authors = ["Evotis S.A.S"]
+license = "MIT"
+mthds_version = ">=1.0.0"
+main_pipe = "answer_from_documents"
+
+[exports.document_qa]
+pipes = [
+  "answer_from_documents",
+  "analyze_question",
+  "retrieve_passages",
+  "verify_and_assess",
+  "synthesize_answer",
+]

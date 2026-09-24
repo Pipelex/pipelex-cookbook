@@ -1,0 +1,13 @@
+[package]
+name = "extract_slides"
+display_name = "Slide Deck Extraction"
+address = "github.com/Pipelex/pipelex-cookbook"
+version = "0.18.0"
+description = "Read a slide deck in PDF and return one Markdown text that gives each slide its title, its text and a description of its layout and graphics."
+authors = ["Evotis S.A.S"]
+license = "MIT"
+mthds_version = ">=1.0.0"
+main_pipe = "extract_slides"
+
+[exports.extract_slides]
+pipes = ["extract_slides"]

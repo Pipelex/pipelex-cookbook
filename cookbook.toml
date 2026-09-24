@@ -1,0 +1,100 @@
+# The cookbook's editorial fields, read by `make render` to write each method's page, methods/<name>/README.md.
+# Everything else a page says comes from the package itself: its manifest, its inputs.json, its key.md and its contract.json.
+# Every field of a method's entry is optional, and a method with no entry still gets a page from its manifest.
+
+# The address every cookbook manifest carries: the runtime locates a package by this address and the manifest's name.
+address = "github.com/Pipelex/pipelex-cookbook"
+# The GitHub repository that the samples' raw URLs point into.
+repository = "Pipelex/pipelex-cookbook"
+
+[methods.extract_gantt]
+title = "Gantt chart extraction"
+pitch = "Read a Gantt chart image and return every task with its start and end dates, and every milestone with its date."
+sample_labels = { gantt_chart_image = "sample chart" }
+chatbot = "Run {address} on {samples}"
+app_dir = "gantt-app"
+yours_dir = "gantt"
+yours_change = "add each task's owner to what it extracts"
+
+[methods.extract_dpe]
+title = "Energy diagnostic (DPE) extraction"
+pitch = "Read a French energy performance diagnostic (DPE) and return the dwelling's address, the issue and expiry dates, the energy and CO₂ classes with their figures per m², and the estimated yearly energy costs."
+sample_labels = { document = "sample DPE" }
+chatbot = "Run {address} on {samples}"
+app_dir = "dpe-app"
+yours_dir = "dpe"
+yours_change = "add the living area and the year of construction to what it extracts"
+
+[methods.answer_from_documents]
+title = "Document question answering"
+pitch = "Read a set of documents and a question, and return a short answer with the verbatim passages it rests on, a confidence level, and a status saying whether the documents answer it fully, in part, or not at all."
+sample_labels = { documents = "sample report" }
+chatbot = "Run {address} on {samples} with the question \"Among all 12 references in this report, how many are from its own research center?\""
+app_dir = "qa-app"
+yours_dir = "document-qa"
+yours_change = "have it answer in the language of the question"
+
+[methods.extract_slides]
+title = "Slide deck extraction"
+pitch = "Read a slide deck in PDF and return one Markdown text giving each slide its title, its text and a description of its layout and charts."
+sample_labels = { document = "sample deck" }
+chatbot = "Run {address} on {samples}"
+app_dir = "slides-app"
+yours_dir = "slides"
+yours_change = "add the speaker's key message for each slide to what it extracts"
+
+[methods.extract_generic]
+title = "Generic document extraction"
+pitch = "Read any document and return each page as Markdown, including the text that only appears inside its images and diagrams."
+sample_labels = { document = "sample article" }
+chatbot = "Run {address} on {samples}"
+app_dir = "extract-app"
+yours_dir = "extract"
+yours_change = "turn the tables it finds into CSV alongside the Markdown"
+
+[methods.advisory_board]
+title = "Advisory board consultation"
+pitch = "Read a business problem told in plain words, consult five to ten expert advisory boards on it, and return one strategic report in Markdown with their consensus, the choices they disagree on, a phased roadmap, risks, resources and success metrics."
+chatbot = "Run {address} on this problem: \"We're a B2B SaaS company with $5M ARR whose annual churn rose from 8% to 15%. How do we get it under 10% within six months on a $500K budget?\""
+app_dir = "advisory-app"
+yours_dir = "advisory-board"
+yours_change = "replace the sixteen boards it can consult with the teams of your own company"
+
+[methods.blog_article_generator]
+title = "Blog article generation"
+pitch = "Read a topic, an audience, a tone and a length, and return an SEO-optimized blog article in Markdown with its SEO title and meta description."
+chatbot = "Run {address} to write a long, casual blog article about capybaras for kids"
+app_dir = "blog-app"
+yours_dir = "blog"
+yours_change = "add a list of target keywords to the request and make the article use them"
+
+[methods.research_report]
+title = "Research report"
+pitch = "Read a research question and return a Markdown report with an executive summary, key findings and open questions, drafted from three angles out of the model's own knowledge without searching any source, so it is a first draft to check rather than verified research."
+chatbot = "Run {address} on the question: what are the most promising approaches to improving battery energy density for electric vehicles?"
+app_dir = "research-app"
+yours_dir = "research"
+yours_change = "research five angles instead of three"
+
+[methods.discord_newsletter]
+title = "Discord newsletter"
+pitch = "Read a week of Discord channel messages and return an HTML newsletter with a weekly summary, the new members, a section per channel and the geographic hubs."
+app_dir = "newsletter-app"
+yours_dir = "newsletter"
+yours_change = "add a section listing the links shared during the week"
+
+[methods.gen_synthetic_data]
+title = "Synthetic data generation"
+pitch = "Read a description of a record and a count, and return that many varied synthetic records, here student profiles with their performance, learning style, background, interests and preferences."
+chatbot = "Run {address} to generate five varied student profiles"
+app_dir = "synthetic-data-app"
+yours_dir = "synthetic-data"
+yours_change = "make it fill customer profiles instead of student profiles"
+
+[methods.gen_expense_data]
+title = "Synthetic expense data generation"
+pitch = "Take a number of employees and return, for each, three or four expense claims with a photographed receipt image and a label saying whether the claim is legitimate or a weekend, inflated, mismatched or vague one, plus an HTML expense report."
+chatbot = "Run {address} for two employees"
+app_dir = "expense-data-app"
+yours_dir = "expense-data"
+yours_change = "date the expenses in the current month instead of January 2026"

@@ -1,0 +1,35 @@
+name: Methods check
+
+# The cookbook's checks that need no API key: every method page equals a fresh render, every
+# method manifest carries the cookbook's version, and every raw sample link answers (or, for a
+# file of this repository, is at least present here). The checks that call production need
+# PIPELEX_API_KEY, which CI does not hold: they are `make check-hosted`, run by hand.
+
+on:
+  pull_request:
+
+jobs:
+  methods-check:
+    name: Methods check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      VIRTUAL_ENV: ${{ github.workspace }}/.venv
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: Check UV installation
+        run: make check-uv
+
+      - name: Install dependencies
+        run: PYTHON_VERSION=3.13 make install
+
+      - name: Check the method pages, the manifests and the sample links
+        run: make check-cookbook

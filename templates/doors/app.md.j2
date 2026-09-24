@@ -1,0 +1,8 @@
+## Make it an app
+
+```bash
+npm create @pipelex/method-app@latest {{ page.app_dir }} -- --method {{ page.address }}
+make -C {{ page.app_dir }} serve
+```
+
+The form and the result view come from the method's contract. `make serve` prints the app's URL once the page answers, and `make stop` stops it. Your agent does the same with `/pipelex-scaffold`.

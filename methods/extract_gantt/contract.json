@@ -1,0 +1,34 @@
+{
+  "pipe": "gantt.extract_gantt_by_steps",
+  "inputs": [
+    {
+      "name": "gantt_chart_image",
+      "concept": "gantt.GanttChartImage",
+      "kind": "image",
+      "description": "A gantt chart detailing a project timeline",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    }
+  ],
+  "output": {
+    "concept": "gantt.GanttChart",
+    "description": "A gantt chart transcript fully detailing the contents of the chart",
+    "multiplicity": "single",
+    "item_count": null,
+    "fields": [
+      {
+        "name": "tasks",
+        "type": "list[GanttTaskDetails]",
+        "description": "The list of tasks in the gantt chart",
+        "required": false
+      },
+      {
+        "name": "milestones",
+        "type": "list[Milestone]",
+        "description": "The list of milestones in the gantt chart",
+        "required": false
+      }
+    ]
+  }
+}

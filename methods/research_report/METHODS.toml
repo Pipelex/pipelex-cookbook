@@ -1,0 +1,13 @@
+[package]
+name = "research_report"
+display_name = "Research Report"
+address = "github.com/Pipelex/pipelex-cookbook"
+version = "0.18.0"
+description = "Draft a report on a question from three angles out of the model's own knowledge, look at each angle's main claim a second time, and return a Markdown report with an executive summary, key findings and open questions. It searches no source."
+authors = ["Evotis S.A.S"]
+license = "MIT"
+mthds_version = ">=1.0.0"
+main_pipe = "prepare_report"
+
+[exports.research_report]
+pipes = ["prepare_report", "deep_research", "compose_report"]

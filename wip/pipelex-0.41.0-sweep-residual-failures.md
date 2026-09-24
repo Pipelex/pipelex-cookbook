@@ -40,6 +40,7 @@ and the structure-class generator emits:
 ```python
 from datetime import date
 
+
 class gantt__Milestone(StructuredContent):
     name: str = Field(..., description="The name of the milestone")
     date: date | None = Field(default=None, description="The date of the milestone")

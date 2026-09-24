@@ -20,6 +20,10 @@ UV_MIN_VERSION = $(shell grep -m1 'required-version' pyproject.toml | sed -E 's/
 
 USUAL_PYTEST_MARKERS := "(dry_runnable or not inference) and not (needs_output or pipelex_api)"
 
+# Extras that are opt-in: they serve a single example and would otherwise be pulled into every
+# install and into requirements-dev.txt. Install them by hand, e.g. `uv pip install -e ".[crewai]"`.
+OPT_IN_EXTRAS := --no-extra crewai
+
 define PRINT_TITLE
     $(eval PROJECT_PART := [$(PROJECT_NAME)])
     $(eval TARGET_PART := ($@))
@@ -63,14 +67,24 @@ Usage:
 
 make env                      - Create python virtual env
 make lock                     - Refresh uv.lock without updating anything
-make install                  - Create local virtualenv & install all dependencies
+make install                  - Create local virtualenv & install all dependencies (except opt-in extras)
 make update                   - Upgrade dependencies via uv
 make export-requirements      - Export production requirements.txt (no dev dependencies)
-make export-requirements-dev  - Export requirements-dev.txt (all dependencies including dev)
+make export-requirements-dev  - Export requirements-dev.txt (dev dependencies, except opt-in extras)
 make er                       - Shorthand -> export-requirements
 make erd                      - Shorthand -> export-requirements-dev
 make validate                 - Validate config, libraries, and every shipped .mthds bundle
-make validate-bundles         - Static-validate all .mthds bundles (tutorial, examples, methods)
+make validate-bundles         - Static-validate all .mthds bundles (tutorial, examples, methods, installed library)
+
+make render                   - Write every methods/<name>/README.md from its package and cookbook.toml
+make check-render             - Fail when a committed method page differs from a fresh render
+make check-lockstep           - Fail when a method manifest's version is not the cookbook's
+make check-links              - Fetch every sample URL in the packages and every raw URL on the pages
+make check-cookbook           - The checks that need no key: check-render check-lockstep check-links (what CI runs)
+make refresh                  - Validate every method on production and write its contract.json (needs PIPELEX_API_KEY)
+make check-methods            - Validate every method on production from its files (needs PIPELEX_API_KEY)
+make check-addresses          - Validate every page's address on production at its tag, reporting unreleased methods (needs PIPELEX_API_KEY)
+make check-hosted             - Every check that calls production, run by hand before each PR and at each release (needs PIPELEX_API_KEY)
 
 make format                   - format with ruff and plxt
 make lint                     - lint with ruff and plxt
@@ -111,7 +125,7 @@ make ti                       - Shorthand -> test-inference
 make check                    - Shorthand -> format lint mypy
 make c                        - Shorthand -> check
 make cc                       - Shorthand -> cleanderived check
-make agent-check              - Shorthand -> fix-unused-imports format lint pyright mypy (for AI agents)
+make agent-check              - Shorthand -> fix-unused-imports format lint pyright mypy check-render check-lockstep (for AI agents)
 make agent-test               - Run unit tests, silent on success, output on failure (for AI agents)
 make li                       - Shorthand -> lock install
 make check-unused-imports     - Check for unused imports without fixing
@@ -131,6 +145,7 @@ export HELP
 	codex-tests gha-tests \
 	run-all-tests run-manual-trigger-gha-tests run-gha_disabled-tests \
 	validate validate-bundles v check c cc agent-check agent-test \
+	render check-render check-lockstep check-links check-cookbook refresh check-methods check-addresses check-hosted \
 	merge-check-ruff-lint merge-check-ruff-format merge-check-plxt-format merge-check-plxt-lint merge-check-mypy merge-check-pyright \
 	li check-unused-imports fix-unused-imports check-uv check-TODOs
 
@@ -183,7 +198,7 @@ env-verbose: check-uv-verbose
 install: env-verbose
 	$(call PRINT_TITLE,"Installing dependencies")
 	@. $(VIRTUAL_ENV)/bin/activate && \
-	uv sync --all-extras && \
+	uv sync --all-extras $(OPT_IN_EXTRAS) && \
 	uv pip install -e examples/c_advanced/using_inference_plugins/hello_inference_plugin && \
 	echo "Installed Pipelex cookbook dependencies in ${VIRTUAL_ENV} and initialized Pipelex libraries";
 
@@ -204,8 +219,8 @@ export-requirements: env-verbose
 
 export-requirements-dev: env-verbose
 	$(call PRINT_TITLE,"Exporting development requirements")
-	@uv export --all-extras --output-file requirements-dev.txt && \
-	echo "Exported all requirements (including dev) to requirements-dev.txt";
+	@uv export --all-extras $(OPT_IN_EXTRAS) --output-file requirements-dev.txt && \
+	echo "Exported dev requirements (opt-in extras excluded) to requirements-dev.txt";
 
 er: export-requirements
 	@echo "> done: er = export-requirements"
@@ -220,6 +235,49 @@ validate: env validate-bundles
 validate-bundles: env
 	$(call PRINT_TITLE,"Validating all shipped .mthds bundles")
 	$(VENV_PYTEST) tests/e2e/test_validate_bundles.py --disable-inference -o log_cli=false -q
+
+##########################################################################################
+### METHOD PAGES
+##########################################################################################
+
+# The renderer and the checks live in scripts/, and are described in docs/README.md.
+# render, check-render and check-lockstep read committed files only. check-links fetches public
+# sample URLs and needs no key. refresh, check-methods, check-addresses and check-hosted call
+# production with PIPELEX_API_KEY and spend no inference; CI holds no key, so they are run by hand.
+
+render: env
+	$(call PRINT_TITLE,"Rendering every method page")
+	$(VENV_PYTHON) -m scripts render
+
+check-render: env
+	$(call PRINT_TITLE,"Checking that every method page matches a fresh render")
+	$(VENV_PYTHON) -m scripts check-render
+
+check-lockstep: env
+	$(call PRINT_TITLE,"Checking that every method manifest carries the cookbook version")
+	$(VENV_PYTHON) -m scripts check-lockstep
+
+check-links: env
+	$(call PRINT_TITLE,"Checking every raw sample link")
+	$(VENV_PYTHON) -m scripts check-links
+
+check-cookbook: check-render check-lockstep check-links
+	@echo "> done: check-cookbook"
+
+refresh: env
+	$(call PRINT_TITLE,"Refreshing the contract snapshot of every method from production")
+	$(VENV_PYTHON) -m scripts refresh
+
+check-methods: env
+	$(call PRINT_TITLE,"Validating every method on production from its files")
+	$(VENV_PYTHON) -m scripts check-methods
+
+check-addresses: env
+	$(call PRINT_TITLE,"Validating every page's address on production at the page's tag")
+	$(VENV_PYTHON) -m scripts check-addresses
+
+check-hosted: check-methods check-addresses
+	@echo "> done: check-hosted"
 
 ##############################################################################################
 ############################      Cleaning                        ############################
@@ -454,7 +512,7 @@ cc: cleanderived c
 check: cleanderived check-unused-imports c
 	@echo "> done: check"
 
-agent-check: fix-unused-imports format lint pyright mypy
+agent-check: fix-unused-imports format lint pyright mypy check-render check-lockstep
 	@echo "> done: agent-check"
 
 v: validate

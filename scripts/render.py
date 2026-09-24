@@ -1,0 +1,393 @@
+"""Render every method's page, `methods/<name>/README.md`, from its package, its editorial fields and the templates, and the front page's methods.
+
+Everything a page says about its method is derived here, from committed files only: the address from the manifest and the version file, the
+samples and the code snippets' inputs from `inputs.json`, the "Takes" and "Returns" lines from the contract snapshot, and "What you get" from the
+answer key. The templates under `templates/` hold the wording and the links, one block per door, so a change to a door is made once and every page
+inherits it at the next render.
+
+The front page, `README.md`, is written by hand except for one region between two markers, which lists every method with its page and its pitch.
+"""
+
+import json
+import re
+from pathlib import Path
+
+from jinja2 import Environment, FileSystemLoader, StrictUndefined
+from pydantic import BaseModel, ConfigDict, JsonValue
+
+from scripts.contract import Contract, ContractField, ContractInput, short_concept
+from scripts.cookbook import INPUTS_FILE, KEY_FILE, METHODS_DIR, Cookbook, MethodPackage
+from scripts.exceptions import CookbookLayoutError
+from scripts.key import KeyLine
+
+PAGE_TEMPLATE = "method_page.md.j2"
+FRONT_PAGE_FILE = "README.md"
+FRONT_REGION_TEMPLATE = "front_region.md.j2"
+FRONT_REGION_BEGIN = "<!-- BEGIN methods, written by `make render` from methods/ and cookbook.toml: never edit this region by hand -->"
+FRONT_REGION_END = "<!-- END methods -->"
+RAW_BASE_URL = "https://raw.githubusercontent.com"
+DEFAULT_CHATBOT_WITH_SAMPLES = "Run {address} on {samples}"
+DEFAULT_CHATBOT_WITHOUT_SAMPLES = "Run {address} with the sample inputs in {inputs_url}"
+DEFAULT_YOURS_CHANGE = "adapt what it does to my case"
+
+_PLANTED_FACT_PATTERN = re.compile(r"\bF\d+\b")
+_TYPESCRIPT_IDENTIFIER_PATTERN = re.compile(r"^[A-Za-z_$][A-Za-z0-9_$]*$")
+
+# The input form's kind for each input, as a reader says it. The kind `list` only restates the multiplicity, so a list is phrased from its
+# concept instead.
+_KIND_NOUNS = {"prose": "text", "list": None}
+# A concept refining the native `Text` carries a single `text` field, which says nothing the concept's own description does not.
+_TEXT_ONLY_FIELDS = ["text"]
+_NATIVE_PREFIX = "native."
+
+_SCALAR_PHRASES = {
+    "text": ("text", "texts"),
+    "date": ("a date", "dates"),
+    "datetime": ("a date and time", "dates and times"),
+    "integer": ("an integer", "integers"),
+    "number": ("a number", "numbers"),
+    "boolean": ("true or false", "true-or-false values"),
+    "object": ("an object", "objects"),
+    "any": ("any value", "values"),
+}
+
+
+class Sample(BaseModel):
+    """A sample input the page links to."""
+
+    model_config = ConfigDict(frozen=True)
+
+    label: str
+    url: str
+
+
+class PageContext(BaseModel):
+    """Everything the page template needs, derived from one package."""
+
+    model_config = ConfigDict(frozen=True)
+
+    title: str
+    pitch: str
+    name: str
+    address: str
+    tag: str
+    header_links: str
+    samples: list[Sample]
+    has_file_inputs: bool
+    takes: list[str]
+    returns: str
+    returns_fields: list[str]
+    chatbot: str
+    inputs_typescript: str
+    inputs_python: str
+    start_body_json: str
+    inputs_url: str
+    app_dir: str
+    yours_dir: str
+    yours_change: str
+    must: list[KeyLine]
+    key_file: str
+    source_dir: str
+
+
+def make_environment(templates_dir: Path) -> Environment:
+    """The Jinja2 environment for Markdown pages: no escaping, strict about undefined names, and trailing newlines kept."""
+    return Environment(
+        loader=FileSystemLoader(templates_dir),
+        undefined=StrictUndefined,
+        autoescape=False,
+        keep_trailing_newline=True,
+        trim_blocks=True,
+        lstrip_blocks=True,
+    )
+
+
+def render_pages(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, str]:
+    """Render every package's page.
+
+    Returns:
+        Each page's path, mapped to its rendered contents.
+
+    Raises:
+        CookbookLayoutError: A package has no contract snapshot yet.
+    """
+    environment = make_environment(templates_dir)
+    template = environment.get_template(PAGE_TEMPLATE)
+    pages: dict[Path, str] = {}
+    for package in cookbook.packages:
+        context = build_page_context(cookbook=cookbook, package=package)
+        pages[package.page_path] = template.render(page=context)
+    return pages
+
+
+def render_front_page(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, str]:
+    """Render the front page's region listing every method, leaving every line outside it as it is.
+
+    Returns:
+        The front page's path, mapped to its contents with the region re-rendered.
+
+    Raises:
+        CookbookLayoutError: The front page is missing, or does not hold exactly one region between the two markers.
+    """
+    front_page_path = cookbook.root / FRONT_PAGE_FILE
+    if not front_page_path.is_file():
+        msg = f"{front_page_path} does not exist, and it holds the list of methods `make render` writes"
+        raise CookbookLayoutError(msg)
+    current = front_page_path.read_text(encoding="utf-8")
+    begin = current.find(FRONT_REGION_BEGIN)
+    end = current.find(FRONT_REGION_END)
+    if current.count(FRONT_REGION_BEGIN) != 1 or current.count(FRONT_REGION_END) != 1 or end < begin:
+        msg = f"{FRONT_PAGE_FILE} must hold one region for the list of methods, opened by `{FRONT_REGION_BEGIN}` and closed by `{FRONT_REGION_END}`"
+        raise CookbookLayoutError(msg)
+    template = make_environment(templates_dir).get_template(FRONT_REGION_TEMPLATE)
+    region = template.render(methods=[build_page_context(cookbook=cookbook, package=package) for package in cookbook.packages])
+    return {front_page_path: current[: begin + len(FRONT_REGION_BEGIN)] + "\n" + region + current[end:]}
+
+
+def render_all(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, str]:
+    """Every file `make render` writes: each method's page, and the front page with its list of methods."""
+    return render_pages(cookbook=cookbook, templates_dir=templates_dir) | render_front_page(cookbook=cookbook, templates_dir=templates_dir)
+
+
+def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageContext:
+    """Derive what the page of `package` says, from committed files only.
+
+    Raises:
+        CookbookLayoutError: The package has no contract snapshot yet.
+    """
+    contract = package.contract
+    if contract is None:
+        msg = f"{package.directory} has no contract snapshot yet: run `make refresh` (it needs PIPELEX_API_KEY), then `make render`"
+        raise CookbookLayoutError(msg)
+    editorial = package.editorial
+    for must_line in package.key.must:
+        if _PLANTED_FACT_PATTERN.search(must_line.text):
+            msg = (
+                f"{package.directory}/{KEY_FILE}: {must_line.label} cites a planted fact, but the page shows the Must lines on their own, "
+                "so each must state its facts in full"
+            )
+            raise CookbookLayoutError(msg)
+    address = cookbook.address_of(package)
+    snippet_inputs = _snippet_inputs(package.inputs)
+    samples = _samples(package=package)
+    inputs_url = f"{RAW_BASE_URL}/{cookbook.settings.repository}/{cookbook.tag}/{METHODS_DIR}/{package.name}/{INPUTS_FILE}"
+
+    chatbot_template = editorial.chatbot or (DEFAULT_CHATBOT_WITH_SAMPLES if samples else DEFAULT_CHATBOT_WITHOUT_SAMPLES)
+    try:
+        chatbot = chatbot_template.format(address=address, samples=" and ".join(sample.url for sample in samples), inputs_url=inputs_url)
+    except (KeyError, IndexError, AttributeError, ValueError) as exc:
+        # `str.format` raises KeyError or IndexError for an unknown placeholder, AttributeError for `{address.x}` and ValueError for a stray brace.
+        msg = (
+            f"the chatbot sentence of `{package.name}` in cookbook.toml does not format; "
+            f"its placeholders are {{address}}, {{samples}} and {{inputs_url}}, and a literal brace is written doubled: {exc}"
+        )
+        raise CookbookLayoutError(msg) from exc
+
+    return PageContext(
+        title=editorial.title or package.manifest.display_name or package.name,
+        pitch=_sentence(editorial.pitch or package.manifest.description),
+        name=package.name,
+        address=address,
+        tag=cookbook.tag,
+        header_links=" · ".join(
+            [f"[{bundle_file}]({bundle_file})" for bundle_file in package.bundle_files] + [f"[{sample.label}]({sample.url})" for sample in samples]
+        ),
+        samples=samples,
+        has_file_inputs=bool(samples),
+        takes=[_input_line(contract_input) for contract_input in contract.inputs],
+        returns=_described(
+            _output_phrase(contract), description=None if contract.output.concept.startswith(_NATIVE_PREFIX) else contract.output.description
+        ),
+        returns_fields=[]
+        if [contract_field.name for contract_field in contract.output.fields] == _TEXT_ONLY_FIELDS
+        else [_field_line(contract_field) for contract_field in contract.output.fields],
+        chatbot=chatbot,
+        inputs_typescript=_indent_continuation(typescript_literal(snippet_inputs), prefix="  "),
+        inputs_python=_indent_continuation(python_literal(snippet_inputs), prefix="            "),
+        start_body_json=_shell_single_quote(json.dumps({"method_ref": address, "inputs": snippet_inputs}, ensure_ascii=False)),
+        inputs_url=inputs_url,
+        app_dir=editorial.app_dir or f"{package.name.replace('_', '-')}-app",
+        yours_dir=editorial.yours_dir or package.name,
+        yours_change=editorial.yours_change or DEFAULT_YOURS_CHANGE,
+        must=package.key.must,
+        key_file=KEY_FILE,
+        source_dir=f"{METHODS_DIR}/{package.name}",
+    )
+
+
+def typescript_literal(value: JsonValue, *, indent: int = 0) -> str:
+    """Write a JSON value as a TypeScript literal, formatted the way Prettier formats one: bare keys where they are identifiers, trailing commas."""
+    padding = "  " * indent
+    inner = "  " * (indent + 1)
+    match value:
+        case None:
+            return "null"
+        case bool():
+            return "true" if value else "false"
+        case int() | float():
+            return json.dumps(value)
+        case str():
+            return json.dumps(value, ensure_ascii=False)
+        case list():
+            if not value:
+                return "[]"
+            items = [f"{inner}{typescript_literal(item, indent=indent + 1)}," for item in value]
+            return "[\n" + "\n".join(items) + f"\n{padding}]"
+        case dict():
+            if not value:
+                return "{}"
+            entries: list[str] = []
+            for key, item in value.items():
+                key_text = key if _TYPESCRIPT_IDENTIFIER_PATTERN.match(key) else json.dumps(key, ensure_ascii=False)
+                entries.append(f"{inner}{key_text}: {typescript_literal(item, indent=indent + 1)},")
+            return "{\n" + "\n".join(entries) + f"\n{padding}}}"
+
+
+def python_literal(value: JsonValue, *, indent: int = 0) -> str:
+    """Write a JSON value as a Python literal, formatted the way ruff formats one: double quotes, one item per line, trailing commas."""
+    padding = "    " * indent
+    inner = "    " * (indent + 1)
+    match value:
+        case None:
+            return "None"
+        case bool():
+            return "True" if value else "False"
+        case int() | float():
+            return repr(value)
+        case str():
+            return _python_string(value)
+        case list():
+            if not value:
+                return "[]"
+            items = [f"{inner}{python_literal(item, indent=indent + 1)}," for item in value]
+            return "[\n" + "\n".join(items) + f"\n{padding}]"
+        case dict():
+            if not value:
+                return "{}"
+            entries = [f"{inner}{_python_string(key)}: {python_literal(item, indent=indent + 1)}," for key, item in value.items()]
+            return "{\n" + "\n".join(entries) + f"\n{padding}}}"
+
+
+def _python_string(text: str) -> str:
+    """Quote a string as ruff does: in double quotes, unless it holds more double quotes than single ones, where single quotes escape less."""
+    double_quoted = json.dumps(text, ensure_ascii=False)
+    if text.count('"') <= text.count("'"):
+        return double_quoted
+    return "'" + double_quoted[1:-1].replace('\\"', '"').replace("'", "\\'") + "'"
+
+
+def _snippet_inputs(inputs: dict[str, JsonValue]) -> dict[str, JsonValue]:
+    """The inputs as code passes them: `inputs.json` may wrap a value as `{"concept": …, "content": …}`, and the code passes the content.
+
+    Only a dict whose keys are exactly `concept` and `content` is that wrapper, as the runtime reads it: a structured input whose concept has a
+    field named `content` is passed whole.
+    """
+    snippet_inputs: dict[str, JsonValue] = {}
+    for input_name, input_value in inputs.items():
+        if isinstance(input_value, dict) and set(input_value) == {"concept", "content"}:
+            snippet_inputs[input_name] = input_value["content"]
+        else:
+            snippet_inputs[input_name] = input_value
+    return snippet_inputs
+
+
+def _samples(*, package: MethodPackage) -> list[Sample]:
+    """The files the sample inputs name, one per URL: an input holding a list of files gives each its own numbered label."""
+    samples: list[Sample] = []
+    for input_name, content in _snippet_inputs(package.inputs).items():
+        urls = _file_urls(content)
+        label = package.editorial.sample_labels.get(input_name) or f"sample {input_name.replace('_', ' ')}"
+        for index, url in enumerate(urls, start=1):
+            samples.append(Sample(label=label if len(urls) == 1 else f"{label} {index}", url=url))
+    return samples
+
+
+def _file_urls(content: JsonValue) -> list[str]:
+    """The URLs of a file input, given as one `{"url": …}` object or as a list of them."""
+    if isinstance(content, dict):
+        url = content.get("url")
+        return [url] if isinstance(url, str) else []
+    if isinstance(content, list):
+        return [url for item in content if isinstance(item, dict) and isinstance(url := item.get("url"), str)]
+    return []
+
+
+def _input_line(contract_input: ContractInput) -> str:
+    concept = f"`{short_concept(contract_input.concept)}`"
+    kind = _KIND_NOUNS.get(contract_input.kind, contract_input.kind) if contract_input.kind else None
+    what: str
+    if kind:
+        match contract_input.multiplicity:
+            case "variable" | "fixed":
+                what = f"a list of {kind}s ({concept})"
+            case _:
+                what = f"{_with_article(kind)} ({concept})"
+    else:
+        match contract_input.multiplicity:
+            case "variable" | "fixed":
+                what = f"a list of {concept}"
+            case _:
+                what = concept
+    if not contract_input.required:
+        what = f"{what}, optional"
+    # A native concept's description only restates its type ("A text"), so only a method's own concept is described.
+    description = None if contract_input.concept.startswith(_NATIVE_PREFIX) else contract_input.description
+    return _described(f"`{contract_input.name}`, {what}", description=description)
+
+
+def _output_phrase(contract: Contract) -> str:
+    concept = f"`{short_concept(contract.output.concept)}`"
+    match contract.output.multiplicity:
+        case "variable":
+            return f"a list of {concept}"
+        case "fixed":
+            count = contract.output.item_count
+            return f"{count} {concept}" if count else f"a list of {concept}"
+        case _:
+            return _with_article(concept)
+
+
+def _field_line(contract_field: ContractField) -> str:
+    return _described(f"`{contract_field.name}`, {type_phrase(contract_field.type)}", description=contract_field.description)
+
+
+def _described(subject: str, *, description: str | None) -> str:
+    """A contract line: what a thing is, then what it is for when the method says so."""
+    return f"{subject}: {_sentence(description)}" if description else f"{subject}."
+
+
+def type_phrase(type_expression: str) -> str:
+    """Phrase a contract type expression for a reader: `list[GanttTaskDetails]` becomes "a list of `GanttTaskDetails`"."""
+    if type_expression.startswith("list[") and type_expression.endswith("]"):
+        item_type = type_expression.removeprefix("list[").removesuffix("]")
+        scalar = _SCALAR_PHRASES.get(item_type)
+        return f"a list of {scalar[1]}" if scalar else f"a list of `{item_type}`"
+    scalar = _SCALAR_PHRASES.get(type_expression)
+    if scalar:
+        return scalar[0]
+    if " or " in type_expression:
+        return " or ".join(type_phrase(branch) for branch in type_expression.split(" or "))
+    return _with_article(f"`{type_expression}`")
+
+
+def _with_article(noun: str) -> str:
+    first_letter = noun.lstrip("`")[:1].lower()
+    return f"an {noun}" if first_letter in "aeiou" and first_letter else f"a {noun}"
+
+
+def _sentence(text: str | None) -> str:
+    stripped = (text or "").strip()
+    if stripped and stripped[-1].isalnum():
+        return f"{stripped}."
+    return stripped
+
+
+def _indent_continuation(text: str, *, prefix: str) -> str:
+    """Indent every line but the first, so a multi-line literal sits under the code that opens it."""
+    first, *rest = text.split("\n")
+    return "\n".join([first, *(f"{prefix}{line}" for line in rest)])
+
+
+def _shell_single_quote(text: str) -> str:
+    """Quote text for a POSIX shell's single quotes, closing and reopening them around each embedded quote."""
+    return "'" + text.replace("'", "'\\''") + "'"
