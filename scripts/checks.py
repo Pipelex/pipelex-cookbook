@@ -108,16 +108,19 @@ def check_links(*, cookbook: Cookbook, rendered: dict[Path, str], fetch_status: 
 
 
 def http_status(url: str) -> int:
-    """Fetch a URL's status with a HEAD request, falling back to GET when the server refuses HEAD.
+    """Fetch a URL's status with a HEAD request, asking again with GET when HEAD gets an error.
 
-    A request that gets no status, whether the transport failed, the redirects loop or the URL is malformed, reads as status 0.
+    Hosts refuse HEAD in more ways than 405: some answer 501, 403 or even 404 to a HEAD and serve the same URL to a GET, so an error answer to
+    HEAD is only read once a GET confirms it. The GET's body is never downloaded. A request that gets no status, whether the transport failed,
+    the redirects loop or the URL is malformed, reads as status 0.
     """
     try:
         with httpx.Client(follow_redirects=True, timeout=30.0) as client:
-            response = client.head(url)
-            if response.status_code == 405:
-                response = client.get(url)
-            return response.status_code
+            status = client.head(url).status_code
+            if status >= 400:
+                with client.stream("GET", url) as response:
+                    status = response.status_code
+            return status
     except (httpx.HTTPError, httpx.InvalidURL):
         return 0
 
