@@ -355,18 +355,26 @@ We **highly** recommend installing our extension for `.mthds` files into your ID
 ```
 .
 ├── methods/                   # Cookbook methods runnable by address, each with its generated page
-│   └── extract_gantt/
+│   ├── advisory_board/
+│   ├── answer_from_documents/
+│   ├── blog_article_generator/
+│   ├── discord_newsletter/
+│   ├── extract_dpe/
+│   ├── extract_gantt/
+│   ├── extract_generic/
+│   ├── extract_slides/
+│   ├── gen_expense_data/
+│   ├── gen_synthetic_data/
+│   └── research_report/
 ├── examples/                  # Production-ready examples
 │   ├── a_quick_start/         # Getting started tutorials
 │   ├── b_basics/              # Core functionality examples
 │   │   └── document_extract/  # Document extraction examples
-│   │       ├── extract_dpe/
-│   │       ├── extract_generic/
 │   │       ├── extract_invoice/
 │   │       ├── extract_proof_of_purchase/
 │   │       └── extract_table/
 │   ├── c_advanced/            # Advanced features
-│   │   ├── gen_synthetic_data/
+│   │   ├── crewai_with_pipelex_tools/
 │   │   └── using_inference_plugins/
 │   └── wip/                   # Work in progress examples
 ├── assets/                    # Sample data files for examples
@@ -386,8 +394,10 @@ The cookbook contains production-ready examples covering various use cases:
 ### Document Processing
 - **Invoice Extractor** - Extract structured data from invoices
 - **Expense Report** - Process and validate expense reports
-- **DPE Extraction** - Extract energy performance diagnostics
-- **Generic Document** - Extract content from any document type
+- **[DPE Extraction](methods/extract_dpe/)** - Extract energy performance diagnostics
+- **[Generic Document](methods/extract_generic/)** - Extract content from any document type
+- **[Slide Deck](methods/extract_slides/)** - Extract each slide's title, text, layout and charts
+- **[Document Question Answering](methods/answer_from_documents/)** - Answer a question from documents, with the passages it rests on
 
 ### Visual Data Extraction
 - **[Gantt Chart](methods/extract_gantt/)** - Extract project timelines from visual diagrams
@@ -397,10 +407,13 @@ The cookbook contains production-ready examples covering various use cases:
 - **Summarize People (CSV)** - Read a CSV, summarize each row with an LLM, and write the results back to CSV
 
 ### Advanced Methods
-- **Data Synthesis** - Generate synthetic data based on schemas
+- **[Data Synthesis](methods/gen_synthetic_data/)** - Generate synthetic data based on schemas
+- **[Expense Data Synthesis](methods/gen_expense_data/)** - Generate labelled expense claims with receipt images
 - **Using Inference Plugins** - Serve a model from an installable inference-backend plugin (zero keys, deterministic)
-- **Advisory Board** (WIP) - Multi-agent advisory system
-- **Newsletter Generation** (WIP) - Automated newsletter creation
+- **[Advisory Board](methods/advisory_board/)** - Consult expert advisory boards on a business problem
+- **[Research Report](methods/research_report/)** - Research a question and fact-check a Markdown report, also given to a CrewAI crew as a tool
+- **[Blog Article](methods/blog_article_generator/)** - Write an SEO-optimized blog article for a given audience, tone and length
+- **[Discord Newsletter](methods/discord_newsletter/)** - Turn a week of Discord messages into an HTML newsletter
 
 Each example includes:
 - Complete `.mthds` pipeline definition

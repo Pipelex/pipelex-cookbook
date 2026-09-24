@@ -42,7 +42,8 @@ class TestRender:
         assert "# Word Count\n\nCount the words of a text.\n" in page
         assert f"`{address}` · [bundle.mthds](bundle.mthds)\n" in page
         assert "**Takes** `text`, a text (`Text`)." in page
-        assert "**Returns** a `Text`: A text." in page
+        # A native concept's description only restates its type, so the Returns line stops at the concept.
+        assert "**Returns** a `Text`.\n" in page
         assert f"> Run {address} with the sample inputs in {inputs_url}" in page
         assert "attach your own file" not in page
         assert f"npm create @pipelex/method-app@latest count-words-app -- --method {address}" in page
@@ -88,6 +89,20 @@ class TestRender:
         inputs_path.write_text('{"text": {"title": "Fox", "content": "The quick brown fox"}}', encoding="utf-8")
         page = render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir)[root / "methods" / "count_words" / "README.md"]
         assert '"title": "Fox"' in page
+
+    def test_an_input_holding_a_list_of_files_links_each_one(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        root = make_cookbook()
+        first, second = "https://example.com/a.png", "https://example.com/b.png"
+        inputs_path = root / "methods" / "extract_widgets" / "inputs.json"
+        inputs_path.write_text(f'{{"catalogue": [{{"url": "{first}"}}, {{"url": "{second}"}}]}}', encoding="utf-8")
+        page = render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir)[root / "methods" / "extract_widgets" / "README.md"]
+        assert f"[sample catalogue 1]({first}) · [sample catalogue 2]({second})" in page
+        assert f"on {first} and {second}" in page
+
+    def test_python_strings_are_quoted_as_ruff_quotes_them(self):
+        assert python_literal("plain") == '"plain"'
+        assert python_literal('say "hi"') == "'say \"hi\"'"
+        assert python_literal("it's") == '"it\'s"'
 
     def test_snippet_literals_follow_each_language(self):
         value: JsonValue = {"document": {"url": "https://example.com/a.pdf", "pages": [1, 2], "ocr": True, "note": None}, "two words": "x"}

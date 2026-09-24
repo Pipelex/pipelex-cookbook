@@ -1,0 +1,28 @@
+{
+  "pipe": "advisory_orchestrator.master_advisory_orchestrator",
+  "inputs": [
+    {
+      "name": "user_input",
+      "concept": "native.Text",
+      "kind": "prose",
+      "description": "A text",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    }
+  ],
+  "output": {
+    "concept": "presentation.MarkdownReport",
+    "description": "A report in markdown format",
+    "multiplicity": "single",
+    "item_count": null,
+    "fields": [
+      {
+        "name": "text",
+        "type": "text",
+        "description": "The text",
+        "required": true
+      }
+    ]
+  }
+}

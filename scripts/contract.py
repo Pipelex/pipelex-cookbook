@@ -15,6 +15,8 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from scripts.exceptions import CookbookLayoutError
 
 CONTRACT_FILE = "contract.json"
+# How a JSON schema refers to one of its own definitions.
+_DEFS_PREFIX = "#/$defs/"
 
 
 class ContractInput(BaseModel):
@@ -138,7 +140,7 @@ def project_contract(*, verdict: Mapping[str, Any], main_pipe: str) -> Contract:
         )
 
     output_contract = cast("dict[str, Any]", io_contract["output"])
-    output_schema = cast("dict[str, Any]", output_contract.get("json_schema") or {})
+    output_schema = _item_schema(cast("dict[str, Any]", output_contract.get("json_schema") or {}))
     required_fields = set(cast("list[str]", output_schema.get("required") or []))
     fields: list[ContractField] = []
     for field_name, field_schema in cast("dict[str, dict[str, Any]]", output_schema.get("properties") or {}).items():
@@ -161,6 +163,19 @@ def project_contract(*, verdict: Mapping[str, Any], main_pipe: str) -> Contract:
             fields=fields,
         ),
     )
+
+
+def _item_schema(schema: dict[str, Any]) -> dict[str, Any]:
+    """The schema a reader wants for an output: a list output's schema wraps its items as `{"items": [<$ref>]}`, so it is the item's schema."""
+    properties = cast("dict[str, Any]", schema.get("properties") or {})
+    if list(properties) != ["items"]:
+        return schema
+    reference = cast("dict[str, Any]", cast("dict[str, Any]", properties["items"]).get("items") or {}).get("$ref")
+    definitions = cast("dict[str, Any]", schema.get("$defs") or {})
+    if not isinstance(reference, str) or not reference.startswith(_DEFS_PREFIX):
+        return schema
+    item_schema = definitions.get(reference.removeprefix(_DEFS_PREFIX))
+    return cast("dict[str, Any]", item_schema) if isinstance(item_schema, dict) else schema
 
 
 def schema_type(schema: Mapping[str, Any]) -> str:

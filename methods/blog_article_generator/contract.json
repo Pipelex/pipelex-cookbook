@@ -1,0 +1,40 @@
+{
+  "pipe": "blog_article_generator.generate_blog_article",
+  "inputs": [
+    {
+      "name": "user_prompt",
+      "concept": "blog_article_generator.BlogArticleRequest",
+      "kind": "object",
+      "description": "Structured request describing the blog article to generate",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    }
+  ],
+  "output": {
+    "concept": "blog_article_generator.BlogArticle",
+    "description": "Final blog article, with the metadata search engines read",
+    "multiplicity": "single",
+    "item_count": null,
+    "fields": [
+      {
+        "name": "seo_title",
+        "type": "text",
+        "description": "The article's title for search engines",
+        "required": true
+      },
+      {
+        "name": "meta_description",
+        "type": "text",
+        "description": "The summary search engines show under the title",
+        "required": true
+      },
+      {
+        "name": "content",
+        "type": "text",
+        "description": "The full article in Markdown",
+        "required": true
+      }
+    ]
+  }
+}

@@ -19,9 +19,8 @@ VALIDATED_ROOTS = ("tutorial", "examples", "methods", ".mthds/methods")
 # exclusion never silently reads as "everything passes".
 EXCLUDED_DIRS: dict[str, str] = {
     "examples/wip": (
-        "work-in-progress: advisory_board is a multi-file bundle and validate_expense_data is a "
-        "PipeFunc bundle whose Python functions are only registered at runtime, so neither is "
-        "statically validatable in this gate"
+        "work-in-progress: validate_expense_data is a PipeFunc bundle whose Python functions are "
+        "only registered at runtime, so it is not statically validatable in this gate"
     ),
 }
 

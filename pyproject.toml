@@ -23,7 +23,6 @@ dependencies = [
   "mthds>=0.8.1",
   "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal,docling]==0.46.4",
   "pydantic>=2.13.2",
-  "weasyprint==68.0",
 ]
 
 [project.optional-dependencies]
@@ -79,10 +78,6 @@ plugins = ["pydantic.mypy"]
 python_version = "3.11"
 warn_return_any = true
 warn_unused_configs = true
-
-[[tool.mypy.overrides]]
-ignore_missing_imports = true
-module = ["json2html", "weasyprint"]
 
 # CrewAI comes from the opt-in `crewai` extra, so it is absent from a default install and mypy
 # cannot resolve the imports in `examples/c_advanced/crewai_with_pipelex_tools`. It is untyped

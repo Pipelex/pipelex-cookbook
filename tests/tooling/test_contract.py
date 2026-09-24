@@ -94,3 +94,30 @@ class TestContract:
     )
     def test_schema_types(self, schema: dict[str, Any], expected: str):
         assert schema_type(schema) == expected
+
+    def test_a_list_output_is_described_by_its_item_fields(self):
+        verdict: dict[str, object] = {
+            "is_valid": True,
+            "pipe_io_contracts": {
+                "words.list_words": {
+                    "inputs": {"text": {"concept_ref": "native.Text", "presence": "required", "multiplicity": "single", "json_schema": {}}},
+                    "output": {
+                        "concept_ref": "words.Word",
+                        "multiplicity": "variable",
+                        "json_schema": {
+                            "properties": {"items": {"type": "array", "items": {"$ref": "#/$defs/Word"}}},
+                            "$defs": {
+                                "Word": {
+                                    "description": "A word of the text",
+                                    "properties": {"spelling": {"type": "string", "description": "The word as written"}},
+                                    "required": ["spelling"],
+                                }
+                            },
+                        },
+                    },
+                }
+            },
+        }
+        contract = project_contract(verdict=verdict, main_pipe="list_words")
+        assert contract.output.description == "A word of the text"
+        assert [(field.name, field.type, field.required) for field in contract.output.fields] == [("spelling", "text", True)]

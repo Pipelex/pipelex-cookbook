@@ -1,0 +1,28 @@
+{
+  "pipe": "extract_slides.extract_slides",
+  "inputs": [
+    {
+      "name": "document",
+      "concept": "native.Document",
+      "kind": "document",
+      "description": "A document",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    }
+  ],
+  "output": {
+    "concept": "native.Text",
+    "description": "A text",
+    "multiplicity": "single",
+    "item_count": null,
+    "fields": [
+      {
+        "name": "text",
+        "type": "text",
+        "description": "The text",
+        "required": true
+      }
+    ]
+  }
+}

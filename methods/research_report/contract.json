@@ -1,0 +1,28 @@
+{
+  "pipe": "research_report.prepare_report",
+  "inputs": [
+    {
+      "name": "question",
+      "concept": "research_report.ResearchQuestion",
+      "kind": "prose",
+      "description": "A well-formed research question to investigate.",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    }
+  ],
+  "output": {
+    "concept": "research_report.FormattedReport",
+    "description": "A markdown-formatted report ready for distribution.",
+    "multiplicity": "single",
+    "item_count": null,
+    "fields": [
+      {
+        "name": "text",
+        "type": "text",
+        "description": "The text",
+        "required": true
+      }
+    ]
+  }
+}

@@ -12,6 +12,8 @@ from scripts.cookbook import INPUTS_FILE, Cookbook
 from scripts.render import RAW_BASE_URL
 
 _RAW_URL_PATTERN = re.compile(r"https://raw\.githubusercontent\.com/[^\s)\"'`<>]+")
+_SENTENCE_PUNCTUATION = ".,;:!?"
+_NOT_FOUND = 404
 
 
 class LinkVerdict(BaseModel):
@@ -47,25 +49,25 @@ def lockstep_problems(cookbook: Cookbook) -> list[str]:
     return problems
 
 
-def collect_raw_urls(*, cookbook: Cookbook, rendered: dict[Path, str]) -> dict[str, list[str]]:
-    """Every raw URL in the packages' inputs and on the pages, each with the files it appears in."""
+def collect_urls(*, cookbook: Cookbook, rendered: dict[Path, str]) -> dict[str, list[str]]:
+    """Every URL in the packages' inputs, wherever it is hosted, and every raw URL on the pages, each with the files it appears in."""
     found: dict[str, list[str]] = {}
     for package in cookbook.packages:
         inputs_file = f"{package.directory.relative_to(cookbook.root)}/{INPUTS_FILE}"
         for url in _urls_in_json(package.inputs):
-            if url.startswith(f"{RAW_BASE_URL}/"):
-                found.setdefault(url, []).append(inputs_file)
+            found.setdefault(url, []).append(inputs_file)
     for page_path, contents in rendered.items():
         page_file = str(page_path.relative_to(cookbook.root))
-        for url in _RAW_URL_PATTERN.findall(contents):
-            found.setdefault(url, []).append(page_file)
+        for match in _RAW_URL_PATTERN.findall(contents):
+            # A URL closing a sentence keeps the sentence's punctuation in the match, and no sample's name ends in one.
+            found.setdefault(match.rstrip(_SENTENCE_PUNCTUATION), []).append(page_file)
     return {url: sorted(set(files)) for url, files in sorted(found.items())}
 
 
 def check_links(*, cookbook: Cookbook, rendered: dict[Path, str], fetch_status: Callable[[str], int]) -> list[LinkVerdict]:
-    """Check every raw URL.
+    """Check every sample URL and every raw URL on the pages.
 
-    A URL into the cookbook itself must name a file this checkout holds, whichever ref it names. When it does not answer, it is reported as not
+    A URL into the cookbook itself must name a file this checkout holds, whichever ref it names. When it answers 404, it is reported as not
     published rather than as broken: a file added since the last release is on neither `main` nor that release's tag, and the next release both
     publishes it and re-renders every page at its own tag. Any other URL must answer.
 
@@ -76,7 +78,7 @@ def check_links(*, cookbook: Cookbook, rendered: dict[Path, str], fetch_status: 
     """
     verdicts: list[LinkVerdict] = []
     own_prefix = f"{RAW_BASE_URL}/{cookbook.settings.repository}/".lower()
-    for url, found_in in collect_raw_urls(cookbook=cookbook, rendered=rendered).items():
+    for url, found_in in collect_urls(cookbook=cookbook, rendered=rendered).items():
         status = fetch_status(url)
         answered = 200 <= status < 300
         if url.lower().startswith(own_prefix):
@@ -86,6 +88,9 @@ def check_links(*, cookbook: Cookbook, rendered: dict[Path, str], fetch_status: 
                 verdicts.append(LinkVerdict(url=url, found_in=found_in, ok=False, note=f"no file at {local_path} in this checkout"))
             elif answered:
                 verdicts.append(LinkVerdict(url=url, found_in=found_in, ok=True, note="answers"))
+            elif status != _NOT_FOUND:
+                # Only a 404 means the ref does not hold the file yet; any other failure is a failure.
+                verdicts.append(LinkVerdict(url=url, found_in=found_in, ok=False, note=f"HTTP {status}" if status else "no answer"))
             else:
                 verdicts.append(
                     LinkVerdict(
@@ -103,14 +108,17 @@ def check_links(*, cookbook: Cookbook, rendered: dict[Path, str], fetch_status: 
 
 
 def http_status(url: str) -> int:
-    """Fetch a URL's status with a HEAD request, falling back to GET when the server refuses HEAD. A transport failure reads as status 0."""
+    """Fetch a URL's status with a HEAD request, falling back to GET when the server refuses HEAD.
+
+    A request that gets no status, whether the transport failed, the redirects loop or the URL is malformed, reads as status 0.
+    """
     try:
         with httpx.Client(follow_redirects=True, timeout=30.0) as client:
             response = client.head(url)
             if response.status_code == 405:
                 response = client.get(url)
             return response.status_code
-    except httpx.TransportError:
+    except (httpx.HTTPError, httpx.InvalidURL):
         return 0
 
 

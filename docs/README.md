@@ -12,7 +12,7 @@ Each cookbook method is a package in `methods/<name>/`, laid out like the packag
 |---|---|
 | `METHODS.toml` | The manifest: `name`, `display_name`, `address`, `version`, `description`, `authors`, `license`, `mthds_version`, `main_pipe` and `[exports]` |
 | `*.mthds` | The method's bundles |
-| `inputs.json` | Sample inputs, each file linked by its raw URL on `main` under `assets/` |
+| `inputs.json` | Sample inputs, each file linked by its raw URL on `main` under `assets/`, or by its own URL when it is a third-party file hosted elsewhere |
 | `key.md` | The answer key for the sample, in the format of the Pipelex lab skill |
 | `contract.json` | A snapshot of what the main pipe takes and returns, written by `make refresh` |
 | `README.md` | The method's page, written by `make render` |
@@ -77,7 +77,7 @@ The "Takes" and "Returns" lines come from production: `POST /v1/validate` answer
 |---|---|---|
 | `make check-render` | Nothing | Every committed page equals a fresh render |
 | `make check-lockstep` | Nothing | Every manifest carries the cookbook's version |
-| `make check-links` | The network | Every raw URL in the packages and on the pages answers. A URL into this repository must name a file this checkout holds; if it does not answer, it is reported as not published, since the next release publishes it |
+| `make check-links` | The network | Every URL in the packages' inputs and every raw URL on the pages answers, following redirects. A URL into this repository must name a file this checkout holds; if it answers 404, it is reported as not published, since the next release publishes it |
 | `make check-methods` | `PIPELEX_API_KEY` | Every package validates on production from its files, and its contract snapshot is current |
 | `make refresh` | `PIPELEX_API_KEY` | Rewrites every contract snapshot from production |
 
