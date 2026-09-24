@@ -14,7 +14,7 @@ description: >
 
 # Releasing pipelex-cookbook
 
-The procedure is the workspace release play, [`docs/releasing.md`](../../../../docs/releasing.md) at the workspace root — `../docs/releasing.md` from this repo's own root, which resolves the same from the main checkout and from any worktree. Read it first, then run it with what follows. The repo key is `pipelex-cookbook`, the base is `dev`, and the pull request targets `main`: `guard-branches.yml` refuses any head branch but `release/vX.Y.Z` into `main`, so there is no other way in. The release worktree is `_pipelex-cookbook--release`, made with `wt add pipelex-cookbook release --branch release/vX.Y.Z`. The repo declares neither `.worktree.toml` nor `.worktreeinclude`, so `wt` resolves the base from `origin/dev` and provisions with the Makefile's `install` target, which is what creates the `.venv` every gate below runs out of.
+The procedure is the workspace release play, [`docs/workspace/releasing.md`](../../../../docs/workspace/releasing.md) at the workspace root — `../docs/workspace/releasing.md` from this repo's own root, which resolves the same from the main checkout and from any worktree. Read it first, then run it with what follows. The repo key is `pipelex-cookbook`, the base is `dev`, and the pull request targets `main`: `guard-branches.yml` refuses any head branch but `release/vX.Y.Z` into `main`, so there is no other way in. The release worktree is `_pipelex-cookbook--release`, made with `wt add pipelex-cookbook release --branch release/vX.Y.Z`. The repo declares neither `.worktree.toml` nor `.worktreeinclude`, so `wt` resolves the base from `origin/dev` and provisions with the Makefile's `install` target, which is what creates the `.venv` every gate below runs out of.
 
 ## What ships
 
@@ -32,6 +32,8 @@ gh release view vX.Y.Z                                                          
 git fetch --tags --prune origin && git tag --list vX.Y.Z                                        # the tag
 ```
 
+Once the tag exists, the landing proves what the release is for: every cookbook method resolves by address at it. Run `make check-addresses` in the main checkout, with `PIPELEX_API_KEY` set; it validates each page's address, `github.com/Pipelex/pipelex-cookbook/<name>@vX.Y.Z`, on production and spends no inference. Every line must read `✓`. A `·` line after the release means the tag does not carry that method, and a `✗` line means production refuses it: either way the release did not do its job, and the landing reports it rather than closing the release item.
+
 ## Version files and the lock
 
 - **`pyproject.toml`** — the `[project]` table's `version`, the one and only place the number is written, with no `v` prefix. Keep it the file's **first** `version = ` line and keep it at column zero: `github-release.yml` reads it with `grep -m 1 'version = '`, which `required-version` under `[tool.uv]` would otherwise match, and `version-check.yml` reads it with `grep '^version'`.
@@ -45,7 +47,8 @@ git fetch --tags --prune origin && git tag --list vX.Y.Z                        
 Run in the worktree, in this order, before the commit:
 
 1. `make agent-check` — `fix-unused-imports`, then `format` (`ruff format` and `plxt fmt`), `lint` (`ruff check --fix` and `plxt lint`), `pyright` and `mypy`, then `check-render` and `check-lockstep`, which fail when a page or a manifest was left at the previous version. **It rewrites files**, so whatever it touched joins the release commit. Red blocks the release: fix the code, never loosen the target. The `plxt` half matters most here, because `lint-check.yml` runs only the ruff, pyright and mypy merge checks — the formatting and linting of the `.mthds` and TOML sources is enforced by this gate and nowhere else.
-2. `make agent-test` — the pytest suite under the Makefile's usual markers, `"(dry_runnable or not inference) and not (needs_output or pipelex_api)"`, quiet unless it fails. `tests-check.yml` runs `make gha-tests` on the pull request across its 3.11, 3.12 and 3.13 matrix, and that target selects differently (`--disable-inference` with `-m "not inference and not gha_disabled"`), so a green run here is not a promise of a green matrix there — but a red one here is a red pull request.
+2. `make check-hosted` — the checks that call production, with `PIPELEX_API_KEY` set; none spends inference. `check-methods` validates every method from its files and fails when a `contract.json` no longer matches what production says, and `check-addresses` validates every page's address at the new tag. Before the merge that tag does not exist, so every method reads `·`, not released yet, which is expected; a `✗` from either blocks the release. CI holds no key, so this gate runs here and nowhere else.
+3. `make agent-test` — the pytest suite under the Makefile's usual markers, `"(dry_runnable or not inference) and not (needs_output or pipelex_api)"`, quiet unless it fails. `tests-check.yml` runs `make gha-tests` on the pull request across its 3.11, 3.12 and 3.13 matrix, and that target selects differently (`--disable-inference` with `-m "not inference and not gha_disabled"`), so a green run here is not a promise of a green matrix there — but a red one here is a red pull request.
 
 ## The release commit
 

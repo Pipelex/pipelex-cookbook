@@ -13,6 +13,7 @@ from tests.tooling.test_data import (
     COOKBOOK_TOML,
     FIXTURE_ADDRESS,
     FIXTURE_VERSION,
+    FRONT_PAGE,
     WIDGETS_CONTRACT,
     WIDGETS_KEY,
     WIDGETS_SAMPLE_URL,
@@ -68,13 +69,17 @@ def templates_dir() -> Path:
 
 @pytest.fixture
 def make_cookbook(tmp_path: Path) -> MakeCookbook:
-    """A factory writing a two-method cookbook: `extract_widgets`, with an editorial entry and a sample URL, and `count_words`, with neither."""
+    """A factory writing a two-method cookbook: `extract_widgets`, with an editorial entry and a sample URL, and `count_words`, with neither.
+
+    Its front page holds the region listing the methods, still empty.
+    """
 
     def _make(*, version: str = FIXTURE_VERSION, widgets_version: str | None = None) -> Path:
         root = tmp_path / "cookbook"
         root.mkdir()
         (root / "pyproject.toml").write_text(f'[project]\nname = "fixture-cookbook"\nversion = "{version}"\n', encoding="utf-8")
         (root / "cookbook.toml").write_text(COOKBOOK_TOML, encoding="utf-8")
+        (root / "README.md").write_text(FRONT_PAGE, encoding="utf-8")
         write_package(
             root=root,
             name="extract_widgets",

@@ -1,9 +1,11 @@
-"""Render every method's page, `methods/<name>/README.md`, from its package, its editorial fields and the templates.
+"""Render every method's page, `methods/<name>/README.md`, from its package, its editorial fields and the templates, and the front page's methods.
 
 Everything a page says about its method is derived here, from committed files only: the address from the manifest and the version file, the
 samples and the code snippets' inputs from `inputs.json`, the "Takes" and "Returns" lines from the contract snapshot, and "What you get" from the
 answer key. The templates under `templates/` hold the wording and the links, one block per door, so a change to a door is made once and every page
 inherits it at the next render.
+
+The front page, `README.md`, is written by hand except for one region between two markers, which lists every method with its page and its pitch.
 """
 
 import json
@@ -19,6 +21,10 @@ from scripts.exceptions import CookbookLayoutError
 from scripts.key import KeyLine
 
 PAGE_TEMPLATE = "method_page.md.j2"
+FRONT_PAGE_FILE = "README.md"
+FRONT_REGION_TEMPLATE = "front_region.md.j2"
+FRONT_REGION_BEGIN = "<!-- BEGIN methods, written by `make render` from methods/ and cookbook.toml: never edit this region by hand -->"
+FRONT_REGION_END = "<!-- END methods -->"
 RAW_BASE_URL = "https://raw.githubusercontent.com"
 DEFAULT_CHATBOT_WITH_SAMPLES = "Run {address} on {samples}"
 DEFAULT_CHATBOT_WITHOUT_SAMPLES = "Run {address} with the sample inputs in {inputs_url}"
@@ -112,6 +118,35 @@ def render_pages(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, str]:
         context = build_page_context(cookbook=cookbook, package=package)
         pages[package.page_path] = template.render(page=context)
     return pages
+
+
+def render_front_page(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, str]:
+    """Render the front page's region listing every method, leaving every line outside it as it is.
+
+    Returns:
+        The front page's path, mapped to its contents with the region re-rendered.
+
+    Raises:
+        CookbookLayoutError: The front page is missing, or does not hold exactly one region between the two markers.
+    """
+    front_page_path = cookbook.root / FRONT_PAGE_FILE
+    if not front_page_path.is_file():
+        msg = f"{front_page_path} does not exist, and it holds the list of methods `make render` writes"
+        raise CookbookLayoutError(msg)
+    current = front_page_path.read_text(encoding="utf-8")
+    begin = current.find(FRONT_REGION_BEGIN)
+    end = current.find(FRONT_REGION_END)
+    if current.count(FRONT_REGION_BEGIN) != 1 or current.count(FRONT_REGION_END) != 1 or end < begin:
+        msg = f"{FRONT_PAGE_FILE} must hold one region for the list of methods, opened by `{FRONT_REGION_BEGIN}` and closed by `{FRONT_REGION_END}`"
+        raise CookbookLayoutError(msg)
+    template = make_environment(templates_dir).get_template(FRONT_REGION_TEMPLATE)
+    region = template.render(methods=[build_page_context(cookbook=cookbook, package=package) for package in cookbook.packages])
+    return {front_page_path: current[: begin + len(FRONT_REGION_BEGIN)] + "\n" + region + current[end:]}
+
+
+def render_all(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, str]:
+    """Every file `make render` writes: each method's page, and the front page with its list of methods."""
+    return render_pages(cookbook=cookbook, templates_dir=templates_dir) | render_front_page(cookbook=cookbook, templates_dir=templates_dir)
 
 
 def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageContext:
