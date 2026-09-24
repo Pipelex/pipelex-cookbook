@@ -36,18 +36,20 @@ git fetch --tags --prune origin && git tag --list vX.Y.Z                        
 
 - **`pyproject.toml`** — the `[project]` table's `version`, the one and only place the number is written, with no `v` prefix. Keep it the file's **first** `version = ` line and keep it at column zero: `github-release.yml` reads it with `grep -m 1 'version = '`, which `required-version` under `[tool.uv]` would otherwise match, and `version-check.yml` reads it with `grep '^version'`.
 - **`uv.lock`** — the lockfile records the project's own version in its `pipelex-cookbook` entry, so it must be regenerated after the bump: `make lock` (`uv lock`), or `make li` (lock, then install) when the worktree's environment should be synced at the same time. If it fails, stop and report it rather than committing a stale lock.
-- **Also stamped:** nothing. There is no README badge and no `__version__`. `requirements.txt` and `requirements-dev.txt` are exports of the lockfile made by `make export-requirements` and `make export-requirements-dev`, but they carry no version of the cookbook itself, so a bump leaves them untouched and they stay out of the release commit.
+- **Every `methods/*/METHODS.toml`** — the `[package]` table's `version`, set to the same number with no `v` prefix, since each manifest states the release it ships in and `make check-lockstep` fails on any other: `sed -i '' 's/^version = ".*"/version = "X.Y.Z"/' methods/*/METHODS.toml` (the only line a manifest opens with `version = `).
+- **Every method page** — `make render` rewrites each `methods/<name>/README.md` at the new tag, `vX.Y.Z`, which every address and sample link on the page names; `make check-render` fails until it has run.
+- **Also stamped:** nothing else. There is no README badge and no `__version__`. `requirements.txt` and `requirements-dev.txt` are exports of the lockfile made by `make export-requirements` and `make export-requirements-dev`, but they carry no version of the cookbook itself, so a bump leaves them untouched and they stay out of the release commit.
 
 ## Gates
 
 Run in the worktree, in this order, before the commit:
 
-1. `make agent-check` — `fix-unused-imports`, then `format` (`ruff format` and `plxt fmt`), `lint` (`ruff check --fix` and `plxt lint`), `pyright` and `mypy`. **It rewrites files**, so whatever it touched joins the release commit. Red blocks the release: fix the code, never loosen the target. The `plxt` half matters most here, because `lint-check.yml` runs only the ruff, pyright and mypy merge checks — the formatting and linting of the `.mthds` and TOML sources is enforced by this gate and nowhere else.
+1. `make agent-check` — `fix-unused-imports`, then `format` (`ruff format` and `plxt fmt`), `lint` (`ruff check --fix` and `plxt lint`), `pyright` and `mypy`, then `check-render` and `check-lockstep`, which fail when a page or a manifest was left at the previous version. **It rewrites files**, so whatever it touched joins the release commit. Red blocks the release: fix the code, never loosen the target. The `plxt` half matters most here, because `lint-check.yml` runs only the ruff, pyright and mypy merge checks — the formatting and linting of the `.mthds` and TOML sources is enforced by this gate and nowhere else.
 2. `make agent-test` — the pytest suite under the Makefile's usual markers, `"(dry_runnable or not inference) and not (needs_output or pipelex_api)"`, quiet unless it fails. `tests-check.yml` runs `make gha-tests` on the pull request across its 3.11, 3.12 and 3.13 matrix, and that target selects differently (`--disable-inference` with `-m "not inference and not gha_disabled"`), so a green run here is not a promise of a green matrix there — but a red one here is a red pull request.
 
 ## The release commit
 
-`pyproject.toml`, `uv.lock`, `CHANGELOG.md`, and each file `make agent-check` rewrote — staged by name. The release commits on `main` carry the version file, the lock and the changelog and nothing else.
+`pyproject.toml`, `uv.lock`, `CHANGELOG.md`, every `methods/*/METHODS.toml`, every page `make render` rewrote, and each file `make agent-check` rewrote — staged by name. The release commits on `main` carry the version files, the lock, the pages and the changelog and nothing else.
 
 ## CI on the release pull request
 
@@ -56,6 +58,7 @@ Run in the worktree, in this order, before the commit:
 - `changelog-check.yml` (pull requests to `main`, and only when the head starts with `release/v`) — `CHANGELOG.md` carries a `## [vX.Y.Z] - ` heading for the version in the branch name. It asserts nothing about `[Unreleased]`; leaving none behind is the play's rule, not CI's.
 - `lint-check.yml` (every pull request) — the ruff format, ruff lint, pyright and mypy merge checks on 3.11, 3.12 and 3.13, each leg installing with `make install`; the aggregator job `Lint (all versions)` is the single required status.
 - `tests-check.yml` (every pull request) — `make gha-tests` on the same Python matrix with `ENV: dev`.
+- `methods-check.yml` (every pull request) — `make check-cookbook`: the pages match a fresh render, every manifest carries the version, and every sample link answers. A method page's own links at the new tag answer only once the tag exists, and the check reports them as not published rather than failing.
 - `cla.yml` — the CLA assistant on `pull_request_target`, allowlisted for maintainers.
 
 Nothing in CI checks that `uv.lock` agrees with `pyproject.toml` — no `uv lock --locked` runs anywhere, and `make install` re-locks silently rather than failing — so the lock step above is the only thing keeping the two in step.
