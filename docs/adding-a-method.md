@@ -25,7 +25,7 @@ Create `methods/<name>/`, where `<name>` is snake_case and becomes the last part
   pipes = ["<the entry pipe's code>"]
   ```
 
-- **The sample**, as files under `assets/<name>/`, and **`inputs.json`** naming each file by its raw URL on `main`: `https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/<name>/<file>`. The URL answers once a release brings the file to `main`; until then `make check-links` reports it as not published, which is expected.
+- **The sample**, as files under `assets/<name>/`, and **`inputs.json`** naming each file by its raw URL on `main`: `https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/<name>/<file>`. The URL answers once a release brings the file to `main`; until then `make check-links` reports it as not published, which is expected. A sample already under `assets/` keeps its place, and a public file hosted elsewhere keeps its own URL, which must answer. An input taking several files lists one `{"url": …}` per file. Text inputs are written inline.
 
 ## 2. Write the answer key, before the first run
 

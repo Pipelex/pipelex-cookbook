@@ -98,8 +98,8 @@ The start call answers at once with the run's id, or with the reason it refused 
 START=$(curl -s https://api.pipelex.com/v1/start \
   -H "Authorization: Bearer $PIPELEX_API_KEY" -H "Content-Type: application/json" \
   -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/blog_article_generator@v0.17.0", "inputs": {"user_prompt": {"text": "Write a fun and engaging blog article", "topic": "Capybara", "audience": "Kids", "tone": "Casual", "length": "Long"}}}')
-RUN_ID=$(echo "$START" | jq -r '.pipeline_run_id // empty')
-if [ -z "$RUN_ID" ]; then echo "$START"; else
+RUN_ID=$(printf '%s' "$START" | jq -r '.pipeline_run_id // empty')
+if [ -z "$RUN_ID" ]; then printf '%s\n' "$START"; else
   until [ "$(curl -s -o results.json -w '%{http_code}' https://api.pipelex.com/v1/runs/$RUN_ID/results \
     -H "Authorization: Bearer $PIPELEX_API_KEY")" != 202 ]; do sleep 5; done
   cat results.json

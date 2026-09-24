@@ -45,7 +45,7 @@ async def validate_expense_report_from_pdf(pdf_path: str) -> None:
 if __name__ == "__main__":
     # Example usage with a PDF file
     # Replace with actual path to an expense report PDF
-    PDF_PATH = "assets/expense_reports/sample_expense_report.pdf"
+    PDF_PATH = "assets/expense_report/sample_expense_report.pdf"
 
     with Pipelex.make(library_dirs=["examples/wip/validate_expense_data"]):
         asyncio.run(validate_expense_report_from_pdf(pdf_path=PDF_PATH))

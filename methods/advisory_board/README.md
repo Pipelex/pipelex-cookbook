@@ -82,8 +82,8 @@ The start call answers at once with the run's id, or with the reason it refused 
 START=$(curl -s https://api.pipelex.com/v1/start \
   -H "Authorization: Bearer $PIPELEX_API_KEY" -H "Content-Type: application/json" \
   -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/advisory_board@v0.17.0", "inputs": {"user_input": "We'\''re a mid-stage B2B SaaS company (50 employees, $5M ARR) facing declining customer retention. Our churn rate has increased from 8% to 15% annually over the past 6 months.\n\nKey challenges:\n- Customer onboarding takes 4-6 weeks (industry average is 2-3 weeks)\n- Support response time averages 24 hours\n- Feature adoption is low - only 30% of customers use our advanced features\n- Competition from 3 new entrants with better UX\n\nOur goal is to reduce churn to under 10% within 6 months while maintaining growth targets.\nWe have a budget of $500K and need to prioritize initiatives that will have the biggest impact.\n\nCurrent team: 8 engineers, 4 sales, 3 marketing, 2 customer success, 5 operations.\nKey stakeholders: CEO, VP Product, VP Sales, Head of Customer Success."}}')
-RUN_ID=$(echo "$START" | jq -r '.pipeline_run_id // empty')
-if [ -z "$RUN_ID" ]; then echo "$START"; else
+RUN_ID=$(printf '%s' "$START" | jq -r '.pipeline_run_id // empty')
+if [ -z "$RUN_ID" ]; then printf '%s\n' "$START"; else
   until [ "$(curl -s -o results.json -w '%{http_code}' https://api.pipelex.com/v1/runs/$RUN_ID/results \
     -H "Authorization: Bearer $PIPELEX_API_KEY")" != 202 ]; do sleep 5; done
   cat results.json

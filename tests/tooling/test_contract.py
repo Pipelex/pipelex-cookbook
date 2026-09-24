@@ -121,3 +121,26 @@ class TestContract:
         contract = project_contract(verdict=verdict, main_pipe="list_words")
         assert contract.output.description == "A word of the text"
         assert [(field.name, field.type, field.required) for field in contract.output.fields] == [("spelling", "text", True)]
+
+    def test_a_single_output_whose_only_field_is_items_keeps_its_own_fields(self):
+        verdict: dict[str, object] = {
+            "is_valid": True,
+            "pipe_io_contracts": {
+                "shop.fill_basket": {
+                    "inputs": {"text": {"concept_ref": "native.Text", "presence": "required", "multiplicity": "single", "json_schema": {}}},
+                    "output": {
+                        "concept_ref": "shop.Basket",
+                        "multiplicity": "single",
+                        "json_schema": {
+                            "description": "A basket of products",
+                            "properties": {"items": {"type": "array", "description": "The products", "items": {"$ref": "#/$defs/Product"}}},
+                            "required": ["items"],
+                            "$defs": {"Product": {"description": "A product", "properties": {"name": {"type": "string"}}}},
+                        },
+                    },
+                }
+            },
+        }
+        contract = project_contract(verdict=verdict, main_pipe="fill_basket")
+        assert contract.output.description == "A basket of products"
+        assert [field.name for field in contract.output.fields] == ["items"]

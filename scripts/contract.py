@@ -140,7 +140,10 @@ def project_contract(*, verdict: Mapping[str, Any], main_pipe: str) -> Contract:
         )
 
     output_contract = cast("dict[str, Any]", io_contract["output"])
-    output_schema = _item_schema(cast("dict[str, Any]", output_contract.get("json_schema") or {}))
+    output_multiplicity = str(output_contract.get("multiplicity") or "single")
+    output_schema = cast("dict[str, Any]", output_contract.get("json_schema") or {})
+    if output_multiplicity != "single":
+        output_schema = _item_schema(output_schema)
     required_fields = set(cast("list[str]", output_schema.get("required") or []))
     fields: list[ContractField] = []
     for field_name, field_schema in cast("dict[str, dict[str, Any]]", output_schema.get("properties") or {}).items():
@@ -158,7 +161,7 @@ def project_contract(*, verdict: Mapping[str, Any], main_pipe: str) -> Contract:
         output=ContractOutput(
             concept=str(output_contract["concept_ref"]),
             description=_optional_str(output_schema.get("description")),
-            multiplicity=str(output_contract.get("multiplicity") or "single"),
+            multiplicity=output_multiplicity,
             item_count=_optional_int(output_contract.get("item_count")),
             fields=fields,
         ),
@@ -166,7 +169,7 @@ def project_contract(*, verdict: Mapping[str, Any], main_pipe: str) -> Contract:
 
 
 def _item_schema(schema: dict[str, Any]) -> dict[str, Any]:
-    """The schema a reader wants for an output: a list output's schema wraps its items as `{"items": [<$ref>]}`, so it is the item's schema."""
+    """The schema a reader wants for a list output, whose schema wraps its items as `{"items": [<$ref>]}`: the item's schema."""
     properties = cast("dict[str, Any]", schema.get("properties") or {})
     if list(properties) != ["items"]:
         return schema

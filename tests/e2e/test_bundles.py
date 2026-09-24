@@ -7,7 +7,8 @@ from _pytest.mark import ParameterSet
 from pipelex.system.environment import get_optional_env
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-EXAMPLES_DIR = REPO_ROOT / "examples"
+# The roots whose bundles are dry-run, each with the inputs.json beside it: the examples, and the cookbook methods.
+DISCOVERY_ROOTS = (REPO_ROOT / "examples", REPO_ROOT / "methods")
 
 # Bundles without a main_pipe — list the pipe(s) to dry-run individually.
 PIPES_OVERRIDES: dict[str, list[str]] = {
@@ -15,7 +16,15 @@ PIPES_OVERRIDES: dict[str, list[str]] = {
 }
 
 # Extra CLI args by bundle path (e.g. -L for local libraries).
-EXTRA_ARGS: dict[str, list[str]] = {}
+EXTRA_ARGS: dict[str, list[str]] = {
+    "methods/advisory_board/bundle.mthds": ["-L", "methods/advisory_board"],
+}
+
+# Bundles holding pipes that a sibling bundle of the same package calls, with no main pipe of their own:
+# the sibling's dry run covers them, and the package's inputs.json belongs to the sibling.
+COVERED_BY_SIBLING: set[str] = {
+    "methods/advisory_board/presentation.mthds",
+}
 
 # Bundles that must run without inputs, even though their folder holds an inputs.json meant for a
 # sibling bundle (a_quick_start ships both hello_world, which declares no inputs, and summarize,
@@ -42,9 +51,9 @@ GHA_DISABLED: set[str] = set()
 
 def _discover_test_cases() -> list[ParameterSet]:
     cases: list[ParameterSet] = []
-    for mthds_path in sorted(EXAMPLES_DIR.rglob("*.mthds")):
+    for mthds_path in sorted(path for root in DISCOVERY_ROOTS for path in root.rglob("*.mthds")):
         rel_path = mthds_path.relative_to(REPO_ROOT).as_posix()
-        if any(rel_path.startswith(f"{excluded}/") for excluded in EXCLUDED_DIRS):
+        if any(rel_path.startswith(f"{excluded}/") for excluded in EXCLUDED_DIRS) or rel_path in COVERED_BY_SIBLING:
             continue
         pipes = PIPES_OVERRIDES.get(rel_path, [""])
         marks = [pytest.mark.gha_disabled] if rel_path in GHA_DISABLED else []

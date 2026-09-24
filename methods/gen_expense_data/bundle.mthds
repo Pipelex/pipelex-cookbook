@@ -127,7 +127,7 @@ currency     = { type = "text", description = "Currency code (always USD)", requ
 description = "When a receipt's transaction took place"
 
 [concept.ReceiptTiming.structure]
-transaction_date = { type = "date", description = "Date of transaction (must be in January 2026)", required = true }
+transaction_date = { type = "date", description = "Date of transaction: in January 2026, or Sunday 1 February 2026 for a weekend expense", required = true }
 transaction_time = { type = "text", description = "Time of transaction (format: HH:MM AM/PM)", required = true }
 
 [concept.ReceiptHeader]
@@ -135,7 +135,7 @@ description = "Header information for a receipt"
 
 [concept.ReceiptHeader.structure]
 transaction_number = { type = "text", description = "Transaction/ticket number (format: TIC# XXXXX)", required = true }
-transaction_date   = { type = "date", description = "Date of transaction (must be in January 2026)", required = true }
+transaction_date   = { type = "date", description = "Date of transaction: in January 2026, or Sunday 1 February 2026 for a weekend expense", required = true }
 transaction_time   = { type = "text", description = "Time of transaction (format: HH:MM AM/PM)", required = true }
 
 [concept.ExpenseMetadata]

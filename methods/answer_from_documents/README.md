@@ -108,8 +108,8 @@ The start call answers at once with the run's id, or with the reason it refused 
 START=$(curl -s https://api.pipelex.com/v1/start \
   -H "Authorization: Bearer $PIPELEX_API_KEY" -H "Content-Type: application/json" \
   -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.17.0", "inputs": {"documents": [{"url": "https://huggingface.co/datasets/yubo2333/MMLongBench-Doc/resolve/main/documents/PH_2016.06.08_Economy-Final.pdf"}], "question": {"text": "Among all 12 references in this report, how many are from its own research center?"}}}')
-RUN_ID=$(echo "$START" | jq -r '.pipeline_run_id // empty')
-if [ -z "$RUN_ID" ]; then echo "$START"; else
+RUN_ID=$(printf '%s' "$START" | jq -r '.pipeline_run_id // empty')
+if [ -z "$RUN_ID" ]; then printf '%s\n' "$START"; else
   until [ "$(curl -s -o results.json -w '%{http_code}' https://api.pipelex.com/v1/runs/$RUN_ID/results \
     -H "Authorization: Bearer $PIPELEX_API_KEY")" != 202 ]; do sleep 5; done
   cat results.json

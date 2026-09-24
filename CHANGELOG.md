@@ -30,7 +30,10 @@
 ### Fixed
 
 - **The Gantt and invoice run commands in `README.md`**: they named `gantt.mthds` and `invoice.mthds`, which do not exist, and now name each example's `bundle.mthds`, so both commands run as written.
-- **The expense validation example's script** loaded the expense generator's bundle instead of its own, and now loads `examples/wip/validate_expense_data/`.
+- **The expense validation example's script** loaded the expense generator's bundle instead of its own and named a sample PDF under `assets/expense_reports/`, which does not exist; it now loads `examples/wip/validate_expense_data/` and reads `assets/expense_report/sample_expense_report.pdf`.
+- **The HTTP snippet on every method page** hands the start answer to `jq` with `printf` instead of `echo`, whose escapes in zsh, the macOS default shell, could break the JSON and leave a started run unpolled.
+- **A method whose output is one concept with a single `items` field** is described by its own fields on its page, where the projection mistook it for a list and described the items instead.
+- **The cookbook methods are dry-run with their sample inputs again**: the suite that dry-runs every bundle with the `inputs.json` beside it now reads `methods/` as well as `examples/`, so the methods moved out of `examples/` kept that coverage.
 
 ## [v0.17.0] - 2026-08-18
 

@@ -108,8 +108,8 @@ The start call answers at once with the run's id, or with the reason it refused 
 START=$(curl -s https://api.pipelex.com/v1/start \
   -H "Authorization: Bearer $PIPELEX_API_KEY" -H "Content-Type: application/json" \
   -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.17.0", "inputs": {"data_description": {"text": "# Student Profile: [Student Name]\n\n## Basic Info\n- **Current Performance**: [Struggling / Average / Advanced]\n\n## Learning Style\n- **Learns Best With**: [Visual examples / Step-by-step text / Hands-on practice / Videos]\n- **Pace**: [Needs more time / Normal / Fast learner]\n- **Complexity**: [Prefers simple explanations / Balanced / Likes deep details]\n\n## Background\n- **Strengths**: [subjects or topics they'\''re good at]\n- **Needs Help With**: [areas where they struggle]\n- **Prior Knowledge**: [relevant topics they already know]\n\n## Interests\n- **Hobbies/Interests**: [e.g., soccer, video games, music]\n- **Career Goals**: [if any - e.g., engineer, doctor, undecided]\n\n## Preferences\n- **Example Style**: [Many real-world examples / Abstract concepts / Mix]\n- **Question Format**: [Multiple choice / Short answer / Open discussion]\n"}, "nb_samples": {"number": 5}}}')
-RUN_ID=$(echo "$START" | jq -r '.pipeline_run_id // empty')
-if [ -z "$RUN_ID" ]; then echo "$START"; else
+RUN_ID=$(printf '%s' "$START" | jq -r '.pipeline_run_id // empty')
+if [ -z "$RUN_ID" ]; then printf '%s\n' "$START"; else
   until [ "$(curl -s -o results.json -w '%{http_code}' https://api.pipelex.com/v1/runs/$RUN_ID/results \
     -H "Authorization: Bearer $PIPELEX_API_KEY")" != 202 ]; do sleep 5; done
   cat results.json
