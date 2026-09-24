@@ -1,0 +1,11 @@
+
+# ⚡ Methods you can run by address
+
+Each of these methods runs on the hosted Pipelex API by its address, from a chatbot, your code or an app, with nothing to install. Its page shows every way to use it, with a sample to try it on.
+
+{% for method in methods %}
+- **[{{ method.title }}]({{ method.source_dir }}/)**: {{ method.pitch }}
+{% endfor %}
+
+More methods, ready to run the same way, are in the [Pipelex method library](https://github.com/Pipelex/methods).
+

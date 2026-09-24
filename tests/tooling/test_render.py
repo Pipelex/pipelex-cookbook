@@ -5,7 +5,7 @@ from pydantic import JsonValue
 
 from scripts.cookbook import load_cookbook
 from scripts.exceptions import CookbookLayoutError
-from scripts.render import python_literal, render_pages, type_phrase, typescript_literal
+from scripts.render import python_literal, render_all, render_front_page, render_pages, type_phrase, typescript_literal
 from tests.tooling.test_data import WIDGETS_SAMPLE_URL, MakeCookbook
 
 
@@ -50,6 +50,31 @@ class TestRender:
         assert f"Copy {address} into ./count_words, adapt what it does to my case, prove it" in page
         assert f"curl -sLo inputs.json {inputs_url}" in page
         assert 'inputs={\n                "text": "The quick brown fox",\n            },' in page
+
+    def test_the_front_page_lists_every_method_and_keeps_its_own_lines(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        root = make_cookbook()
+        front_page = render_front_page(cookbook=load_cookbook(root), templates_dir=templates_dir)[root / "README.md"]
+
+        assert front_page.startswith("# Fixture cookbook\n\nWritten by hand.\n\n<!-- BEGIN methods")
+        assert front_page.endswith("<!-- END methods -->\n\n## Also written by hand\n")
+        assert "- **[Word Count](methods/count_words/)**: Count the words of a text.\n" in front_page
+        assert "- **[Widget extraction](methods/extract_widgets/)**: Read a catalogue page and list every widget on it.\n" in front_page
+        assert "[Pipelex method library](https://github.com/Pipelex/methods)" in front_page
+
+    def test_a_second_render_of_the_front_page_changes_nothing(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        root = make_cookbook()
+        cookbook = load_cookbook(root)
+        for path, contents in render_all(cookbook=cookbook, templates_dir=templates_dir).items():
+            path.write_text(contents, encoding="utf-8")
+        assert render_front_page(cookbook=cookbook, templates_dir=templates_dir)[root / "README.md"] == (root / "README.md").read_text(
+            encoding="utf-8"
+        )
+
+    def test_a_front_page_without_its_region_is_refused(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        root = make_cookbook()
+        (root / "README.md").write_text("# Fixture cookbook\n", encoding="utf-8")
+        with pytest.raises(CookbookLayoutError, match="must hold one region for the list of methods"):
+            render_all(cookbook=load_cookbook(root), templates_dir=templates_dir)
 
     def test_the_tag_is_v_and_the_version_file(self, make_cookbook: MakeCookbook, templates_dir: Path):
         root = make_cookbook(version="1.2.3")

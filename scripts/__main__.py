@@ -1,7 +1,7 @@
 """The command line behind the Makefile's cookbook targets: `python -m scripts <command>`.
 
 Offline, needing no key: `render`, `check-render`, `check-lockstep`, `check-links` (which only fetches public sample URLs).
-Keyed, calling production with `PIPELEX_API_KEY`: `refresh`, `check-methods`.
+Keyed, calling production with `PIPELEX_API_KEY`: `refresh`, `check-methods`, `check-addresses`.
 """
 
 import argparse
@@ -12,8 +12,8 @@ from pathlib import Path
 from scripts.checks import check_links, http_status, lockstep_problems, stale_pages
 from scripts.cookbook import Cookbook, load_cookbook
 from scripts.exceptions import CookbookError
-from scripts.hosted import client_from_env, validate_packages
-from scripts.render import render_pages
+from scripts.hosted import AddressState, check_address, client_from_env, validate_packages
+from scripts.render import render_all, render_pages
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR_NAME = "templates"
@@ -30,14 +30,16 @@ def main(argv: list[str] | None = None) -> int:
         "check-links": _check_links,
         "refresh": _refresh,
         "check-methods": _check_methods,
+        "check-addresses": _check_addresses,
     }
     helps = {
-        "render": "Write every methods/<name>/README.md from its package and cookbook.toml",
-        "check-render": "Fail when a committed page differs from a fresh render",
+        "render": "Write every methods/<name>/README.md from its package and cookbook.toml, and the front page's list of methods",
+        "check-render": "Fail when a committed page, or the front page's list of methods, differs from a fresh render",
         "check-lockstep": "Fail when a manifest's version is not the cookbook's",
         "check-links": "Fetch every sample URL in the packages and every raw URL on the pages",
         "refresh": "Validate every package on production and write its contract.json (needs PIPELEX_API_KEY)",
         "check-methods": "Validate every package on production from its files, and check its contract snapshot (needs PIPELEX_API_KEY)",
+        "check-addresses": "Validate every page's address on production at its tag, reporting a method not released yet (needs PIPELEX_API_KEY)",
     }
     for command_name in commands:
         subparsers.add_parser(command_name, help=helps[command_name])
@@ -56,7 +58,7 @@ def _templates_dir(cookbook: Cookbook) -> Path:
 
 
 def _render(cookbook: Cookbook) -> int:
-    rendered = render_pages(cookbook=cookbook, templates_dir=_templates_dir(cookbook))
+    rendered = render_all(cookbook=cookbook, templates_dir=_templates_dir(cookbook))
     stale = set(stale_pages(cookbook=cookbook, rendered=rendered))
     for page_path, contents in rendered.items():
         page_path.write_text(contents, encoding="utf-8")
@@ -66,14 +68,14 @@ def _render(cookbook: Cookbook) -> int:
 
 
 def _check_render(cookbook: Cookbook) -> int:
-    rendered = render_pages(cookbook=cookbook, templates_dir=_templates_dir(cookbook))
+    rendered = render_all(cookbook=cookbook, templates_dir=_templates_dir(cookbook))
     stale = stale_pages(cookbook=cookbook, rendered=rendered)
     if stale:
         for relative in stale:
             print(f"✗ {relative} differs from a fresh render")
         print("Pages are generated: run `make render` and commit what it writes, never edit a page by hand.")
         return 1
-    print(f"✓ {len(rendered)} method page(s) match a fresh render at {cookbook.tag}")
+    print(f"✓ {len(cookbook.packages)} method page(s) and the front page's list of methods match a fresh render at {cookbook.tag}")
     return 0
 
 
@@ -133,6 +135,22 @@ def _check_methods(cookbook: Cookbook) -> int:
         else:
             print(f"✓ {package.name} is valid on production, and its contract snapshot is current")
     return 1 if problems else 0
+
+
+def _check_addresses(cookbook: Cookbook) -> int:
+    client = client_from_env()
+    verdicts = [check_address(client=client, cookbook=cookbook, package=package) for package in cookbook.packages]
+    for verdict in verdicts:
+        if verdict.state is AddressState.VALID:
+            print(f"✓ {verdict.address} is valid on production")
+        elif verdict.state is AddressState.UNRELEASED:
+            print(f"· {verdict.address} is not released yet: {verdict.report}")
+        else:
+            print(f"✗ {verdict.address} does not validate on production:\n{verdict.report}")
+    unreleased = sum(1 for verdict in verdicts if verdict.state is AddressState.UNRELEASED)
+    if unreleased:
+        print(f"{unreleased} method(s) not released at {cookbook.tag}: run this check again once the release that carries them is tagged.")
+    return 1 if any(verdict.state is AddressState.FAILED for verdict in verdicts) else 0
 
 
 if __name__ == "__main__":

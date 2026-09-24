@@ -30,6 +30,28 @@ Learn by doing with production-ready examples.</p>
     <br/>
 </div>
 
+<!-- BEGIN methods, written by `make render` from methods/ and cookbook.toml: never edit this region by hand -->
+
+# ⚡ Methods you can run by address
+
+Each of these methods runs on the hosted Pipelex API by its address, from a chatbot, your code or an app, with nothing to install. Its page shows every way to use it, with a sample to try it on.
+
+- **[Advisory board consultation](methods/advisory_board/)**: Read a business problem told in plain words, consult five to ten expert advisory boards on it, and return one strategic report in Markdown with their consensus, the choices they disagree on, a phased roadmap, risks, resources and success metrics.
+- **[Document question answering](methods/answer_from_documents/)**: Read a set of documents and a question, and return a short answer with the verbatim passages it rests on, a confidence level, and a status saying whether the documents answer it fully, in part, or not at all.
+- **[Blog article generation](methods/blog_article_generator/)**: Read a topic, an audience, a tone and a length, and return an SEO-optimized blog article in Markdown with its SEO title and meta description.
+- **[Discord newsletter](methods/discord_newsletter/)**: Read a week of Discord channel messages and return an HTML newsletter with a weekly summary, the new members, a section per channel and the geographic hubs.
+- **[Energy diagnostic (DPE) extraction](methods/extract_dpe/)**: Read a French energy performance diagnostic (DPE) and return the dwelling's address, the issue and expiry dates, the energy and CO₂ classes with their figures per m², and the estimated yearly energy costs.
+- **[Gantt chart extraction](methods/extract_gantt/)**: Read a Gantt chart image and return every task with its start and end dates, and every milestone with its date.
+- **[Generic document extraction](methods/extract_generic/)**: Read any document and return each page as Markdown, including the text that only appears inside its images and diagrams.
+- **[Slide deck extraction](methods/extract_slides/)**: Read a slide deck in PDF and return one Markdown text giving each slide its title, its text and a description of its layout and charts.
+- **[Synthetic expense data generation](methods/gen_expense_data/)**: Take a number of employees and return, for each, three or four expense claims with a photographed receipt image and a label saying whether the claim is legitimate or a weekend, inflated, mismatched or vague one, plus an HTML expense report.
+- **[Synthetic data generation](methods/gen_synthetic_data/)**: Read a description of a record and a count, and return that many varied synthetic records, here student profiles with their performance, learning style, background, interests and preferences.
+- **[Research report](methods/research_report/)**: Read a research question and return a Markdown report with an executive summary, key findings and open questions, after researching three angles and fact-checking each.
+
+More methods, ready to run the same way, are in the [Pipelex method library](https://github.com/Pipelex/methods).
+
+<!-- END methods -->
+
 # 🚀 Quick Start
 
 ## 1. Clone and Install

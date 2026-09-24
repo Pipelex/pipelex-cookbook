@@ -29,11 +29,13 @@ Each cookbook method is a package in `methods/<name>/`, laid out like the packag
 
 What a page says about its method comes from the package:
 
-- **The address** is `address/name@tag`, where the tag is `v` followed by the version in `pyproject.toml`. On `dev` that is the latest release, since each release is merged back into `dev`; on a release branch it is the release being cut, and the release commit re-renders every page. A method added since the last release therefore names that release's tag, which does not hold it: the checks report it as not published rather than as broken, and the next release re-renders its page at the new tag.
+- **The address** is `address/name@tag`, where the tag is `v` followed by the version in `pyproject.toml`. On `dev` that is the latest release, since each release is merged back into `dev`; on a release branch it is the release being cut, and the release commit re-renders every page. A method added since the last release therefore names that release's tag, which does not hold it: `check-links` reports its links as not published and `check-addresses` its address as not released, rather than as broken, and the next release re-renders its page at the new tag.
 - **"Takes" and "Returns"** come from the contract snapshot.
 - **The samples and the code snippets' inputs** come from `inputs.json`.
 - **"What you get"** is the answer key's `## Must` lines. The page shows them without the planted facts, so each Must line states its facts in full; the renderer refuses one that cites a planted fact such as `F2`.
 - **The title, the pitch, the chatbot sentence and the "Make it yours" change** come from the method's entry in `cookbook.toml`. Every field is optional: a method with no entry gets its title and pitch from its manifest and a default sentence for the rest.
+
+**The front page lists the methods.** `README.md` at the root is written by hand except for one region, between the markers `<!-- BEGIN methods, … -->` and `<!-- END methods -->`, where `make render` lists every method with its title, its page and its pitch, followed by a line linking the method library. `make check-render` holds that region to a fresh render as it does the pages, and leaves every other line of the front page alone.
 
 Setup is never repeated on a page. Adding the Pipelex MCP, installing the plugin and creating a key are links to the front doors of [pipelex-mcp](https://github.com/Pipelex/pipelex-mcp) and [pipelex-plugins](https://github.com/Pipelex/pipelex-plugins), so a page carries only the commands that name its method.
 
@@ -60,7 +62,7 @@ The renderer is a small Python package in `scripts/`, run as `python -m scripts 
 - `scripts/cookbook.py` loads the cookbook: the version, `cookbook.toml`, and every package, checking its identity with the MTHDS standard's own manifest parser.
 - `scripts/key.py` reads an answer key.
 - `scripts/contract.py` projects a validation verdict onto the main pipe's contract, and reads and writes `contract.json`.
-- `scripts/render.py` derives each page's context and renders `templates/method_page.md.j2`, which includes one template per door from `templates/doors/`. Wording and links live in the templates; everything method-specific is computed in Python.
+- `scripts/render.py` derives each page's context and renders `templates/method_page.md.j2`, which includes one template per door from `templates/doors/`, and renders the front page's list of methods from `templates/front_region.md.j2`. Wording and links live in the templates; everything method-specific is computed in Python.
 - `scripts/checks.py` holds the checks that need no key, and `scripts/hosted.py` the calls to production.
 
 Its tests are in `tests/tooling/`. They build a small cookbook in a temporary directory, render it with the real templates, and boot no Pipelex runtime.
@@ -79,8 +81,9 @@ The "Takes" and "Returns" lines come from production: `POST /v1/validate` answer
 | `make check-lockstep` | Nothing | Every manifest carries the cookbook's version |
 | `make check-links` | The network | Every URL in the packages' inputs and every raw URL on the pages answers, following redirects. A URL into this repository must name a file this checkout holds; if it answers 404, it is reported as not published, since the next release publishes it |
 | `make check-methods` | `PIPELEX_API_KEY` | Every package validates on production from its files, and its contract snapshot is current |
+| `make check-addresses` | `PIPELEX_API_KEY` | Every page's address validates on production at the page's tag, as a reader running it would reach it. A method the tag does not carry yet, or a tag not pushed yet, is reported as not released rather than failed: production answers the first with a 404 whose problem type is `method-package-not-found-error`, and the second with a `MethodFetchError` saying the tag names no git tag. Any other refusal fails |
 | `make refresh` | `PIPELEX_API_KEY` | Rewrites every contract snapshot from production |
 
-`make check-cookbook` runs the three that need no key, and is what the `Methods check` workflow runs on every pull request. `make agent-check` runs `check-render` and `check-lockstep` after the linters. The checks that call production are grouped under `make check-hosted`: CI holds no API key, so their author runs them by hand before each pull request, and the release play runs them at each release. None of them spends inference; running a method is a separate, deliberate act.
+`make check-cookbook` runs the three that need no key, and is what the `Methods check` workflow runs on every pull request. `make agent-check` runs `check-render` and `check-lockstep` after the linters. The checks that call production, `check-methods` and `check-addresses`, are grouped under `make check-hosted`: CI holds no API key, so their author runs them by hand before each pull request, and the release play runs them at each release. After a release, `make check-addresses` is also what proves it: once the tag exists, every method must validate at it. None of them spends inference; running a method is a separate, deliberate act.
 
 The tooling calls `POST /v1/validate` with `httpx` rather than through `pipelex-sdk`. The SDK pins an `mthds` release that the runtime this repository still pins for its older examples cannot run with, so the two cannot share one environment until that pin goes with the old examples.

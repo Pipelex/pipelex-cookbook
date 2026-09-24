@@ -83,6 +83,7 @@ make check-links              - Fetch every sample URL in the packages and every
 make check-cookbook           - The checks that need no key: check-render check-lockstep check-links (what CI runs)
 make refresh                  - Validate every method on production and write its contract.json (needs PIPELEX_API_KEY)
 make check-methods            - Validate every method on production from its files (needs PIPELEX_API_KEY)
+make check-addresses          - Validate every page's address on production at its tag, reporting unreleased methods (needs PIPELEX_API_KEY)
 make check-hosted             - Every check that calls production, run by hand before each PR and at each release (needs PIPELEX_API_KEY)
 
 make format                   - format with ruff and plxt
@@ -144,7 +145,7 @@ export HELP
 	codex-tests gha-tests \
 	run-all-tests run-manual-trigger-gha-tests run-gha_disabled-tests \
 	validate validate-bundles v check c cc agent-check agent-test \
-	render check-render check-lockstep check-links check-cookbook refresh check-methods check-hosted \
+	render check-render check-lockstep check-links check-cookbook refresh check-methods check-addresses check-hosted \
 	merge-check-ruff-lint merge-check-ruff-format merge-check-plxt-format merge-check-plxt-lint merge-check-mypy merge-check-pyright \
 	li check-unused-imports fix-unused-imports check-uv check-TODOs
 
@@ -241,8 +242,8 @@ validate-bundles: env
 
 # The renderer and the checks live in scripts/, and are described in docs/README.md.
 # render, check-render and check-lockstep read committed files only. check-links fetches public
-# sample URLs and needs no key. refresh, check-methods and check-hosted call production with
-# PIPELEX_API_KEY and spend no inference; CI holds no key, so they are run by hand.
+# sample URLs and needs no key. refresh, check-methods, check-addresses and check-hosted call
+# production with PIPELEX_API_KEY and spend no inference; CI holds no key, so they are run by hand.
 
 render: env
 	$(call PRINT_TITLE,"Rendering every method page")
@@ -271,7 +272,11 @@ check-methods: env
 	$(call PRINT_TITLE,"Validating every method on production from its files")
 	$(VENV_PYTHON) -m scripts check-methods
 
-check-hosted: check-methods
+check-addresses: env
+	$(call PRINT_TITLE,"Validating every page's address on production at the page's tag")
+	$(VENV_PYTHON) -m scripts check-addresses
+
+check-hosted: check-methods check-addresses
 	@echo "> done: check-hosted"
 
 ##############################################################################################

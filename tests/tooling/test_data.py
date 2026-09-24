@@ -77,4 +77,14 @@ WORDS_CONTRACT = Contract(
 )
 
 # The factory the `make_cookbook` fixture returns: keyword arguments `version` and `widgets_version`, and the cookbook root as its result.
+FRONT_PAGE = """# Fixture cookbook
+
+Written by hand.
+
+<!-- BEGIN methods, written by `make render` from methods/ and cookbook.toml: never edit this region by hand -->
+<!-- END methods -->
+
+## Also written by hand
+"""
+
 MakeCookbook = Callable[..., Path]

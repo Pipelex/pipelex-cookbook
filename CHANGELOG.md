@@ -8,6 +8,9 @@
 - **`make render` and the page checks**: `make render` writes every page from its package, `cookbook.toml` and `templates/`, and `make check-render`, `make check-lockstep` and `make check-links` fail when a page is stale, a manifest's version is not the cookbook's, or a sample link is broken. A new `Methods check` workflow runs them on every pull request, and `make agent-check` runs the first two.
 - **`make refresh` and `make check-hosted`**: with `PIPELEX_API_KEY` set, `make refresh` validates every method on production and snapshots its contract in `contract.json`, from which each page's "Takes" and "Returns" lines are rendered, and `make check-hosted` validates every method on production from its files. Neither spends inference.
 - **The table extraction sample in `assets/`**: `assets/extract_table/table_image.png`, the sample the method library's `table_extraction` links to, now also lives where the cookbook keeps its samples.
+- **`make check-addresses`**: with `PIPELEX_API_KEY` set, it validates every page's address, `github.com/Pipelex/pipelex-cookbook/<name>@<tag>`, on production at the page's tag, and reports a method the tag does not carry yet as not released rather than failed. `make check-hosted` now runs it beside `make check-methods`, and after a release it is what proves every method resolves by address.
+- **The front page lists every method**: `make render` writes a region near the top of `README.md` naming each method with its page and its pitch, and a line linking the Pipelex method library; `make check-render` holds it to a fresh render.
+- **The release play checks the addresses**: the release skill runs `make check-hosted` among its gates and `make check-addresses` once the tag exists, and points at the release play's new home, `docs/workspace/releasing.md`.
 
 ### Changed
 
