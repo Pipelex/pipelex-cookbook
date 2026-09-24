@@ -54,6 +54,7 @@ steps = [
   { pipe = "extract_gantt_timescale", result = "gantt_timescale" },
   { pipe = "extract_gantt_task_names", result = "gantt_task_names" },
   { pipe = "extract_details_of_task", batch_over = "gantt_task_names", batch_as = "gantt_task_name", result = "details_of_all_tasks" },
+  { pipe = "extract_gantt_milestones", result = "gantt_milestones" },
   { pipe = "gather_in_a_gantt_chart", result = "gantt_chart" },
 ]
 
@@ -98,17 +99,32 @@ Here is the name of the task you have to extract the dates for:
 @gantt_task_name
 """
 
-[pipe.gather_in_a_gantt_chart]
+[pipe.extract_gantt_milestones]
 type = "PipeLLM"
-description = "Gather all the tasks in a gantt chart"
-inputs = { details_of_all_tasks = "GanttTaskDetails" }
-output = "GanttChart"
+description = "List the milestones of the chart, each with its date"
+inputs = { gantt_chart_image = "GanttChartImage", gantt_timescale = "GanttTimescaleDescription" }
+output = "Milestone[]"
+model = "$vision-diagram"
 prompt = """
-Now you will receive all the necessary information to build a gantt chart.
+I am sharing an image of a Gantt chart: $gantt_chart_image.
+Please list its milestones: the events marked at a single date, usually drawn as a diamond or a flag and often on a row of their own, rather than as a bar spanning several dates.
+For each milestone, give its name and its date.
 
-Here are the task details:
-@details_of_all_tasks
+Be careful, the time unit is this:
+@gantt_timescale
+
+If the chart has no milestones, return an empty list.
 """
+
+[pipe.gather_in_a_gantt_chart]
+type        = "PipeCompose"
+description = "Gather the tasks and the milestones in a gantt chart"
+inputs      = { details_of_all_tasks = "GanttTaskDetails[]", gantt_milestones = "Milestone[]" }
+output      = "GanttChart"
+
+[pipe.gather_in_a_gantt_chart.construct]
+tasks      = { from = "details_of_all_tasks" }
+milestones = { from = "gantt_milestones" }
 
 ########################################################
 # Transcript direct in one go

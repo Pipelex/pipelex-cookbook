@@ -18,7 +18,11 @@ classifiers = [
 
 dependencies = [
   "beautifulsoup4==4.13.4",
+  "httpx>=0.28.1",
+  "jinja2>=3.1.6",
+  "mthds>=0.8.1",
   "pipelex[mistralai,anthropic,google,google-genai,bedrock,fal,docling]==0.46.4",
+  "pydantic>=2.13.2",
   "weasyprint==68.0",
 ]
 
@@ -56,7 +60,7 @@ Repository = "https://github.com/Pipelex/pipelex-cookbook"
 Documentation = "https://docs.pipelex.com/pages/cookbook-examples/"
 
 [tool.setuptools.packages.find]
-include = ["examples*", "utils*"]
+include = ["examples*", "scripts*", "utils*"]
 
 [tool.uv]
 required-version = ">=0.7.2"
@@ -70,7 +74,7 @@ exclude = [
   "^examples/c_advanced/using_inference_plugins/hello_inference_plugin/.*$",
 ]
 mypy_path = "."
-packages = ["utils", "examples", "tests"]
+packages = ["utils", "examples", "scripts", "tests"]
 plugins = ["pydantic.mypy"]
 python_version = "3.11"
 warn_return_any = true
@@ -111,7 +115,7 @@ exclude = [
   "examples/c_advanced/crewai_with_pipelex_tools/run_crew_with_pipelex.py",
 ]
 extraPaths = ["./tests"]
-include = ["utils", "examples", "tests"]
+include = ["utils", "examples", "scripts", "tests"]
 reportAbstractUsage = "error"
 reportArgumentType = "error"
 reportAssertAlwaysTrue = "error"

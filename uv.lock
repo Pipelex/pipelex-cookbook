@@ -3873,7 +3873,11 @@ version = "0.17.0"
 source = { editable = "." }
 dependencies = [
     { name = "beautifulsoup4" },
+    { name = "httpx" },
+    { name = "jinja2" },
+    { name = "mthds" },
     { name = "pipelex", extra = ["anthropic", "bedrock", "docling", "fal", "google", "google-genai", "mistralai"] },
+    { name = "pydantic" },
     { name = "weasyprint" },
 ]
 
@@ -3908,9 +3912,13 @@ requires-dist = [
     { name = "beautifulsoup4", specifier = "==4.13.4" },
     { name = "boto3-stubs", marker = "extra == 'dev'", specifier = ">=1.35.24" },
     { name = "crewai", marker = "extra == 'crewai'", specifier = ">=0.80.0" },
+    { name = "httpx", specifier = ">=0.28.1" },
+    { name = "jinja2", specifier = ">=3.1.6" },
+    { name = "mthds", specifier = ">=0.8.1" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.11.2" },
     { name = "pipelex", extras = ["mistralai", "anthropic", "google", "google-genai", "bedrock", "fal", "docling"], specifier = "==0.46.4" },
     { name = "pipelex-tools", marker = "extra == 'dev'", specifier = ">=0.3.2" },
+    { name = "pydantic", specifier = ">=2.13.2" },
     { name = "pyright", marker = "extra == 'dev'", specifier = ">=1.1.411" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.1" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24.0" },

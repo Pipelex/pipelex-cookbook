@@ -1,0 +1,17 @@
+# The cookbook's editorial fields, read by `make render` to write each method's page, methods/<name>/README.md.
+# Everything else a page says comes from the package itself: its manifest, its inputs.json, its key.md and its contract.json.
+# Every field of a method's entry is optional, and a method with no entry still gets a page from its manifest.
+
+# The address every cookbook manifest carries: the runtime locates a package by this address and the manifest's name.
+address = "github.com/Pipelex/pipelex-cookbook"
+# The GitHub repository that the samples' raw URLs point into.
+repository = "Pipelex/pipelex-cookbook"
+
+[methods.extract_gantt]
+title = "Gantt chart extraction"
+pitch = "Read a Gantt chart image and return every task with its start and end dates, and every milestone with its date."
+sample_labels = { gantt_chart_image = "sample chart" }
+chatbot = "Run {address} on {samples}"
+app_dir = "gantt-app"
+yours_dir = "gantt"
+yours_change = "add each task's owner to what it extracts"

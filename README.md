@@ -81,12 +81,9 @@ Try the hello world example:
 pipelex run bundle examples/a_quick_start/hello_world.mthds
 ```
 
-Or explore other cookbook examples:
+Or explore other cookbook examples. The Gantt chart extraction is now a method you can run by address, from a chatbot, your code or an app: see [its page](methods/extract_gantt/).
 
 ```bash
-# Extract data from a Gantt chart image
-pipelex run bundle examples/b_basics/document_extract/extract_gantt/bundle.mthds -i examples/b_basics/document_extract/extract_gantt/inputs.json
-
 # Extract and summarize invoice information
 pipelex run bundle examples/b_basics/document_extract/extract_invoice/bundle.mthds -i examples/b_basics/document_extract/extract_invoice/inputs.json
 
@@ -357,12 +354,13 @@ We **highly** recommend installing our extension for `.mthds` files into your ID
 
 ```
 .
+├── methods/                   # Cookbook methods runnable by address, each with its generated page
+│   └── extract_gantt/
 ├── examples/                  # Production-ready examples
 │   ├── a_quick_start/         # Getting started tutorials
 │   ├── b_basics/              # Core functionality examples
 │   │   └── document_extract/  # Document extraction examples
 │   │       ├── extract_dpe/
-│   │       ├── extract_gantt/
 │   │       ├── extract_generic/
 │   │       ├── extract_invoice/
 │   │       ├── extract_proof_of_purchase/
@@ -392,7 +390,7 @@ The cookbook contains production-ready examples covering various use cases:
 - **Generic Document** - Extract content from any document type
 
 ### Visual Data Extraction
-- **Gantt Chart** - Extract project timelines from visual diagrams
+- **[Gantt Chart](methods/extract_gantt/)** - Extract project timelines from visual diagrams
 - **Table Extraction** - Extract structured tables from images
 
 ### Tabular Data
