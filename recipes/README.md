@@ -43,4 +43,13 @@ These recipes turn a method into a web app whose form and result view come from 
 | [From an address to a web app you deploy](app/deployed-app/) | One command from an address to a running app, its production build, and what a deployment needs: the key as a server secret and an access control in front | [Energy diagnostic (DPE) extraction](../methods/extract_dpe/) |
 | [A second method as a second tab](app/second-tab/) | `make add-method` adding a method by its address to that app, which becomes one tab per method, and moving a method to another release | [Invoice extraction](https://github.com/Pipelex/methods/tree/v0.1.1/methods/invoice_extraction), from the method library |
 
+## Make it yours
+
+These recipes make a method your own from your coding agent, with the [Pipelex plugin](https://github.com/Pipelex/pipelex-plugins#quick-start): a published method copied and changed, or a new one designed from a sentence, each proven before it is kept. Each run spends credit on your Pipelex account.
+
+| Recipe | What it shows | Method |
+|---|---|---|
+| [Copy a method, change it, and make it yours](yours/copy-and-change/) | A published method copied at its tag, changed with `/pipelex-edit`, proven on its sample, saved to your catalog with `/pipelex-catalog`, and your chatbot, your code and your app pointed at its new id | [Document question answering](../methods/answer_from_documents/) |
+| [A method designed from a sentence and proven by a lab](yours/design-from-a-sentence/) | `/pipelex-design` turning one sentence into a runnable method, and `/pipelex-lab` proving it against answer keys, on test documents with planted facts, within a budget | A CV and job-offer match, designed in the recipe |
+
 To add one, read [docs/adding-a-recipe.md](../docs/adding-a-recipe.md).

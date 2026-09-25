@@ -64,7 +64,7 @@ A small package, `recipes/code/typescript/<recipe>/`, that a reader runs after `
 
 ## A recipe with no code
 
-Some doors need no code of the reader's own: a request to a chatbot or to a coding agent, a few HTTP calls any tool can make, or an app the method-app template writes. Such a recipe lives under the door it shows, such as `recipes/run/<name>/` or `recipes/app/<name>/`, and follows the same rules as a code recipe, less its code and its generated types:
+Some doors need no code of the reader's own: a request to a chatbot or to a coding agent, a few HTTP calls any tool can make, an app the method-app template writes, or a method made your own. Such a recipe lives under the door it shows, such as `recipes/run/<name>/`, `recipes/app/<name>/` or `recipes/yours/<name>/`, and follows the same rules as a code recipe, less its code and its generated types:
 
 - **Its README keeps the headings** of the others, in the same order. "Run it" gives the request to make or the command to type, "What you get" the real output of the run that proved it, trimmed, with each run id cut to `run_…`, and "How it is built" names the tools or the routes underneath, each as its source names it.
 - **Setup is a link.** Adding the Pipelex MCP, installing the plugin and creating a key belong to the front doors of [pipelex-mcp](https://github.com/Pipelex/pipelex-mcp) and [pipelex-plugins](https://github.com/Pipelex/pipelex-plugins), so the README links them and explains only its own door.
