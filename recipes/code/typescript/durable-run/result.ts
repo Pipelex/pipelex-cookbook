@@ -7,16 +7,18 @@
  * The report goes to stdout as Markdown, so `npm run --silent result -- <run id> > report.md` saves it.
  * PIPELEX_API_KEY must be set: a run is read with the key of the account that started it. Reading spends no credit.
  *
- * The exit status tells a scheduler what to do next: 0 with the report, 3 while the run is still going, 4 when the run
- * could not be read at all (the API unreachable, the lookup refused), both worth asking again, and 1 when the run failed.
+ * The exit status tells a scheduler what to do next: 0 with the report; 3 while the run is still going, and 4 when the
+ * API was out of reach or answered with a server error, both worth asking again; 1 when the run failed, and 5 when the
+ * run cannot be read as asked (an unknown id, a refused key, a report the generated types do not accept), both final.
  */
-import { PipelexApiClient, RunFailedError, RunTimeoutError } from "@pipelex/sdk";
+import { ApiResponseError, ApiUnreachableError, PipelexApiClient, RunFailedError, RunTimeoutError } from "@pipelex/sdk";
 
 import { parseFormattedReport } from "./generated/research_report/binder";
 
 const RUN_FAILED = 1;
 const STILL_RUNNING = 3;
 const LOOKUP_FAILED = 4;
+const UNREADABLE = 5;
 const POLL_INTERVAL_MS = 10_000;
 const WAIT_TIMEOUT_MS = 20 * 60_000;
 
@@ -29,6 +31,11 @@ if (!runId) {
 /** The report's Markdown, from a completed run's main output, typed by the method's `FormattedReport`. */
 function reportOf(mainStuff: unknown): string {
   return parseFormattedReport(mainStuff).text;
+}
+
+/** Whether asking again may read the run: the API was out of reach, or answered that it was overloaded or failing. */
+function mayClearUp(error: unknown): boolean {
+  return error instanceof ApiUnreachableError || (error instanceof ApiResponseError && (error.status === 429 || error.status >= 500));
 }
 
 /** Print the report, or say why there is none, and answer the exit status. An error reading the run is thrown. */
@@ -72,7 +79,8 @@ async function readRun(client: PipelexApiClient, runId: string, wait: boolean): 
 try {
   process.exitCode = await readRun(new PipelexApiClient(), runId, flags.includes("--wait"));
 } catch (error) {
-  // The run could not be read, which says nothing about the run itself: it may be going, or done, and asking again may work.
+  // The run could not be read. An API out of reach says nothing about the run, which asking again may find going or done;
+  // an unknown id, a refused key or a report the types reject gives the same answer every time.
   console.error(`could not read run ${runId}: ${error instanceof Error ? error.message : String(error)}`);
-  process.exitCode = LOOKUP_FAILED;
+  process.exitCode = mayClearUp(error) ? LOOKUP_FAILED : UNREADABLE;
 }

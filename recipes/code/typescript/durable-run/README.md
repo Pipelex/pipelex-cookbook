@@ -31,7 +31,7 @@ npm run --silent result -- run_8bf12c67-… > report.md
 
 ## What you get
 
-The report in Markdown on stdout: the question, an executive summary, the key findings from its three angles, and the questions it leaves open. A run that is still going exits with status 3, and one that failed exits with status 1 and says why. A run that could not be read at all, with the API unreachable for instance, exits with status 4, since it says nothing about the run itself. A scheduler asks again on 3 and 4, and gives up on 1.
+The report in Markdown on stdout: the question, an executive summary, the key findings from its three angles, and the questions it leaves open. A run that is still going exits with status 3, and one that failed exits with status 1 and says why. When the API is out of reach or answers with a server error, the script exits with status 4, which says nothing about the run itself. When the run cannot be read as asked, because its id is unknown, the key is refused or the report does not match the generated types, it exits with status 5, since asking again gives the same answer. A scheduler asks again on 3 and 4, and stops on 1 and 5.
 
 ## How it is built
 
