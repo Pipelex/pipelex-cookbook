@@ -71,6 +71,7 @@ check_untyped_defs = true
 exclude = [
   "^.*\\.venv/.*$",
   "^examples/c_advanced/using_inference_plugins/hello_inference_plugin/.*$",
+  "^scripts/sdk/.*$",
 ]
 mypy_path = "."
 packages = ["utils", "examples", "scripts", "tests"]
@@ -108,6 +109,8 @@ exclude = [
   # `Unknown` and reports the whole file, so it is excluded rather than littered with per-line
   # suppressions. mypy still checks it: it tolerates the unresolved import on its own.
   "examples/c_advanced/crewai_with_pipelex_tools/run_crew_with_pipelex.py",
+  # Each runs beside `pipelex-sdk`, in an environment of its own, and `make check-recipe-types` type-checks it there.
+  "scripts/sdk",
 ]
 extraPaths = ["./tests"]
 include = ["utils", "examples", "scripts", "tests"]
@@ -236,11 +239,18 @@ exclude = [
   ".venv",
   ".vscode",
   "trigger_pipeline",
+  # A recipe's generated types are written verbatim by codegen and vouched for by their codegen.lock: a formatter that
+  # touched them would make the drift check read them as hand-edited.
+  "recipes/**/generated",
 ]
 line-length = 150
 target-version = "py311"
 
 [tool.ruff.format]
+
+[tool.ruff.lint.isort]
+# A recipe imports the types generated beside it as `generated.<method>`: they are the recipe's own code, not an installed package.
+known-first-party = ["generated"]
 
 [tool.ruff.lint]
 ignore = ["F401"]

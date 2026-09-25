@@ -80,10 +80,14 @@ make render                   - Write every methods/<name>/README.md from its pa
 make check-render             - Fail when a committed method page differs from a fresh render
 make check-lockstep           - Fail when a method manifest's version is not the cookbook's
 make check-links              - Fetch every sample URL in the packages and every raw URL on the pages
-make check-cookbook           - The checks that need no key: check-render check-lockstep check-links (what CI runs)
-make refresh                  - Validate every method on production and write its contract.json (needs PIPELEX_API_KEY)
+make check-recipes            - Fail when a recipe's generated types name no pinned address, or one its code does not call
+make check-codegen            - Check every recipe's generated types against their codegen.lock (offline)
+make check-recipe-types       - Type-check every Python recipe script with pyright, in the environment its dependencies describe
+make check-cookbook           - The checks that need no key: the pages, the manifests, the links and the recipes (what CI runs)
+make refresh                  - Write every method's contract.json and every recipe's generated types from production (needs PIPELEX_API_KEY)
 make check-methods            - Validate every method on production from its files (needs PIPELEX_API_KEY)
-make check-addresses          - Validate every page's address on production at its tag, reporting unreleased methods (needs PIPELEX_API_KEY)
+make check-addresses          - Validate every page's address at its tag, and every recipe's, on production (needs PIPELEX_API_KEY)
+make check-codegen-live       - Check that every recipe's types come from what its address resolves to today (needs PIPELEX_API_KEY)
 make check-hosted             - Every check that calls production, run by hand before each PR and at each release (needs PIPELEX_API_KEY)
 
 make format                   - format with ruff and plxt
@@ -125,7 +129,7 @@ make ti                       - Shorthand -> test-inference
 make check                    - Shorthand -> format lint mypy
 make c                        - Shorthand -> check
 make cc                       - Shorthand -> cleanderived check
-make agent-check              - Shorthand -> fix-unused-imports format lint pyright mypy check-render check-lockstep (for AI agents)
+make agent-check              - Shorthand -> fix-unused-imports format lint pyright mypy check-render check-lockstep check-recipes check-codegen (for AI agents)
 make agent-test               - Run unit tests, silent on success, output on failure (for AI agents)
 make li                       - Shorthand -> lock install
 make check-unused-imports     - Check for unused imports without fixing
@@ -145,7 +149,8 @@ export HELP
 	codex-tests gha-tests \
 	run-all-tests run-manual-trigger-gha-tests run-gha_disabled-tests \
 	validate validate-bundles v check c cc agent-check agent-test \
-	render check-render check-lockstep check-links check-cookbook refresh check-methods check-addresses check-hosted \
+	render check-render check-lockstep check-links check-recipes check-codegen check-recipe-types check-cookbook \
+	refresh check-methods check-addresses check-codegen-live check-hosted \
 	merge-check-ruff-lint merge-check-ruff-format merge-check-plxt-format merge-check-plxt-lint merge-check-mypy merge-check-pyright \
 	li check-unused-imports fix-unused-imports check-uv check-TODOs
 
@@ -242,8 +247,18 @@ validate-bundles: env
 
 # The renderer and the checks live in scripts/, and are described in docs/README.md.
 # render, check-render and check-lockstep read committed files only. check-links fetches public
-# sample URLs and needs no key. refresh, check-methods, check-addresses and check-hosted call
+# sample URLs and needs no key. refresh, check-methods, check-addresses, check-codegen-live and check-hosted call
 # production with PIPELEX_API_KEY and spend no inference; CI holds no key, so they are run by hand.
+#
+# A code recipe's generated types come from scripts/sdk/recipe_codegen.py, which runs beside
+# pipelex-sdk in an environment of its own (`uv run --script`), since the SDK and the runtime this
+# project still pins cannot share one. It regenerates them (keyed, within refresh), checks them
+# against their codegen.lock (offline), and checks that the lock records what the address resolves
+# to today (keyed, within check-hosted). Each Python recipe script, and that script itself, is
+# type-checked by pyright in the environment its inline dependencies describe, under
+# recipes/pyrightconfig.json.
+RECIPE_CODEGEN := uv run --quiet --script scripts/sdk/recipe_codegen.py
+RECIPE_TREES = $$($(VENV_PYTHON) -m scripts recipe-trees)
 
 render: env
 	$(call PRINT_TITLE,"Rendering every method page")
@@ -261,22 +276,43 @@ check-links: env
 	$(call PRINT_TITLE,"Checking every raw sample link")
 	$(VENV_PYTHON) -m scripts check-links
 
-check-cookbook: check-render check-lockstep check-links
+check-recipes: env
+	$(call PRINT_TITLE,"Checking that the generated types of every recipe name a pinned address its code calls")
+	$(VENV_PYTHON) -m scripts check-recipes
+
+check-codegen: env
+	$(call PRINT_TITLE,"Checking the generated types of every recipe against their codegen.lock")
+	@trees="$(RECIPE_TREES)" || exit 1; if [ -n "$$trees" ]; then $(RECIPE_CODEGEN) check $$trees; else echo "no recipe carries generated types"; fi
+
+check-recipe-types: env
+	$(call PRINT_TITLE,"Type-checking every Python recipe script in its own environment")
+	@scripts="$$($(VENV_PYTHON) -m scripts recipe-scripts)" || exit 1; status=0; for script in scripts/sdk/recipe_codegen.py $$scripts; do \
+		echo "· $$script"; \
+		uv sync --quiet --script "$$script" || { status=1; continue; }; \
+		$(VENV_PYRIGHT) -p recipes/pyrightconfig.json --pythonpath "$$(uv python find --script "$$script")" "$$script" || status=1; \
+	done; exit $$status
+
+check-cookbook: check-render check-lockstep check-links check-recipes check-codegen check-recipe-types
 	@echo "> done: check-cookbook"
 
 refresh: env
-	$(call PRINT_TITLE,"Refreshing the contract snapshot of every method from production")
+	$(call PRINT_TITLE,"Refreshing from production the contract snapshot of every method and the types of every recipe")
 	$(VENV_PYTHON) -m scripts refresh
+	@trees="$(RECIPE_TREES)" || exit 1; if [ -n "$$trees" ]; then $(RECIPE_CODEGEN) generate $$trees; fi
 
 check-methods: env
 	$(call PRINT_TITLE,"Validating every method on production from its files")
 	$(VENV_PYTHON) -m scripts check-methods
 
 check-addresses: env
-	$(call PRINT_TITLE,"Validating every page's address on production at the page's tag")
+	$(call PRINT_TITLE,"Validating on production the address of every page at its tag and of every recipe")
 	$(VENV_PYTHON) -m scripts check-addresses
 
-check-hosted: check-methods check-addresses
+check-codegen-live: env
+	$(call PRINT_TITLE,"Checking on production that the types of every recipe come from what its address resolves to")
+	@trees="$(RECIPE_TREES)" || exit 1; if [ -n "$$trees" ]; then $(RECIPE_CODEGEN) verify $$trees; else echo "no recipe carries generated types"; fi
+
+check-hosted: check-methods check-addresses check-codegen-live
 	@echo "> done: check-hosted"
 
 ##############################################################################################
@@ -512,7 +548,7 @@ cc: cleanderived c
 check: cleanderived check-unused-imports c
 	@echo "> done: check"
 
-agent-check: fix-unused-imports format lint pyright mypy check-render check-lockstep
+agent-check: fix-unused-imports format lint pyright mypy check-render check-lockstep check-recipes check-codegen
 	@echo "> done: agent-check"
 
 v: validate

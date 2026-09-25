@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- **Python recipes**: `recipes/code/python/` holds recipes that each run a method by an address pinned to a release tag, from one script `uv run` installs and runs, reading the result through types generated from the method: a FastAPI endpoint answering questions from documents, the method library's invoice extraction over every row of a CSV with bounded concurrency, the research report as a CrewAI agent's tool, and a weekly digest that turns a Discord server's messages into an HTML newsletter.
+- **The recipe checks**: `make check-recipes` holds each recipe's generated types to the pinned address its code calls, `make check-codegen` checks them against their `codegen.lock` offline, and `make check-recipe-types` type-checks every Python recipe script with pyright in its own environment; `make check-cookbook`, which CI runs, includes all three. `make refresh` also regenerates every recipe's types, `make check-addresses` validates every address a recipe pins and fails on one that does not resolve, and `make check-codegen-live`, part of `make check-hosted`, checks that every recipe's lock records the crate its address resolves to today.
+
 ## [v0.18.0] - 2026-09-25
 
 ### Highlights
