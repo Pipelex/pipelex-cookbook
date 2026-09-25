@@ -217,6 +217,31 @@ class TestRender:
             assert "import httpx" not in python
             assert '# dependencies = ["pipelex-sdk==0.12.0"]\n' in python
 
+    @pytest.mark.parametrize(
+        ("inputs", "unchecked"),
+        [
+            ({"catalogue": {"url": WIDGETS_SAMPLE_URL}}, False),
+            ({"catalogue": ["a", "b"], "note": "text"}, False),
+            ({"catalogue": [{"url": WIDGETS_SAMPLE_URL}, {"url": WIDGETS_SAMPLE_URL}]}, True),
+            ({"catalogue": {"url": WIDGETS_SAMPLE_URL}, "pages": 3}, True),
+            ({"catalogue": [{"url": WIDGETS_SAMPLE_URL}], "padding": "x" * INLINE_INPUTS_LIMIT}, False),
+        ],
+    )
+    def test_a_python_sample_the_sdk_type_refuses_leaves_argument_types_unchecked_in_the_file_only(
+        self, make_cookbook: MakeCookbook, templates_dir: Path, inputs: dict[str, JsonValue], unchecked: bool
+    ):
+        root = make_cookbook()
+        (root / "methods" / "extract_widgets" / "inputs.json").write_text(json.dumps(inputs), encoding="utf-8")
+        cookbook = load_cookbook(root)
+        page = render_pages(cookbook=cookbook, templates_dir=templates_dir)[root / "methods" / "extract_widgets" / "README.md"]
+        python = render_snippets(cookbook=cookbook, templates_dir=templates_dir)[
+            root / "tests" / "snippets" / "extract_widgets" / "python" / "snippet.py"
+        ]
+        block = _fenced_block(page, language="python")
+        assert python.endswith(block)
+        assert ("\n# pyright: reportArgumentType=false\n" in python.removesuffix(block)) is unchecked
+        assert "pyright" not in page
+
     def test_python_strings_are_quoted_as_ruff_quotes_them(self):
         assert python_literal("plain") == '"plain"'
         assert python_literal('say "hi"') == "'say \"hi\"'"

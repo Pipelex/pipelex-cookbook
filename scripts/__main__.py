@@ -2,7 +2,7 @@
 
 Offline, needing no key: `render`, `check-render`, `check-lockstep`, `check-links` (which only fetches public sample URLs), `check-recipes`, and
 `recipe-trees`, `recipe-scripts`, `recipe-packages` and `recipe-shell-scripts`, which list what the Makefile hands the SDK script, the type
-checkers and shellcheck.
+checkers and shellcheck: the recipes' code, and the page snippets `render` writes under `tests/snippets/`.
 Keyed, calling production with `PIPELEX_API_KEY`: `refresh`, `check-methods`, `check-addresses`.
 """
 
@@ -15,7 +15,16 @@ from scripts.checks import check_links, http_status, lockstep_problems, orphan_s
 from scripts.cookbook import Cookbook, load_cookbook
 from scripts.exceptions import CookbookError
 from scripts.hosted import AddressState, AddressVerdict, check_address, check_pinned_method_ref, client_from_env, validate_packages
-from scripts.recipes import find_addresses, find_trees, python_scripts, recipe_addresses, recipe_problems, shell_scripts, typescript_packages
+from scripts.recipes import (
+    find_addresses,
+    find_trees,
+    in_recipes,
+    python_scripts,
+    recipe_addresses,
+    recipe_problems,
+    shell_scripts,
+    typescript_packages,
+)
 from scripts.render import render_all, render_pages
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -58,9 +67,9 @@ def main(argv: list[str] | None = None) -> int:
             "Fail when a recipe's generated tree names no pinned address, or one its code does not call as a string literal, "
             "when a recipe names an address without a release tag, or when a recipe's shell script does not parse"
         ),
-        "recipe-trees": "Print every recipe's generated tree, one directory per line",
-        "recipe-scripts": "Print every Python recipe script, one per line",
-        "recipe-packages": "Print every TypeScript recipe package, one directory per line",
+        "recipe-trees": "Print every generated tree of a recipe or a page snippet, one directory per line",
+        "recipe-scripts": "Print every Python script of a recipe or a page snippet, one per line",
+        "recipe-packages": "Print every TypeScript recipe package, and the page snippets' package, one directory per line",
         "recipe-shell-scripts": "Print every shell script of a recipe, one per line",
     }
     for command_name in commands:
@@ -204,7 +213,7 @@ def _check_recipes(cookbook: Cookbook) -> int:
         print(f"✗ {problem}")
     if problems:
         return 1
-    tree_count = len(find_trees(cookbook.root))
+    tree_count = sum(1 for tree in find_trees(cookbook.root) if in_recipes(tree.directory, root=cookbook.root))
     address_count = len({found.address for found in find_addresses(cookbook.root)})
     shell_count = len(shell_scripts(cookbook.root))
     print(

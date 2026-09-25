@@ -49,7 +49,8 @@ With `PIPELEX_API_KEY` set:
 ## 5. Check and open the pull request
 
 1. `make agent-check` and `make agent-test`: the linters, the page freshness, the lockstep versions and the tests.
-2. `make check-hosted`, by hand, since CI holds no key.
-3. An entry in `CHANGELOG.md` under `## [Unreleased]`.
+2. `make check-recipe-types`, which type-checks the page's snippet files against the SDK, each in its own environment.
+3. `make check-hosted`, by hand, since CI holds no key.
+4. An entry in `CHANGELOG.md` under `## [Unreleased]`.
 
 The method resolves by address once the next release brings it to `main`; the release re-renders every page at its tag.
