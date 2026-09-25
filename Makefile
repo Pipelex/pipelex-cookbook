@@ -70,10 +70,12 @@ make check-links              - Fetch every sample URL in the packages, and ever
 make check-recipes            - Fail when a recipe's generated types name no pinned address or one its code does not call, when a recipe names an unpinned address, or when its shell script does not parse
 make check-codegen            - Check the generated types of every recipe and page snippet against their codegen.lock (offline)
 make check-recipe-types       - Type-check every recipe and page snippet: each Python script with pyright in its own environment, each TypeScript package with tsc after its codegen gate, each recipe's shell script with shellcheck
-make check-cookbook           - The checks that need no key: the pages and their snippets, the manifests, the links and the recipes (what CI runs)
-make refresh                  - Write every method's contract.json from production, render, then write every recipe's and page snippet's generated types (needs PIPELEX_API_KEY)
+make check-library            - Check that library.json is the snapshot of the library's tarball at the pinned tag (no key)
+make check-cookbook           - The checks that need no key: the pages and their snippets, the manifests, the links, the library's snapshot and the recipes (what CI runs)
+make refresh-library          - Take the method library's snapshot, library.json, at the tag cookbook.toml pins (no key)
+make refresh                  - Take the library's snapshot, write every method's contract.json from production, render, then write every recipe's and page snippet's generated types (needs PIPELEX_API_KEY)
 make check-methods            - Validate every method on production from its files (needs PIPELEX_API_KEY)
-make check-addresses          - Validate every page's address at its tag, and every address a recipe names, on production (needs PIPELEX_API_KEY)
+make check-addresses          - Validate every page's address at its tag, every address a recipe names, and every library method the front page lists, on production (needs PIPELEX_API_KEY)
 make check-codegen-live       - Check that every recipe's and page snippet's types come from what its sidecar names as it is today (needs PIPELEX_API_KEY)
 make check-hosted             - Every check that calls production, run by hand before each PR and at each release (needs PIPELEX_API_KEY)
 
@@ -131,8 +133,8 @@ export HELP
 	codex-tests gha-tests \
 	run-all-tests \
 	check c cc agent-check agent-test \
-	render check-render check-lockstep check-links check-recipes check-codegen check-recipe-types check-cookbook \
-	refresh check-methods check-addresses check-codegen-live check-hosted \
+	render check-render check-lockstep check-links check-library check-recipes check-codegen check-recipe-types check-cookbook \
+	refresh refresh-library check-methods check-addresses check-codegen-live check-hosted \
 	merge-check-ruff-lint merge-check-ruff-format merge-check-plxt-format merge-check-plxt-lint merge-check-mypy merge-check-pyright \
 	li check-unused-imports fix-unused-imports check-uv check-TODOs
 
@@ -204,7 +206,8 @@ update: env-verbose
 
 # The renderer and the checks live in scripts/, and are described in docs/README.md.
 # render, check-render and check-lockstep read committed files only. check-links fetches public
-# sample URLs and needs no key. refresh, check-methods, check-addresses, check-codegen-live and check-hosted call
+# sample URLs and needs no key, and refresh-library and check-library download the method library's public tarball at the pinned tag.
+# refresh, check-methods, check-addresses, check-codegen-live and check-hosted call
 # production with PIPELEX_API_KEY and spend no inference; CI holds no key, so they are run by hand.
 #
 # A code recipe's generated types come from scripts/sdk/recipe_codegen.py, which runs beside
@@ -243,6 +246,10 @@ check-links: env
 	$(call PRINT_TITLE,"Checking every raw sample link")
 	$(VENV_PYTHON) -m scripts check-links
 
+check-library: env
+	$(call PRINT_TITLE,"Checking the snapshot of the method library against its tarball at the pinned tag")
+	$(VENV_PYTHON) -m scripts check-library
+
 check-recipes: env
 	$(call PRINT_TITLE,"Checking that every recipe pins the addresses it names and calls and that its shell scripts parse")
 	$(VENV_PYTHON) -m scripts check-recipes
@@ -269,11 +276,16 @@ check-recipe-types: env
 		else echo "· shellcheck is not installed: the shell scripts were only parsed, by check-recipes"; fi; \
 	fi; exit $$status
 
-check-cookbook: check-render check-lockstep check-links check-recipes check-codegen check-recipe-types
+check-cookbook: check-render check-lockstep check-links check-library check-recipes check-codegen check-recipe-types
 	@echo "> done: check-cookbook"
 
+refresh-library: env
+	$(call PRINT_TITLE,"Taking the snapshot of the method library at the tag cookbook.toml pins")
+	$(VENV_PYTHON) -m scripts refresh-library
+
 refresh: env
-	$(call PRINT_TITLE,"Refreshing every contract from production and then the pages and every generated tree")
+	$(call PRINT_TITLE,"Refreshing the snapshot of the library, every contract from production, and then the pages and every generated tree")
+	$(VENV_PYTHON) -m scripts refresh-library
 	$(VENV_PYTHON) -m scripts refresh
 	$(VENV_PYTHON) -m scripts render
 	@trees="$(RECIPE_TREES)" || exit 1; if [ -n "$$trees" ]; then $(RECIPE_CODEGEN) generate $$trees; fi

@@ -20,7 +20,7 @@ The runtime itself lives in [Pipelex/pipelex](https://github.com/Pipelex/pipelex
 - **A method**: follow [`docs/adding-a-method.md`](docs/adding-a-method.md). It takes you through the package, the answer key written before the first run, the proof on production, the page, and the checks.
 - **A recipe**: follow [`docs/adding-a-recipe.md`](docs/adding-a-recipe.md).
 
-**Generated files are never edited by hand**: a method's `README.md`, everything under `tests/snippets/<name>/`, a recipe's `generated/` tree, and the list of methods on the front page. Change their sources, then run `make render`, or `make refresh` when a method's contract or a recipe's address changes.
+**Generated files are never edited by hand**: a method's `README.md`, everything under `tests/snippets/<name>/`, a recipe's `generated/` tree, the two lists of methods on the front page, and `library.json`, the snapshot the library's list is written from. Change their sources, then run `make render`, `make refresh` when a method's contract or a recipe's address changes, or `make refresh-library` when the library's pinned tag moves.
 
 ## Before the pull request
 
