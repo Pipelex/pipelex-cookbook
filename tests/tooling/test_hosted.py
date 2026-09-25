@@ -1,9 +1,11 @@
+from pathlib import Path
+
 import httpx
 import pytest
 
 from scripts.cookbook import load_cookbook
 from scripts.exceptions import HostedApiError
-from scripts.hosted import AddressState, HostedClient, check_address, check_method_ref, check_pinned_method_ref
+from scripts.hosted import AddressState, HostedClient, check_address, check_method_ref, check_pinned_method_ref, validate_bundle_file
 from tests.tooling.test_data import MakeCookbook
 
 # The problem details production answered on 2026-09-25, cut down to what the address check reads.
@@ -103,3 +105,25 @@ class TestHosted:
         _answering(monkeypatch, status=status, body=body)
         cookbook = load_cookbook(make_cookbook())
         assert check_address(client=_client(), cookbook=cookbook, package=cookbook.packages[0]).state is expected
+
+    @pytest.mark.parametrize(
+        ("body", "is_valid", "report"),
+        [
+            ({"is_valid": True, "message": "MTHDS content validated successfully"}, True, "MTHDS content validated successfully"),
+            ({"is_valid": False, "rendered_markdown": "Pipe `hello` names no output"}, False, "Pipe `hello` names no output"),
+        ],
+        ids=["valid", "invalid"],
+    )
+    def test_a_bundle_is_validated_alone_under_its_path_from_the_root(
+        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path, body: dict[str, object], is_valid: bool, report: str
+    ):
+        requests = _answering(monkeypatch, status=200, body=body)
+        bundle = tmp_path / "tutorial" / "easy" / "hello.mthds"
+        bundle.parent.mkdir(parents=True)
+        bundle.write_text('domain = "hello"\n', encoding="utf-8")
+
+        verdict = validate_bundle_file(client=_client(), path=bundle, root=tmp_path)
+
+        assert (verdict.source, verdict.is_valid, verdict.report) == ("tutorial/easy/hello.mthds", is_valid, report)
+        assert requests[0]["mthds_contents"] == ['domain = "hello"\n']
+        assert requests[0]["mthds_sources"] == ["tutorial/easy/hello.mthds"]

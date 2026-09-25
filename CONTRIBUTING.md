@@ -25,7 +25,7 @@ The runtime itself lives in [Pipelex/pipelex](https://github.com/Pipelex/pipelex
 ## Before the pull request
 
 1. Run `make agent-check`, `make agent-test` and `make check-cookbook`, which is what CI runs on your pull request, sample links included.
-2. When your change touches a method, a page or a recipe, also run `make check-hosted`, with your key in `.env`. CI holds no key, so it cannot run these checks, and a maintainer runs them on your pull request too.
+2. When your change touches a method, a page, a recipe or a tutorial lesson, also run `make check-hosted`, with your key in `.env`. CI holds no key, so it cannot run these checks, and a maintainer runs them on your pull request too.
 3. Add an entry under `## [Unreleased]` in `CHANGELOG.md`.
 
 ## Open the pull request

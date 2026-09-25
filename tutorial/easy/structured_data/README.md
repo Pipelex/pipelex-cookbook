@@ -196,7 +196,7 @@ For native types like `Document`, you need to wrap the content with a `concept` 
   "document": {
     "concept": "native.Document",
     "content": {
-      "url": "assets/simple_ocr/illustrated_train_article.pdf"
+      "url": "../../../assets/simple_ocr/illustrated_train_article.pdf"
     }
   },
   "question": "What is the main topic of this document?"

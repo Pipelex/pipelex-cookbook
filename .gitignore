@@ -26,6 +26,9 @@ dist/
 # Ruff
 .ruff_cache/
 
+# The Pipelex runtime's local files, such as the traces a tutorial lesson run from the repository root writes
+.pipelex/
+
 # Results
 results/
 

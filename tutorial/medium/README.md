@@ -8,7 +8,7 @@ Take your Pipelex skills to the next level.
 
 Control which LLM to use and how it behaves.
 
-**To change default models and presets**, edit `.pipelex/inference/deck/base_deck.toml`. See the [full list of available models](https://docs.pipelex.com/home/5-setup/gateway-models/) and the [Inference Backend Configuration](https://docs.pipelex.com/home/7-configuration/config-technical/inference-backend-config/) documentation for details.
+**To change default models and presets**, edit `~/.pipelex/inference/deck/x_custom_llm_deck.toml`, in the configuration `pipelex init` writes. See [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/) and the [Inference Backend Configuration](https://docs.pipelex.com/latest/configuration/config-technical/inference-backend-config/) documentation for details.
 
 **File: `1_model_config.mthds`**
 
@@ -28,12 +28,12 @@ prompt = """
 Write a haiku about coding.
 """
 
-# Example 2: Inline model configuration
-[pipe.generate_with_custom_settings]
+# Example 2: A model chosen by its alias
+[pipe.generate_with_alias]
 type = "PipeLLM"
-description = "Generate text with custom temperature"
+description = "Generate text with a model chosen by its alias"
 output = "Text"
-model = { model = "best-claude", temperature = 0.9 }
+model = "@default-premium"
 prompt = """
 Write a creative haiku about coding.
 """
@@ -55,7 +55,7 @@ description = "Compare different model configurations"
 output = "Text"
 steps = [
     { pipe = "generate_with_default", result = "default_result" },
-    { pipe = "generate_with_custom_settings", result = "custom_result" },
+    { pipe = "generate_with_alias", result = "alias_result" },
     { pipe = "generate_with_preset", result = "preset_result" },
     { pipe = "format_comparison", result = "comparison" },
 ]
@@ -63,7 +63,7 @@ steps = [
 [pipe.format_comparison]
 type = "PipeCompose"
 description = "Format the comparison results"
-inputs = { default_result = "Text", custom_result = "Text", preset_result = "Text" }
+inputs = { default_result = "Text", alias_result = "Text", preset_result = "Text" }
 output = "Text"
 template = """
 # Model Configuration Comparison
@@ -71,8 +71,8 @@ template = """
 ## 1. Default Model (no config)
 $default_result
 
-## 2. Custom Settings (temperature = 0.9)
-$custom_result
+## 2. Model Alias (default-premium)
+$alias_result
 
 ## 3. Preset (writing-creative)
 $preset_result
@@ -80,10 +80,9 @@ $preset_result
 ```
 
 **What you need to know:**
-- `model = { model = "...", temperature = 0.9 }` - Inline configuration
-- `model = "preset_name"` - Use a predefined preset from your deck: Leanr more here: [LLM Presets](https://docs.pipelex.com/latest/home/7-configuration/config-technical/inference-backend-config/)
-- Temperature: 0.0 = deterministic, 1.0 = creative
-- Presets and aliases are defined in `.pipelex/inference/deck/base_deck.toml`
+- `model = "@alias_name"` - Use a model by its alias from your deck
+- `model = "$preset_name"` - Use a predefined preset from your deck: learn more in [LLM Presets](https://docs.pipelex.com/latest/configuration/config-technical/inference-backend-config/)
+- Presets and aliases are defined in your `~/.pipelex/inference/deck/`
 
 **Run it:**
 ```bash
@@ -250,9 +249,9 @@ pipelex run bundle tutorial/medium/3_parallel_execution.mthds
 
 | Feature | How to use |
 |---------|------------|
-| Custom model | `model = { model = "...", temperature = 0.5 }` |
-| Preset | `model = "preset_name"` |
+| Model alias | `model = "@alias_name"` |
+| Preset | `model = "$preset_name"` |
 | Batch processing | `batch_over = "list"`, `batch_as = "item"` |
 | Parallel execution | `PipeParallel` with `branches = [...]` |
 
-**Next:** Explore the [examples](../../examples/) for real-world use cases!
+**Next:** Explore the [methods you can run by address](../../README.md#methods-you-can-run-by-address) for real-world use cases!

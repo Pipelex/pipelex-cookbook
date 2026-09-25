@@ -13,12 +13,12 @@ prompt = """
 Write a haiku about coding.
 """
 
-# Example 2: Inline model configuration
-[pipe.generate_with_custom_settings]
+# Example 2: A model chosen by its alias
+[pipe.generate_with_alias]
 type = "PipeLLM"
-description = "Generate text with custom temperature"
+description = "Generate text with a model chosen by its alias"
 output = "Text"
-model = { model = "best-claude", temperature = 0.9 }
+model = "@default-premium"
 prompt = """
 Write a creative haiku about coding.
 """
@@ -40,7 +40,7 @@ description = "Compare different model configurations"
 output = "Text"
 steps = [
   { pipe = "generate_with_default", result = "default_result" },
-  { pipe = "generate_with_custom_settings", result = "custom_result" },
+  { pipe = "generate_with_alias", result = "alias_result" },
   { pipe = "generate_with_preset", result = "preset_result" },
   { pipe = "format_comparison", result = "comparison" },
 ]
@@ -48,7 +48,7 @@ steps = [
 [pipe.format_comparison]
 type = "PipeCompose"
 description = "Format the comparison results"
-inputs = { default_result = "Text", custom_result = "Text", preset_result = "Text" }
+inputs = { default_result = "Text", alias_result = "Text", preset_result = "Text" }
 output = "Text"
 template = """
 # Model Configuration Comparison
@@ -56,8 +56,8 @@ template = """
 ## 1. Default Model (no config)
 $default_result
 
-## 2. Custom Settings (temperature = 0.9)
-$custom_result
+## 2. Model Alias (default-premium)
+$alias_result
 
 ## 3. Preset (writing-creative)
 $preset_result
