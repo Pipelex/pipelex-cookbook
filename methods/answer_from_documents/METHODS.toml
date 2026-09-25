@@ -2,7 +2,7 @@
 name = "answer_from_documents"
 display_name = "Document Question Answering"
 address = "github.com/Pipelex/pipelex-cookbook"
-version = "0.18.0"
+version = "0.19.0"
 description = "Answer a question from a set of documents with verbatim cited passages, a confidence level, and a status that says whether the documents answer it fully, in part, or not at all, and why."
 authors = ["Evotis S.A.S"]
 license = "MIT"

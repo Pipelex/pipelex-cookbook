@@ -1,0 +1,7 @@
+{
+  "typeCheckingMode": "strict",
+  "pythonVersion": "3.11",
+  "reportMissingModuleSource": "error",
+  "reportImplicitOverride": true,
+  "reportUnnecessaryTypeIgnoreComment": true
+}

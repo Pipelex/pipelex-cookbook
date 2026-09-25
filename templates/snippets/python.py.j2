@@ -1,0 +1,25 @@
+import asyncio
+
+{% if page.fetches_inputs %}
+import httpx
+{% endif %}
+from pipelex_sdk.client import PipelexAPIClient
+
+
+async def main() -> None:
+{% if page.fetches_inputs %}
+    inputs = httpx.get("{{ page.inputs_url }}").json()
+{% endif %}
+    async with PipelexAPIClient() as client:
+        result = await client.start_and_wait(
+            method_ref="{{ page.address }}",
+{% if page.fetches_inputs %}
+            inputs=inputs,
+{% else %}
+            inputs={{ page.inputs_python }},
+{% endif %}
+        )
+        print(result.main_stuff)
+
+
+asyncio.run(main())

@@ -1,8 +1,0 @@
-{
-  "table_screenshot": {
-    "concept": "tables.TableScreenshot",
-    "content": {
-      "url": "inputs/table_image.png"
-    }
-  }
-}

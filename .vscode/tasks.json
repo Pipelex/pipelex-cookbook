@@ -14,11 +14,11 @@
             }
         },
         {
-            "label": "make validate",
+            "label": "make agent-test",
             "type": "shell",
             "command": "make",
             "args": [
-                "validate",
+                "agent-test",
             ],
             "group": {
                 "kind": "test",

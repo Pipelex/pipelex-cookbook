@@ -5,7 +5,13 @@ samples and the code snippets' inputs from `inputs.json`, the "Takes" and "Retur
 answer key. The templates under `templates/` hold the wording and the links, one block per door, so a change to a door is made once and every page
 inherits it at the next render.
 
-The front page, `README.md`, is written by hand except for one region between two markers, which lists every method with its page and its pitch.
+The page's TypeScript and Python snippets are also written as files, `tests/snippets/<name>/typescript/snippet.ts` and
+`tests/snippets/<name>/python/snippet.py`, from the same templates under `templates/snippets/`, so that what the page shows is what the type
+checkers read. Each file ends with a typed read of the output the page does not show, through the types generated beside it, and each
+language's generated tree gets its `sources.json` here too, naming the package's `.mthds` files that `make refresh` generates the types from.
+
+The front page, `README.md`, is written by hand except for two regions, each between its two markers: one lists every method with its page and
+its pitch, and the other the method library's methods, from the snapshot `library.json` taken at the library tag `cookbook.toml` pins.
 """
 
 import json
@@ -13,19 +19,35 @@ import re
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
-from pydantic import BaseModel, ConfigDict, JsonValue
+from pydantic import BaseModel, ConfigDict, Field, JsonValue
 
 from scripts.contract import Contract, ContractField, ContractInput, short_concept
-from scripts.cookbook import INPUTS_FILE, KEY_FILE, METHODS_DIR, Cookbook, MethodPackage
+from scripts.cookbook import INPUTS_FILE, KEY_FILE, METHODS_DIR, SNIPPETS_DIR, Cookbook, MethodPackage
 from scripts.exceptions import CookbookLayoutError
 from scripts.key import KeyLine
+from scripts.library import LIBRARY_METHODS_DIR
+from scripts.recipes import GENERATED_DIR, PYTHON_TARGET, SIDECAR_FILE, TYPESCRIPT_TARGET
 
 PAGE_TEMPLATE = "method_page.md.j2"
+# Each file `make render` writes in a method's `tests/snippets/<name>/`, mapped to the template writing it around the page's snippet.
+SNIPPET_TEMPLATES = {"typescript/snippet.ts": "snippets/file.ts.j2", "python/snippet.py": "snippets/file.py.j2"}
+# The sidecar of each language's generated tree, `tests/snippets/<name>/<language>/generated/<name>/sources.json`, with the codegen target
+# `make refresh` generates the tree for. It names the package's `.mthds` files rather than the page's address, since the page names the last
+# release's tag, which does not hold a method added since.
+SIDECAR_TEMPLATE = "snippets/sources.json.j2"
+SIDECAR_TARGETS = {"typescript": TYPESCRIPT_TARGET, "python": PYTHON_TARGET}
+# The most characters of sample inputs, serialised as JSON, that the code snippets write out. Above it, every snippet fetches the inputs from
+# the method's `inputs.json` at the page's tag instead, since a sample written out in three languages would bury the page's doors.
+INLINE_INPUTS_LIMIT = 4096
 FRONT_PAGE_FILE = "README.md"
 FRONT_REGION_TEMPLATE = "front_region.md.j2"
 FRONT_REGION_BEGIN = "<!-- BEGIN methods, written by `make render` from methods/ and cookbook.toml: never edit this region by hand -->"
 FRONT_REGION_END = "<!-- END methods -->"
+LIBRARY_REGION_TEMPLATE = "library_region.md.j2"
+LIBRARY_REGION_BEGIN = "<!-- BEGIN library, written by `make render` from library.json: never edit this region by hand -->"
+LIBRARY_REGION_END = "<!-- END library -->"
 RAW_BASE_URL = "https://raw.githubusercontent.com"
+GITHUB_BASE_URL = "https://github.com"
 DEFAULT_CHATBOT_WITH_SAMPLES = "Run {address} on {samples}"
 DEFAULT_CHATBOT_WITHOUT_SAMPLES = "Run {address} with the sample inputs in {inputs_url}"
 DEFAULT_YOURS_CHANGE = "adapt what it does to my case"
@@ -39,6 +61,8 @@ _KIND_NOUNS = {"prose": "text", "list": None}
 # A concept refining the native `Text` carries a single `text` field, which says nothing the concept's own description does not.
 _TEXT_ONLY_FIELDS = ["text"]
 _NATIVE_PREFIX = "native."
+# The output multiplicities that make the main pipe return a list.
+_LIST_MULTIPLICITIES = frozenset({"variable", "fixed"})
 
 _SCALAR_PHRASES = {
     "text": ("text", "texts"),
@@ -61,6 +85,44 @@ class Sample(BaseModel):
     url: str
 
 
+class FrontRegion(BaseModel):
+    """A region of the front page that `make render` writes between its two markers, from its template."""
+
+    model_config = ConfigDict(frozen=True)
+
+    what: str = Field(description="What the region lists, as a refusal names it")
+    begin: str
+    end: str
+    template: str
+
+
+METHODS_REGION = FrontRegion(what="the list of methods", begin=FRONT_REGION_BEGIN, end=FRONT_REGION_END, template=FRONT_REGION_TEMPLATE)
+LIBRARY_REGION = FrontRegion(
+    what="the list of the library's methods", begin=LIBRARY_REGION_BEGIN, end=LIBRARY_REGION_END, template=LIBRARY_REGION_TEMPLATE
+)
+
+
+class LibraryLine(BaseModel):
+    """One line of the front page's list of the library's methods."""
+
+    model_config = ConfigDict(frozen=True)
+
+    display_name: str
+    url: str = Field(description="The method's directory in the library's repository, at the pinned tag")
+    address: str
+    description: str
+
+
+class LibraryContext(BaseModel):
+    """Everything the library region's template needs, derived from the snapshot and `cookbook.toml`."""
+
+    model_config = ConfigDict(frozen=True)
+
+    url: str = Field(description="The library's repository at the pinned tag")
+    tag: str
+    methods: list[LibraryLine]
+
+
 class PageContext(BaseModel):
     """Everything the page template needs, derived from one package."""
 
@@ -77,7 +139,12 @@ class PageContext(BaseModel):
     takes: list[str]
     returns: str
     returns_fields: list[str]
+    output_concept: str = Field(description="The output concept's name without its domain, which the generated types name it by")
+    output_is_list: bool
+    bundle_sources: list[str] = Field(description="The package's `.mthds` files, by their paths from the repository root")
     chatbot: str
+    fetches_inputs: bool
+    python_inputs_typed: bool
     inputs_typescript: str
     inputs_python: str
     start_body_json: str
@@ -121,32 +188,110 @@ def render_pages(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, str]:
 
 
 def render_front_page(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, str]:
-    """Render the front page's region listing every method, leaving every line outside it as it is.
+    """Render the front page's two regions, the list of methods and the list of the library's methods, leaving every line outside them as it is.
 
     Returns:
-        The front page's path, mapped to its contents with the region re-rendered.
+        The front page's path, mapped to its contents with both regions re-rendered.
 
     Raises:
-        CookbookLayoutError: The front page is missing, or does not hold exactly one region between the two markers.
+        CookbookLayoutError: The front page is missing, does not hold each region exactly once between its two markers, or holds two regions
+            that overlap; or the library's snapshot was not loaded.
     """
     front_page_path = cookbook.root / FRONT_PAGE_FILE
     if not front_page_path.is_file():
-        msg = f"{front_page_path} does not exist, and it holds the list of methods `make render` writes"
+        msg = f"{front_page_path} does not exist, and it holds the lists `make render` writes"
         raise CookbookLayoutError(msg)
     current = front_page_path.read_text(encoding="utf-8")
-    begin = current.find(FRONT_REGION_BEGIN)
-    end = current.find(FRONT_REGION_END)
-    if current.count(FRONT_REGION_BEGIN) != 1 or current.count(FRONT_REGION_END) != 1 or end < begin:
-        msg = f"{FRONT_PAGE_FILE} must hold one region for the list of methods, opened by `{FRONT_REGION_BEGIN}` and closed by `{FRONT_REGION_END}`"
+    environment = make_environment(templates_dir)
+    bodies = [
+        (
+            METHODS_REGION,
+            environment.get_template(METHODS_REGION.template).render(
+                methods=[build_page_context(cookbook=cookbook, package=package) for package in cookbook.packages]
+            ),
+        ),
+        (LIBRARY_REGION, environment.get_template(LIBRARY_REGION.template).render(library=build_library_context(cookbook))),
+    ]
+    spans: list[tuple[int, int, FrontRegion, str]] = []
+    for region, body in bodies:
+        begin = current.find(region.begin)
+        end = current.find(region.end)
+        if current.count(region.begin) != 1 or current.count(region.end) != 1 or end < begin:
+            msg = f"{FRONT_PAGE_FILE} must hold one region for {region.what}, opened by `{region.begin}` and closed by `{region.end}`"
+            raise CookbookLayoutError(msg)
+        spans.append((begin, end, region, body))
+    spans.sort(key=lambda span: span[0])
+    for (_, earlier_end, earlier, _), (later_begin, _, later, _) in zip(spans, spans[1:], strict=False):
+        if later_begin < earlier_end + len(earlier.end):
+            msg = (
+                f"{FRONT_PAGE_FILE} opens the region for {later.what} inside the region for {earlier.what}: each region closes before the next opens"
+            )
+            raise CookbookLayoutError(msg)
+    # Each region is replaced from the last to the first, so the offsets found above still hold for the regions not yet replaced.
+    rendered = current
+    for begin, end, region, body in reversed(spans):
+        rendered = rendered[: begin + len(region.begin)] + "\n" + body + rendered[end:]
+    return {front_page_path: rendered}
+
+
+def build_library_context(cookbook: Cookbook) -> LibraryContext:
+    """Derive the library region's lines from the snapshot, linking each method's directory at the pinned tag.
+
+    Raises:
+        CookbookLayoutError: The cookbook was loaded without its library snapshot.
+    """
+    snapshot = cookbook.library
+    if snapshot is None:
+        msg = "the cookbook was loaded without library.json, which the front page's list of the library's methods is written from"
         raise CookbookLayoutError(msg)
-    template = make_environment(templates_dir).get_template(FRONT_REGION_TEMPLATE)
-    region = template.render(methods=[build_page_context(cookbook=cookbook, package=package) for package in cookbook.packages])
-    return {front_page_path: current[: begin + len(FRONT_REGION_BEGIN)] + "\n" + region + current[end:]}
+    repository_url = f"{GITHUB_BASE_URL}/{cookbook.settings.library.repository}/tree/{snapshot.tag}"
+    return LibraryContext(
+        url=repository_url,
+        tag=snapshot.tag,
+        methods=[
+            LibraryLine(
+                display_name=method.display_name,
+                url=f"{repository_url}/{LIBRARY_METHODS_DIR}/{method.name}",
+                address=f"{snapshot.address}/{method.name}@{snapshot.tag}",
+                description=_sentence(method.description),
+            )
+            for method in snapshot.methods
+        ],
+    )
+
+
+def render_snippets(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, str]:
+    """Render every package's TypeScript and Python snippets as files, and the sidecar of each one's generated tree.
+
+    Each snippet file is the page's own snippet under a header saying where it comes from, followed by a typed read of the output that the
+    page does not show. Each sidecar names the package's `.mthds` files and the codegen target its tree is generated for.
+
+    Returns:
+        Each file's path, under `tests/snippets/<name>/`, mapped to its rendered contents.
+
+    Raises:
+        CookbookLayoutError: A package has no contract snapshot yet.
+    """
+    environment = make_environment(templates_dir)
+    sidecar_template = environment.get_template(SIDECAR_TEMPLATE)
+    snippets: dict[Path, str] = {}
+    for package in cookbook.packages:
+        context = build_page_context(cookbook=cookbook, package=package)
+        snippets_dir = cookbook.root / SNIPPETS_DIR / package.name
+        for relative_path, template_name in SNIPPET_TEMPLATES.items():
+            snippets[snippets_dir / relative_path] = environment.get_template(template_name).render(page=context)
+        for language, target in SIDECAR_TARGETS.items():
+            snippets[snippets_dir / language / GENERATED_DIR / package.name / SIDECAR_FILE] = sidecar_template.render(page=context, target=target)
+    return snippets
 
 
 def render_all(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, str]:
-    """Every file `make render` writes: each method's page, and the front page with its list of methods."""
-    return render_pages(cookbook=cookbook, templates_dir=templates_dir) | render_front_page(cookbook=cookbook, templates_dir=templates_dir)
+    """Every file `make render` writes: each method's page and its snippet files, and the front page with its two lists."""
+    return (
+        render_pages(cookbook=cookbook, templates_dir=templates_dir)
+        | render_snippets(cookbook=cookbook, templates_dir=templates_dir)
+        | render_front_page(cookbook=cookbook, templates_dir=templates_dir)
+    )
 
 
 def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageContext:
@@ -171,6 +316,7 @@ def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageCon
     snippet_inputs = _snippet_inputs(package.inputs)
     samples = _samples(package=package)
     inputs_url = f"{RAW_BASE_URL}/{cookbook.settings.repository}/{cookbook.tag}/{METHODS_DIR}/{package.name}/{INPUTS_FILE}"
+    fetches_inputs = len(json.dumps(snippet_inputs, ensure_ascii=False)) > INLINE_INPUTS_LIMIT
 
     chatbot_template = editorial.chatbot or (DEFAULT_CHATBOT_WITH_SAMPLES if samples else DEFAULT_CHATBOT_WITHOUT_SAMPLES)
     try:
@@ -201,7 +347,12 @@ def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageCon
         returns_fields=[]
         if [contract_field.name for contract_field in contract.output.fields] == _TEXT_ONLY_FIELDS
         else [_field_line(contract_field) for contract_field in contract.output.fields],
+        output_concept=short_concept(contract.output.concept),
+        output_is_list=contract.output.multiplicity in _LIST_MULTIPLICITIES,
+        bundle_sources=[f"{METHODS_DIR}/{package.name}/{bundle_file}" for bundle_file in package.bundle_files],
         chatbot=chatbot,
+        fetches_inputs=fetches_inputs,
+        python_inputs_typed=fetches_inputs or all(_python_sdk_admits(value) for value in snippet_inputs.values()),
         inputs_typescript=_indent_continuation(typescript_literal(snippet_inputs), prefix="  "),
         inputs_python=_indent_continuation(python_literal(snippet_inputs), prefix="            "),
         start_body_json=_shell_single_quote(json.dumps({"method_ref": address, "inputs": snippet_inputs}, ensure_ascii=False)),
@@ -289,6 +440,16 @@ def _snippet_inputs(inputs: dict[str, JsonValue]) -> dict[str, JsonValue]:
         else:
             snippet_inputs[input_name] = input_value
     return snippet_inputs
+
+
+def _python_sdk_admits(value: JsonValue) -> bool:
+    """Whether the Python SDK's type for an input's value admits this value, written out in a snippet.
+
+    `pipelex-sdk` types each input as `mthds.protocol.pipeline_inputs.StuffContentOrData`: a string, a list of strings, a content object or a
+    list of them, or a dict. A list of plain objects, such as several documents each given by its URL, is none of them, although the hosted
+    API reads it as the input's content, so pyright refuses a snippet writing one out.
+    """
+    return isinstance(value, str | dict) or (isinstance(value, list) and all(isinstance(item, str) for item in value))
 
 
 def _samples(*, package: MethodPackage) -> list[Sample]:

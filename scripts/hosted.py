@@ -1,15 +1,16 @@
 """The checks and the refresh that call production, which need `PIPELEX_API_KEY` and are run by hand (`make check-hosted`, `make refresh`).
 
-A package is validated from its files (`make check-methods`), and its page's address is validated at the page's tag (`make check-addresses`).
+A package is validated from its files (`make check-methods`), and so is each of the tutorial's bundles, alone; a page's address is validated at
+the page's tag (`make check-addresses`).
 
-Only `POST /v1/validate` is called, and no call spends inference. The call is made with `httpx` rather than through `pipelex-sdk`: the SDK pins an
-`mthds` release that the runtime this repository still pins for its older examples cannot run with, so the two cannot share an environment until
-that pin goes. The key is read from the environment and sent only as the `Authorization` header; nothing here prints it.
+Only `POST /v1/validate` is called, and no call spends inference. The call is made with `httpx`. The key is read from the environment and sent only
+as the `Authorization` header; nothing here prints it.
 """
 
 import os
 from collections.abc import Mapping
 from enum import StrEnum
+from pathlib import Path
 from typing import Any, cast
 
 import httpx
@@ -34,6 +35,16 @@ class MethodVerdict(BaseModel):
     is_valid: bool
     report: str
     contract: Contract | None
+
+
+class BundleVerdict(BaseModel):
+    """What production said of one bundle validated alone from its file, such as a tutorial lesson."""
+
+    model_config = ConfigDict(frozen=True)
+
+    source: str
+    is_valid: bool
+    report: str
 
 
 class HostedClient:
@@ -109,6 +120,14 @@ def validate_package(*, client: HostedClient, package: MethodPackage) -> MethodV
     return MethodVerdict(name=package.name, is_valid=True, report=report, contract=project_contract(verdict=verdict, main_pipe=main_pipe))
 
 
+def validate_bundle_file(*, client: HostedClient, path: Path, root: Path) -> BundleVerdict:
+    """Validate one self-contained bundle on production from its file, naming it by its path from the repository root."""
+    source = path.relative_to(root).as_posix()
+    verdict = client.validate_files(contents=[path.read_text(encoding="utf-8")], sources=[source])
+    report = str(verdict.get("rendered_markdown") or verdict.get("message") or "")
+    return BundleVerdict(source=source, is_valid=verdict.get("is_valid") is True, report=report)
+
+
 def validate_packages(*, cookbook: Cookbook, client: HostedClient) -> list[MethodVerdict]:
     return [validate_package(client=client, package=package) for package in cookbook.packages]
 
@@ -143,17 +162,31 @@ def check_address(*, client: HostedClient, cookbook: Cookbook, package: MethodPa
     A method the tag does not carry yet, or a tag not pushed yet, is reported as unreleased rather than as a failure: a method added since the
     last release has a page naming a tag it is not in, and the release that carries it is what the check after the release proves.
     """
-    address = cookbook.address_of(package)
+    return check_method_ref(client=client, name=package.name, address=cookbook.address_of(package))
+
+
+def check_method_ref(*, client: HostedClient, name: str, address: str) -> AddressVerdict:
+    """Validate one address on production, naming the page or the recipe it comes from as `name`, and read an unpublished one as unreleased."""
     try:
         verdict = client.validate_address(method_ref=address)
     except HostedApiError as exc:
         if _is_unreleased(exc):
             detail = str(exc.problem.get("detail") or exc)
-            return AddressVerdict(name=package.name, address=address, state=AddressState.UNRELEASED, report=detail)
-        return AddressVerdict(name=package.name, address=address, state=AddressState.FAILED, report=str(exc))
+            return AddressVerdict(name=name, address=address, state=AddressState.UNRELEASED, report=detail)
+        return AddressVerdict(name=name, address=address, state=AddressState.FAILED, report=str(exc))
     report = str(verdict.get("rendered_markdown") or verdict.get("message") or "")
     state = AddressState.VALID if verdict.get("is_valid") is True else AddressState.FAILED
-    return AddressVerdict(name=package.name, address=address, state=state, report=report)
+    return AddressVerdict(name=name, address=address, state=state, report=report)
+
+
+def check_pinned_method_ref(*, client: HostedClient, name: str, address: str) -> AddressVerdict:
+    """Validate an address a recipe calls, which must resolve today: its types were generated from it, so unreleased is a failure."""
+    verdict = check_method_ref(client=client, name=name, address=address)
+    match verdict.state:
+        case AddressState.UNRELEASED:
+            return verdict.model_copy(update={"state": AddressState.FAILED})
+        case AddressState.VALID | AddressState.FAILED:
+            return verdict
 
 
 def _is_unreleased(error: HostedApiError) -> bool:

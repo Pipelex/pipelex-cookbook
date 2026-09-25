@@ -6,15 +6,12 @@
   <br/>
   <br/>
   <h2 align="center">Pipelex Cookbook 📚</h2>
-  <p align="center">Examples, recipes, and best-practice pipelines for the <strong><a href="https://pipelex.com/">Pipelex</a></strong> AI method framework.<br/>
-Learn by doing with production-ready examples.</p>
+  <p align="center">Worked examples of AI methods, written in MTHDS and run with Pipelex, to read, run and adapt.</p>
 
   <div>
-    <a href="https://go.pipelex.com/demo"><strong>Demo</strong></a> -
-    <a href="https://docs.pipelex.com/"><strong>Documentation</strong></a> -
-    <a href="https://docs.pipelex.com/pages/cookbook-examples/"><strong>Cookbook Examples</strong></a> -
+    <a href="https://go.pipelex.com/docs"><strong>Documentation</strong></a> -
     <a href="https://github.com/Pipelex/pipelex-cookbook/issues"><strong>Report Bug</strong></a> -
-    <a href="https://github.com/Pipelex/pipelex-cookbook/discussions"><strong>Feature Request</strong></a>
+    <a href="https://github.com/Pipelex/pipelex-cookbook/discussions"><strong>Discussions</strong></a>
   </div>
   <br/>
 
@@ -26,15 +23,87 @@ Learn by doing with production-ready examples.</p>
     <a href="https://pipelex.com"><img src="https://img.shields.io/badge/Homepage-03bb95?logo=google-chrome&logoColor=white&style=flat" alt="Website"></a>
     <a href="https://github.com/Pipelex/pipelex"><img src="https://img.shields.io/badge/Main_Repo-5a0dad?logo=github&logoColor=white&style=flat" alt="Main Repository"></a>
     <a href="https://docs.pipelex.com/"><img src="https://img.shields.io/badge/Docs-03bb95?logo=read-the-docs&logoColor=white&style=flat" alt="Documentation"></a>
-    <br/> 
+    <br/>
     <br/>
 </div>
 
+<!--
+Adapted from the onboarding source's front-door and api-key assemblies, last re-read against the rendered files at
+Pipelex/.github@3a26491 (onboarding/rendered/front-door.md and onboarding/rendered/api-key.md). Every command, and every
+sentence on setting up a door, is a block's own words, so a change lands in the blocks first and is then carried here; where
+a sentence of the blocks says "it" for the agent of the sentence before, which this page does not carry, the agent is named.
+This page's own are the headings, the sentences sending a reader to a method's page, the two lists `make render` writes between
+their BEGIN and END markers, the recipes and tutorial sections, and the closing section on running a method yourself, since
+the assembly's last block describes the runtime repository that carries it.
+-->
+
+## Try a method in a minute
+
+**Sign up at [app.pipelex.com](https://app.pipelex.com).** Every method below then runs through each of these doors by its address, and its page shows that door's command for it.
+
+### In your chatbot
+
+Add the Pipelex MCP in your chatbot's settings by the address below — in Claude, that is **Add custom connector** — then sign in with your Pipelex account when asked. Nothing to install and no key: the Pipelex MCP runs on your signed-in session.
+
+```
+https://mcp.pipelex.com/mcp
+```
+
+Give the file as a URL the Pipelex MCP can reach. In ChatGPT you can attach it to the conversation instead and ask for a run on it; Claude has no way yet to hand the Pipelex MCP a file you attached.
+
+Each method's page carries the sentence to paste into your chatbot, with the method's address and its sample.
+
+### In your coding agent
+
+<details open><summary><b>Claude Code</b></summary>
+
+```bash
+claude plugin marketplace add Pipelex/pipelex-plugins
+claude plugin install pipelex@pipelex-plugins
+```
+
+Claude Code asks for an API key when you enable the plugin, and stores it in your OS keychain — create one in your console at [app.pipelex.com](https://app.pipelex.com). The skills, the hook that checks every edit and the Pipelex tools load with it. The plugin's hook and the Pipelex tools run on Node.js, so you need Node.js on your `PATH`.
+
+</details>
+
+<details open><summary><b>Codex</b></summary>
+
+```bash
+codex plugin marketplace add Pipelex/pipelex-plugins
+export PIPELEX_API_KEY=plx_sk_...     # create one in your console at app.pipelex.com
+```
+
+Restart Codex, run `/plugins` to install `pipelex`, and trust the plugin hook on first run. Requires Codex 0.141 or later. The plugin's hook and the Pipelex tools run on Node.js, so you need Node.js on your `PATH`.
+
+</details>
+
+`/pipelex-run` takes the same address as the chatbot, so the sentence on each method's page runs in your coding agent too.
+
+### In your code
+
+Create an API key in your console at [app.pipelex.com](https://app.pipelex.com) and give it to your program as `PIPELEX_API_KEY` — the only thing to configure, since `PIPELEX_BASE_URL` already points at the hosted API.
+
+```bash
+export PIPELEX_API_KEY=plx_sk_...
+```
+
+Ask your agent to call the method from your TypeScript or Python code, and `/pipelex-integrate` generates the method's types and one typed call that runs it, through the TypeScript SDK [`@pipelex/sdk`](https://www.npmjs.com/package/@pipelex/sdk) or the Python SDK [`pipelex-sdk`](https://pypi.org/project/pipelex-sdk/). Any other software runs a method via API through `POST /v1/start`, with any HTTP client.
+
+Each method's page shows the TypeScript, Python and HTTP calls that run it on its sample.
+
+### As an app
+
+Ask your agent for a webapp around the method, and `/pipelex-scaffold` creates a new app from the [method-app template](https://github.com/Pipelex/pipelex-method-apps) and leaves it running on your machine.
+
+Each method's page carries the one command, `npm create @pipelex/method-app`, that makes the app for that method.
+
+**Next:** [what Pipelex is](https://go.pipelex.com/product) · [documentation](https://go.pipelex.com/docs) · [your console](https://app.pipelex.com) · [Discord](https://go.pipelex.com/discord)
+
 <!-- BEGIN methods, written by `make render` from methods/ and cookbook.toml: never edit this region by hand -->
 
-# ⚡ Methods you can run by address
+## Methods you can run by address
 
-Each of these methods runs on the hosted Pipelex API by its address, from a chatbot, your code or an app, with nothing to install. Its page shows every way to use it, with a sample to try it on.
+Each of these methods runs on the hosted Pipelex API by its address, through every door above, with nothing to install. Its page shows each door's command for it, with a sample to try it on.
 
 - **[Advisory board consultation](methods/advisory_board/)**: Read a business problem told in plain words, consult five to ten expert advisory boards on it, and return one strategic report in Markdown with their consensus, the choices they disagree on, a phased roadmap, risks, resources and success metrics.
 - **[Document question answering](methods/answer_from_documents/)**: Read a set of documents and a question, and return a short answer with the verbatim passages it rests on, a confidence level, and a status saying whether the documents answer it fully, in part, or not at all.
@@ -48,426 +117,61 @@ Each of these methods runs on the hosted Pipelex API by its address, from a chat
 - **[Synthetic data generation](methods/gen_synthetic_data/)**: Read a description of a record and a count, and return that many varied synthetic records, here student profiles with their performance, learning style, background, interests and preferences.
 - **[Research report](methods/research_report/)**: Read a research question and return a Markdown report with an executive summary, key findings and open questions, drafted from three angles out of the model's own knowledge without searching any source, so it is a first draft to check rather than verified research.
 
-More methods, ready to run the same way, are in the [Pipelex method library](https://github.com/Pipelex/methods).
-
 <!-- END methods -->
 
-# 🚀 Quick Start
+<!-- BEGIN library, written by `make render` from library.json: never edit this region by hand -->
 
-## 1. Clone and Install
+## Methods from the library
 
-```bash
-# Clone Pipelex Cookbook
-git clone https://github.com/Pipelex/pipelex-cookbook.git
-cd pipelex-cookbook
+More methods are published in the [Pipelex method library](https://github.com/Pipelex/methods/tree/v0.1.2), and each runs by its address the same way, through every door above. They are listed here as released at v0.1.2.
 
-# Create and activate virtual environment
-python -m venv .venv
-# or python3 -m venv .venv
-source .venv/bin/activate
+- **[CV Analyzer](https://github.com/Pipelex/methods/tree/v0.1.2/methods/cv_analyzer)** · `github.com/Pipelex/methods/cv_analyzer@v0.1.2`: End-to-end candidate screening: extract a CV and a job offer, analyze the match, then either generate tailored interview questions or draft a courteous refusal email.
+- **[Document Summarizer](https://github.com/Pipelex/methods/tree/v0.1.2/methods/doc_summarizer)** · `github.com/Pipelex/methods/doc_summarizer@v0.1.2`: Deep document summarization: profile the document and extract importance-ranked key points in parallel, then synthesize a structured summary with themes and open questions.
+- **[Documents](https://github.com/Pipelex/methods/tree/v0.1.2/methods/documents)** · `github.com/Pipelex/methods/documents@v0.1.2`: Document extraction methods for text, images, and page views.
+- **[Image Generation](https://github.com/Pipelex/methods/tree/v0.1.2/methods/image_generation)** · `github.com/Pipelex/methods/image_generation@v0.1.2`: Image generation methods: render a description directly, or refine it into an optimized image prompt first.
+- **[Invoice Extraction](https://github.com/Pipelex/methods/tree/v0.1.2/methods/invoice_extraction)** · `github.com/Pipelex/methods/invoice_extraction@v0.1.2`: Extract structured invoice data from a document: classify each page as bill or receipt, then extract amounts, VAT, vendor and buyer details using both the OCR text and the page view.
+- **[Slide Designer](https://github.com/Pipelex/methods/tree/v0.1.2/methods/slide_designer)** · `github.com/Pipelex/methods/slide_designer@v0.1.2`: Turn a rough slide-deck brief into design proposals: polish the brief, generate multiple visual themes, render a mockup image for each, and compose an HTML report presenting them all.
+- **[Table Extraction](https://github.com/Pipelex/methods/tree/v0.1.2/methods/table_extraction)** · `github.com/Pipelex/methods/table_extraction@v0.1.2`: Extract a data table from a screenshot into faithful HTML, then review the result against the image to correct text and formatting.
+- **[Text Stats](https://github.com/Pipelex/methods/tree/v0.1.2/methods/text_stats)** · `github.com/Pipelex/methods/text_stats@v0.1.2`: Deterministic text statistics computed in pure Python: character, word, sentence and paragraph counts, vocabulary richness, most frequent words, and estimated reading and speaking times, reported as Markdown.
+- **[Tweet Optimizer](https://github.com/Pipelex/methods/tree/v0.1.2/methods/tweet_optimizer)** · `github.com/Pipelex/methods/tweet_optimizer@v0.1.2`: Optimize a tech tweet: score the draft for fluffiness, cringiness, humblebragging and vagueness, then rewrite it in your own writing style following Twitter/X best practices.
 
-# Install
-pip install .  # or uv sync
-```
+<!-- END library -->
 
-## 2. Get Your API Key (Free)
+## Recipes
 
-Sign up at [app.pipelex.com](https://app.pipelex.com) to get **free API credits** with access to **all models** (text, vision, OCR, image generation).
+A [recipe](recipes/) takes one way of using a method further, on a real case, calling it by an address pinned to a release tag.
 
-Add your key to `.env`:
-```bash
-PIPELEX_GATEWAY_API_KEY=your_api_key_here
-```
+- **[Run a method](recipes/README.md#run-a-method)**: from your coding agent, then followed later by its run id, or with the three HTTP calls any tool can make.
+- **[Put a method in your code](recipes/README.md#put-a-method-in-your-code)**: in Python, a FastAPI endpoint, a method over every row of a CSV, a CrewAI agent's tool and a weekly digest; in TypeScript, a Next.js server action, a run read hours after it started, and a local file sent through an upload grant.
+- **[Make it an app](recipes/README.md#make-it-an-app)**: from an address to a web app you deploy, and a second method as a second tab of that app.
+- **[Make it yours](recipes/README.md#make-it-yours)**: a published method copied, changed and saved to your account, and a new method designed from a sentence and proven by a lab.
 
-Want to bring your own API keys or use local models? See [Configure AI Providers](https://docs.pipelex.com/pages/setup/configure-ai-providers/).
+## Write a method by hand
 
-## 3. Learn Pipelex
+Your coding agent writes methods for you, but you can write one yourself: the [tutorial](tutorial/README.md) teaches MTHDS, the language methods are written in, from a first pipe to structured outputs, model settings, batches and parallel steps.
 
-**New to Pipelex?** Follow the tutorials to learn step-by-step:
+The Pipelex extension highlights `.mthds` files and draws their flowcharts: install it from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=pipelex.pipelex), or from the [Open VSX Registry](https://open-vsx.org/extension/Pipelex/pipelex) for Cursor, Windsurf and other VS Code forks.
 
-| Level | Tutorial | What you'll learn |
-|-------|----------|-------------------|
-| Easy | [LLM Basics](./tutorial/easy/llm_basics/) | Make LLM calls, chain them together, format output |
-| Easy | [Structured Data](./tutorial/easy/structured_data/) | Extract structured objects from text and documents |
-| Medium | [Model Configuration](./tutorial/medium/) | Control which LLM to use and configure temperature |
-| Medium | [Batch Processing](./tutorial/medium/) | Process lists of items efficiently |
-| Medium | [Parallel Execution](./tutorial/medium/) | Run independent tasks at the same time |
+## Run a method on your own machine
 
-**Already familiar?** Jump straight to the examples below.
-
-## 4. Run Examples
-
-Try the hello world example:
+With the Pipelex runtime and your own provider keys ([set it up](https://docs.pipelex.com/latest/get-started/run-it-yourself/)), download the sample inputs a method's page links, then run the method by the address its page names:
 
 ```bash
-pipelex run bundle examples/a_quick_start/hello_world.mthds
+curl -sLo inputs.json <the inputs.json link on the method's page>
+pipelex run method <the method's address> --inputs inputs.json
 ```
 
-Or explore other cookbook examples. The Gantt chart extraction is now a method you can run by address, from a chatbot, your code or an app: see [its page](methods/extract_gantt/).
+## Contributing
 
-```bash
-# Extract and summarize invoice information
-pipelex run bundle examples/b_basics/document_extract/extract_invoice/bundle.mthds -i examples/b_basics/document_extract/extract_invoice/inputs.json
+Read [`CONTRIBUTING.md`](CONTRIBUTING.md) to add a method or a recipe.
 
-# Multi-step text summarization
-pipelex run bundle examples/a_quick_start/summarize.mthds --pipe summarize_by_steps -i examples/a_quick_start/inputs.json
-
-# Read a CSV, summarize each person, and write the results back to CSV
-pipelex run bundle examples/b_basics/csv/summarize_people/summarize_people.mthds -i examples/b_basics/csv/summarize_people/inputs.json --save-csv results/people_summaries.csv
-```
-
-## 5. Known Limitations
-
-### Third-Party API Requirements
-
-Some Pipelex pipes currently require additional API keys beyond the Pipelex Inference backend:
-
-- **OCR (PipeExtract)**: Currently uses Mistral for document extraction. You'll need a [Mistral API key](https://console.mistral.ai/) to use `PipeExtract` operations for extracting text and images from PDFs and images.
-- **Image Generation (PipeImgGen)**: Currently uses FAL for image generation. You'll need a [FAL API key](https://fal.ai/dashboard/keys) to use `PipeImgGen` operations for generating images.
-
-**Note:** These dependencies are temporary and will be addressed in future updates. We're working on adding support for multiple providers and local alternatives. Check our [roadmap](https://github.com/Pipelex/pipelex/issues/473) for planned improvements.
-
-## 6. Generate Your Own Method
-
-Create a complete AI method with a single command:
-
-```bash
-pipelex build pipe "Take a CV and Job offer in PDF, analyze if they match and generate 5 questions for the interview" --output results/cv_match.mthds
-```
-
-This command generates a production-ready `.mthds` file with domain definitions, concepts, and multiple processing steps that analyzes CV-job fit and prepares interview questions.
-
-**cv_match.mthds**
-```toml
-domain = "cv_match"
-description = "Matching CVs with job offers and generating interview questions"
-main_pipe = "analyze_cv_job_match_and_generate_questions"
-
-[concept.MatchAnalysis]
-description = """
-Analysis of alignment between a candidate and a position, including strengths, gaps, and areas requiring further exploration.
-"""
-
-[concept.MatchAnalysis.structure]
-strengths = { type = "text", description = "Areas where the candidate's profile aligns well with the requirements", required = true }
-gaps = { type = "text", description = "Areas where the candidate's profile does not meet the requirements or lacks evidence", required = true }
-areas_to_probe = { type = "text", description = "Topics or competencies that need clarification or deeper assessment during the interview", required = true }
-
-[concept.Question]
-description = "A single interview question designed to assess a candidate."
-refines = "Text"
-
-[pipe.analyze_cv_job_match_and_generate_questions]
-type = "PipeSequence"
-description = """
-Main pipeline that orchestrates the complete CV-job matching and interview question generation method. Takes a candidate's CV and a job offer as PDF documents, extracts their content, performs a comprehensive match analysis identifying strengths, gaps, and areas to probe, and generates exactly 5 targeted interview questions based on the analysis results.
-"""
-inputs = { cv_pdf = "PDF", job_offer_pdf = "PDF" }
-output = "Question[5]"
-steps = [
-    { pipe = "extract_documents_parallel", result = "extracted_documents" },
-    { pipe = "analyze_match", result = "match_analysis" },
-    { pipe = "generate_interview_questions", result = "interview_questions" },
-]
-```
-
-<details>
-<summary><b>📄 Click to view the supporting pipes implementation</b></summary>
-
-```toml
-[pipe.extract_documents_parallel]
-type = "PipeParallel"
-description = """
-Executes parallel extraction of text content from both the CV PDF and job offer PDF simultaneously to optimize processing time.
-"""
-inputs = { cv_pdf = "PDF", job_offer_pdf = "PDF" }
-output = "Composite"
-branches = [
-    { pipe = "extract_cv_text", result = "cv_pages" },
-    { pipe = "extract_job_offer_text", result = "job_offer_pages" },
-]
-add_each_output = true
-
-[pipe.extract_cv_text]
-type = "PipeExtract"
-description = """
-Extracts text content from the candidate's CV PDF document using OCR technology, converting all pages into machine-readable text format for subsequent analysis.
-"""
-inputs = { cv_pdf = "PDF" }
-output = "Page[]"
-model = "extract_text_from_pdf"
-
-[pipe.extract_job_offer_text]
-type = "PipeExtract"
-description = """
-Extracts text content from the job offer PDF document using OCR technology, converting all pages into machine-readable text format for subsequent analysis.
-"""
-inputs = { job_offer_pdf = "PDF" }
-output = "Page[]"
-model = "extract_text_from_pdf"
-
-[pipe.analyze_match]
-type = "PipeLLM"
-description = """
-Performs comprehensive analysis comparing the candidate's CV against the job offer requirements. Identifies and structures: (1) strengths where the candidate's profile aligns well with requirements, (2) gaps where the profile lacks evidence or doesn't meet requirements, and (3) specific areas requiring deeper exploration or clarification during the interview process.
-"""
-inputs = { cv_pages = "Page[]", job_offer_pages = "Page[]" }
-output = "MatchAnalysis"
-model = "$writing-factual"
-system_prompt = """
-You are an expert HR analyst and recruiter specializing in candidate-job fit assessment. Your task is to generate a structured MatchAnalysis comparing a candidate's CV against job requirements.
-"""
-prompt = """
-Analyze the match between the candidate's CV and the job offer requirements.
-
-Candidate CV:
-@cv_pages
-
-Job Offer:
-@job_offer_pages
-
-Perform a comprehensive comparison and provide a structured analysis.
-"""
-
-[pipe.generate_interview_questions]
-type = "PipeLLM"
-description = """
-Generates exactly 5 targeted, relevant interview questions based on the match analysis results. Questions are designed to probe identified gaps, clarify areas of uncertainty, validate strengths, and assess competencies that require deeper evaluation to determine candidate-position fit.
-"""
-inputs = { match_analysis = "MatchAnalysis" }
-output = "Question[5]"
-model = "$writing-creative"
-system_prompt = """
-You are an expert HR interviewer and talent assessment specialist. Your task is to generate structured interview questions based on candidate-position match analysis.
-"""
-prompt = """
-Based on the following match analysis between a candidate and a position, generate exactly 5 targeted interview questions.
-
-@match_analysis
-
-The questions should:
-- Probe the identified gaps to assess if they are deal-breakers or can be mitigated
-- Clarify areas that require deeper exploration
-- Validate the candidate's strengths with concrete examples
-- Be open-ended and behavioral when appropriate
-- Help determine overall candidate-position fit
-
-Generate exactly 5 interview questions.
-"""
-```
-</details>
-
-
-**View the pipeline flowchart:**
-
-```mermaid
-flowchart TD
- subgraph PAR["extract_documents_parallel (PipeParallel)"]
-    direction LR
-        EXTRACT_CV["extract_cv_text (PipeExtract)"]
-        EXTRACT_JOB["extract_job_offer_text (PipeExtract)"]
-  end
- subgraph MAIN["analyze_cv_job_match_and_generate_questions (PipeSequence)"]
-    direction TB
-        PAR
-        CV_PAGES[["cv_pages: Page"]]
-        JOB_PAGES[["job_offer_pages: Page"]]
-        ANALYZE["analyze_match (PipeLLM)"]
-        MATCH[["MatchAnalysis"]]
-        GENERATE["generate_interview_questions (PipeLLM)"]
-        OUT[["Question"]]
-  end
-    CV_IN[["cv_pdf: PDF"]] --> EXTRACT_CV
-    JOB_IN[["job_offer_pdf: PDF"]] --> EXTRACT_JOB
-    EXTRACT_CV --> CV_PAGES
-    EXTRACT_JOB --> JOB_PAGES
-    CV_PAGES --> ANALYZE
-    JOB_PAGES --> ANALYZE
-    ANALYZE --> MATCH
-    MATCH --> GENERATE
-    GENERATE --> OUT
-    classDef default stroke:#1976D2,stroke-width:2px,fill:#E3F2FD,color:#0D47A1
-    style EXTRACT_CV stroke:#1565C0,fill:#BBDEFB,color:#0D47A1
-    style EXTRACT_JOB stroke:#1565C0,fill:#BBDEFB,color:#0D47A1
-    style PAR fill:#FFF9C4,stroke:#F57C00,stroke-width:2px
-    style CV_PAGES stroke:#2E7D32,fill:#C8E6C9,color:#1B5E20
-    style JOB_PAGES stroke:#2E7D32,fill:#C8E6C9,color:#1B5E20
-    style ANALYZE stroke:#1565C0,fill:#BBDEFB,color:#0D47A1
-    style MATCH stroke:#2E7D32,fill:#C8E6C9,color:#1B5E20
-    style GENERATE stroke:#1565C0,fill:#BBDEFB,color:#0D47A1
-    style OUT stroke:#2E7D32,fill:#C8E6C9,color:#1B5E20
-    style CV_IN stroke:#2E7D32,fill:#C8E6C9,color:#1B5E20
-    style JOB_IN stroke:#2E7D32,fill:#C8E6C9,color:#1B5E20
-    style MAIN fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px
-```
-
-**Run the pipeline:**
-
-```bash
-# Via CLI with input file
-pipelex run bundle results/cv_match.mthds --inputs inputs.json
-```
-
-Create an `inputs.json` file with your PDF URLs:
-
-```json
-{
-  "cv_pdf": {
-    "concept": "PDF",
-    "content": {
-      "url": "https://pipelex-web.s3.amazonaws.com/demo/John-Doe-CV.pdf"
-    }
-  },
-  "job_offer_pdf": {
-    "concept": "PDF",
-    "content": {
-      "url": "https://pipelex-web.s3.amazonaws.com/demo/Job-Offer.pdf"
-    }
-  }
-}
-```
-
-**Or via Python:**
-
-```python
-import asyncio
-import json
-from pipelex.pipeline.runner import PipelexMTHDSProtocol
-from pipelex.pipelex import Pipelex
-
-
-async def run_pipeline():
-    with open("inputs.json", encoding="utf-8") as f:
-        inputs = json.load(f)
-
-    runner = PipelexMTHDSProtocol()
-    response = await runner.execute(pipe_code="cv_match", inputs=inputs)
-    print(response.pipe_output.main_stuff_as_str)
-
-
-Pipelex.make()
-asyncio.run(run_pipeline())
-```
-
-## 7. Iterate with AI Assistance
-
-Install AI assistant rules to easily modify your pipelines:
-
-```bash
-pipelex kit rules
-```
-
-This installs rules for Cursor, Claude, OpenAI Codex, GitHub Copilot, Windsurf, and Blackbox AI. Now you can refine pipelines with natural language:
-
-- "Include confidence scores between 0 and 100 in the match analysis"
-- "Write a recap email at the end"
-
-## 💡 What is Pipelex?
-
-Pipelex is an open-source language that enables you to build and run **repeatable AI methods**. Instead of cramming everything into one complex prompt, you break tasks into focused steps, each pipe handling one clear transformation.
-
-Each pipe processes information using **Concepts** (typing with meaning) to ensure your pipelines make sense. The Pipelex language (`.mthds` files) is simple and human-readable, even for non-technical users. Each step can be structured and validated, giving you the reliability of software with the intelligence of AI.
-
-## 🔧 IDE Extension
-
-We **highly** recommend installing our extension for `.mthds` files into your IDE. You can find it in the [Open VSX Registry](https://open-vsx.org/extension/Pipelex/pipelex). It's coming soon to VS Code marketplace too. If you're using Cursor, Windsurf or another VS Code fork, you can search for it directly in your extensions tab.
-
-## 📚 Repository Layout
-
-```
-.
-├── methods/                   # Cookbook methods runnable by address, each with its generated page
-│   ├── advisory_board/
-│   ├── answer_from_documents/
-│   ├── blog_article_generator/
-│   ├── discord_newsletter/
-│   ├── extract_dpe/
-│   ├── extract_gantt/
-│   ├── extract_generic/
-│   ├── extract_slides/
-│   ├── gen_expense_data/
-│   ├── gen_synthetic_data/
-│   └── research_report/
-├── examples/                  # Production-ready examples
-│   ├── a_quick_start/         # Getting started tutorials
-│   ├── b_basics/              # Core functionality examples
-│   │   └── document_extract/  # Document extraction examples
-│   │       ├── extract_invoice/
-│   │       ├── extract_proof_of_purchase/
-│   │       └── extract_table/
-│   ├── c_advanced/            # Advanced features
-│   │   ├── crewai_with_pipelex_tools/
-│   │   └── using_inference_plugins/
-│   └── wip/                   # Work in progress examples
-├── assets/                    # Sample data files for examples
-├── tests/                     # Test suite for all examples
-└── utils/                     # Helper utilities
-```
-
-## 🎯 Explore Cookbook Examples
-
-The cookbook contains production-ready examples covering various use cases:
-
-### Getting Started
-- **Hello World** - Your first Pipelex pipeline
-- **Simple OCR** - Extract text from documents
-- **Summarization** - Multi-step text summarization with structured output
-
-### Document Processing
-- **Invoice Extractor** - Extract structured data from invoices
-- **Expense Report** - Process and validate expense reports
-- **[DPE Extraction](methods/extract_dpe/)** - Extract energy performance diagnostics
-- **[Generic Document](methods/extract_generic/)** - Extract content from any document type
-- **[Slide Deck](methods/extract_slides/)** - Extract each slide's title, text, layout and charts
-- **[Document Question Answering](methods/answer_from_documents/)** - Answer a question from documents, with the passages it rests on
-
-### Visual Data Extraction
-- **[Gantt Chart](methods/extract_gantt/)** - Extract project timelines from visual diagrams
-- **Table Extraction** - Extract structured tables from images
-
-### Tabular Data
-- **Summarize People (CSV)** - Read a CSV, summarize each row with an LLM, and write the results back to CSV
-
-### Advanced Methods
-- **[Data Synthesis](methods/gen_synthetic_data/)** - Generate synthetic data based on schemas
-- **[Expense Data Synthesis](methods/gen_expense_data/)** - Generate labelled expense claims with receipt images
-- **Using Inference Plugins** - Serve a model from an installable inference-backend plugin (zero keys, deterministic)
-- **[Advisory Board](methods/advisory_board/)** - Consult expert advisory boards on a business problem
-- **[Research Report](methods/research_report/)** - Draft a Markdown report on a question from the model's own knowledge, also given to a CrewAI crew as a tool
-- **[Blog Article](methods/blog_article_generator/)** - Write an SEO-optimized blog article for a given audience, tone and length
-- **[Discord Newsletter](methods/discord_newsletter/)** - Turn a week of Discord messages into an HTML newsletter
-
-Each example includes:
-- Complete `.mthds` pipeline definition
-- `inputs.json` file with sample inputs
-- Sample input data in `assets/`
-
-## 📖 Next Steps
-
-**Learn More:**
-- [Writing Methods Tutorial](https://docs.pipelex.com/pages/writing-workflows/) - Complete guide with examples
-- [Build Reliable AI Methods](https://docs.pipelex.com/pages/build-reliable-ai-workflows-with-pipelex/kick-off-a-pipelex-workflow-project/) - Deep dive into Pipelex
-- [Configuration Guide](https://docs.pipelex.com/pages/setup/configure-ai-providers/) - Set up AI providers and models
-- [Cookbook Examples](https://docs.pipelex.com/pages/cookbook-examples/) - Detailed documentation of cookbook examples
-
-## 🤝 Contributing
-
-We ❤️ contributions! Before opening a pull request, please:
-
-1. **Read [`CONTRIBUTING.md`](CONTRIBUTING.md)** and the [main repository's contributing guide](https://github.com/Pipelex/pipelex/blob/main/CONTRIBUTING.md).
-2. Add your file under **`examples/wip/<your-folder>`**; feel free to group related examples by topic.
-3. Include a short **README or docstring** at the top describing purpose, inputs, and expected outputs.
-4. Verify the pipeline runs locally with a free/open LLM preset when possible, to lower the entry barrier for reviewers.
-
-> **Tip:** If you're unsure whether your idea fits, open a GitHub **Discussion** first—feedback is fast and public.
-
-## 👥 Join the Community
+## Join the Community
 
 Join our vibrant Discord community to connect with other developers, share your experiences, and get help with your Pipelex projects!
 
 [![Discord](https://img.shields.io/badge/Discord-5865F2?logo=discord&logoColor=white)](https://go.pipelex.com/discord)
 
-## 💬 Support
+## Support
 
 | Channel | Use case |
 | ------- | -------- |
@@ -477,14 +181,14 @@ Join our vibrant Discord community to connect with other developers, share your 
 | **Email (privacy & security)** | [security@pipelex.com](mailto:security@pipelex.com) |
 | [**Documentation**](https://docs.pipelex.com/) | Comprehensive guides and API reference |
 
-## ⭐ Star Us!
+## Star Us!
 
 If you find Pipelex helpful, please consider giving us a star on both repositories! It helps us reach more developers and continue improving the tool.
 
 - ⭐ [Main Pipelex Repository](https://github.com/Pipelex/pipelex)
 - ⭐ [Pipelex Cookbook Repository](https://github.com/Pipelex/pipelex-cookbook)
 
-## 📝 License
+## License
 
 This project is licensed under the [MIT license](LICENSE). Runtime dependencies are distributed under their own licenses via PyPI.
 

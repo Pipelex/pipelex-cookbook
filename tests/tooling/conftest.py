@@ -1,6 +1,6 @@
 """Fixtures for the cookbook tooling's tests: a small cookbook written to a temporary directory, and the repository's real templates.
 
-These tests exercise the renderer and the checks alone, so unlike the tests of the old examples they boot no Pipelex runtime.
+These tests exercise the renderer and the checks alone: they call no API and need no key.
 """
 
 import json
@@ -14,9 +14,12 @@ from tests.tooling.test_data import (
     FIXTURE_ADDRESS,
     FIXTURE_VERSION,
     FRONT_PAGE,
+    LIBRARY_SNAPSHOT,
+    WIDGETS_BUNDLE,
     WIDGETS_CONTRACT,
     WIDGETS_KEY,
     WIDGETS_SAMPLE_URL,
+    WORDS_BUNDLE,
     WORDS_CONTRACT,
     WORDS_KEY,
     MakeCookbook,
@@ -47,6 +50,7 @@ def write_package(
     root: Path,
     name: str,
     manifest: str,
+    bundle: str,
     inputs: dict[str, object],
     key: str,
     contract: Contract | None,
@@ -54,7 +58,7 @@ def write_package(
     package_dir = root / "methods" / name
     package_dir.mkdir(parents=True)
     (package_dir / "METHODS.toml").write_text(manifest, encoding="utf-8")
-    (package_dir / "bundle.mthds").write_text(f'domain = "{name}"\n', encoding="utf-8")
+    (package_dir / "bundle.mthds").write_text(bundle, encoding="utf-8")
     (package_dir / "inputs.json").write_text(json.dumps(inputs, indent=2), encoding="utf-8")
     (package_dir / "key.md").write_text(key, encoding="utf-8")
     if contract is not None:
@@ -71,7 +75,7 @@ def templates_dir() -> Path:
 def make_cookbook(tmp_path: Path) -> MakeCookbook:
     """A factory writing a two-method cookbook: `extract_widgets`, with an editorial entry and a sample URL, and `count_words`, with neither.
 
-    Its front page holds the region listing the methods, still empty.
+    Its front page holds the two regions listing the methods and the library's methods, still empty, and its `library.json` lists two methods.
     """
 
     def _make(*, version: str = FIXTURE_VERSION, widgets_version: str | None = None) -> Path:
@@ -80,6 +84,7 @@ def make_cookbook(tmp_path: Path) -> MakeCookbook:
         (root / "pyproject.toml").write_text(f'[project]\nname = "fixture-cookbook"\nversion = "{version}"\n', encoding="utf-8")
         (root / "cookbook.toml").write_text(COOKBOOK_TOML, encoding="utf-8")
         (root / "README.md").write_text(FRONT_PAGE, encoding="utf-8")
+        (root / "library.json").write_text(LIBRARY_SNAPSHOT.to_json(), encoding="utf-8")
         write_package(
             root=root,
             name="extract_widgets",
@@ -90,6 +95,7 @@ def make_cookbook(tmp_path: Path) -> MakeCookbook:
                 description="Extract every widget from a catalogue page.",
                 main_pipe="extract_widgets",
             ),
+            bundle=WIDGETS_BUNDLE,
             inputs={"catalogue": {"concept": "widgets.CataloguePage", "content": {"url": WIDGETS_SAMPLE_URL}}},
             key=WIDGETS_KEY,
             contract=WIDGETS_CONTRACT,
@@ -104,6 +110,7 @@ def make_cookbook(tmp_path: Path) -> MakeCookbook:
                 description="Count the words of a text",
                 main_pipe="count_words",
             ),
+            bundle=WORDS_BUNDLE,
             inputs={"text": "The quick brown fox"},
             key=WORDS_KEY,
             contract=WORDS_CONTRACT,

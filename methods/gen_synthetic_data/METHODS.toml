@@ -2,7 +2,7 @@
 name = "gen_synthetic_data"
 display_name = "Synthetic Data Generation"
 address = "github.com/Pipelex/pipelex-cookbook"
-version = "0.18.0"
+version = "0.19.0"
 description = "Turn a description of a record into a set of varied synthetic records: first the cases worth covering, then one filled record per case."
 authors = ["Evotis S.A.S"]
 license = "MIT"

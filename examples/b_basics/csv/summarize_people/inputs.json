@@ -1,8 +1,0 @@
-{
-  "people": {
-    "concept": "summarize_people.Person",
-    "content": {
-      "url": "inputs/people.csv"
-    }
-  }
-}

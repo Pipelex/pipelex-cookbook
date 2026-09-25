@@ -1,8 +1,15 @@
 name: Methods check
 
-# The cookbook's checks that need no API key: every method page equals a fresh render, every
-# method manifest carries the cookbook's version, and every raw sample link answers (or, for a
-# file of this repository, is at least present here). The checks that call production need
+# The cookbook's checks that need no API key: every method page, and each page's snippets written as
+# files under tests/snippets/ with the sidecars of their generated types, equals a fresh render,
+# every contract snapshot records the main pipe and output its package's .mthds files declare, every
+# method manifest carries the cookbook's version, every raw sample link on the pages and in the
+# recipes answers (or, for a file of this repository, is at least present here), every recipe's and
+# page snippet's generated types match their lock, every recipe's types come from the address its
+# code calls, every address a recipe names is pinned to a release tag, every Python recipe script
+# and page snippet type-checks in its own environment, every TypeScript recipe package passes its
+# codegen gate and tsc, as the page snippets' package passes tsc, and every recipe's shell script
+# parses and passes shellcheck, which the runner image carries. The checks that call production need
 # PIPELEX_API_KEY, which CI does not hold: they are `make check-hosted`, run by hand.
 
 on:
@@ -25,11 +32,16 @@ jobs:
         with:
           python-version: "3.13"
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
       - name: Check UV installation
         run: make check-uv
 
       - name: Install dependencies
         run: PYTHON_VERSION=3.13 make install
 
-      - name: Check the method pages, the manifests and the sample links
+      - name: Check the method pages, the manifests, the sample links and the recipes
         run: make check-cookbook

@@ -1,8 +1,10 @@
-"""Load the cookbook: its version, its editorial fields in `cookbook.toml`, and every method package under `methods/`.
+"""Load the cookbook: its version, its editorial fields in `cookbook.toml`, every method package under `methods/`, and the library's snapshot.
 
 A package is a directory holding a `METHODS.toml` manifest, its `.mthds` bundles, a sample `inputs.json`, an answer key `key.md`, and the contract
 snapshot `contract.json` that `make refresh` writes. Loading checks the package's identity: its manifest's `name` is its directory's name and its
-`address` is the cookbook's, since the runtime locates a package by that pair and never by its path.
+`address` is the cookbook's, since the runtime locates a package by that pair and never by its path. It also holds the contract snapshot to the
+package's files: the main pipe, its output concept and its multiplicity must be what the `.mthds` files declare. The method library's snapshot,
+`library.json`, must have been taken at the tag and the address `cookbook.toml` pins (`scripts/library.py`).
 """
 
 import json
@@ -15,9 +17,11 @@ from mthds.package.manifest.parser import parse_methods_toml
 from mthds.package.manifest.schema import MethodsManifest
 from pydantic import BaseModel, ConfigDict, Field, JsonValue, ValidationError
 
+from scripts.bundles import DeclaredOutput, declared_main_output
 from scripts.contract import CONTRACT_FILE, Contract, load_contract
 from scripts.exceptions import CookbookLayoutError
 from scripts.key import AnswerKey, parse_key
+from scripts.library import LibrarySettings, LibrarySnapshot, load_library
 
 COOKBOOK_FILE = "cookbook.toml"
 PYPROJECT_FILE = "pyproject.toml"
@@ -26,6 +30,8 @@ MANIFEST_FILE = "METHODS.toml"
 INPUTS_FILE = "inputs.json"
 KEY_FILE = "key.md"
 PAGE_FILE = "README.md"
+# Where `make render` writes each method's page snippets as files, in `tests/snippets/<name>/`, for the type checkers to read.
+SNIPPETS_DIR = "tests/snippets"
 
 
 class EditorialEntry(BaseModel):
@@ -49,6 +55,7 @@ class CookbookSettings(BaseModel):
 
     address: str = Field(description="The address every cookbook manifest carries, such as `github.com/Pipelex/pipelex-cookbook`")
     repository: str = Field(description="The GitHub repository, `<owner>/<name>`, that raw sample URLs point into")
+    library: LibrarySettings = Field(description="The method library the front page lists, and the tag its snapshot is taken at")
     methods: dict[str, EditorialEntry] = Field(default_factory=dict)
 
 
@@ -91,6 +98,7 @@ class Cookbook(BaseModel):
     version: str = Field(description="The cookbook's version, from `pyproject.toml`, without the `v`")
     settings: CookbookSettings
     packages: list[MethodPackage]
+    library: LibrarySnapshot | None = Field(description="The library's snapshot, or None for `make refresh-library`, which rewrites it")
 
     @property
     def tag(self) -> str:
@@ -101,16 +109,19 @@ class Cookbook(BaseModel):
         return f"{self.settings.address}/{package.name}@{self.tag}"
 
 
-def load_cookbook(root: Path, *, read_contracts: bool = True) -> Cookbook:
+def load_cookbook(root: Path, *, read_contracts: bool = True, read_library: bool = True) -> Cookbook:
     """Load the cookbook rooted at `root`.
 
     Args:
         root: The repository root.
         read_contracts: Whether to read each package's `contract.json`. `make refresh` rewrites the snapshots, so it loads without them and
             recovers from a snapshot that no longer loads.
+        read_library: Whether to read `library.json`. `make refresh-library` rewrites it, so it loads without it and recovers from a snapshot
+            taken at another tag.
 
     Raises:
-        CookbookLayoutError: A file is missing or malformed, a package's identity is wrong, or `cookbook.toml` names a method that does not exist.
+        CookbookLayoutError: A file is missing or malformed, a package's identity is wrong, `cookbook.toml` names a method that does not exist,
+            or the library's snapshot was taken at another tag or address than the one `cookbook.toml` pins.
     """
     version = read_version(root / PYPROJECT_FILE)
     settings = _load_settings(root / COOKBOOK_FILE)
@@ -122,7 +133,8 @@ def load_cookbook(root: Path, *, read_contracts: bool = True) -> Cookbook:
     if unknown_entries:
         msg = f"{root / COOKBOOK_FILE} has editorial entries for methods that do not exist under {METHODS_DIR}/: {', '.join(unknown_entries)}"
         raise CookbookLayoutError(msg)
-    return Cookbook(root=root, version=version, settings=settings, packages=packages)
+    library = load_library(root, settings.library) if read_library else None
+    return Cookbook(root=root, version=version, settings=settings, packages=packages, library=library)
 
 
 def read_version(pyproject_path: Path) -> str:
@@ -181,6 +193,12 @@ def _load_package(*, directory: Path, settings: CookbookSettings, read_contract:
     key = parse_key(key_path.read_text(encoding="utf-8"), source=str(key_path))
     contract_path = directory / CONTRACT_FILE
     contract = load_contract(contract_path) if read_contract and contract_path.is_file() else None
+    if contract is not None:
+        _check_contract_against_bundles(
+            contract=contract,
+            contract_path=contract_path,
+            declared=declared_main_output(bundle_paths=[directory / bundle_file for bundle_file in bundle_files], main_pipe=manifest.main_pipe),
+        )
 
     return MethodPackage(
         directory=directory,
@@ -191,6 +209,35 @@ def _load_package(*, directory: Path, settings: CookbookSettings, read_contract:
         contract=contract,
         editorial=settings.methods.get(directory.name) or EditorialEntry(),
     )
+
+
+def _check_contract_against_bundles(*, contract: Contract, contract_path: Path, declared: DeclaredOutput) -> None:
+    """Refuse a snapshot whose main pipe, output concept or multiplicity is not what the package's `.mthds` files declare.
+
+    Raises:
+        CookbookLayoutError: The snapshot and the files disagree, which means a bundle changed without `make refresh`.
+    """
+    recorded = DeclaredOutput(
+        pipe=contract.pipe,
+        concept=contract.output.concept,
+        multiplicity=contract.output.multiplicity,
+        item_count=contract.output.item_count,
+    )
+    if recorded != declared:
+        msg = (
+            f"{contract_path} says the main pipe `{recorded.pipe}` returns {_phrase_output(recorded)}, "
+            f"but the package's .mthds files declare `{declared.pipe}` returning {_phrase_output(declared)}: "
+            "run `make refresh` to take the contract again"
+        )
+        raise CookbookLayoutError(msg)
+
+
+def _phrase_output(output: DeclaredOutput) -> str:
+    if output.multiplicity == "single":
+        return f"one `{output.concept}`"
+    if output.item_count is not None:
+        return f"a list of {output.item_count} `{output.concept}`"
+    return f"a list of `{output.concept}`"
 
 
 def _load_inputs(path: Path) -> dict[str, JsonValue]:

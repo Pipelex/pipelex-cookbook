@@ -1,0 +1,9 @@
+
+## Methods from the library
+
+More methods are published in the [Pipelex method library]({{ library.url }}), and each runs by its address the same way, through every door above. They are listed here as released at {{ library.tag }}.
+
+{% for method in library.methods %}
+- **[{{ method.display_name }}]({{ method.url }})** · `{{ method.address }}`: {{ method.description }}
+{% endfor %}
+

@@ -4,9 +4,9 @@ import httpx
 import pytest
 
 from scripts import checks
-from scripts.checks import check_links, collect_urls, http_status, lockstep_problems, stale_pages
+from scripts.checks import check_links, collect_urls, http_status, lockstep_problems, orphan_snippet_dirs, stale_pages
 from scripts.cookbook import load_cookbook
-from scripts.render import render_pages
+from scripts.render import render_all, render_pages
 from tests.tooling.test_data import WIDGETS_SAMPLE_URL, MakeCookbook
 
 
@@ -34,6 +34,28 @@ class TestChecks:
             Path("methods/count_words/README.md"),
             Path("methods/extract_widgets/README.md"),
         ]
+
+    def test_a_hand_edit_makes_a_snippet_file_stale(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        cookbook = load_cookbook(make_cookbook())
+        rendered = render_all(cookbook=cookbook, templates_dir=templates_dir)
+        for path, contents in rendered.items():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(contents, encoding="utf-8")
+        assert stale_pages(cookbook=cookbook, rendered=rendered) == []
+        edited = cookbook.root / "tests" / "snippets" / "count_words" / "python" / "snippet.py"
+        edited.write_text(edited.read_text(encoding="utf-8").replace("print(result.main_stuff)", "print(result)"), encoding="utf-8")
+        assert stale_pages(cookbook=cookbook, rendered=rendered) == [Path("tests/snippets/count_words/python/snippet.py")]
+
+    def test_a_snippet_directory_of_no_method_is_an_orphan(self, make_cookbook: MakeCookbook):
+        cookbook = load_cookbook(make_cookbook())
+        snippets_root = cookbook.root / "tests" / "snippets"
+        for directory in ("count_words", "extract_widgets", "retired_method", "node_modules"):
+            (snippets_root / directory).mkdir(parents=True)
+        (snippets_root / "package.json").write_text("{}", encoding="utf-8")
+        assert orphan_snippet_dirs(cookbook) == [Path("tests/snippets/retired_method")]
+
+    def test_a_cookbook_without_snippets_has_no_orphan(self, make_cookbook: MakeCookbook):
+        assert orphan_snippet_dirs(load_cookbook(make_cookbook())) == []
 
     def test_manifests_in_lockstep_pass(self, make_cookbook: MakeCookbook):
         assert lockstep_problems(load_cookbook(make_cookbook())) == []
@@ -100,6 +122,28 @@ class TestChecks:
         found = collect_urls(cookbook=cookbook, rendered={page: f"Run it on {url}."})
         assert url in found
         assert f"{url}." not in found
+
+    def test_raw_urls_in_the_recipes_files_are_collected_whatever_the_file(self, make_cookbook: MakeCookbook):
+        root = make_cookbook()
+        sample = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/assets/extract_dpe/dpe_single_page.pdf"
+        invoice = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/assets/invoice_extractor/invoice_1.pdf"
+        vendored = "https://raw.githubusercontent.com/some/package/main/logo.png"
+        http_recipe = root / "recipes" / "run" / "http"
+        http_recipe.mkdir(parents=True)
+        (http_recipe / "README.md").write_text(f"sh run.sh {sample}\n", encoding="utf-8")
+        (http_recipe / "run.sh").write_text(f'SAMPLE="{sample}"\n', encoding="utf-8")
+        (http_recipe / "chart.png").write_bytes(b"\x89PNG\r\n\x1a\n\xff\xfe")
+        csv_recipe = root / "recipes" / "code" / "python" / "csv-batch"
+        csv_recipe.mkdir(parents=True)
+        (csv_recipe / "invoices.csv").write_text(f"invoice_url\n{invoice}\n", encoding="utf-8")
+        (csv_recipe / "node_modules" / "some-package").mkdir(parents=True)
+        (csv_recipe / "node_modules" / "some-package" / "README.md").write_text(vendored, encoding="utf-8")
+        (csv_recipe / "generated" / "invoice_extraction").mkdir(parents=True)
+        (csv_recipe / "generated" / "invoice_extraction" / "models.py").write_text(f'"""{vendored}"""\n', encoding="utf-8")
+        found = collect_urls(cookbook=load_cookbook(root), rendered={})
+        assert found[sample] == ["recipes/run/http/README.md", "recipes/run/http/run.sh"]
+        assert found[invoice] == ["recipes/code/python/csv-batch/invoices.csv"]
+        assert vendored not in found
 
     def test_a_link_into_the_cookbook_that_fails_otherwise_than_404_is_broken(self, make_cookbook: MakeCookbook, templates_dir: Path):
         cookbook = load_cookbook(make_cookbook())

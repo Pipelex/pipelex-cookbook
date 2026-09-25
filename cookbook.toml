@@ -7,6 +7,13 @@ address = "github.com/Pipelex/pipelex-cookbook"
 # The GitHub repository that the samples' raw URLs point into.
 repository = "Pipelex/pipelex-cookbook"
 
+# The method library the front page lists, at the tag its snapshot, library.json, was taken from.
+# `make refresh-library` rewrites the snapshot from this tag, and `make refresh` runs it first; `make render` reads only the snapshot.
+[library]
+address = "github.com/Pipelex/methods"
+repository = "Pipelex/methods"
+tag = "v0.1.2"
+
 [methods.extract_gantt]
 title = "Gantt chart extraction"
 pitch = "Read a Gantt chart image and return every task with its start and end dates, and every milestone with its date."

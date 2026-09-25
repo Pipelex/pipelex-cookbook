@@ -26,24 +26,26 @@ dist/
 # Ruff
 .ruff_cache/
 
+# The Pipelex runtime's local files, such as the traces a tutorial lesson run from the repository root writes
+.pipelex/
+
 # Results
 results/
 
 # temps
 temp/
-pipelex_super.toml
 
 gcp_credentials.json
-.pipelex/pipelex_service.toml
-.pipelex/storage/*
-.pipelex/inference/deck/*.bak.*
-.pipelex/traces
 
 # macOS
 .DS_Store
-pipelex_override.toml
-telemetry_override.toml
 
-# Claude AI
-examples/c_advanced/crewai_with_pipelex_tools/outbox.txt
-outbox.txt
+# The TypeScript recipes' installed packages and build output
+recipes/**/node_modules/
+recipes/**/.next/
+recipes/**/next-env.d.ts
+recipes/**/*.tsbuildinfo
+
+# The page snippets' installed packages and build output
+tests/snippets/node_modules/
+tests/snippets/*.tsbuildinfo

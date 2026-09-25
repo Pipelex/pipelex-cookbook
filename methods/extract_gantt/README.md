@@ -4,7 +4,7 @@
 
 Read a Gantt chart image and return every task with its start and end dates, and every milestone with its date.
 
-`github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.18.0` · [bundle.mthds](bundle.mthds) · [sample chart](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_gantt/gantt_tree_house.png)
+`github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.19.0` · [bundle.mthds](bundle.mthds) · [sample chart](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_gantt/gantt_tree_house.png)
 
 **Takes** `gantt_chart_image`, an image (`GanttChartImage`): A gantt chart detailing a project timeline.
 
@@ -17,7 +17,7 @@ Read a Gantt chart image and return every task with its start and end dates, and
 
 With the Pipelex MCP in ChatGPT or Claude ([add it once](https://github.com/Pipelex/pipelex-mcp)), ask:
 
-> Run github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.18.0 on https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_gantt/gantt_tree_house.png
+> Run github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.19.0 on https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_gantt/gantt_tree_house.png
 
 In ChatGPT you can attach your own file instead of the link; Claude takes a link. In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pipelex-plugins), the same sentence runs through `/pipelex-run`.
 
@@ -37,7 +37,7 @@ import { PipelexApiClient } from "@pipelex/sdk";
 
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.18.0",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.19.0",
   inputs: {
     gantt_chart_image: {
       url: "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_gantt/gantt_tree_house.png",
@@ -65,7 +65,7 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.18.0",
+            method_ref="github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.19.0",
             inputs={
                 "gantt_chart_image": {
                     "url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_gantt/gantt_tree_house.png",
@@ -88,7 +88,7 @@ The start call answers at once with the run's id, or with the reason it refused 
 ```bash
 START=$(curl -s https://api.pipelex.com/v1/start \
   -H "Authorization: Bearer $PIPELEX_API_KEY" -H "Content-Type: application/json" \
-  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.18.0", "inputs": {"gantt_chart_image": {"url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_gantt/gantt_tree_house.png"}}}')
+  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.19.0", "inputs": {"gantt_chart_image": {"url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_gantt/gantt_tree_house.png"}}}')
 RUN_ID=$(printf '%s' "$START" | jq -r '.pipeline_run_id // empty')
 if [ -z "$RUN_ID" ]; then printf '%s\n' "$START"; else
   until [ "$(curl -s -o results.json -w '%{http_code}' https://api.pipelex.com/v1/runs/$RUN_ID/results \
@@ -99,12 +99,12 @@ fi
 
 </details>
 
-In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.18.0`: it generates the result's types and writes one typed call.
+In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.19.0`: it generates the result's types and writes one typed call.
 
 ## Make it an app
 
 ```bash
-npm create @pipelex/method-app@latest gantt-app -- --method github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.18.0
+npm create @pipelex/method-app@latest gantt-app -- --method github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.19.0
 make -C gantt-app serve
 ```
 
@@ -112,9 +112,9 @@ The form and the result view come from the method's contract. `make serve` print
 
 ## Make it yours
 
-Ask your agent: "Copy github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.18.0 into ./gantt, add each task's owner to what it extracts, prove it on the sample, and save it to my Pipelex account." From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
+Ask your agent: "Copy github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.19.0 into ./gantt, add each task's owner to what it extracts, prove it on the sample, and save it to my Pipelex account." From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
 
-This is done by hand today: the agent copies the package, changes it with `/pipelex-edit`, proves it with `/pipelex-run`, and saves the directory as a new method with `/pipelex-catalog`. The saved method keeps no record of the address it came from, since no gesture yet saves a published method into your account in one step.
+This is done by hand today: the agent copies the package, changes it with `/pipelex-edit`, which hands a change to what the method takes or returns to `/pipelex-design`, proves it with `/pipelex-run`, and saves the directory as a new method with `/pipelex-catalog`. The saved method keeps no record of the address it came from, since no gesture yet saves a published method into your account in one step.
 
 ## What you get
 
@@ -131,6 +131,6 @@ The method's [answer key](key.md), written before its first run, says what a rig
 With the Pipelex runtime and your own provider keys ([set it up](https://docs.pipelex.com/latest/get-started/run-it-yourself/)):
 
 ```bash
-curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/methods/extract_gantt/inputs.json
-pipelex run method github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.18.0 --inputs inputs.json
+curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.19.0/methods/extract_gantt/inputs.json
+pipelex run method github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.19.0 --inputs inputs.json
 ```
