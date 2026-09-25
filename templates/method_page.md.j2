@@ -33,12 +33,4 @@
 
 {% include "doors/yours.md.j2" %}
 
-## What you get
-
-The method's [answer key]({{ page.key_file }}), written before its first run, says what a right answer on the sample holds:
-
-{% for line in page.must %}
-- {{ line.text }}
-{% endfor %}
-
 {% include "doors/local.md.j2" %}

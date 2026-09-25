@@ -14,7 +14,9 @@ Read a slide deck in PDF and return one Markdown text giving each slide its titl
 
 With the Pipelex MCP in ChatGPT or Claude ([add it once](https://github.com/Pipelex/pipelex-mcp)), ask:
 
-> Run github.com/Pipelex/pipelex-cookbook/extract_slides@v0.19.0 on https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/presentations/CatOps.pdf
+```text
+Run github.com/Pipelex/pipelex-cookbook/extract_slides@v0.19.0 on https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/presentations/CatOps.pdf
+```
 
 In ChatGPT you can attach your own file instead of the link; Claude takes a link. In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pipelex-plugins), the same sentence runs through `/pipelex-run`.
 
@@ -109,30 +111,13 @@ The form and the result view come from the method's contract. `make serve` print
 
 ## Make it yours
 
-Ask your agent: "Copy github.com/Pipelex/pipelex-cookbook/extract_slides@v0.19.0 into ./slides, add the speaker's key message for each slide to what it extracts, prove it on the sample, and save it to my Pipelex account." From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
+Ask your agent:
 
-This is done by hand today: the agent copies the package, changes it with `/pipelex-edit`, which hands a change to what the method takes or returns to `/pipelex-design`, proves it with `/pipelex-run`, and saves the directory as a new method with `/pipelex-catalog`. The saved method keeps no record of the address it came from, since no gesture yet saves a published method into your account in one step.
+```text
+Copy github.com/Pipelex/pipelex-cookbook/extract_slides@v0.19.0 into ./slides, add the speaker's key message for each slide to what it extracts, prove it on the sample, and save it to my Pipelex account.
+```
 
-## What you get
-
-The method's [answer key](key.md), written before its first run, says what a right answer on the sample holds:
-
-- `text` holds twelve sections, one per slide and in the deck's order, each opening with a level-one heading that gives the slide's own title or a close paraphrase of it, from "CatOps" for the title slide to "Experienced Team Seeking Strategic Partners" for the last.
-- Every section carries, after a `**Description:**` label, a description of that slide's layout and graphics.
-- The section on the remote work crisis gives its four figures: 73% of remote workers, 47 minutes lost per incident, a 3.2x increase in meeting duration and $12.3 billion of annual cost to enterprises.
-- The section on the remote work crisis describes the photograph of a cat chewing a cable.
-- The section on the remote work crisis gives its three bullets as readable sentences: keyboard takeovers occur most frequently during deadline-sensitive work, 89% of cable sabotage incidents happen during investor calls, and the current strategy of "Hope" and "Closing Doors" is failing at scale.
-- The section on incident management gives its four bullets as readable sentences, each with its label: Real-time Monitoring (keyboard pressure and webcam motion sensors, 0.3s latency), Severity Scoring (P0 Critical to P4 Info based on meeting context), Automated Response (treats, lasers or calming audio) and Predictive Analysis (forecasting high-risk periods).
-- The section on incident management names the donut chart of incident outcomes and its four categories: Proactively Prevented, Auto-Resolved (Treats), Auto-Resolved (Laser) and Human Intervention Required.
-- The section on failing current solutions names the bar chart of failure rates and at least four of its six methods: "Hope" Strategy, Closing the Door, Bribery (Treats), Reactive Scritching, Decoy Keyboard and Spray Bottle (Legacy).
-- The section on enterprise modules names the six modules: Incident Console, Purrformance Dashboard, Treat Orchestrator, Cat-Access Control, Playbook Library and Meowtem Analysis.
-- The section on the intelligent workflow gives the six steps with their own numbers, or listed in their numbered order: 1 Event Intake, 2 Severity Scoring, 3 Playbook Selection, 4 Automated Response, 5 Verification, 6 Meowtem Generation.
-- The section on the intelligent workflow says average response time fell from 8.4 minutes to 1.3 minutes.
-- The section on the addressable market gives TAM $47 billion, SAM $14.1 billion, SOM $1.4 billion and Expansion $89 billion.
-- The section on pricing gives the tiers Free (1 cat), Pro at $29 a month and Enterprise at a custom price, and the add-ons at $99 and $199 a month.
-- The section on early traction gives $2.1M ARR, 847k paws per quarter, 12,300 incidents resolved, a 67% reduction in disruptions and 4.8/5.0 customer satisfaction.
-- The section on the product roadmap lists its five items with their quarters: Zoom Background Auto-Cat Blur in Q2 '26, Predictive Cable Risk Analysis in Q3 '26, Multi-Pet Conflict Resolution in Q4 '26, Litterbox Telemetry (v2) in Q1 '27 and DogOps Integration in Q2 '27.
-- The section on the team gives the $8M Series A ask and the four team members with their roles: Sarah Chen, CEO & Co-Founder; Dr. Marcus Williams, Chief Feline Officer; Priya Patel, CTO; James Rodriguez, Head of Growth.
+From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
 
 ## Run it on your own machine
 

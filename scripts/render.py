@@ -1,9 +1,9 @@
 """Render every method's page, `methods/<name>/README.md`, from its package, its editorial fields and the templates, and the front page's methods.
 
 Everything a page says about its method is derived here, from committed files only: the address from the manifest and the version file, the
-samples and the code snippets' inputs from `inputs.json`, the "Takes" and "Returns" lines from the contract snapshot, and "What you get" from the
-answer key. The templates under `templates/` hold the wording and the links, one block per door, so a change to a door is made once and every page
-inherits it at the next render.
+samples and the code snippets' inputs from `inputs.json`, and the "Takes" and "Returns" lines from the contract snapshot; the answer key is
+not shown on the page. The templates under `templates/` hold the wording and the links, one block per door, so a change to a door is made
+once and every page inherits it at the next render.
 
 The page's TypeScript and Python snippets are also written as files, `tests/snippets/<name>/typescript/snippet.ts` and
 `tests/snippets/<name>/python/snippet.py`, from the same templates under `templates/snippets/`, so that what the page shows is what the type
@@ -22,9 +22,8 @@ from jinja2 import Environment, FileSystemLoader, StrictUndefined
 from pydantic import BaseModel, ConfigDict, Field, JsonValue
 
 from scripts.contract import Contract, ContractField, ContractInput, short_concept
-from scripts.cookbook import INPUTS_FILE, KEY_FILE, METHODS_DIR, SNIPPETS_DIR, Cookbook, MethodPackage
+from scripts.cookbook import INPUTS_FILE, METHODS_DIR, SNIPPETS_DIR, Cookbook, MethodPackage
 from scripts.exceptions import CookbookLayoutError
-from scripts.key import KeyLine
 from scripts.library import LIBRARY_METHODS_DIR
 from scripts.recipes import GENERATED_DIR, PYTHON_TARGET, SIDECAR_FILE, TYPESCRIPT_TARGET
 
@@ -52,7 +51,6 @@ DEFAULT_CHATBOT_WITH_SAMPLES = "Run {address} on {samples}"
 DEFAULT_CHATBOT_WITHOUT_SAMPLES = "Run {address} with the sample inputs in {inputs_url}"
 DEFAULT_YOURS_CHANGE = "adapt what it does to my case"
 
-_PLANTED_FACT_PATTERN = re.compile(r"\bF\d+\b")
 _TYPESCRIPT_IDENTIFIER_PATTERN = re.compile(r"^[A-Za-z_$][A-Za-z0-9_$]*$")
 
 # The input form's kind for each input, as a reader says it. The kind `list` only restates the multiplicity, so a list is phrased from its
@@ -152,8 +150,6 @@ class PageContext(BaseModel):
     app_dir: str
     yours_dir: str
     yours_change: str
-    must: list[KeyLine]
-    key_file: str
     source_dir: str
 
 
@@ -305,13 +301,6 @@ def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageCon
         msg = f"{package.directory} has no contract snapshot yet: run `make refresh` (it needs PIPELEX_API_KEY), then `make render`"
         raise CookbookLayoutError(msg)
     editorial = package.editorial
-    for must_line in package.key.must:
-        if _PLANTED_FACT_PATTERN.search(must_line.text):
-            msg = (
-                f"{package.directory}/{KEY_FILE}: {must_line.label} cites a planted fact, but the page shows the Must lines on their own, "
-                "so each must state its facts in full"
-            )
-            raise CookbookLayoutError(msg)
     address = cookbook.address_of(package)
     snippet_inputs = _snippet_inputs(package.inputs)
     samples = _samples(package=package)
@@ -360,8 +349,6 @@ def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageCon
         app_dir=editorial.app_dir or f"{package.name.replace('_', '-')}-app",
         yours_dir=editorial.yours_dir or package.name,
         yours_change=editorial.yours_change or DEFAULT_YOURS_CHANGE,
-        must=package.key.must,
-        key_file=KEY_FILE,
         source_dir=f"{METHODS_DIR}/{package.name}",
     )
 

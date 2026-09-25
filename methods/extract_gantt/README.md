@@ -17,7 +17,9 @@ Read a Gantt chart image and return every task with its start and end dates, and
 
 With the Pipelex MCP in ChatGPT or Claude ([add it once](https://github.com/Pipelex/pipelex-mcp)), ask:
 
-> Run github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.19.0 on https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_gantt/gantt_tree_house.png
+```text
+Run github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.19.0 on https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_gantt/gantt_tree_house.png
+```
 
 In ChatGPT you can attach your own file instead of the link; Claude takes a link. In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pipelex-plugins), the same sentence runs through `/pipelex-run`.
 
@@ -112,19 +114,13 @@ The form and the result view come from the method's contract. `make serve` print
 
 ## Make it yours
 
-Ask your agent: "Copy github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.19.0 into ./gantt, add each task's owner to what it extracts, prove it on the sample, and save it to my Pipelex account." From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
+Ask your agent:
 
-This is done by hand today: the agent copies the package, changes it with `/pipelex-edit`, which hands a change to what the method takes or returns to `/pipelex-design`, proves it with `/pipelex-run`, and saves the directory as a new method with `/pipelex-catalog`. The saved method keeps no record of the address it came from, since no gesture yet saves a published method into your account in one step.
+```text
+Copy github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.19.0 into ./gantt, add each task's owner to what it extracts, prove it on the sample, and save it to my Pipelex account.
+```
 
-## What you get
-
-The method's [answer key](key.md), written before its first run, says what a right answer on the sample holds:
-
-- `tasks` holds the chart's twelve tasks, each named recognisably as on the chart, with or without its number.
-- Each task's `start_date` and `end_date` are within one day of the chart's: Planning & Design from 1 to 8 September, Resource Gathering 5 to 10 September, Site Preparation 7 to 10 September, Foundation & Supports 11 to 15 September, Platform Construction 15 to 18 September, Frame & Walls Construction 19 to 25 September, Roofing Installation 24 to 29 September, Windows & Doors Installation 26 to 29 September, Ladder Installation 29 to 30 September, Interior Setup 1 to 6 October, Inspections & Adjustments 6 to 10 October, and Celebration Preparation 8 to 11 October.
-- Every date is in 2025.
-- `milestones` holds the five milestones Blueprint, Foundation, Structure, Interior and Celebration.
-- Each milestone's `milestone_date` is within one day of the chart's: Blueprint on 8 September, Foundation on 15 September, Structure on 29 September, Interior on 6 October and Celebration on 11 October.
+From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
 
 ## Run it on your own machine
 

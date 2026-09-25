@@ -11,7 +11,7 @@ Each cookbook method is a package in `methods/<name>/`, laid out like the packag
 | `METHODS.toml` | The manifest: `name`, `display_name`, `address`, `version`, `description`, `authors`, `license`, `mthds_version`, `main_pipe` and `[exports]` |
 | `*.mthds` | The method's bundles |
 | `inputs.json` | Sample inputs, each file linked by its raw URL on `main` under `assets/`, or by its own URL when it is a third-party file hosted elsewhere |
-| `key.md` | The answer key for the sample, in the format of the Pipelex lab skill |
+| `key.md` | The answer key for the sample, in the format of the Pipelex lab skill, which a run on the sample is checked against; the page does not show it |
 | `contract.json` | A snapshot of what the main pipe takes and returns, written by `make refresh` |
 | `README.md` | The method's page, written by `make render` |
 
@@ -23,14 +23,13 @@ Each cookbook method is a package in `methods/<name>/`, laid out like the packag
 
 ## The pages
 
-`methods/<name>/README.md` is generated, and so is every page: nobody edits one by hand. Each page follows the same order, one block per door: the header, with the method's address and its sample; "Try it in your chatbot"; "Put it in your code"; "Make it an app"; "Make it yours"; "What you get"; and "Run it on your own machine". Only the address, the samples and a few editorial lines change from one page to the next.
+`methods/<name>/README.md` is generated, and so is every page: nobody edits one by hand. Each page follows the same order, one block per door: the header, with the method's address and its sample; "Try it in your chatbot"; "Put it in your code"; "Make it an app"; "Make it yours"; and "Run it on your own machine". Only the address, the samples and a few editorial lines change from one page to the next.
 
 What a page says about its method comes from the package:
 
 - **The address** is `address/name@tag`, where the tag is `v` followed by the version in `pyproject.toml`. On `dev` that is the latest release, since each release is merged back into `dev`; on a release branch it is the release being cut, and the release commit re-renders every page. A method added since the last release therefore names that release's tag, which does not hold it: `check-links` reports its links as not published and `check-addresses` its address as not released, rather than as broken, and the next release re-renders its page at the new tag.
 - **"Takes" and "Returns"** come from the contract snapshot.
 - **The samples and the code snippets' inputs** come from `inputs.json`. When the inputs, written as JSON, run longer than `INLINE_INPUTS_LIMIT` in `scripts/render.py`, the snippets do not write them out: the TypeScript, Python and HTTP snippets all fetch them from the raw `inputs.json` at the page's tag, the file "Run it on your own machine" links and `make check-links` fetches, and send them as they are, `{concept, content}` wrappers included.
-- **"What you get"** is the answer key's `## Must` lines. The page shows them without the planted facts, so each Must line states its facts in full; the renderer refuses one that cites a planted fact such as `F2`.
 - **The title, the pitch, the chatbot sentence and the "Make it yours" change** come from the method's entry in `cookbook.toml`. Every field is optional: a method with no entry gets its title and pitch from its manifest and a default sentence for the rest.
 
 **The code snippets are written as files too.** The TypeScript and Python snippets of "Put it in your code" come from `templates/snippets/`, which the page includes inside its fences and which `make render` also writes, under a header saying where they come from, as `tests/snippets/<name>/typescript/snippet.ts` and `tests/snippets/<name>/python/snippet.py`. The Python file opens with the inline dependencies `uv run` reads. Like the pages, these files are never edited by hand: `make check-render` holds them to a fresh render, and fails on a directory under `tests/snippets/` that belongs to no method, since `make render` never deletes one.
