@@ -316,7 +316,7 @@ check-cookbook: check-render check-lockstep check-links check-recipes check-code
 	@echo "> done: check-cookbook"
 
 refresh: env
-	$(call PRINT_TITLE,"Refreshing every contract from production, then the pages, then every generated tree")
+	$(call PRINT_TITLE,"Refreshing every contract from production and then the pages and every generated tree")
 	$(VENV_PYTHON) -m scripts refresh
 	$(VENV_PYTHON) -m scripts render
 	@trees="$(RECIPE_TREES)" || exit 1; if [ -n "$$trees" ]; then $(RECIPE_CODEGEN) generate $$trees; fi
