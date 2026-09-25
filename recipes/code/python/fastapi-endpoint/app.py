@@ -25,7 +25,7 @@ from fastapi import Depends, FastAPI, HTTPException, Request
 from mthds.protocol.exceptions import PipelineRequestError
 from pipelex_sdk.client import PipelexAPIClient
 from pipelex_sdk.errors import RunTimeoutError
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, Field, HttpUrl, ValidationError
 
 from generated.answer_from_documents.models import DocumentAnswer
 
@@ -70,12 +70,14 @@ async def answer(body: AnswerRequest, client: Annotated[PipelexAPIClient, Depend
         inputs["context"] = body.context
     try:
         results = await client.start_and_wait(method_ref=METHOD_REF, inputs=inputs)
+        document_answer = DocumentAnswer.model_validate(results.main_stuff)
     except RunTimeoutError as exc:
         # The run carries on server-side: its id is what a caller would resume it by.
         raise HTTPException(status_code=504, detail=f"The run {exc.run_id} is still going; ask again later.") from exc
-    except (PipelineRequestError, httpx.HTTPStatusError) as exc:
+    except (PipelineRequestError, httpx.HTTPError, ValidationError) as exc:
+        # A refused or failed run, a hosted API that cannot be reached, or an answer the generated types do not accept.
         raise HTTPException(status_code=502, detail=f"The method could not answer: {exc}") from exc
-    return AnswerResponse(answer=DocumentAnswer.model_validate(results.main_stuff), run_id=results.pipeline_run_id)
+    return AnswerResponse(answer=document_answer, run_id=results.pipeline_run_id)
 
 
 if __name__ == "__main__":

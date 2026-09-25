@@ -6,7 +6,7 @@ It shows how a method becomes part of an API:
 
 - **The method's types are the endpoint's types.** The response embeds `DocumentAnswer`, the model generated from the method, so FastAPI validates every answer against it and documents its fields at `/docs`, down to each quoted passage and its page number.
 - **One client for the app.** The `PipelexAPIClient` opens when the app starts and closes when it stops, and each request borrows it through a dependency.
-- **Failures in HTTP terms.** A run that fails answers 502 with the reason, and a run still going when the wait ends answers 504 with its id, since the run carries on server-side.
+- **Failures in HTTP terms.** A run that fails, a hosted API that cannot be reached, or an answer the generated types refuse answers 502 with the reason, and a run still going when the wait ends answers 504 with its id, since the run carries on server-side.
 
 ## What it needs
 
