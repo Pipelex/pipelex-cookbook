@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from scripts.recipes import find_trees, python_scripts, recipe_problems
+from scripts.recipes import find_trees, python_scripts, recipe_problems, typescript_packages
 
 ADDRESS = "github.com/Pipelex/methods/invoice_extraction@v0.1.1"
 SCRIPT_HEADER = '# /// script\n# dependencies = ["pipelex-sdk==0.12.0"]\n# ///\n'
@@ -16,6 +16,22 @@ def _python_recipe(root: Path, *, address: str = ADDRESS, code_address: str = AD
     (tree / "codegen.lock").write_text("lock_version = 1\n", encoding="utf-8")
     (tree / "models.py").write_text("class Invoice: ...\n", encoding="utf-8")
     (recipe / "batch.py").write_text(f'{header}METHOD_REF = "{code_address}"\n', encoding="utf-8")
+    return recipe
+
+
+def _typescript_recipe(
+    root: Path, *, dependencies: dict[str, str] | None = None, codegen_check: str = "node scripts/codegen-check.mjs generated/extract_gantt"
+) -> Path:
+    """A TypeScript recipe calling the address its one generated tree names, with its package.json."""
+    recipe = root / "recipes" / "code" / "typescript" / "upload"
+    tree = recipe / "generated" / "extract_gantt"
+    tree.mkdir(parents=True)
+    (tree / "sources.json").write_text(json.dumps({"method": {"method_ref": ADDRESS}, "target": "ts-zod"}), encoding="utf-8")
+    (tree / "codegen.lock").write_text("lock_version = 1\n", encoding="utf-8")
+    (tree / "types.ts").write_text("export const GanttChartSchema = {};\n", encoding="utf-8")
+    (recipe / "extract.ts").write_text(f'const METHOD_REF = "{ADDRESS}";\n', encoding="utf-8")
+    package = {"dependencies": {"@pipelex/sdk": "0.25.1"} if dependencies is None else dependencies, "scripts": {"codegen:check": codegen_check}}
+    (recipe / "package.json").write_text(json.dumps(package), encoding="utf-8")
     return recipe
 
 
@@ -92,3 +108,26 @@ class TestRecipes:
         assert find_trees(tmp_path) == []
         assert python_scripts(tmp_path) == []
         assert recipe_problems(tmp_path) == []
+
+    def test_a_typescript_recipe_depending_on_the_sdk_and_gating_its_types_is_clean(self, tmp_path: Path):
+        recipe = _typescript_recipe(tmp_path)
+        (recipe / "node_modules" / "zod").mkdir(parents=True)
+        (recipe / "node_modules" / "zod" / "package.json").write_text("{}", encoding="utf-8")
+        assert typescript_packages(tmp_path) == [recipe]
+        assert recipe_problems(tmp_path) == []
+
+    def test_a_package_that_does_not_depend_on_the_sdk_is_a_problem(self, tmp_path: Path):
+        _typescript_recipe(tmp_path, dependencies={"zod": "^4.4.3"})
+        [problem] = recipe_problems(tmp_path)
+        assert problem == "recipes/code/typescript/upload/package.json: its dependencies do not name @pipelex/sdk"
+
+    def test_a_tree_its_codegen_gate_does_not_check_is_a_problem(self, tmp_path: Path):
+        _typescript_recipe(tmp_path, codegen_check="node scripts/codegen-check.mjs generated/extract_gantt_old")
+        [problem] = recipe_problems(tmp_path)
+        assert "its `codegen:check` script does not check generated/extract_gantt" in problem
+
+    def test_an_unreadable_package_json_is_a_problem(self, tmp_path: Path):
+        recipe = _typescript_recipe(tmp_path)
+        (recipe / "package.json").write_text("{not json", encoding="utf-8")
+        [problem] = recipe_problems(tmp_path)
+        assert problem.startswith("recipes/code/typescript/upload/package.json: must be JSON")

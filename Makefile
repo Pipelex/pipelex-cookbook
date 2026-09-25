@@ -82,7 +82,7 @@ make check-lockstep           - Fail when a method manifest's version is not the
 make check-links              - Fetch every sample URL in the packages and every raw URL on the pages
 make check-recipes            - Fail when a recipe's generated types name no pinned address, or one its code does not call
 make check-codegen            - Check every recipe's generated types against their codegen.lock (offline)
-make check-recipe-types       - Type-check every Python recipe script with pyright, in the environment its dependencies describe
+make check-recipe-types       - Type-check every recipe: each Python script with pyright in its own environment, each TypeScript package with its codegen gate and tsc
 make check-cookbook           - The checks that need no key: the pages, the manifests, the links and the recipes (what CI runs)
 make refresh                  - Write every method's contract.json and every recipe's generated types from production (needs PIPELEX_API_KEY)
 make check-methods            - Validate every method on production from its files (needs PIPELEX_API_KEY)
@@ -285,11 +285,15 @@ check-codegen: env
 	@trees="$(RECIPE_TREES)" || exit 1; if [ -n "$$trees" ]; then $(RECIPE_CODEGEN) check $$trees; else echo "no recipe carries generated types"; fi
 
 check-recipe-types: env
-	$(call PRINT_TITLE,"Type-checking every Python recipe script in its own environment")
+	$(call PRINT_TITLE,"Type-checking every recipe: each Python script in its own environment and each TypeScript package after its codegen gate")
 	@scripts="$$($(VENV_PYTHON) -m scripts recipe-scripts)" || exit 1; status=0; for script in scripts/sdk/recipe_codegen.py $$scripts; do \
 		echo "· $$script"; \
 		uv sync --quiet --script "$$script" || { status=1; continue; }; \
 		$(VENV_PYRIGHT) -p recipes/pyrightconfig.json --pythonpath "$$(uv python find --script "$$script")" "$$script" || status=1; \
+	done; \
+	packages="$$($(VENV_PYTHON) -m scripts recipe-packages)" || exit 1; for package in $$packages; do \
+		echo "· $$package"; \
+		(cd "$$package" && npm ci --no-audit --no-fund --loglevel=error && npm run --silent codegen:check && npx --no-install tsc --noEmit) || status=1; \
 	done; exit $$status
 
 check-cookbook: check-render check-lockstep check-links check-recipes check-codegen check-recipe-types

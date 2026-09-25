@@ -6,15 +6,16 @@ a `sources.json` naming the address and the codegen target they come from. `make
 (`scripts/sdk/recipe_codegen.py`, which runs beside `pipelex-sdk`), and this module is what the rest of the tooling reads a tree from.
 
 The offline checks here hold each tree to its recipe: the sidecar names an address pinned to a tag and a target the recipe's language
-reads, the recipe's own code calls that same address as a whole string literal, and a Python recipe script declares `pipelex-sdk` among
-its inline dependencies. Whether the types still match their lock is the SDK's check, whether the lock comes from what the address
+reads, the recipe's own code calls that same address as a whole string literal, a Python recipe script declares `pipelex-sdk` among
+its inline dependencies, and a TypeScript recipe's `package.json` depends on `@pipelex/sdk` and has its `codegen:check` script check
+every tree it carries. Whether the types still match their lock is the SDK's check, whether the lock comes from what the address
 resolves to is `make check-codegen-live`, and whether the address resolves is `make check-addresses`.
 """
 
 import re
 from pathlib import Path
 
-from pydantic import BaseModel, ConfigDict, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 RECIPES_DIR = "recipes"
 GENERATED_DIR = "generated"
@@ -24,6 +25,9 @@ TYPESCRIPT_TARGET = "ts-zod"
 TARGET_MARKERS = {PYTHON_TARGET: "a Python script declaring its dependencies inline", TYPESCRIPT_TARGET: "a package.json"}
 CODE_SUFFIXES = frozenset({".py", ".ts", ".tsx", ".mts", ".mjs"})
 SDK_DEPENDENCY = "pipelex-sdk"
+PACKAGE_FILE = "package.json"
+SDK_PACKAGE = "@pipelex/sdk"
+CODEGEN_CHECK_SCRIPT = "codegen:check"
 
 # Directories no recipe's own code or generated tree lives in: installed packages, environments and build output.
 _SKIPPED_DIRS = frozenset({"node_modules", ".venv", "__pycache__", ".next", "dist", "build"})
@@ -40,6 +44,13 @@ class Sidecar(BaseModel):
 
     method: SidecarMethod
     target: str
+
+
+class PackageManifest(BaseModel):
+    """The part of a TypeScript recipe's `package.json` the tooling reads: what it depends on and the scripts it defines."""
+
+    dependencies: dict[str, str] = Field(default_factory=dict)
+    scripts: dict[str, str] = Field(default_factory=dict)
 
 
 class RecipeTree(BaseModel):
@@ -83,10 +94,19 @@ def python_scripts(root: Path) -> list[Path]:
     )
 
 
+def typescript_packages(root: Path) -> list[Path]:
+    """Every TypeScript recipe: a directory under `recipes/` holding a `package.json`, its installed packages left out."""
+    recipes_root = root / RECIPES_DIR
+    if not recipes_root.is_dir():
+        return []
+    return sorted(path.parent for path in recipes_root.rglob(PACKAGE_FILE) if not _is_skipped(path, root=recipes_root))
+
+
 def recipe_problems(root: Path) -> list[str]:
     """What an offline reading finds wrong with the recipes' generated trees and scripts, one sentence each."""
     problems: list[str] = []
-    for tree in find_trees(root):
+    trees = find_trees(root)
+    for tree in trees:
         where = tree.directory.relative_to(root)
         if tree.method_ref is None or tree.target is None:
             problems.append(f"{where}/{SIDECAR_FILE}: {tree.sidecar_problem}")
@@ -107,6 +127,27 @@ def recipe_problems(root: Path) -> list[str]:
         block = _script_block(script) or ""
         if SDK_DEPENDENCY not in block:
             problems.append(f"{script.relative_to(root)}: its inline dependencies do not name {SDK_DEPENDENCY}")
+    for package_dir in typescript_packages(root):
+        package_trees = [tree for tree in trees if tree.recipe_dir == package_dir and tree.target == TYPESCRIPT_TARGET]
+        problems.extend(_package_problems(package_dir, root=root, trees=package_trees))
+    return problems
+
+
+def _package_problems(package_dir: Path, *, root: Path, trees: list[RecipeTree]) -> list[str]:
+    """What is wrong with a TypeScript recipe's `package.json`: the SDK it calls through, and the gate over each of its trees."""
+    where = (package_dir / PACKAGE_FILE).relative_to(root)
+    try:
+        manifest = PackageManifest.model_validate_json((package_dir / PACKAGE_FILE).read_text(encoding="utf-8"))
+    except ValidationError:
+        return [f"{where}: must be JSON whose `dependencies` and `scripts` map names to strings"]
+    problems: list[str] = []
+    if SDK_PACKAGE not in manifest.dependencies:
+        problems.append(f"{where}: its dependencies do not name {SDK_PACKAGE}")
+    checked = manifest.scripts.get(CODEGEN_CHECK_SCRIPT, "").split()
+    for tree in trees:
+        tree_path = tree.directory.relative_to(package_dir).as_posix()
+        if tree_path not in checked:
+            problems.append(f"{where}: its `{CODEGEN_CHECK_SCRIPT}` script does not check {tree_path}, so nothing holds those types to their lock")
     return problems
 
 
