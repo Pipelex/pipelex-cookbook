@@ -10,14 +10,7 @@ npm install @pipelex/sdk
 ```
 
 ```ts
-import { PipelexApiClient } from "@pipelex/sdk";
-
-const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
-const result = await client.startAndWaitForResult({
-  method_ref: "{{ page.address }}",
-  inputs: {{ page.inputs_typescript }},
-});
-console.log(result.main_stuff);
+{% include "snippets/typescript.ts.j2" %}
 ```
 
 </details>
@@ -30,21 +23,7 @@ pip install pipelex-sdk
 ```
 
 ```python
-import asyncio
-
-from pipelex_sdk.client import PipelexAPIClient
-
-
-async def main() -> None:
-    async with PipelexAPIClient() as client:
-        result = await client.start_and_wait(
-            method_ref="{{ page.address }}",
-            inputs={{ page.inputs_python }},
-        )
-        print(result.main_stuff)
-
-
-asyncio.run(main())
+{% include "snippets/python.py.j2" %}
 ```
 
 </details>

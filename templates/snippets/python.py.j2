@@ -1,0 +1,15 @@
+import asyncio
+
+from pipelex_sdk.client import PipelexAPIClient
+
+
+async def main() -> None:
+    async with PipelexAPIClient() as client:
+        result = await client.start_and_wait(
+            method_ref="{{ page.address }}",
+            inputs={{ page.inputs_python }},
+        )
+        print(result.main_stuff)
+
+
+asyncio.run(main())

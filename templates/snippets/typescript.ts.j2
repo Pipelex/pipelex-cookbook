@@ -1,0 +1,8 @@
+import { PipelexApiClient } from "@pipelex/sdk";
+
+const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
+const result = await client.startAndWaitForResult({
+  method_ref: "{{ page.address }}",
+  inputs: {{ page.inputs_typescript }},
+});
+console.log(result.main_stuff);
