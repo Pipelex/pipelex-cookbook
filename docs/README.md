@@ -1,6 +1,6 @@
 # How the cookbook works
 
-The cookbook holds Pipelex's example methods as packages anyone can run by address, and gives each one a page showing every way to use it: in a chatbot, in code, as an app, as a method of your own, and on your own machine. This document explains the parts that make that work. To add a method, read [adding-a-method.md](adding-a-method.md).
+The cookbook holds Pipelex's example methods as packages anyone can run by address, and gives each one a page showing every way to use it: in a chatbot, in code, as an app, as a method of your own, and on your own machine. Beside the pages, recipes show one way of using a method in depth, on a real case, with code the checks hold to the method it calls. This document explains the parts that make that work. To add a method, read [adding-a-method.md](adding-a-method.md), and to add a recipe, [adding-a-recipe.md](adding-a-recipe.md).
 
 The repository is mid-way through a rebuild. The older examples under `examples/`, with their runtime pin, their `.pipelex/` configuration and their tests, stay where they are until the new layout replaces them. Everything below describes the new layout.
 
@@ -73,6 +73,23 @@ The "Takes" and "Returns" lines come from production: `POST /v1/validate` answer
 
 `make refresh` is run by hand whenever a bundle changes what its main pipe takes or returns, followed by `make render`. `make check-methods` says when a snapshot no longer matches production.
 
+## The recipes
+
+A recipe is a small project under `recipes/<door>/<name>/`, grouped by the door it shows: `code/` for calling a method from your own code. Each has a `README.md` saying what it shows, what it needs, how to run it and what you get, and calls its method by an address pinned to a release tag, from the cookbook or from the method library, so the method never changes under it. A reader copies one directory and nothing else: a Python recipe is a single script declaring its dependencies inline, which `uv run` reads.
+
+A code recipe carries the types of the method it calls, generated from that address, in `generated/<method>/`:
+
+| File | What it is |
+|---|---|
+| `models.py` | The method's concepts as pydantic models, stamped by codegen. Never edited by hand |
+| `codegen.lock` | The hash of every stamped file and the fingerprint of the method they were generated from |
+| `sources.json` | The pinned address and the codegen target the tree comes from: the one file of the tree a person writes |
+| `__init__.py` | Empty files making the tree importable as `generated.<method>`, which codegen never emits |
+
+The script imports its types as `generated.<method>.models`, from the directory it runs in. `make refresh` regenerates every tree from its sidecar, through `POST /v1/codegen` with the address, and `make check-codegen` checks every tree against its lock with no key and no network. Both run `scripts/sdk/recipe_codegen.py`, the one piece of the tooling that uses `pipelex-sdk`, in an environment of its own made by `uv run --script`. Ruff never touches a generated tree, since a reformatted file no longer matches its lock.
+
+Each Python recipe script is type-checked by pyright in the environment its own inline dependencies describe, under `recipes/pyrightconfig.json`, in strict mode: the check proves that the recipe calls the SDK as it is, and that it reads the method's result through the types generated from it.
+
 ## The checks
 
 | Target | Needs | What it proves |
@@ -81,9 +98,12 @@ The "Takes" and "Returns" lines come from production: `POST /v1/validate` answer
 | `make check-lockstep` | Nothing | Every manifest carries the cookbook's version |
 | `make check-links` | The network | Every URL in the packages' inputs and every raw URL on the pages answers, following redirects. A URL into this repository must name a file this checkout holds; if it answers 404, it is reported as not published, since the next release publishes it |
 | `make check-methods` | `PIPELEX_API_KEY` | Every package validates on production from its files, and its contract snapshot is current |
-| `make check-addresses` | `PIPELEX_API_KEY` | Every page's address validates on production at the page's tag, as a reader running it would reach it. A method the tag does not carry yet, or a tag not pushed yet, is reported as not released rather than failed: production answers the first with a 404 whose problem type is `method-package-not-found-error`, and the second with a `MethodFetchError` saying the tag names no git tag. Any other refusal fails |
-| `make refresh` | `PIPELEX_API_KEY` | Rewrites every contract snapshot from production |
+| `make check-recipes` | Nothing | Every recipe's generated tree has a sidecar naming an address pinned to a release tag and a target its language reads, the recipe's code calls that same address, and every Python recipe script declares `pipelex-sdk` |
+| `make check-codegen` | Nothing | Every recipe's generated types still match their `codegen.lock`: no file edited, missing or left over |
+| `make check-recipe-types` | The network, to install each script's dependencies | Every Python recipe script type-checks in strict mode, in its own environment |
+| `make check-addresses` | `PIPELEX_API_KEY` | Every page's address validates on production at the page's tag, as a reader running it would reach it, and so does every address a recipe pins. A method the tag does not carry yet, or a tag not pushed yet, is reported as not released rather than failed: production answers the first with a 404 whose problem type is `method-package-not-found-error`, and the second with a `MethodFetchError` saying the tag names no git tag. Any other refusal fails |
+| `make refresh` | `PIPELEX_API_KEY` | Rewrites every contract snapshot, and every recipe's generated types, from production |
 
-`make check-cookbook` runs the three that need no key, and is what the `Methods check` workflow runs on every pull request. `make agent-check` runs `check-render` and `check-lockstep` after the linters. The checks that call production, `check-methods` and `check-addresses`, are grouped under `make check-hosted`: CI holds no API key, so their author runs them by hand before each pull request, and the release play runs them at each release. After a release, `make check-addresses` is also what proves it: once the tag exists, every method must validate at it. None of them spends inference; running a method is a separate, deliberate act.
+`make check-cookbook` runs every check that needs no key, and is what the `Methods check` workflow runs on every pull request. `make agent-check` runs `check-render`, `check-lockstep`, `check-recipes` and `check-codegen` after the linters. The checks that call production, `check-methods` and `check-addresses`, are grouped under `make check-hosted`: CI holds no API key, so their author runs them by hand before each pull request, and the release play runs them at each release. After a release, `make check-addresses` is also what proves it: once the tag exists, every method must validate at it. None of them spends inference; running a method is a separate, deliberate act.
 
-The tooling calls `POST /v1/validate` with `httpx` rather than through `pipelex-sdk`. The SDK pins an `mthds` release that the runtime this repository still pins for its older examples cannot run with, so the two cannot share one environment until that pin goes with the old examples.
+The tooling calls `POST /v1/validate` with `httpx` rather than through `pipelex-sdk`. The SDK pins an `mthds` release that the runtime this repository still pins for its older examples cannot run with, so the two cannot share one environment until that pin goes with the old examples. The recipes' codegen, which needs the SDK, runs in its own environment for the same reason.

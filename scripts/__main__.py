@@ -1,6 +1,7 @@
 """The command line behind the Makefile's cookbook targets: `python -m scripts <command>`.
 
-Offline, needing no key: `render`, `check-render`, `check-lockstep`, `check-links` (which only fetches public sample URLs).
+Offline, needing no key: `render`, `check-render`, `check-lockstep`, `check-links` (which only fetches public sample URLs), `check-recipes`, and
+`recipe-trees` and `recipe-scripts`, which list what the Makefile hands the SDK script and the type checker.
 Keyed, calling production with `PIPELEX_API_KEY`: `refresh`, `check-methods`, `check-addresses`.
 """
 
@@ -12,7 +13,8 @@ from pathlib import Path
 from scripts.checks import check_links, http_status, lockstep_problems, stale_pages
 from scripts.cookbook import Cookbook, load_cookbook
 from scripts.exceptions import CookbookError
-from scripts.hosted import AddressState, check_address, client_from_env, validate_packages
+from scripts.hosted import AddressState, AddressVerdict, check_address, check_method_ref, client_from_env, validate_packages
+from scripts.recipes import find_trees, python_scripts, recipe_problems
 from scripts.render import render_all, render_pages
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -31,6 +33,9 @@ def main(argv: list[str] | None = None) -> int:
         "refresh": _refresh,
         "check-methods": _check_methods,
         "check-addresses": _check_addresses,
+        "check-recipes": _check_recipes,
+        "recipe-trees": _recipe_trees,
+        "recipe-scripts": _recipe_scripts,
     }
     helps = {
         "render": "Write every methods/<name>/README.md from its package and cookbook.toml, and the front page's list of methods",
@@ -39,7 +44,10 @@ def main(argv: list[str] | None = None) -> int:
         "check-links": "Fetch every sample URL in the packages and every raw URL on the pages",
         "refresh": "Validate every package on production and write its contract.json (needs PIPELEX_API_KEY)",
         "check-methods": "Validate every package on production from its files, and check its contract snapshot (needs PIPELEX_API_KEY)",
-        "check-addresses": "Validate every page's address on production at its tag, reporting a method not released yet (needs PIPELEX_API_KEY)",
+        "check-addresses": "Validate every address on production, each page's at its tag and each recipe's as pinned (needs PIPELEX_API_KEY)",
+        "check-recipes": "Fail when a recipe's generated tree names no pinned address, or names one its code does not call",
+        "recipe-trees": "Print every recipe's generated tree, one directory per line",
+        "recipe-scripts": "Print every Python recipe script, one per line",
     }
     for command_name in commands:
         subparsers.add_parser(command_name, help=helps[command_name])
@@ -140,17 +148,53 @@ def _check_methods(cookbook: Cookbook) -> int:
 def _check_addresses(cookbook: Cookbook) -> int:
     client = client_from_env()
     verdicts = [check_address(client=client, cookbook=cookbook, package=package) for package in cookbook.packages]
+    recipe_addresses: dict[str, list[str]] = {}
+    for tree in find_trees(cookbook.root):
+        if tree.method_ref is not None:
+            recipe_addresses.setdefault(tree.method_ref, []).append(str(tree.recipe_dir.relative_to(cookbook.root)))
+    recipe_verdicts = [
+        check_method_ref(client=client, name=", ".join(recipes), address=address) for address, recipes in sorted(recipe_addresses.items())
+    ]
     for verdict in verdicts:
-        if verdict.state is AddressState.VALID:
-            print(f"✓ {verdict.address} is valid on production")
-        elif verdict.state is AddressState.UNRELEASED:
-            print(f"· {verdict.address} is not released yet: {verdict.report}")
-        else:
-            print(f"✗ {verdict.address} does not validate on production:\n{verdict.report}")
+        _print_address_verdict(verdict, where="")
+    for verdict in recipe_verdicts:
+        _print_address_verdict(verdict, where=f" (in {verdict.name})")
     unreleased = sum(1 for verdict in verdicts if verdict.state is AddressState.UNRELEASED)
     if unreleased:
         print(f"{unreleased} method(s) not released at {cookbook.tag}: run this check again once the release that carries them is tagged.")
-    return 1 if any(verdict.state is AddressState.FAILED for verdict in verdicts) else 0
+    return 1 if any(verdict.state is AddressState.FAILED for verdict in [*verdicts, *recipe_verdicts]) else 0
+
+
+def _print_address_verdict(verdict: AddressVerdict, *, where: str) -> None:
+    if verdict.state is AddressState.VALID:
+        print(f"✓ {verdict.address} is valid on production{where}")
+    elif verdict.state is AddressState.UNRELEASED:
+        print(f"· {verdict.address} is not released yet{where}: {verdict.report}")
+    else:
+        print(f"✗ {verdict.address} does not validate on production{where}:\n{verdict.report}")
+
+
+def _check_recipes(cookbook: Cookbook) -> int:
+    problems = recipe_problems(cookbook.root)
+    for problem in problems:
+        print(f"✗ {problem}")
+    if problems:
+        return 1
+    tree_count = len(find_trees(cookbook.root))
+    print(f"✓ {tree_count} recipe tree(s) name a pinned address their recipe calls, and every Python recipe script declares pipelex-sdk")
+    return 0
+
+
+def _recipe_trees(cookbook: Cookbook) -> int:
+    for tree in find_trees(cookbook.root):
+        print(tree.directory.relative_to(cookbook.root))
+    return 0
+
+
+def _recipe_scripts(cookbook: Cookbook) -> int:
+    for script in python_scripts(cookbook.root):
+        print(script.relative_to(cookbook.root))
+    return 0
 
 
 if __name__ == "__main__":

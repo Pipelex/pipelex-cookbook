@@ -1,0 +1,6 @@
+{
+  "comment": "The address and the codegen target these types were generated from. In the cookbook, `make refresh` regenerates the tree from this file, and `make check-codegen` checks it against codegen.lock; never edit a generated file by hand.",
+  "generator": "pipelex-cookbook",
+  "method": { "method_ref": "github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.18.0" },
+  "target": "python-pydantic"
+}

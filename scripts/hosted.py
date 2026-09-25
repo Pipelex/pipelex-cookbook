@@ -143,17 +143,21 @@ def check_address(*, client: HostedClient, cookbook: Cookbook, package: MethodPa
     A method the tag does not carry yet, or a tag not pushed yet, is reported as unreleased rather than as a failure: a method added since the
     last release has a page naming a tag it is not in, and the release that carries it is what the check after the release proves.
     """
-    address = cookbook.address_of(package)
+    return check_method_ref(client=client, name=package.name, address=cookbook.address_of(package))
+
+
+def check_method_ref(*, client: HostedClient, name: str, address: str) -> AddressVerdict:
+    """Validate one address on production, naming the page or the recipe it comes from as `name`, and read an unpublished one as unreleased."""
     try:
         verdict = client.validate_address(method_ref=address)
     except HostedApiError as exc:
         if _is_unreleased(exc):
             detail = str(exc.problem.get("detail") or exc)
-            return AddressVerdict(name=package.name, address=address, state=AddressState.UNRELEASED, report=detail)
-        return AddressVerdict(name=package.name, address=address, state=AddressState.FAILED, report=str(exc))
+            return AddressVerdict(name=name, address=address, state=AddressState.UNRELEASED, report=detail)
+        return AddressVerdict(name=name, address=address, state=AddressState.FAILED, report=str(exc))
     report = str(verdict.get("rendered_markdown") or verdict.get("message") or "")
     state = AddressState.VALID if verdict.get("is_valid") is True else AddressState.FAILED
-    return AddressVerdict(name=package.name, address=address, state=state, report=report)
+    return AddressVerdict(name=name, address=address, state=state, report=report)
 
 
 def _is_unreleased(error: HostedApiError) -> bool:
