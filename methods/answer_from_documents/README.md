@@ -26,7 +26,9 @@ Read a set of documents and a question, and return a short answer with the verba
 
 With the Pipelex MCP in ChatGPT or Claude ([add it once](https://github.com/Pipelex/pipelex-mcp)), ask:
 
-> Run github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.19.0 on https://huggingface.co/datasets/yubo2333/MMLongBench-Doc/resolve/main/documents/PH_2016.06.08_Economy-Final.pdf with the question "Among all 12 references in this report, how many are from its own research center?"
+```text
+Run github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.19.0 on https://huggingface.co/datasets/yubo2333/MMLongBench-Doc/resolve/main/documents/PH_2016.06.08_Economy-Final.pdf with the question "Among all 12 references in this report, how many are from its own research center?"
+```
 
 In ChatGPT you can attach your own file instead of the link; Claude takes a link. In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pipelex-plugins), the same sentence runs through `/pipelex-run`.
 
@@ -131,19 +133,13 @@ The form and the result view come from the method's contract. `make serve` print
 
 ## Make it yours
 
-Ask your agent: "Copy github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.19.0 into ./document-qa, have it answer in the language of the question, prove it on the sample, and save it to my Pipelex account." From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
+Ask your agent:
 
-This is done by hand today: the agent copies the package, changes it with `/pipelex-edit`, which hands a change to what the method takes or returns to `/pipelex-design`, proves it with `/pipelex-run`, and saves the directory as a new method with `/pipelex-catalog`. The saved method keeps no record of the address it came from, since no gesture yet saves a published method into your account in one step.
+```text
+Copy github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.19.0 into ./document-qa, have it answer in the language of the question, prove it on the sample, and save it to my Pipelex account.
+```
 
-## What you get
-
-The method's [answer key](key.md), written before its first run, says what a right answer on the sample holds:
-
-- `status` is `answered`.
-- `answer` is 8.
-- `supporting_passages` holds at least one quote from the report's Appendix A: References, and every quote's words appear in the report in the same order, allowing for differences in line breaks, spacing and quote characters that come from the text extraction.
-- `explanation` or `supporting_passages` names Pew Research Center as the report's own research center.
-- `confidence` is `high` or `medium`.
+From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
 
 ## Run it on your own machine
 

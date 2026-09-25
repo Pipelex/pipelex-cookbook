@@ -30,7 +30,9 @@ Read a description of a record and a count, and return that many varied syntheti
 
 With the Pipelex MCP in ChatGPT or Claude ([add it once](https://github.com/Pipelex/pipelex-mcp)), ask:
 
-> Run github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.19.0 to generate five varied student profiles
+```text
+Run github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.19.0 to generate five varied student profiles
+```
 
 In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pipelex-plugins), the same sentence runs through `/pipelex-run`.
 
@@ -131,20 +133,13 @@ The form and the result view come from the method's contract. `make serve` print
 
 ## Make it yours
 
-Ask your agent: "Copy github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.19.0 into ./synthetic-data, make it fill customer profiles instead of student profiles, prove it on the sample, and save it to my Pipelex account." From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
+Ask your agent:
 
-This is done by hand today: the agent copies the package, changes it with `/pipelex-edit`, which hands a change to what the method takes or returns to `/pipelex-design`, proves it with `/pipelex-run`, and saves the directory as a new method with `/pipelex-catalog`. The saved method keeps no record of the address it came from, since no gesture yet saves a published method into your account in one step.
+```text
+Copy github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.19.0 into ./synthetic-data, make it fill customer profiles instead of student profiles, prove it on the sample, and save it to my Pipelex account.
+```
 
-## What you get
-
-The method's [answer key](key.md), written before its first run, says what a right answer on the sample holds:
-
-- The output is a list of exactly five samples.
-- Every sample fills all twelve fields with a non-empty value: `student_name`, `current_performance`, `learns_best_with`, `pace`, `complexity`, `strengths`, `needs_help_with`, `prior_knowledge`, `hobbies_interests`, `career_goals`, `example_style` and `question_format`.
-- Every choice field holds exactly one of the template's options: `current_performance` is Struggling, Average or Advanced; `learns_best_with` is Visual examples, Step-by-step text, Hands-on practice or Videos; `pace` is Needs more time, Normal or Fast learner; `complexity` is Prefers simple explanations, Balanced or Likes deep details; `example_style` is Many real-world examples, Abstract concepts or Mix; `question_format` is Multiple choice, Short answer or Open discussion.
-- The five `student_name` values are five different names.
-- Across the five samples, `current_performance` takes at least two different values, and so does `pace`.
-- Each sample reads as one coherent student: its `strengths`, `needs_help_with` and `prior_knowledge` are about school subjects or skills, and its `hobbies_interests` and `career_goals` name actual interests and goals (or "undecided" for career goals), in any wording.
+From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
 
 ## Run it on your own machine
 

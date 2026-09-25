@@ -14,7 +14,9 @@ Read a week of Discord channel messages and return an HTML newsletter with a wee
 
 With the Pipelex MCP in ChatGPT or Claude ([add it once](https://github.com/Pipelex/pipelex-mcp)), ask:
 
-> Run github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.19.0 with the sample inputs in https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.19.0/methods/discord_newsletter/inputs.json
+```text
+Run github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.19.0 with the sample inputs in https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.19.0/methods/discord_newsletter/inputs.json
+```
 
 In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pipelex-plugins), the same sentence runs through `/pipelex-run`.
 
@@ -109,26 +111,13 @@ The form and the result view come from the method's contract. `make serve` print
 
 ## Make it yours
 
-Ask your agent: "Copy github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.19.0 into ./newsletter, add a section listing the links shared during the week, prove it on the sample, and save it to my Pipelex account." From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
+Ask your agent:
 
-This is done by hand today: the agent copies the package, changes it with `/pipelex-edit`, which hands a change to what the method takes or returns to `/pipelex-design`, proves it with `/pipelex-run`, and saves the directory as a new method with `/pipelex-catalog`. The saved method keeps no record of the address it came from, since no gesture yet saves a published method into your account in one step.
+```text
+Copy github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.19.0 into ./newsletter, add a section listing the links shared during the week, prove it on the sample, and save it to my Pipelex account.
+```
 
-## What you get
-
-The method's [answer key](key.md), written before its first run, says what a right answer on the sample holds:
-
-- The newsletter's `text` holds, in this order, the heading "☀️ Weekly Summary", the heading "🙌 New members", the Share channels' headings, and the heading "🌎 Geographic hubs".
-- The weekly summary paragraph under "☀️ Weekly Summary" is at most 300 characters long.
-- The weekly summary mentions at least one topic of the Share channels, such as the AetherLite quantization library, the Plakar v1.0 release, the sudo vulnerability, the Keeper deprecation or the synthetic-data talk.
-- The "🙌 New members" list holds exactly five `<li>` items, one each for Maria Chen, David Lee, Sofia Rodriguez, Alex Ivanov and Chloe Dubois.
-- Each new member's item names the member's company: CyberSynth for Maria Chen, DataWeave for David Lee, LogicLoom for Sofia Rodriguez, CogniCore for Alex Ivanov and Aether AI for Chloe Dubois.
-- The Share channels appear as `<h2>` headings in position order: "🧠-Knowledge", then "🎉-Achievements", then "🛡-Cyber", then "Troll".
-- The "🎉-Achievements" section mentions Aether AI open-sourcing AetherLite, NeuroNet's graph-based RAG work featured on Google AI's research blog, and the release of Plakar v1.0.
-- The "🛡-Cyber" section mentions the sudo vulnerabilities that let a local user gain root, and Keeper deprecating its native desktop apps.
-- The "🧠-Knowledge" section mentions the talk on synthetic data from the AI Engineering Summit.
-- The "🌎 Geographic hubs" section holds the `<h3>` headings "🇺🇸-San-Francisco" then "🇩🇪-Berlin".
-- The "🇺🇸-San-Francisco" hub mentions the rooftop get-together for people in AI hosted by Maria Chen.
-- The "🇩🇪-Berlin" hub mentions Leo Schmidt looking for an affordable co-working space and Factory Berlin as the suggestion.
+From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
 
 ## Run it on your own machine
 

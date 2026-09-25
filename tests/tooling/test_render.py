@@ -58,15 +58,16 @@ class TestRender:
         assert "**Takes** `catalogue`, an image (`CataloguePage`): A page of a widget catalogue." in page
         assert "**Returns** a `WidgetList`: Every widget on the page." in page
         assert "- `widgets`, a list of `Widget`: The widgets, in page order." in page
-        assert f"> Run {address} on {WIDGETS_SAMPLE_URL}" in page
+        assert f"```text\nRun {address} on {WIDGETS_SAMPLE_URL}\n```" in page
         assert "In ChatGPT you can attach your own file instead of the link" in page
         assert f'  method_ref: "{address}",' in page
         assert f"npm create @pipelex/method-app@latest widgets-app -- --method {address}" in page
-        assert f"Copy {address} into ./widgets, add each widget's price to what it extracts, prove it" in page
-        # The Must lines are "What you get", a continuation line folded into its labelled line.
-        assert "- `widgets` holds three widgets: Sprocket, Flange and Gasket.\n" in page
-        assert "- Each widget's `colour` is the colour printed beside it, in any wording.\n" in page
-        assert "A widget listed twice" not in page
+        assert f"```text\nCopy {address} into ./widgets, add each widget's price to what it extracts, prove it" in page
+        # The page is about using the method: the answer key and the skills the agent chains stay off it.
+        assert "What you get" not in page
+        assert "answer key" not in page
+        assert "Sprocket, Flange and Gasket" not in page
+        assert "/pipelex-catalog" not in page
 
     def test_page_without_an_editorial_entry_comes_from_the_manifest(self, make_cookbook: MakeCookbook, templates_dir: Path):
         root = make_cookbook()
@@ -80,7 +81,7 @@ class TestRender:
         assert "**Takes** `text`, a text (`Text`)." in page
         # A native concept's description only restates its type, so the Returns line stops at the concept.
         assert "**Returns** a `Text`.\n" in page
-        assert f"> Run {address} with the sample inputs in {inputs_url}" in page
+        assert f"```text\nRun {address} with the sample inputs in {inputs_url}\n```" in page
         assert "attach your own file" not in page
         assert f"npm create @pipelex/method-app@latest count-words-app -- --method {address}" in page
         assert f"Copy {address} into ./count_words, adapt what it does to my case, prove it" in page
@@ -132,13 +133,6 @@ class TestRender:
         for page in pages.values():
             assert "@v1.2.3" in page
             assert "@v0.9.0" not in page
-
-    def test_a_must_line_citing_a_planted_fact_is_refused(self, make_cookbook: MakeCookbook, templates_dir: Path):
-        root = make_cookbook()
-        key_path = root / "methods" / "extract_widgets" / "key.md"
-        key_path.write_text(key_path.read_text(encoding="utf-8").replace("Sprocket, Flange and Gasket.\nM2", "those of F1.\nM2"), encoding="utf-8")
-        with pytest.raises(CookbookLayoutError, match="M1 cites a planted fact"):
-            render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir)
 
     def test_a_package_without_a_contract_snapshot_is_refused(self, make_cookbook: MakeCookbook, templates_dir: Path):
         root = make_cookbook()

@@ -18,7 +18,9 @@ Take a number of employees and return, for each, three or four expense claims wi
 
 With the Pipelex MCP in ChatGPT or Claude ([add it once](https://github.com/Pipelex/pipelex-mcp)), ask:
 
-> Run github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.0 for two employees
+```text
+Run github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.0 for two employees
+```
 
 In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pipelex-plugins), the same sentence runs through `/pipelex-run`.
 
@@ -113,29 +115,13 @@ The form and the result view come from the method's contract. `make serve` print
 
 ## Make it yours
 
-Ask your agent: "Copy github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.0 into ./expense-data, date the expenses in the current month instead of January 2026, prove it on the sample, and save it to my Pipelex account." From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
+Ask your agent:
 
-This is done by hand today: the agent copies the package, changes it with `/pipelex-edit`, which hands a change to what the method takes or returns to `/pipelex-design`, proves it with `/pipelex-run`, and saves the directory as a new method with `/pipelex-catalog`. The saved method keeps no record of the address it came from, since no gesture yet saves a published method into your account in one step.
+```text
+Copy github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.0 into ./expense-data, date the expenses in the current month instead of January 2026, prove it on the sample, and save it to my Pipelex account.
+```
 
-## What you get
-
-The method's [answer key](key.md), written before its first run, says what a right answer on the sample holds:
-
-- The output lists exactly two employee reports, and their two `employee.employee_id` values differ.
-- Each `employee` fills every field: `employee_id` is "EMP-" followed by digits, `full_name`, `email`, `department`, `job_title`, and a `seniority` that agrees with the job title (a "Senior Engineer" is Senior, a "VP of Sales" is VP).
-- Each `employee.email` is the employee's first and last name at acmecorp.com, as firstname.lastname@acmecorp.com, case and accents aside, and each `department` is Engineering, Marketing, Sales, Finance or Product.
-- Each report's `expenses_with_receipts` holds three or four expenses.
-- In each report, exactly one expense has `scenario.scenario_type` "legitimate" and exactly one has "weekend_expense"; a report with four expenses also has exactly one "receipt_mismatch".
-- Every `expense.expense_date` falls in January 2026, or on Sunday 1 February 2026 for a weekend expense.
-- Each weekend expense's `expense_date` is a Saturday or a Sunday and equals its `scenario.target_date`.
-- Every `expense.currency` is "USD", and every `expense.total_amount` is positive with at most two decimals.
-- Every `expense.expense_id` is "EXP-", the expense date as YYYYMMDD, a hyphen and five digits, and its date part equals the expense's `expense_date`.
-- A receipt-mismatch expense has a filled `scenario.fake_purpose`, and its `business_purpose` claims a business reason (the fake purpose or a rewording of it); its receipt image shows a purchase at a personal or entertainment business.
-- A vague-purpose expense has a `business_purpose` that names no specific business need, such as "Business expense", "Work related" or "Misc".
-- An inflated-amount expense has a `scenario.amount_multiplier` of 2 or more.
-- Every expense's `receipt.public_url` opens as an image of a printed receipt, headed by a merchant name and showing a legible total.
-- Every legible total on a receipt image equals its expense's `expense.total_amount` within 0.01.
-- Each `html_report.inner_html` names the employee's `full_name` and has one table row per expense, giving its `expense_id`, its date, its `business_purpose`, its amount and its receipt image by the receipt's `public_url`.
+From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
 
 ## Run it on your own machine
 
