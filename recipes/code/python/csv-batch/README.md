@@ -6,7 +6,7 @@ It shows three things you need as soon as a method runs on more than one input:
 
 - **Bounded concurrency.** One `PipelexAPIClient` serves every row, and an `asyncio.Semaphore` keeps at most `--concurrency` runs going at once, so a long CSV neither waits on each run in turn nor starts hundreds at once.
 - **A list output, typed.** The method returns a list of invoices, one per bill or receipt the document holds. The script validates it into the `Invoice` model generated from the method, so every field it writes is typed.
-- **Failures as rows.** A run that fails puts its error in the results, beside the URL it came from, and the batch carries on.
+- **Failures as rows.** A run that fails, a network failure, or an output the generated types refuse puts its error in the results, beside the URL it came from, and the batch carries on. A document in which the method finds no invoice gets a row saying so, so every URL of the input appears in the output.
 
 ## What it needs
 
@@ -20,7 +20,7 @@ export PIPELEX_API_KEY=…
 uv run batch.py invoices.csv --output results.csv --concurrency 4
 ```
 
-`invoices.csv` holds two sample invoices from the cookbook's `assets/`. Point the script at your own CSV: it reads the `invoice_url` column, and each URL must be one the hosted API can fetch, such as a public link or a presigned URL.
+`invoices.csv` holds two sample invoices from the cookbook's `assets/`, linked at the release tag `v0.18.0`. Point the script at your own CSV: it reads the `invoice_url` column, and each URL must be one the hosted API can fetch, such as a public link or a presigned URL.
 
 ## What you get
 
@@ -32,7 +32,7 @@ uv run batch.py invoices.csv --output results.csv --concurrency 4
 | `vendor`, `invoice_number`, `issue_date` | Who billed, the invoice's number and its date |
 | `amount_excl_tax`, `vat_amount`, `amount_incl_tax` | The totals, as numbers |
 | `run_id` | The run that read it, to find it again in your Pipelex account |
-| `error` | Why the run failed, on a row whose run did not complete |
+| `error` | Why no invoice came from the document: the run's error, or that the method found none |
 
 On the two sample invoices, the rows read like this (the run ids trimmed):
 
@@ -42,7 +42,7 @@ invoice_url,vendor,invoice_number,issue_date,amount_excl_tax,vat_amount,amount_i
 …/invoice_1.pdf,Johnny Rockets,2080,2025-03-11,27.94,2.34,30.28,run_…,
 ```
 
-Progress goes to the terminal as each run starts and ends, and the last line counts the invoices written and the runs that failed.
+Progress goes to the terminal as each run starts and ends, and the last line counts the invoices written and the documents that gave none.
 
 ## How it is built
 

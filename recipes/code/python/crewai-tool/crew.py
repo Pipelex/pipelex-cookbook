@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11,<3.14"
-# dependencies = ["pipelex-sdk==0.12.0", "crewai>=1.15,<2"]
+# dependencies = ["pipelex-sdk==0.12.0", "crewai>=1.15,<2", "pydantic>=2.10.6", "typing-extensions>=4"]
 # ///
 """A CrewAI crew whose analyst drafts a research brief through a Pipelex method, and whose editor turns it into a memo.
 

@@ -1,13 +1,13 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["pipelex-sdk==0.12.0"]
+# dependencies = ["pipelex-sdk==0.12.0", "mthds>=0.15", "httpx>=0.24", "pydantic>=2.10.6"]
 # ///
 """Extract every invoice a CSV lists, a few at a time, and write what each one says to a results CSV.
 
 Each row of the input CSV names an invoice by URL, in its `invoice_url` column. The script runs the Pipelex method
 library's invoice extraction on every row by its address, keeps at most `--concurrency` runs going at once, and writes
 one row per invoice found: the vendor, the date, the totals and the VAT, beside the URL it came from and the run's id.
-A row whose run fails gets its error in the results instead of stopping the batch.
+A document whose run fails, or in which the method finds no invoice, gets one row saying why instead of stopping the batch.
 
     uv run batch.py invoices.csv --output results.csv --concurrency 4
 
@@ -24,7 +24,7 @@ from typing import Any
 import httpx
 from mthds.protocol.exceptions import PipelineRequestError
 from pipelex_sdk.client import PipelexAPIClient
-from pydantic import BaseModel, TypeAdapter
+from pydantic import BaseModel, TypeAdapter, ValidationError
 
 from generated.invoice_extraction.models import Invoice
 
@@ -50,11 +50,15 @@ async def extract_one(client: PipelexAPIClient, semaphore: asyncio.Semaphore, ur
         print(f"… {url}", file=sys.stderr)
         try:
             results = await client.start_and_wait(method_ref=METHOD_REF, inputs={"document": {"url": url}})
-        except (PipelineRequestError, httpx.HTTPStatusError) as exc:
+            parsed = INVOICES.validate_python(results.main_stuff)
+        except (PipelineRequestError, httpx.HTTPError, ValidationError) as exc:
+            # A refused or failed run, a network failure, or an output the generated types do not accept: this row fails, the batch goes on.
             print(f"✗ {url}: {exc}", file=sys.stderr)
             return [{"invoice_url": url, "error": str(exc)}]
-    parsed = INVOICES.validate_python(results.main_stuff)
     invoices = parsed.items if isinstance(parsed, InvoiceList) else parsed
+    if not invoices:
+        print(f"· {url}: no invoice found, run {results.pipeline_run_id}", file=sys.stderr)
+        return [{"invoice_url": url, "run_id": results.pipeline_run_id, "error": "the method found no invoice in this document"}]
     print(f"✓ {url}: {len(invoices)} invoice(s), run {results.pipeline_run_id}", file=sys.stderr)
     return [
         {
@@ -79,11 +83,19 @@ async def extract_all(urls: list[str], *, concurrency: int) -> list[dict[str, An
     return [row for rows in per_url for row in rows]
 
 
+def positive_int(value: str) -> int:
+    number = int(value)
+    if number < 1:
+        msg = f"must be 1 or more, not {number}"
+        raise argparse.ArgumentTypeError(msg)
+    return number
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Extract every invoice a CSV lists, and write what each one says to a results CSV.")
     parser.add_argument("input", type=Path, nargs="?", default=Path(__file__).parent / "invoices.csv", help="A CSV with an invoice_url column")
     parser.add_argument("--output", type=Path, default=Path("results.csv"), help="Where to write the results (default: results.csv)")
-    parser.add_argument("--concurrency", type=int, default=4, help="How many runs to keep going at once (default: 4)")
+    parser.add_argument("--concurrency", type=positive_int, default=4, help="How many runs to keep going at once (default: 4)")
     arguments = parser.parse_args()
 
     with arguments.input.open(newline="", encoding="utf-8") as input_file:
@@ -94,8 +106,8 @@ def main() -> None:
         writer = csv.DictWriter(output_file, fieldnames=OUTPUT_COLUMNS)
         writer.writeheader()
         writer.writerows(rows)
-    failed = sum(1 for row in rows if row.get("error"))
-    print(f"{arguments.output}: {len(rows) - failed} invoice(s) from {len(urls)} document(s), {failed} failed")
+    without_invoice = sum(1 for row in rows if row.get("error"))
+    print(f"{arguments.output}: {len(rows) - without_invoice} invoice(s) from {len(urls)} document(s), {without_invoice} document(s) without one")
 
 
 if __name__ == "__main__":
