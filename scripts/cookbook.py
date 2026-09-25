@@ -26,6 +26,8 @@ MANIFEST_FILE = "METHODS.toml"
 INPUTS_FILE = "inputs.json"
 KEY_FILE = "key.md"
 PAGE_FILE = "README.md"
+# Where `make render` writes each method's page snippets as files, in `tests/snippets/<name>/`, for the type checkers to read.
+SNIPPETS_DIR = "tests/snippets"
 
 
 class EditorialEntry(BaseModel):

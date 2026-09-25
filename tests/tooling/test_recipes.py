@@ -142,11 +142,95 @@ class TestRecipes:
         _typescript_recipe(tmp_path, codegen_check="node scripts/codegen-check.mjs ./generated/extract_gantt/")
         assert recipe_problems(tmp_path) == []
 
+    def test_a_package_without_a_codegen_gate_is_a_problem_even_with_no_tree(self, tmp_path: Path):
+        recipe = _typescript_recipe(tmp_path)
+        for generated_file in (recipe / "generated" / "extract_gantt").iterdir():
+            generated_file.unlink()
+        (recipe / "generated" / "extract_gantt").rmdir()
+        (recipe / "generated").rmdir()
+        (recipe / "package.json").write_text(json.dumps({"dependencies": {"@pipelex/sdk": "0.25.1"}, "scripts": {}}), encoding="utf-8")
+        [problem] = recipe_problems(tmp_path)
+        assert problem == "recipes/code/typescript/upload/package.json: it has no `codegen:check` script, the gate over its generated types"
+
     def test_an_unreadable_package_json_is_a_problem(self, tmp_path: Path):
         recipe = _typescript_recipe(tmp_path)
         (recipe / "package.json").write_text("{not json", encoding="utf-8")
         [problem] = recipe_problems(tmp_path)
         assert problem.startswith("recipes/code/typescript/upload/package.json: must be JSON")
+
+
+def _snippets(root: Path, *, with_trees: bool = False) -> Path:
+    """The page snippets of one method under `tests/snippets/`, with their shared package, and a generated tree per language if asked.
+
+    Nothing here keeps a recipe's promises: the trees name a floating address the snippets never call, the script declares no SDK, and the
+    package names neither the SDK nor a gate.
+    """
+    snippets = root / "tests" / "snippets"
+    (snippets / "extract_gantt" / "typescript").mkdir(parents=True)
+    (snippets / "extract_gantt" / "python").mkdir(parents=True)
+    (snippets / "package.json").write_text(json.dumps({"scripts": {"typecheck": "tsc --noEmit"}}), encoding="utf-8")
+    (snippets / "extract_gantt" / "typescript" / "snippet.ts").write_text('console.log("snippet");\n', encoding="utf-8")
+    (snippets / "extract_gantt" / "python" / "snippet.py").write_text(
+        '# /// script\n# dependencies = ["httpx"]\n# ///\nprint("snippet")\n', encoding="utf-8"
+    )
+    (snippets / "node_modules" / "zod").mkdir(parents=True)
+    (snippets / "node_modules" / "zod" / "package.json").write_text("{}", encoding="utf-8")
+    if with_trees:
+        for language, target in (("typescript", "ts-zod"), ("python", "python-pydantic")):
+            tree = snippets / "extract_gantt" / language / "generated" / "extract_gantt"
+            tree.mkdir(parents=True)
+            (tree / "sources.json").write_text(json.dumps({"method": {"method_ref": "github.com/Pipelex/x"}, "target": target}), encoding="utf-8")
+    return snippets
+
+
+class TestSnippets:
+    def test_the_snippet_scripts_and_their_package_are_found_beside_the_recipes(self, tmp_path: Path):
+        recipe = _python_recipe(tmp_path)
+        snippets = _snippets(tmp_path)
+        assert python_scripts(tmp_path) == [recipe / "batch.py", snippets / "extract_gantt" / "python" / "snippet.py"]
+        assert typescript_packages(tmp_path) == [snippets]
+
+    def test_the_snippets_trees_are_found_and_a_typescript_tree_belongs_to_the_nearest_package(self, tmp_path: Path):
+        snippets = _snippets(tmp_path, with_trees=True)
+        trees = {tree.directory.relative_to(snippets).as_posix(): tree for tree in find_trees(tmp_path)}
+        assert sorted(trees) == ["extract_gantt/python/generated/extract_gantt", "extract_gantt/typescript/generated/extract_gantt"]
+        typescript_tree = trees["extract_gantt/typescript/generated/extract_gantt"]
+        assert typescript_tree.recipe_dir == snippets / "extract_gantt" / "typescript"
+        assert typescript_tree.package_dir == snippets
+
+    def test_the_rules_only_a_recipe_needs_do_not_fire_on_snippets(self, tmp_path: Path):
+        _snippets(tmp_path, with_trees=True)
+        assert recipe_problems(tmp_path) == []
+        assert recipe_addresses(tmp_path) == {}
+
+    def test_a_snippet_tree_without_its_sidecar_is_still_a_problem(self, tmp_path: Path):
+        snippets = _snippets(tmp_path, with_trees=True)
+        (snippets / "extract_gantt" / "python" / "generated" / "extract_gantt" / "sources.json").unlink()
+        [problem] = recipe_problems(tmp_path)
+        assert problem.startswith("tests/snippets/extract_gantt/python/generated/extract_gantt/sources.json: missing")
+
+    def test_a_typescript_snippet_tree_needs_a_package_at_or_above_it(self, tmp_path: Path):
+        snippets = _snippets(tmp_path, with_trees=True)
+        (snippets / "package.json").unlink()
+        [problem] = recipe_problems(tmp_path)
+        assert problem == (
+            "tests/snippets/extract_gantt/typescript/generated/extract_gantt: "
+            "target ts-zod needs a package.json in tests/snippets/extract_gantt/typescript or above it"
+        )
+
+    def test_a_recipe_tree_below_its_package_is_gated_by_that_package(self, tmp_path: Path):
+        recipe = _typescript_recipe(tmp_path, codegen_check="node scripts/codegen-check.mjs src/generated/extract_gantt")
+        (recipe / "src").mkdir()
+        (recipe / "generated").rename(recipe / "src" / "generated")
+        [tree] = find_trees(tmp_path)
+        assert tree.recipe_dir == recipe / "src"
+        assert tree.package_dir == recipe
+        assert recipe_problems(tmp_path) == []
+        (recipe / "package.json").write_text(
+            json.dumps({"dependencies": {"@pipelex/sdk": "0.25.1"}, "scripts": {"codegen:check": "node scripts/codegen-check.mjs"}}), encoding="utf-8"
+        )
+        [problem] = recipe_problems(tmp_path)
+        assert "its `codegen:check` script does not check src/generated/extract_gantt" in problem
 
 
 def _run_recipe(root: Path, *, readme: str, script: str | None = None) -> Path:

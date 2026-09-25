@@ -4,9 +4,9 @@ import httpx
 import pytest
 
 from scripts import checks
-from scripts.checks import check_links, collect_urls, http_status, lockstep_problems, stale_pages
+from scripts.checks import check_links, collect_urls, http_status, lockstep_problems, orphan_snippet_dirs, stale_pages
 from scripts.cookbook import load_cookbook
-from scripts.render import render_pages
+from scripts.render import render_all, render_pages
 from tests.tooling.test_data import WIDGETS_SAMPLE_URL, MakeCookbook
 
 
@@ -34,6 +34,28 @@ class TestChecks:
             Path("methods/count_words/README.md"),
             Path("methods/extract_widgets/README.md"),
         ]
+
+    def test_a_hand_edit_makes_a_snippet_file_stale(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        cookbook = load_cookbook(make_cookbook())
+        rendered = render_all(cookbook=cookbook, templates_dir=templates_dir)
+        for path, contents in rendered.items():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(contents, encoding="utf-8")
+        assert stale_pages(cookbook=cookbook, rendered=rendered) == []
+        edited = cookbook.root / "tests" / "snippets" / "count_words" / "python" / "snippet.py"
+        edited.write_text(edited.read_text(encoding="utf-8").replace("print(result.main_stuff)", "print(result)"), encoding="utf-8")
+        assert stale_pages(cookbook=cookbook, rendered=rendered) == [Path("tests/snippets/count_words/python/snippet.py")]
+
+    def test_a_snippet_directory_of_no_method_is_an_orphan(self, make_cookbook: MakeCookbook):
+        cookbook = load_cookbook(make_cookbook())
+        snippets_root = cookbook.root / "tests" / "snippets"
+        for directory in ("count_words", "extract_widgets", "retired_method", "node_modules"):
+            (snippets_root / directory).mkdir(parents=True)
+        (snippets_root / "package.json").write_text("{}", encoding="utf-8")
+        assert orphan_snippet_dirs(cookbook) == [Path("tests/snippets/retired_method")]
+
+    def test_a_cookbook_without_snippets_has_no_orphan(self, make_cookbook: MakeCookbook):
+        assert orphan_snippet_dirs(load_cookbook(make_cookbook())) == []
 
     def test_manifests_in_lockstep_pass(self, make_cookbook: MakeCookbook):
         assert lockstep_problems(load_cookbook(make_cookbook())) == []

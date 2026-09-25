@@ -5,6 +5,10 @@ samples and the code snippets' inputs from `inputs.json`, the "Takes" and "Retur
 answer key. The templates under `templates/` hold the wording and the links, one block per door, so a change to a door is made once and every page
 inherits it at the next render.
 
+The page's TypeScript and Python snippets are also written as files, `tests/snippets/<name>/typescript/snippet.ts` and
+`tests/snippets/<name>/python/snippet.py`, from the same templates under `templates/snippets/`, so that what the page shows is what the type
+checkers read.
+
 The front page, `README.md`, is written by hand except for one region between two markers, which lists every method with its page and its pitch.
 """
 
@@ -16,11 +20,16 @@ from jinja2 import Environment, FileSystemLoader, StrictUndefined
 from pydantic import BaseModel, ConfigDict, JsonValue
 
 from scripts.contract import Contract, ContractField, ContractInput, short_concept
-from scripts.cookbook import INPUTS_FILE, KEY_FILE, METHODS_DIR, Cookbook, MethodPackage
+from scripts.cookbook import INPUTS_FILE, KEY_FILE, METHODS_DIR, SNIPPETS_DIR, Cookbook, MethodPackage
 from scripts.exceptions import CookbookLayoutError
 from scripts.key import KeyLine
 
 PAGE_TEMPLATE = "method_page.md.j2"
+# Each file `make render` writes in a method's `tests/snippets/<name>/`, mapped to the template writing it around the page's snippet.
+SNIPPET_TEMPLATES = {"typescript/snippet.ts": "snippets/file.ts.j2", "python/snippet.py": "snippets/file.py.j2"}
+# The most characters of sample inputs, serialised as JSON, that the code snippets write out. Above it, every snippet fetches the inputs from
+# the method's `inputs.json` at the page's tag instead, since a sample written out in three languages would bury the page's doors.
+INLINE_INPUTS_LIMIT = 4096
 FRONT_PAGE_FILE = "README.md"
 FRONT_REGION_TEMPLATE = "front_region.md.j2"
 FRONT_REGION_BEGIN = "<!-- BEGIN methods, written by `make render` from methods/ and cookbook.toml: never edit this region by hand -->"
@@ -78,6 +87,8 @@ class PageContext(BaseModel):
     returns: str
     returns_fields: list[str]
     chatbot: str
+    fetches_inputs: bool
+    python_inputs_typed: bool
     inputs_typescript: str
     inputs_python: str
     start_body_json: str
@@ -144,9 +155,31 @@ def render_front_page(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, 
     return {front_page_path: current[: begin + len(FRONT_REGION_BEGIN)] + "\n" + region + current[end:]}
 
 
+def render_snippets(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, str]:
+    """Render every package's TypeScript and Python snippets as files, each the page's own snippet under a header saying where it comes from.
+
+    Returns:
+        Each snippet file's path, under `tests/snippets/<name>/`, mapped to its rendered contents.
+
+    Raises:
+        CookbookLayoutError: A package has no contract snapshot yet.
+    """
+    environment = make_environment(templates_dir)
+    snippets: dict[Path, str] = {}
+    for package in cookbook.packages:
+        context = build_page_context(cookbook=cookbook, package=package)
+        for relative_path, template_name in SNIPPET_TEMPLATES.items():
+            snippets[cookbook.root / SNIPPETS_DIR / package.name / relative_path] = environment.get_template(template_name).render(page=context)
+    return snippets
+
+
 def render_all(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, str]:
-    """Every file `make render` writes: each method's page, and the front page with its list of methods."""
-    return render_pages(cookbook=cookbook, templates_dir=templates_dir) | render_front_page(cookbook=cookbook, templates_dir=templates_dir)
+    """Every file `make render` writes: each method's page and its snippet files, and the front page with its list of methods."""
+    return (
+        render_pages(cookbook=cookbook, templates_dir=templates_dir)
+        | render_snippets(cookbook=cookbook, templates_dir=templates_dir)
+        | render_front_page(cookbook=cookbook, templates_dir=templates_dir)
+    )
 
 
 def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageContext:
@@ -171,6 +204,7 @@ def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageCon
     snippet_inputs = _snippet_inputs(package.inputs)
     samples = _samples(package=package)
     inputs_url = f"{RAW_BASE_URL}/{cookbook.settings.repository}/{cookbook.tag}/{METHODS_DIR}/{package.name}/{INPUTS_FILE}"
+    fetches_inputs = len(json.dumps(snippet_inputs, ensure_ascii=False)) > INLINE_INPUTS_LIMIT
 
     chatbot_template = editorial.chatbot or (DEFAULT_CHATBOT_WITH_SAMPLES if samples else DEFAULT_CHATBOT_WITHOUT_SAMPLES)
     try:
@@ -202,6 +236,8 @@ def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageCon
         if [contract_field.name for contract_field in contract.output.fields] == _TEXT_ONLY_FIELDS
         else [_field_line(contract_field) for contract_field in contract.output.fields],
         chatbot=chatbot,
+        fetches_inputs=fetches_inputs,
+        python_inputs_typed=fetches_inputs or all(_python_sdk_admits(value) for value in snippet_inputs.values()),
         inputs_typescript=_indent_continuation(typescript_literal(snippet_inputs), prefix="  "),
         inputs_python=_indent_continuation(python_literal(snippet_inputs), prefix="            "),
         start_body_json=_shell_single_quote(json.dumps({"method_ref": address, "inputs": snippet_inputs}, ensure_ascii=False)),
@@ -289,6 +325,16 @@ def _snippet_inputs(inputs: dict[str, JsonValue]) -> dict[str, JsonValue]:
         else:
             snippet_inputs[input_name] = input_value
     return snippet_inputs
+
+
+def _python_sdk_admits(value: JsonValue) -> bool:
+    """Whether the Python SDK's type for an input's value admits this value, written out in a snippet.
+
+    `pipelex-sdk` types each input as `mthds.protocol.pipeline_inputs.StuffContentOrData`: a string, a list of strings, a content object or a
+    list of them, or a dict. A list of plain objects, such as several documents each given by its URL, is none of them, although the hosted
+    API reads it as the input's content, so pyright refuses a snippet writing one out.
+    """
+    return isinstance(value, str | dict) or (isinstance(value, list) and all(isinstance(item, str) for item in value))
 
 
 def _samples(*, package: MethodPackage) -> list[Sample]:
