@@ -34,6 +34,10 @@ The request takes `documents`, a list of links the hosted API can fetch, a `ques
 
 A JSON body with the `answer` and the `run_id` that produced it. On the sample question, `answer.status` is `answered`, `answer.answer` is `8`, and `answer.supporting_passages` quotes the report's references with their page numbers. The answer also carries its `confidence`, its `caveats` and any contradictions it noticed between documents.
 
+## Before you deploy it
+
+The app has no authentication of its own, and every question it answers is a run on your key's credit. Run as above, it listens on `127.0.0.1` only, so nothing but your own machine reaches it. Served any other way, for instance with `uvicorn app:app --host 0.0.0.0`, anyone who reaches it spends your credit and has the hosted API fetch links of their choosing. Put it behind your service's own authentication and rate limits before it faces a network: a FastAPI [security dependency](https://fastapi.tiangolo.com/tutorial/security/) on the route, or the gateway your other services sit behind. The request already refuses more than ten documents at once.
+
 ## How it is built
 
 - `app.py` calls the method by its address, `github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.18.0`, pinned to a release tag so the method never changes under the types.

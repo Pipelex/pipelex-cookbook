@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["pipelex-sdk==0.12.0", "fastapi>=0.115", "uvicorn>=0.30"]
+# dependencies = ["pipelex-sdk==0.12.0", "fastapi>=0.115", "uvicorn>=0.30", "mthds>=0.15", "httpx>=0.24", "pydantic>=2.10.6"]
 # ///
 """An HTTP endpoint that answers a question from documents, typed end to end by the method it runs.
 
@@ -10,7 +10,9 @@ method: FastAPI validates every response against it and documents it at `/docs`.
 
     uv run app.py        # serves http://127.0.0.1:8000, with the API's documentation at /docs
 
-`PIPELEX_API_KEY` must be set; each question is one run on the hosted API and spends credit.
+`PIPELEX_API_KEY` must be set; each question is one run on the hosted API and spends credit. The app has no
+authentication of its own: every caller who reaches it spends your key's credit, so it listens on 127.0.0.1 only, and
+a deployment puts it behind your service's own authentication and rate limits.
 """
 
 from collections.abc import AsyncGenerator
@@ -28,10 +30,13 @@ from pydantic import BaseModel, Field, HttpUrl
 from generated.answer_from_documents.models import DocumentAnswer
 
 METHOD_REF = "github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.18.0"
+MAX_DOCUMENTS = 10
 
 
 class AnswerRequest(BaseModel):
-    documents: list[HttpUrl] = Field(min_length=1, description="Links to the documents to answer from, each one the hosted API can fetch")
+    documents: list[HttpUrl] = Field(
+        min_length=1, max_length=MAX_DOCUMENTS, description="Links to the documents to answer from, each one the hosted API can fetch"
+    )
     question: str = Field(min_length=1, description="The question to answer from the documents")
     context: str | None = Field(default=None, description="Background that helps read the question, never cited as a source")
 
