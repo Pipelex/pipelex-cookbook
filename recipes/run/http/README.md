@@ -36,13 +36,30 @@ sh run.sh --run run_… > dpe.json   # whenever you like: waits for the run to e
 The terminal shows the run's id as soon as the start answers, with the commit the tag resolved to, then the run's state at each poll:
 
 ```text
-PLACEHOLDER: the terminal lines of the proving run, its run id trimmed to run_…
+started run_…
+method github.com/Pipelex/pipelex-cookbook/extract_dpe at v0.18.0, commit 42dcaa9a5eafe62752ea8a5f7f57e5d83a2cca87
+… RUNNING after 1s
+… RUNNING after 6s
+… RUNNING after 12s
+… RUNNING after 18s
+… RUNNING after 23s
+run run_… completed
 ```
 
 `dpe.json` holds the method's output, a `Dpe`:
 
 ```json
-PLACEHOLDER: the output of the proving run, as `dpe.json` holds it
+{
+  "address": "51 rue du Roi de Sicile, 75004 PARIS - 4EME",
+  "date_of_issue": "2022-03-29",
+  "date_of_expiration": "2032-03-28",
+  "energy_efficiency_class": "G",
+  "per_year_per_m2_consumption": 560.0,
+  "co2_emission_class": "C",
+  "per_year_per_m2_co2_emissions": 18.0,
+  "yearly_energy_costs_min": 1260.0,
+  "yearly_energy_costs_max": 1750.0
+}
 ```
 
 The method's [answer key](../../../methods/extract_dpe/key.md) says what a right answer on the sample holds: the address at 51 rue du Roi de Sicile, 75004 Paris; issued on 2022-03-29 and valid until 2032-03-28; energy class G at 560 kWh per m² per year; CO₂ class C at 18 kg per m² per year; and yearly energy costs between 1260 and 1750 euros.

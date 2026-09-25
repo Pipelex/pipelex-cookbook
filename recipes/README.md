@@ -8,7 +8,7 @@ These recipes run a method with nothing to build: from your coding agent, or wit
 
 | Recipe | What it shows | Method |
 |---|---|---|
-| [A run in your coding agent, followed later by its id](run/coding-agent/) | `/pipelex-run` in Claude Code or Codex starting a long run by its address, then following it from another session by its id alone and saving it to `runs/<run_id>/` | [Research report](../methods/research_report/) |
+| [A run in your coding agent, followed later by its id](run/coding-agent/) | `/pipelex-run` in Claude Code or Codex starting a run by its address, then following it from another session by its id alone and saving it to `runs/<run_id>/` | [Research report](../methods/research_report/) |
 | [A method over HTTP: start, poll, results](run/http/) | The three calls that run a method from a shell script with `curl`, each outcome with its own exit status, and how n8n, Zapier or any tool that makes HTTP calls makes the same calls | [Energy diagnostic (DPE) extraction](../methods/extract_dpe/) |
 
 ## Put a method in your code
@@ -31,7 +31,7 @@ Each recipe is a small package calling the method through [`@pipelex/sdk`](https
 | Recipe | What it shows | Method |
 |---|---|---|
 | [A Next.js form whose server action runs a method](code/typescript/nextjs-server-action/) | A page whose form is validated against the method's input type and whose server action renders its typed output, with the key kept on the server | [Blog article generator](../methods/blog_article_generator/) |
-| [A run started now and read hours later](code/typescript/durable-run/) | One command that starts a long run and exits with its id, and another that reads the result by that id whenever it is ready | [Research report](../methods/research_report/) |
+| [A run started now and read hours later](code/typescript/durable-run/) | One command that starts a run and exits with its id, and another that reads the result by that id whenever it is ready | [Research report](../methods/research_report/) |
 | [A local file sent through an upload grant](code/typescript/upload-grant/) | An image from this machine sent to storage with a one-time grant, then read by the method by its storage uri | [Gantt chart extraction](../methods/extract_gantt/) |
 
 To add one, read [docs/adding-a-recipe.md](../docs/adding-a-recipe.md).

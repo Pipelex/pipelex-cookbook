@@ -1,12 +1,12 @@
 # A run in your coding agent, followed later by its id
 
-Some methods take minutes, and nothing needs to wait for them. In Claude Code or Codex with the Pipelex plugin, you ask for a run in a sentence: `/pipelex-run` checks the method at its address, starts the run and gives you its id at once. The run carries on server-side, and from any later session, in any directory, the id alone is enough for your agent to tell you how the run is going, show you its results and save them. This recipe does it with the cookbook's [research report](../../../methods/research_report/) method, which runs for minutes. It drafts a report from three angles out of the model's own knowledge, without searching any source, so what it returns is a first draft to check rather than verified research.
+A run does not need anyone to wait for it. In Claude Code or Codex with the Pipelex plugin, you ask for a run in a sentence: `/pipelex-run` checks the method at its address, starts the run and gives you its id at once. The run carries on server-side, and from any later session, in any directory, the id alone is enough for your agent to tell you how the run is going, show you its results and save them. This recipe does it with the cookbook's [research report](../../../methods/research_report/) method. It drafts a report from three angles out of the model's own knowledge, without searching any source, so what it returns is a first draft to check rather than verified research.
 
 It shows what the agent does with a published method:
 
 - **An address is a complete run source.** The agent passes `github.com/Pipelex/pipelex-cookbook/research_report@v0.18.0` as it is, and nothing is cloned or installed. The run reports its provenance: the address, the tag and the commit the tag resolved to.
 - **Nothing is spent before the method is proven.** The agent validates the method at its address before it starts the run, and "do a dry run first" stops there: it reports what the method takes and returns, says that no model ran, and waits for your go.
-- **An id is all it takes to come back.** In a new session, days later, asking how the run is going, for its results or to save it needs nothing else, and saving writes the run to `runs/<run_id>/` under the agent's working directory.
+- **An id is all it takes to come back.** In a new session, days later, asking how the run is going, for its results or to save it needs nothing else, and saving writes the run to `runs/<run_id>/` under the directory the agent was started in.
 
 ## What it needs
 
@@ -40,13 +40,40 @@ The agent validates the method, reports what it takes and returns, and ends its 
 When the run starts, the agent reports its id and where the method came from:
 
 ```text
-PLACEHOLDER: the agent's reply once the run starts, from the proving run in Claude Code: the run id, trimmed to run_…, and the method's provenance
+Your run has started. Its id is run_…. Keep this id: it is how you follow the run from any later session.
+
+The method came from github.com/Pipelex/pipelex-cookbook/research_report, tag v0.18.0, resolved commit 42dcaa9a5eafe62752ea8a5f7f57e5d83a2cca87.
+
+Before any credit was spent, the method checked out as valid and runnable. The run spends inference credit.
+
+What you can do next, from any session:
+- Check progress: ask "how is run run_… going".
+- Get the report when it is done: ask "get the results of run run_…".
+- Save it to disk: ask to "save run run_…". That writes main_stuff.json and any files into runs/<run_id>/, and it still works days later.
 ```
 
 From a second session, asked how the run is going and then for its results:
 
 ```text
-PLACEHOLDER: the agent's replies in the second session, from the proving run: the run's status, then the start of the report
+> How is run run_… going?
+
+Run run_… has completed. It was created at 03:48:59 UTC on 25 September 2026 and finished at 03:49:18 UTC, about 19 seconds later. This is a live status reading, not a last-known one. The results are ready whenever you want them.
+
+> Get the results of run run_…
+
+Run run_… completed, and its output is a research report on the most promising ways to improve battery energy density for electric vehicles. The run made 5 model calls and used 4,535 tokens.
+
+In summary, the report takes a staged view. The nearest-term gains come from silicon-rich anodes and high-nickel cathodes, provided silicon expansion and high-nickel stability are engineered around (confidence 0.90). Lithium-metal and solid-state cells could give a larger gain at the cell level, but interface resistance, dendrites, pressure requirements, manufacturing and cost still limit their readiness for cars (0.86). Lithium–sulfur and lithium–air have very high theoretical energy but remain longer-horizon research (0.93).
+
+Here is the full report:
+
+# Research Report
+
+## Question
+what are the most promising approaches to improving battery energy density for electric vehicles?
+
+## Executive Summary
+The verified evidence supports a staged EV-battery development outlook. In the near term, silicon-rich anodes and high-nickel layered-oxide cathodes can raise energy density, but only with engineering that addresses silicon expansion and high-nickel stability, safety, and lifetime constraints. …
 ```
 
 The report is Markdown, in the shape the method's [answer key](../../../methods/research_report/key.md) holds it to: a "Research Report" title, then the question word for word, an executive summary, key findings naming approaches such as solid-state electrolytes, silicon anodes or lithium-sulfur cells, and the open questions they leave, closed by a "Generated by Pipelex" footer.
@@ -54,7 +81,7 @@ The report is Markdown, in the shape the method's [answer key](../../../methods/
 Saving the run writes its whole output as `runs/<run_id>/main_stuff.json` and reports the path:
 
 ```text
-PLACEHOLDER: the agent's reply to "Save run run_…", from the proving run, with the path it saved to
+I saved the run. Its whole output is in runs/run_…/main_stuff.json (2,858 bytes). The output referenced no stored files, so that JSON file is the only thing saved.
 ```
 
 ## How it is built
