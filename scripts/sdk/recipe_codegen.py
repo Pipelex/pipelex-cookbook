@@ -9,8 +9,8 @@ Every code recipe keeps the types of the method it calls in `generated/<method>/
 snippet under `tests/snippets/` keeps its method's types the same way, except that its `sources.json`, which
 `make render` writes, names the `.mthds` files of the method's package instead of an address: a page names the last
 release's tag, which does not hold a method added since. This script is the one place the cookbook reaches
-`pipelex-sdk` for them, and it runs in an environment of its own (`uv run --script`), since the SDK and the runtime
-the cookbook still pins cannot be installed side by side. It runs from the repository root, as the Makefile runs it,
+`pipelex-sdk` for them, and it runs in an environment of its own (`uv run --script`), so that every tree is written
+and checked with the exact SDK release pinned above. It runs from the repository root, as the Makefile runs it,
 since a sidecar names its files by their paths from there:
 
 - `generate <tree>...` asks the hosted API for each tree's types (`POST /v1/codegen` with the address, or with the

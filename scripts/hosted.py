@@ -2,9 +2,8 @@
 
 A package is validated from its files (`make check-methods`), and its page's address is validated at the page's tag (`make check-addresses`).
 
-Only `POST /v1/validate` is called, and no call spends inference. The call is made with `httpx` rather than through `pipelex-sdk`: the SDK pins an
-`mthds` release that the runtime this repository still pins for its older examples cannot run with, so the two cannot share an environment until
-that pin goes. The key is read from the environment and sent only as the `Authorization` header; nothing here prints it.
+Only `POST /v1/validate` is called, and no call spends inference. The call is made with `httpx`. The key is read from the environment and sent only
+as the `Authorization` header; nothing here prints it.
 """
 
 import os

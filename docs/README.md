@@ -2,8 +2,6 @@
 
 The cookbook holds Pipelex's example methods as packages anyone can run by address, and gives each one a page showing every way to use it: in a chatbot, in code, as an app, as a method of your own, and on your own machine. Beside the pages, recipes show one way of using a method in depth, on a real case, calling it by an address the checks hold to a release tag. This document explains the parts that make that work. To add a method, read [adding-a-method.md](adding-a-method.md), and to add a recipe, [adding-a-recipe.md](adding-a-recipe.md).
 
-The repository is mid-way through a rebuild. The older examples under `examples/`, with their runtime pin, their `.pipelex/` configuration and their tests, stay where they are until the new layout replaces them. Everything below describes the new layout.
-
 ## The packages
 
 Each cookbook method is a package in `methods/<name>/`, laid out like the packages of the method library, [Pipelex/methods](https://github.com/Pipelex/methods), so that a method can move from one repository to the other by moving its directory:
@@ -71,7 +69,7 @@ The renderer is a small Python package in `scripts/`, run as `python -m scripts 
 - `scripts/render.py` derives each page's context and renders `templates/method_page.md.j2`, which includes one template per door from `templates/doors/`, and renders the front page's list of methods from `templates/front_region.md.j2`. The code door includes its TypeScript and Python snippets from `templates/snippets/`, where `file.ts.j2` and `file.py.j2` wrap the same snippets, with the typed read the page does not show, into the files under `tests/snippets/`, and `sources.json.j2` writes the sidecar of each one's generated tree. Wording and links live in the templates; everything method-specific is computed in Python.
 - `scripts/checks.py` holds the checks that need no key, and `scripts/hosted.py` the calls to production.
 
-Its tests are in `tests/tooling/`. They build a small cookbook in a temporary directory, render it with the real templates, and boot no Pipelex runtime.
+Its tests are in `tests/tooling/`. They build a small cookbook in a temporary directory, render it with the real templates, and call no API.
 
 ## The contract snapshot
 
@@ -116,4 +114,4 @@ Each Python recipe script is type-checked by pyright in the environment its own 
 
 `make check-cookbook` runs every check that needs no key, and is what the `Methods check` workflow runs on every pull request. `make agent-check` runs `check-render`, `check-lockstep`, `check-recipes` and `check-codegen` after the linters. The checks that call production, `check-methods`, `check-addresses` and `check-codegen-live`, are grouped under `make check-hosted`: CI holds no API key, so their author runs them by hand before each pull request, and the release play runs them at each release. After a release, `make check-addresses` is also what proves it: once the tag exists, every method must validate at it. None of them spends inference; running a method is a separate, deliberate act.
 
-The tooling calls `POST /v1/validate` with `httpx` rather than through `pipelex-sdk`. The SDK pins an `mthds` release that the runtime this repository still pins for its older examples cannot run with, so the two cannot share one environment until that pin goes with the old examples. The recipes' codegen, which needs the SDK, runs in its own environment for the same reason.
+The tooling calls `POST /v1/validate` with `httpx`. The recipes' codegen, which needs `pipelex-sdk`, runs in an environment of its own, so that every generated tree is written and checked with the exact SDK release `scripts/sdk/recipe_codegen.py` pins.

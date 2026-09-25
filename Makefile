@@ -12,17 +12,10 @@ VENV_PYTEST := $(VIRTUAL_ENV)/bin/pytest
 VENV_RUFF := $(VIRTUAL_ENV)/bin/ruff
 VENV_PYRIGHT := $(VIRTUAL_ENV)/bin/pyright
 VENV_MYPY := $(VIRTUAL_ENV)/bin/mypy
-VENV_PIPELEX := $(VIRTUAL_ENV)/bin/pipelex
 VENV_PLXT := RUST_LOG=warn "$(VIRTUAL_ENV)/bin/plxt"
 HEARTBEAT_INTERVAL ?= 20
 
 UV_MIN_VERSION = $(shell grep -m1 'required-version' pyproject.toml | sed -E 's/.*= *"([^<>=, ]+).*/\1/')
-
-USUAL_PYTEST_MARKERS := "(dry_runnable or not inference) and not (needs_output or pipelex_api)"
-
-# Extras that are opt-in: they serve a single example and would otherwise be pulled into every
-# install and into requirements-dev.txt. Install them by hand, e.g. `uv pip install -e ".[crewai]"`.
-OPT_IN_EXTRAS := --no-extra crewai
 
 define PRINT_TITLE
     $(eval PROJECT_PART := [$(PROJECT_NAME)])
@@ -67,14 +60,8 @@ Usage:
 
 make env                      - Create python virtual env
 make lock                     - Refresh uv.lock without updating anything
-make install                  - Create local virtualenv & install all dependencies (except opt-in extras)
+make install                  - Create local virtualenv & install all dependencies
 make update                   - Upgrade dependencies via uv
-make export-requirements      - Export production requirements.txt (no dev dependencies)
-make export-requirements-dev  - Export requirements-dev.txt (dev dependencies, except opt-in extras)
-make er                       - Shorthand -> export-requirements
-make erd                      - Shorthand -> export-requirements-dev
-make validate                 - Validate config, libraries, and every shipped .mthds bundle
-make validate-bundles         - Static-validate all .mthds bundles (tutorial, examples, methods, installed library)
 
 make render                   - Write every methods/<name>/README.md from its package and cookbook.toml, and its snippet files under tests/snippets/<name>/
 make check-render             - Fail when a committed method page or snippet file differs from a fresh render, or a snippet directory belongs to no method
@@ -99,7 +86,7 @@ make plxt-lint                - Lint MTHDS/TOML files with plxt
 make pyright                  - Check types with pyright
 make mypy                     - Check types with mypy
 
-make cleanenv                 - Remove virtual env and lock files
+make cleanenv                 - Remove virtual env
 make cleanderived             - Remove extraneous compiled files, caches, logs, etc.
 make cleanall                 - Remove all -> cleanenv + cleanderived
 make reinstall                - Reinstall dependencies
@@ -112,19 +99,15 @@ make merge-check-mypy         - Run mypy merge check without updating files
 make merge-check-pyright	  - Run pyright merge check without updating files
 
 make ri                       - Shorthand -> reinstall
-make v                        - Shorthand -> validate
-make codex-tests              - Run tests for Codex (exit on first failure) (no inference, no codex_disabled)
-make gha-tests		          - Run tests for github actions (exit on first failure) (no inference, no gha_disabled)
-make test                     - Run unit tests (no inference)
-make test-xdist               - Run unit tests with xdist (no inference)
+make codex-tests              - Run tests for Codex (exit on first failure) (no codex_disabled)
+make gha-tests                - Run tests for github actions (exit on first failure)
+make test                     - Run unit tests
+make test-xdist               - Run unit tests with xdist
 make t                        - Shorthand -> test-xdist
-make test-quiet               - Run unit tests without prints (no inference)
+make test-quiet               - Run unit tests without prints
 make tq                       - Shorthand -> test-quiet
-make test-with-prints         - Run tests with prints (no inference)
+make test-with-prints         - Run tests with prints
 make tp                       - Shorthand -> test-with-prints
-make tb                       - Shorthand -> `make test-with-prints TEST=test_boot`
-make test-inference           - Run unit tests only for inference (with prints)
-make ti                       - Shorthand -> test-inference
 
 make check                    - Shorthand -> format lint mypy
 make c                        - Shorthand -> check
@@ -142,13 +125,12 @@ export HELP
 
 .PHONY: \
 	all help env env-verbose check-uv check-uv-verbose lock install update build \
-	export-requirements export-requirements-dev er erd \
 	format lint ruff-format ruff-lint plxt-format plxt-lint pyright mypy \
 	cleanderived cleanenv cleanall \
-	test test-xdist t test-quiet tq test-with-prints tp test-inference ti \
+	test test-xdist t test-quiet tq test-with-prints tp \
 	codex-tests gha-tests \
-	run-all-tests run-manual-trigger-gha-tests run-gha_disabled-tests \
-	validate validate-bundles v check c cc agent-check agent-test \
+	run-all-tests \
+	check c cc agent-check agent-test \
 	render check-render check-lockstep check-links check-recipes check-codegen check-recipe-types check-cookbook \
 	refresh check-methods check-addresses check-codegen-live check-hosted \
 	merge-check-ruff-lint merge-check-ruff-format merge-check-plxt-format merge-check-plxt-lint merge-check-mypy merge-check-pyright \
@@ -203,9 +185,8 @@ env-verbose: check-uv-verbose
 install: env-verbose
 	$(call PRINT_TITLE,"Installing dependencies")
 	@. $(VIRTUAL_ENV)/bin/activate && \
-	uv sync --all-extras $(OPT_IN_EXTRAS) && \
-	uv pip install -e examples/c_advanced/using_inference_plugins/hello_inference_plugin && \
-	echo "Installed Pipelex cookbook dependencies in ${VIRTUAL_ENV} and initialized Pipelex libraries";
+	uv sync --all-extras && \
+	echo "Installed the cookbook's tooling in ${VIRTUAL_ENV}";
 
 lock: env-verbose
 	$(call PRINT_TITLE,"Resolving dependencies without update")
@@ -217,30 +198,6 @@ update: env-verbose
 	@uv lock --upgrade && \
 	echo "Updated dependencies in ${VIRTUAL_ENV}";
 
-export-requirements: env-verbose
-	$(call PRINT_TITLE,"Exporting production requirements")
-	@uv export --no-dev --output-file requirements.txt && \
-	echo "Exported production requirements to requirements.txt";
-
-export-requirements-dev: env-verbose
-	$(call PRINT_TITLE,"Exporting development requirements")
-	@uv export --all-extras $(OPT_IN_EXTRAS) --output-file requirements-dev.txt && \
-	echo "Exported dev requirements (opt-in extras excluded) to requirements-dev.txt";
-
-er: export-requirements
-	@echo "> done: er = export-requirements"
-
-erd: export-requirements-dev
-	@echo "> done: erd = export-requirements-dev"
-
-validate: env validate-bundles
-	$(call PRINT_TITLE,"Running setup sequence")
-	$(VENV_PIPELEX) validate --all
-
-validate-bundles: env
-	$(call PRINT_TITLE,"Validating all shipped .mthds bundles")
-	$(VENV_PYTEST) tests/e2e/test_validate_bundles.py --disable-inference -o log_cli=false -q
-
 ##########################################################################################
 ### METHOD PAGES
 ##########################################################################################
@@ -251,8 +208,8 @@ validate-bundles: env
 # production with PIPELEX_API_KEY and spend no inference; CI holds no key, so they are run by hand.
 #
 # A code recipe's generated types come from scripts/sdk/recipe_codegen.py, which runs beside
-# pipelex-sdk in an environment of its own (`uv run --script`), since the SDK and the runtime this
-# project still pins cannot share one. It regenerates them (keyed, within refresh), checks them
+# pipelex-sdk in an environment of its own (`uv run --script`), so that the trees are written and
+# checked with the exact SDK release its inline dependencies pin. It regenerates them (keyed, within refresh), checks them
 # against their codegen.lock (offline), and checks that the lock records what the address resolves
 # to today (keyed, within check-hosted). Each Python recipe script, and that script itself, is
 # type-checked by pyright in the environment its inline dependencies describe, under
@@ -356,16 +313,10 @@ cleanderived:
 
 cleanenv:
 	$(call PRINT_TITLE,"Erasing virtual environment")
-	find . -name 'requirements.lock' -delete && \
 	find . -type d -wholename './.venv' -exec rm -rf {} + && \
-	echo "Cleaned up virtual env and dependency lock files";
+	echo "Cleaned up virtual env";
 
-cleanlock:
-	$(call PRINT_TITLE,"Erasing uv lock file")
-	@find . -name 'requirements.lock' -delete && \
-	echo "Cleaned up uv lock file";
-
-reinstall: cleanenv cleanlock install
+reinstall: cleanenv install
 	@echo "Reinstalled dependencies";
 
 ri: reinstall
@@ -380,45 +331,35 @@ cleanall: cleanderived cleanenv
 
 codex-tests: env
 	$(call PRINT_TITLE,"Unit testing for Codex")
-	@echo "• Running unit tests for Codex (excluding inference and codex_disabled)"
-	$(VENV_PYTEST) --disable-inference --exitfirst --quiet -m "not inference and not codex_disabled" || [ $$? = 5 ]
+	@echo "• Running unit tests for Codex (excluding codex_disabled)"
+	$(VENV_PYTEST) --exitfirst --quiet -m "not codex_disabled" || [ $$? = 5 ]
 
 gha-tests: env
 	$(call PRINT_TITLE,"Unit testing for github actions")
-	@echo "• Running unit tests for github actions (excluding inference and gha_disabled)"
-	$(VENV_PYTEST) --disable-inference --exitfirst --quiet -m "not inference and not gha_disabled" || [ $$? = 5 ]
+	@echo "• Running unit tests for github actions"
+	$(VENV_PYTEST) --exitfirst --quiet
 
 run-all-tests: env
 	$(call PRINT_TITLE,"Running all unit tests")
 	@echo "• Running all unit tests"
 	$(VENV_PYTEST) --exitfirst --quiet
 
-run-manual-trigger-gha-tests: env
-	$(call PRINT_TITLE,"Running GHA tests")
-	@echo "• Running GHA unit tests for inference, llm, and not gha_disabled"
-	$(VENV_PYTEST) --exitfirst --quiet -m "not gha_disabled and (inference or llm)" || [ $$? = 5 ]
-
-run-gha_disabled-tests: env
-	$(call PRINT_TITLE,"Running GHA disabled tests")
-	@echo "• Running GHA disabled unit tests"
-	$(VENV_PYTEST) --exitfirst --quiet -m "gha_disabled" || [ $$? = 5 ]
-
 test: env
 	$(call PRINT_TITLE,"Unit testing without prints but displaying logs via pytest for WARNING level and above")
 	@echo "• Running unit tests"
 	@if [ -n "$(TEST)" ]; then \
-		$(VENV_PYTEST) -s -m $(USUAL_PYTEST_MARKERS) -o log_cli=true -o log_level=WARNING -k "$(TEST)" $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
+		$(VENV_PYTEST) -s -o log_cli=true -o log_level=WARNING -k "$(TEST)" $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
 	else \
-		$(VENV_PYTEST) -s -m $(USUAL_PYTEST_MARKERS) -o log_cli=true -o log_level=WARNING $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
+		$(VENV_PYTEST) -s -o log_cli=true -o log_level=WARNING $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
 	fi
 
 test-xdist: env
 	$(call PRINT_TITLE,"Unit testing without prints but displaying logs via pytest for WARNING level and above")
 	@echo "• Running unit tests"
 	@if [ -n "$(TEST)" ]; then \
-		$(VENV_PYTEST) -n auto -m $(USUAL_PYTEST_MARKERS) -o log_level=WARNING -k "$(TEST)" $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
+		$(VENV_PYTEST) -n auto -o log_level=WARNING -k "$(TEST)" $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
 	else \
-		$(VENV_PYTEST) -n auto -m $(USUAL_PYTEST_MARKERS) -o log_level=WARNING $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
+		$(VENV_PYTEST) -n auto -o log_level=WARNING $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
 	fi
 
 t: test-xdist
@@ -428,9 +369,9 @@ test-quiet: env
 	$(call PRINT_TITLE,"Unit testing without prints but displaying logs via pytest for WARNING level and above")
 	@echo "• Running unit tests"
 	@if [ -n "$(TEST)" ]; then \
-		$(VENV_PYTEST) -m $(USUAL_PYTEST_MARKERS) -o log_cli=true -o log_level=WARNING -k "$(TEST)" $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
+		$(VENV_PYTEST) -o log_cli=true -o log_level=WARNING -k "$(TEST)" $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
 	else \
-		$(VENV_PYTEST) -m $(USUAL_PYTEST_MARKERS) -o log_cli=true -o log_level=WARNING $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
+		$(VENV_PYTEST) -o log_cli=true -o log_level=WARNING $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
 	fi
 
 tq: test-quiet
@@ -440,34 +381,18 @@ test-with-prints: env
 	$(call PRINT_TITLE,"Unit testing with prints and our rich logs")
 	@echo "• Running unit tests"
 	@if [ -n "$(TEST)" ]; then \
-		$(VENV_PYTEST) -s -m $(USUAL_PYTEST_MARKERS) -k "$(TEST)" $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
+		$(VENV_PYTEST) -s -k "$(TEST)" $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
 	else \
-		$(VENV_PYTEST) -s -m $(USUAL_PYTEST_MARKERS) $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
+		$(VENV_PYTEST) -s $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
 	fi
 
 tp: test-with-prints
 	@echo "> done: tp = test-with-prints"
 
-tb: env
-	$(call PRINT_TITLE,"Unit testing a simple boot")
-	@echo "• Running unit test test_boot"
-	$(VENV_PYTEST) -s -m $(USUAL_PYTEST_MARKERS) -k "test_boot" $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,)));
-
-test-inference: env
-	$(call PRINT_TITLE,"Unit testing")
-	@if [ -n "$(TEST)" ]; then \
-		$(VENV_PYTEST) --pipe-run-mode live --exitfirst -m "inference" -s -k "$(TEST)" $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
-	else \
-		$(VENV_PYTEST) --pipe-run-mode live --exitfirst -m "inference" -s $(if $(filter 1,$(VERBOSE)),-v,$(if $(filter 2,$(VERBOSE)),-vv,$(if $(filter 3,$(VERBOSE)),-vvv,))); \
-	fi
-
-ti: test-inference
-	@echo "> done: ti = test-inference"
-
 agent-test: env
 	@echo "• Running unit tests..."
 	@tmpfile=$$(mktemp); \
-	$(call WAIT_WITH_HEARTBEAT,$(VENV_PYTEST) -m $(USUAL_PYTEST_MARKERS) -o log_level=WARNING --tb=short -q > "$$tmpfile" 2>&1,agent-test); \
+	$(call WAIT_WITH_HEARTBEAT,$(VENV_PYTEST) -o log_level=WARNING --tb=short -q > "$$tmpfile" 2>&1,agent-test); \
 	if [ $$exit_code -ne 0 ]; then grep -vE '\[\s*[0-9]+%\]\s*$$' "$$tmpfile"; fi; \
 	rm -f "$$tmpfile"; \
 	if [ $$exit_code -eq 0 ]; then echo "• All tests passed."; fi; \
@@ -571,9 +496,6 @@ check: cleanderived check-unused-imports c
 
 agent-check: fix-unused-imports format lint pyright mypy check-render check-lockstep check-recipes check-codegen
 	@echo "> done: agent-check"
-
-v: validate
-	@echo "> done: v = validate"
 
 li: lock install
 	@echo "> done: lock install"

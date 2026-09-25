@@ -13,10 +13,8 @@ jobs:
         python-version: ["3.11", "3.12", "3.13"]
     permissions:
       contents: read
-      id-token: write
     env:
       VIRTUAL_ENV: ${{ github.workspace }}/.venv
-      ENV: dev
     steps:
       - uses: actions/checkout@v4
 
