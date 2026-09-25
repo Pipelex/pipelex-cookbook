@@ -1,0 +1,60 @@
+{
+  "address": "github.com/Pipelex/methods",
+  "tag": "v0.1.2",
+  "methods": [
+    {
+      "name": "cv_analyzer",
+      "display_name": "CV Analyzer",
+      "description": "End-to-end candidate screening: extract a CV and a job offer, analyze the match, then either generate tailored interview questions or draft a courteous refusal email.",
+      "main_pipe": "screen_candidate"
+    },
+    {
+      "name": "doc_summarizer",
+      "display_name": "Document Summarizer",
+      "description": "Deep document summarization: profile the document and extract importance-ranked key points in parallel, then synthesize a structured summary with themes and open questions.",
+      "main_pipe": "summarize_document"
+    },
+    {
+      "name": "documents",
+      "display_name": "Documents",
+      "description": "Document extraction methods for text, images, and page views.",
+      "main_pipe": "extract_document_markdown"
+    },
+    {
+      "name": "image_generation",
+      "display_name": "Image Generation",
+      "description": "Image generation methods: render a description directly, or refine it into an optimized image prompt first.",
+      "main_pipe": "illustrate"
+    },
+    {
+      "name": "invoice_extraction",
+      "display_name": "Invoice Extraction",
+      "description": "Extract structured invoice data from a document: classify each page as bill or receipt, then extract amounts, VAT, vendor and buyer details using both the OCR text and the page view.",
+      "main_pipe": "process_invoice"
+    },
+    {
+      "name": "slide_designer",
+      "display_name": "Slide Designer",
+      "description": "Turn a rough slide-deck brief into design proposals: polish the brief, generate multiple visual themes, render a mockup image for each, and compose an HTML report presenting them all.",
+      "main_pipe": "generate_design_proposals_from_rough_brief"
+    },
+    {
+      "name": "table_extraction",
+      "display_name": "Table Extraction",
+      "description": "Extract a data table from a screenshot into faithful HTML, then review the result against the image to correct text and formatting.",
+      "main_pipe": "extract_html_table_and_review"
+    },
+    {
+      "name": "text_stats",
+      "display_name": "Text Stats",
+      "description": "Deterministic text statistics computed in pure Python: character, word, sentence and paragraph counts, vocabulary richness, most frequent words, and estimated reading and speaking times, reported as Markdown.",
+      "main_pipe": "analyze_text"
+    },
+    {
+      "name": "tweet_optimizer",
+      "display_name": "Tweet Optimizer",
+      "description": "Optimize a tech tweet: score the draft for fluffiness, cringiness, humblebragging and vagueness, then rewrite it in your own writing style following Twitter/X best practices.",
+      "main_pipe": "optimize_tweet_sequence"
+    }
+  ]
+}

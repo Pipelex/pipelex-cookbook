@@ -92,10 +92,10 @@ class TestRender:
         front_page = render_front_page(cookbook=load_cookbook(root), templates_dir=templates_dir)[root / "README.md"]
 
         assert front_page.startswith("# Fixture cookbook\n\nWritten by hand.\n\n<!-- BEGIN methods")
-        assert front_page.endswith("<!-- END methods -->\n\n## Also written by hand\n")
+        assert "<!-- END methods -->\n\nBetween the lists, written by hand.\n\n<!-- BEGIN library" in front_page
+        assert front_page.endswith("<!-- END library -->\n\n## Also written by hand\n")
         assert "- **[Word Count](methods/count_words/)**: Count the words of a text.\n" in front_page
         assert "- **[Widget extraction](methods/extract_widgets/)**: Read a catalogue page and list every widget on it.\n" in front_page
-        assert "[Pipelex method library](https://github.com/Pipelex/methods)" in front_page
 
     def test_a_second_render_of_the_front_page_changes_nothing(self, make_cookbook: MakeCookbook, templates_dir: Path):
         root = make_cookbook()
@@ -111,6 +111,19 @@ class TestRender:
         root = make_cookbook()
         (root / "README.md").write_text("# Fixture cookbook\n", encoding="utf-8")
         with pytest.raises(CookbookLayoutError, match="must hold one region for the list of methods"):
+            render_all(cookbook=load_cookbook(root), templates_dir=templates_dir)
+
+    def test_a_front_page_whose_regions_overlap_is_refused(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        root = make_cookbook()
+        front_page = root / "README.md"
+        methods_end = "<!-- END methods -->\n"
+        overlapping = (
+            front_page.read_text(encoding="utf-8").replace(methods_end, "").replace("<!-- END library -->", methods_end + "<!-- END library -->")
+        )
+        front_page.write_text(overlapping, encoding="utf-8")
+        with pytest.raises(
+            CookbookLayoutError, match="opens the region for the list of the library's methods inside the region for the list of methods"
+        ):
             render_all(cookbook=load_cookbook(root), templates_dir=templates_dir)
 
     def test_the_tag_is_v_and_the_version_file(self, make_cookbook: MakeCookbook, templates_dir: Path):

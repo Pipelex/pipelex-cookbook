@@ -2,7 +2,8 @@
 
 Offline, needing no key: `render`, `check-render`, `check-lockstep`, `check-links` (which only fetches public sample URLs), `check-recipes`, and
 `recipe-trees`, `recipe-scripts`, `recipe-packages` and `recipe-shell-scripts`, which list what the Makefile hands the SDK script, the type
-checkers and shellcheck: the recipes' code, and the page snippets `render` writes under `tests/snippets/`.
+checkers and shellcheck: the recipes' code, and the page snippets `render` writes under `tests/snippets/`. `refresh-library` needs no key
+either: it downloads the method library's tarball at the tag `cookbook.toml` pins and writes `library.json`.
 Keyed, calling production with `PIPELEX_API_KEY`: `refresh`, `check-methods`, `check-addresses`.
 """
 
@@ -15,6 +16,7 @@ from scripts.checks import check_links, http_status, lockstep_problems, orphan_s
 from scripts.cookbook import Cookbook, load_cookbook
 from scripts.exceptions import CookbookError
 from scripts.hosted import AddressState, AddressVerdict, check_address, check_pinned_method_ref, client_from_env, validate_packages
+from scripts.library import LIBRARY_FILE, download, fetch_library
 from scripts.recipes import (
     find_addresses,
     find_trees,
@@ -25,7 +27,7 @@ from scripts.recipes import (
     shell_scripts,
     typescript_packages,
 )
-from scripts.render import render_all, render_pages
+from scripts.render import build_library_context, render_all, render_pages
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR_NAME = "templates"
@@ -41,6 +43,7 @@ def main(argv: list[str] | None = None) -> int:
         "check-lockstep": _check_lockstep,
         "check-links": _check_links,
         "refresh": _refresh,
+        "refresh-library": _refresh_library,
         "check-methods": _check_methods,
         "check-addresses": _check_addresses,
         "check-recipes": _check_recipes,
@@ -52,17 +55,21 @@ def main(argv: list[str] | None = None) -> int:
     helps = {
         "render": (
             "Write every methods/<name>/README.md from its package and cookbook.toml, its snippet files under tests/snippets/<name>/, "
-            "and the front page's list of methods"
+            "and the front page's two lists, of the methods and of the library's methods"
         ),
         "check-render": (
-            "Fail when a committed page, snippet file or the front page's list of methods differs from a fresh render, "
+            "Fail when a committed page, snippet file or either of the front page's lists differs from a fresh render, "
             "or when a snippet directory belongs to no method"
         ),
         "check-lockstep": "Fail when a manifest's version is not the cookbook's",
         "check-links": "Fetch every sample URL in the packages, and every raw URL on the pages and in the recipes",
         "refresh": "Validate every package on production and write its contract.json (needs PIPELEX_API_KEY)",
+        "refresh-library": "Take the method library's snapshot, library.json, from its tarball at the tag cookbook.toml pins",
         "check-methods": "Validate every package on production from its files, and check its contract snapshot (needs PIPELEX_API_KEY)",
-        "check-addresses": "Validate every address on production: each page's at its tag, each recipe's as it pins it (needs PIPELEX_API_KEY)",
+        "check-addresses": (
+            "Validate every address on production: each page's at its tag, each recipe's as it pins it, "
+            "and each library method's the front page lists (needs PIPELEX_API_KEY)"
+        ),
         "check-recipes": (
             "Fail when a recipe's generated tree names no pinned address, or one its code does not call as a string literal, "
             "when a recipe names an address without a release tag, or when a recipe's shell script does not parse"
@@ -77,7 +84,12 @@ def main(argv: list[str] | None = None) -> int:
     arguments = parser.parse_args(argv)
     root = Path(arguments.root).resolve()
     try:
-        cookbook = load_cookbook(root, read_contracts=arguments.command != "refresh")
+        # `refresh` and `refresh-library` rewrite what they would otherwise load, so each loads without it and recovers from a stale one.
+        cookbook = load_cookbook(
+            root,
+            read_contracts=arguments.command not in {"refresh", "refresh-library"},
+            read_library=arguments.command != "refresh-library",
+        )
         return commands[arguments.command](cookbook)
     except CookbookError as exc:
         print(f"✗ {exc}", file=sys.stderr)
@@ -108,12 +120,13 @@ def _check_render(cookbook: Cookbook) -> int:
     for relative in stale:
         print(f"✗ {relative} differs from a fresh render")
     if stale:
-        print("Pages and their snippet files are generated: run `make render` and commit what it writes, never edit one by hand.")
+        print("Pages, their snippet files and the front page's lists are generated: run `make render` and commit what it writes, never edit them.")
     _print_orphans(orphans)
     if stale or orphans:
         return 1
     print(
-        f"✓ {len(cookbook.packages)} method page(s), their snippet files and the front page's list of methods match a fresh render at {cookbook.tag}"
+        f"✓ {len(cookbook.packages)} method page(s), their snippet files and the front page's lists of methods match a fresh render at "
+        f"{cookbook.tag}, the library's at {cookbook.settings.library.tag}"
     )
     return 0
 
@@ -166,6 +179,19 @@ def _refresh(cookbook: Cookbook) -> int:
     return 0
 
 
+def _refresh_library(cookbook: Cookbook) -> int:
+    settings = cookbook.settings.library
+    snapshot = fetch_library(settings, fetch=download)
+    path = cookbook.root / LIBRARY_FILE
+    contents = snapshot.to_json()
+    previous = path.read_text(encoding="utf-8") if path.is_file() else None
+    path.write_text(contents, encoding="utf-8")
+    verb = "· unchanged" if previous == contents else "✎ wrote"
+    print(f"{verb} {LIBRARY_FILE}: {len(snapshot.methods)} method(s) of {settings.address} at {settings.tag}")
+    print("Render next, as `make refresh` does, so the front page lists the snapshot.")
+    return 0
+
+
 def _check_methods(cookbook: Cookbook) -> int:
     client = client_from_env()
     problems = 0
@@ -188,14 +214,19 @@ def _check_addresses(cookbook: Cookbook) -> int:
         check_pinned_method_ref(client=client, name=", ".join(recipes), address=address)
         for address, recipes in recipe_addresses(cookbook.root).items()
     ]
+    # The front page lists the library's methods at a released tag, so each must resolve today, as a recipe's address must.
+    library_verdicts = [
+        check_pinned_method_ref(client=client, name="the front page's list of the library's methods", address=line.address)
+        for line in build_library_context(cookbook).methods
+    ]
     for verdict in verdicts:
         _print_address_verdict(verdict, where="")
-    for verdict in recipe_verdicts:
+    for verdict in [*recipe_verdicts, *library_verdicts]:
         _print_address_verdict(verdict, where=f" (in {verdict.name})")
     unreleased = sum(1 for verdict in verdicts if verdict.state is AddressState.UNRELEASED)
     if unreleased:
         print(f"{unreleased} method(s) not released at {cookbook.tag}: run this check again once the release that carries them is tagged.")
-    return 1 if any(verdict.state is AddressState.FAILED for verdict in [*verdicts, *recipe_verdicts]) else 0
+    return 1 if any(verdict.state is AddressState.FAILED for verdict in [*verdicts, *recipe_verdicts, *library_verdicts]) else 0
 
 
 def _print_address_verdict(verdict: AddressVerdict, *, where: str) -> None:

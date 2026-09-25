@@ -4,13 +4,22 @@ from collections.abc import Callable
 from pathlib import Path
 
 from scripts.contract import Contract, ContractField, ContractInput, ContractOutput
+from scripts.library import LibraryMethod, LibrarySnapshot
 
 FIXTURE_ADDRESS = "github.com/Pipelex/pipelex-cookbook"
 FIXTURE_VERSION = "0.9.0"
+LIBRARY_ADDRESS = "github.com/Pipelex/methods"
+LIBRARY_REPOSITORY = "Pipelex/methods"
+LIBRARY_TAG = "v0.4.0"
 WIDGETS_SAMPLE_URL = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_widgets/catalogue.png"
 
 COOKBOOK_TOML = f"""address = "{FIXTURE_ADDRESS}"
 repository = "Pipelex/pipelex-cookbook"
+
+[library]
+address = "{LIBRARY_ADDRESS}"
+repository = "{LIBRARY_REPOSITORY}"
+tag = "{LIBRARY_TAG}"
 
 [methods.extract_widgets]
 title = "Widget extraction"
@@ -110,7 +119,32 @@ Written by hand.
 <!-- BEGIN methods, written by `make render` from methods/ and cookbook.toml: never edit this region by hand -->
 <!-- END methods -->
 
+Between the lists, written by hand.
+
+<!-- BEGIN library, written by `make render` from library.json: never edit this region by hand -->
+<!-- END library -->
+
 ## Also written by hand
 """
+
+# The fixture library's snapshot, as `make refresh-library` writes it: two methods, sorted by name.
+LIBRARY_SNAPSHOT = LibrarySnapshot(
+    address=LIBRARY_ADDRESS,
+    tag=LIBRARY_TAG,
+    methods=[
+        LibraryMethod(
+            name="invoice_extraction",
+            display_name="Invoice Extraction",
+            description="Extract structured invoice data from a document",
+            main_pipe="extract_invoice",
+        ),
+        LibraryMethod(
+            name="text_stats",
+            display_name="Text Stats",
+            description="Deterministic text statistics computed in pure Python.",
+            main_pipe="analyze_text",
+        ),
+    ],
+)
 
 MakeCookbook = Callable[..., Path]
