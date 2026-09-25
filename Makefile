@@ -79,14 +79,14 @@ make validate-bundles         - Static-validate all .mthds bundles (tutorial, ex
 make render                   - Write every methods/<name>/README.md from its package and cookbook.toml
 make check-render             - Fail when a committed method page differs from a fresh render
 make check-lockstep           - Fail when a method manifest's version is not the cookbook's
-make check-links              - Fetch every sample URL in the packages and every raw URL on the pages
-make check-recipes            - Fail when a recipe's generated types name no pinned address, or one its code does not call
+make check-links              - Fetch every sample URL in the packages, and every raw URL on the pages and in the recipes
+make check-recipes            - Fail when a recipe's generated types name no pinned address or one its code does not call, when a recipe names an unpinned address, or when its shell script does not parse
 make check-codegen            - Check every recipe's generated types against their codegen.lock (offline)
-make check-recipe-types       - Type-check every recipe: each Python script with pyright in its own environment, each TypeScript package with its codegen gate and tsc
+make check-recipe-types       - Type-check every recipe: each Python script with pyright in its own environment, each TypeScript package with its codegen gate and tsc, each shell script with shellcheck
 make check-cookbook           - The checks that need no key: the pages, the manifests, the links and the recipes (what CI runs)
 make refresh                  - Write every method's contract.json and every recipe's generated types from production (needs PIPELEX_API_KEY)
 make check-methods            - Validate every method on production from its files (needs PIPELEX_API_KEY)
-make check-addresses          - Validate every page's address at its tag, and every recipe's, on production (needs PIPELEX_API_KEY)
+make check-addresses          - Validate every page's address at its tag, and every address a recipe names, on production (needs PIPELEX_API_KEY)
 make check-codegen-live       - Check that every recipe's types come from what its address resolves to today (needs PIPELEX_API_KEY)
 make check-hosted             - Every check that calls production, run by hand before each PR and at each release (needs PIPELEX_API_KEY)
 
@@ -258,6 +258,9 @@ validate-bundles: env
 # type-checked by pyright in the environment its inline dependencies describe, under
 # recipes/pyrightconfig.json. Each TypeScript recipe package is installed with npm ci from its own
 # lock, then runs its codegen:check script, the pipelex-integrate skill's gate, and tsc --noEmit.
+# Each recipe's shell script is parsed by `sh -n` within check-recipes and read by shellcheck within
+# check-recipe-types. Where shellcheck is not installed, check-recipe-types says so and goes on,
+# except in CI, where the runner image carries it and its absence fails the check.
 RECIPE_CODEGEN := uv run --quiet --script scripts/sdk/recipe_codegen.py
 RECIPE_TREES = $$($(VENV_PYTHON) -m scripts recipe-trees)
 
@@ -278,7 +281,7 @@ check-links: env
 	$(VENV_PYTHON) -m scripts check-links
 
 check-recipes: env
-	$(call PRINT_TITLE,"Checking that the generated types of every recipe name a pinned address its code calls")
+	$(call PRINT_TITLE,"Checking that every recipe pins the addresses it names and calls and that its shell scripts parse")
 	$(VENV_PYTHON) -m scripts check-recipes
 
 check-codegen: env
@@ -286,7 +289,7 @@ check-codegen: env
 	@trees="$(RECIPE_TREES)" || exit 1; if [ -n "$$trees" ]; then $(RECIPE_CODEGEN) check $$trees; else echo "no recipe carries generated types"; fi
 
 check-recipe-types: env
-	$(call PRINT_TITLE,"Type-checking every recipe: each Python script in its own environment and each TypeScript package after its codegen gate")
+	$(call PRINT_TITLE,"Type-checking the Python scripts and TypeScript packages of every recipe and linting its shell scripts")
 	@scripts="$$($(VENV_PYTHON) -m scripts recipe-scripts)" || exit 1; status=0; for script in scripts/sdk/recipe_codegen.py $$scripts; do \
 		echo "· $$script"; \
 		uv sync --quiet --script "$$script" || { status=1; continue; }; \
@@ -295,7 +298,12 @@ check-recipe-types: env
 	packages="$$($(VENV_PYTHON) -m scripts recipe-packages)" || exit 1; for package in $$packages; do \
 		echo "· $$package"; \
 		(cd "$$package" && npm ci --no-audit --no-fund --loglevel=error && npm run --silent codegen:check && npx --no-install tsc --noEmit) || status=1; \
-	done; exit $$status
+	done; \
+	shells="$$($(VENV_PYTHON) -m scripts recipe-shell-scripts)" || exit 1; if [ -n "$$shells" ]; then \
+		if command -v shellcheck >/dev/null 2>&1; then echo "· shellcheck $$(echo $$shells)"; shellcheck $$shells || status=1; \
+		elif [ -n "$${CI:-}" ]; then echo "✗ shellcheck is not installed, and CI runs it over every recipe's shell script"; status=1; \
+		else echo "· shellcheck is not installed: the shell scripts were only parsed, by check-recipes"; fi; \
+	fi; exit $$status
 
 check-cookbook: check-render check-lockstep check-links check-recipes check-codegen check-recipe-types
 	@echo "> done: check-cookbook"

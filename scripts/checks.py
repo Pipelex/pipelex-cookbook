@@ -1,4 +1,7 @@
-"""The checks that need no API key, run on every pull request: the pages are fresh, the manifests are in lockstep, and every sample link answers."""
+"""The checks that need no API key, run on every pull request: the pages are fresh, the manifests are in lockstep, and every sample link answers.
+
+The links are read from the packages' inputs, from the pages and from the recipes' own files.
+"""
 
 import re
 from collections.abc import Callable
@@ -9,6 +12,7 @@ import httpx
 from pydantic import BaseModel, ConfigDict, JsonValue
 
 from scripts.cookbook import INPUTS_FILE, Cookbook
+from scripts.recipes import recipe_files
 from scripts.render import RAW_BASE_URL
 
 _RAW_URL_PATTERN = re.compile(r"https://raw\.githubusercontent\.com/[^\s)\"'`<>]+")
@@ -50,22 +54,32 @@ def lockstep_problems(cookbook: Cookbook) -> list[str]:
 
 
 def collect_urls(*, cookbook: Cookbook, rendered: dict[Path, str]) -> dict[str, list[str]]:
-    """Every URL in the packages' inputs, wherever it is hosted, and every raw URL on the pages, each with the files it appears in."""
+    """Every URL in the packages' inputs, wherever it is hosted, and every raw URL on the pages and in the recipes, with the files it is in.
+
+    A recipe's own files are read whatever their kind, since a sample is linked from a README, a script or a CSV alike; a file that is not text,
+    such as an image, holds no link to read.
+    """
     found: dict[str, list[str]] = {}
     for package in cookbook.packages:
         inputs_file = f"{package.directory.relative_to(cookbook.root)}/{INPUTS_FILE}"
         for url in _urls_in_json(package.inputs):
             found.setdefault(url, []).append(inputs_file)
-    for page_path, contents in rendered.items():
-        page_file = str(page_path.relative_to(cookbook.root))
+    texts = dict(rendered)
+    for recipe_file in recipe_files(cookbook.root):
+        try:
+            texts[recipe_file] = recipe_file.read_bytes().decode("utf-8")
+        except UnicodeDecodeError:
+            continue
+    for text_path, contents in texts.items():
+        text_file = str(text_path.relative_to(cookbook.root))
         for match in _RAW_URL_PATTERN.findall(contents):
             # A URL closing a sentence keeps the sentence's punctuation in the match, and no sample's name ends in one.
-            found.setdefault(match.rstrip(_SENTENCE_PUNCTUATION), []).append(page_file)
+            found.setdefault(match.rstrip(_SENTENCE_PUNCTUATION), []).append(text_file)
     return {url: sorted(set(files)) for url, files in sorted(found.items())}
 
 
 def check_links(*, cookbook: Cookbook, rendered: dict[Path, str], fetch_status: Callable[[str], int]) -> list[LinkVerdict]:
-    """Check every sample URL and every raw URL on the pages.
+    """Check every sample URL, and every raw URL on the pages and in the recipes.
 
     A URL into the cookbook itself must name a file this checkout holds, whichever ref it names. When it answers 404, it is reported as not
     published rather than as broken: a file added since the last release is on neither `main` nor that release's tag, and the next release both

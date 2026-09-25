@@ -1,10 +1,22 @@
 import json
 from pathlib import Path
 
-from scripts.recipes import find_trees, python_scripts, recipe_problems, typescript_packages
+import pytest
+
+from scripts.recipes import (
+    RecipeAddress,
+    find_addresses,
+    find_trees,
+    python_scripts,
+    recipe_addresses,
+    recipe_problems,
+    shell_scripts,
+    typescript_packages,
+)
 
 ADDRESS = "github.com/Pipelex/methods/invoice_extraction@v0.1.1"
 SCRIPT_HEADER = '# /// script\n# dependencies = ["pipelex-sdk==0.12.0"]\n# ///\n'
+DPE_ADDRESS = "github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.18.0"
 
 
 def _python_recipe(root: Path, *, address: str = ADDRESS, code_address: str = ADDRESS, header: str = SCRIPT_HEADER) -> Path:
@@ -135,3 +147,89 @@ class TestRecipes:
         (recipe / "package.json").write_text("{not json", encoding="utf-8")
         [problem] = recipe_problems(tmp_path)
         assert problem.startswith("recipes/code/typescript/upload/package.json: must be JSON")
+
+
+def _run_recipe(root: Path, *, readme: str, script: str | None = None) -> Path:
+    """A recipe with no code of its own under `recipes/run/`: a README, and a shell script when one is given."""
+    recipe = root / "recipes" / "run" / "http"
+    recipe.mkdir(parents=True)
+    (recipe / "README.md").write_text(readme, encoding="utf-8")
+    if script is not None:
+        (recipe / "run.sh").write_text(script, encoding="utf-8")
+    return recipe
+
+
+class TestRecipeAddresses:
+    def test_addresses_in_a_readme_a_shell_script_and_a_json_file_are_found(self, tmp_path: Path):
+        recipe = _run_recipe(tmp_path, readme=f"Run `{ADDRESS}` on the invoice.\n", script=f'#!/bin/sh\nMETHOD_REF="{DPE_ADDRESS}"\n')
+        (recipe / "request.json").write_text(f'{{"method_ref": "{DPE_ADDRESS}"}}', encoding="utf-8")
+        assert find_addresses(tmp_path) == [
+            RecipeAddress(address=ADDRESS, file=recipe / "README.md"),
+            RecipeAddress(address=DPE_ADDRESS, file=recipe / "request.json"),
+            RecipeAddress(address=DPE_ADDRESS, file=recipe / "run.sh"),
+        ]
+        assert recipe_problems(tmp_path) == []
+
+    def test_an_address_closing_a_sentence_keeps_its_tag_without_the_full_stop(self, tmp_path: Path):
+        _run_recipe(tmp_path, readme=f"It runs {DPE_ADDRESS}.\n")
+        assert [found.address for found in find_addresses(tmp_path)] == [DPE_ADDRESS]
+        assert recipe_problems(tmp_path) == []
+
+    def test_catalog_ids_repository_links_and_other_hosts_are_not_addresses(self, tmp_path: Path):
+        readme = (
+            "Point every door at `mt_…`, or at mt_ca0aa9d3-61ac-4db1-8b46-fb0cc75787df.\n"
+            "Install [the plugin](https://github.com/Pipelex/pipelex-plugins), read "
+            "https://github.com/Pipelex/methods/tree/v0.1.1/methods/invoice_extraction, and mail noreply@github.com.\n"
+            "https://api.github.com/repos/Pipelex/methods@main is the API, not an address.\n"
+        )
+        _run_recipe(tmp_path, readme=readme)
+        assert find_addresses(tmp_path) == []
+        assert recipe_problems(tmp_path) == []
+
+    @pytest.mark.parametrize("tag", ["main", "beta", "v0.18", "v0.18.0-rc.1"])
+    def test_an_address_without_a_release_tag_is_a_problem(self, tmp_path: Path, tag: str):
+        floating = f"github.com/Pipelex/pipelex-cookbook/extract_dpe@{tag}"
+        _run_recipe(tmp_path, readme=f"Run `{floating}` on the sample.\n")
+        [problem] = recipe_problems(tmp_path)
+        assert problem == (
+            f"recipes/run/http/README.md: {floating!r} is not an address pinned to a release tag (github.com/<owner>/<repo>/<name>@vX.Y.Z)"
+        )
+
+    def test_generated_trees_installed_packages_npm_locks_and_other_files_are_not_read_for_addresses(self, tmp_path: Path):
+        recipe = _python_recipe(tmp_path)
+        floating = "github.com/Pipelex/methods/invoice_extraction@main"
+        (recipe / "generated" / "invoice_extraction" / "README.md").write_text(floating, encoding="utf-8")
+        (recipe / "node_modules" / "some-package").mkdir(parents=True)
+        (recipe / "node_modules" / "some-package" / "README.md").write_text(floating, encoding="utf-8")
+        (recipe / "package-lock.json").write_text(f'{{"note": "{floating}"}}', encoding="utf-8")
+        (recipe / "NOTES.md").write_text(floating, encoding="utf-8")
+        assert find_addresses(tmp_path) == []
+        assert recipe_problems(tmp_path) == []
+
+    def test_the_addresses_to_validate_gather_sidecars_and_files_by_recipe(self, tmp_path: Path):
+        _python_recipe(tmp_path)
+        _run_recipe(tmp_path, readme=f"Run `{ADDRESS}`, or `{DPE_ADDRESS}`.\n", script=f'METHOD_REF="{DPE_ADDRESS}"\n')
+        assert recipe_addresses(tmp_path) == {
+            ADDRESS: ["recipes/code/python/batch", "recipes/run/http"],
+            DPE_ADDRESS: ["recipes/run/http"],
+        }
+
+
+class TestShellScripts:
+    def test_a_shell_script_that_parses_is_clean(self, tmp_path: Path):
+        recipe = _run_recipe(tmp_path, readme="A recipe.\n", script='#!/bin/sh\nset -u\nif [ -n "${1:-}" ]; then echo "$1"; fi\n')
+        assert shell_scripts(tmp_path) == [recipe / "run.sh"]
+        assert recipe_problems(tmp_path) == []
+
+    def test_a_shell_script_that_does_not_parse_is_a_problem(self, tmp_path: Path):
+        _run_recipe(tmp_path, readme="A recipe.\n", script='#!/bin/sh\nif [ -n "$1" ]; then echo started\n')
+        [problem] = recipe_problems(tmp_path)
+        assert problem.startswith("recipes/run/http/run.sh: `sh -n` cannot parse it: ")
+
+    def test_shell_scripts_in_installed_packages_are_left_out(self, tmp_path: Path):
+        recipe = _run_recipe(tmp_path, readme="A recipe.\n")
+        vendored = recipe / "node_modules" / "some-package"
+        vendored.mkdir(parents=True)
+        (vendored / "install.sh").write_text("if then\n", encoding="utf-8")
+        assert shell_scripts(tmp_path) == []
+        assert recipe_problems(tmp_path) == []

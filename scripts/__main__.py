@@ -1,7 +1,8 @@
 """The command line behind the Makefile's cookbook targets: `python -m scripts <command>`.
 
 Offline, needing no key: `render`, `check-render`, `check-lockstep`, `check-links` (which only fetches public sample URLs), `check-recipes`, and
-`recipe-trees`, `recipe-scripts` and `recipe-packages`, which list what the Makefile hands the SDK script and the type checkers.
+`recipe-trees`, `recipe-scripts`, `recipe-packages` and `recipe-shell-scripts`, which list what the Makefile hands the SDK script, the type
+checkers and shellcheck.
 Keyed, calling production with `PIPELEX_API_KEY`: `refresh`, `check-methods`, `check-addresses`.
 """
 
@@ -14,7 +15,7 @@ from scripts.checks import check_links, http_status, lockstep_problems, stale_pa
 from scripts.cookbook import Cookbook, load_cookbook
 from scripts.exceptions import CookbookError
 from scripts.hosted import AddressState, AddressVerdict, check_address, check_pinned_method_ref, client_from_env, validate_packages
-from scripts.recipes import find_trees, python_scripts, recipe_problems, typescript_packages
+from scripts.recipes import find_addresses, find_trees, python_scripts, recipe_addresses, recipe_problems, shell_scripts, typescript_packages
 from scripts.render import render_all, render_pages
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -37,19 +38,24 @@ def main(argv: list[str] | None = None) -> int:
         "recipe-trees": _recipe_trees,
         "recipe-scripts": _recipe_scripts,
         "recipe-packages": _recipe_packages,
+        "recipe-shell-scripts": _recipe_shell_scripts,
     }
     helps = {
         "render": "Write every methods/<name>/README.md from its package and cookbook.toml, and the front page's list of methods",
         "check-render": "Fail when a committed page, or the front page's list of methods, differs from a fresh render",
         "check-lockstep": "Fail when a manifest's version is not the cookbook's",
-        "check-links": "Fetch every sample URL in the packages and every raw URL on the pages",
+        "check-links": "Fetch every sample URL in the packages, and every raw URL on the pages and in the recipes",
         "refresh": "Validate every package on production and write its contract.json (needs PIPELEX_API_KEY)",
         "check-methods": "Validate every package on production from its files, and check its contract snapshot (needs PIPELEX_API_KEY)",
         "check-addresses": "Validate every address on production: each page's at its tag, each recipe's as it pins it (needs PIPELEX_API_KEY)",
-        "check-recipes": "Fail when a recipe's generated tree names no pinned address, or names one its code does not call as a string literal",
+        "check-recipes": (
+            "Fail when a recipe's generated tree names no pinned address, or one its code does not call as a string literal, "
+            "when a recipe names an address without a release tag, or when a recipe's shell script does not parse"
+        ),
         "recipe-trees": "Print every recipe's generated tree, one directory per line",
         "recipe-scripts": "Print every Python recipe script, one per line",
         "recipe-packages": "Print every TypeScript recipe package, one directory per line",
+        "recipe-shell-scripts": "Print every shell script of a recipe, one per line",
     }
     for command_name in commands:
         subparsers.add_parser(command_name, help=helps[command_name])
@@ -150,12 +156,9 @@ def _check_methods(cookbook: Cookbook) -> int:
 def _check_addresses(cookbook: Cookbook) -> int:
     client = client_from_env()
     verdicts = [check_address(client=client, cookbook=cookbook, package=package) for package in cookbook.packages]
-    recipe_addresses: dict[str, list[str]] = {}
-    for tree in find_trees(cookbook.root):
-        if tree.method_ref is not None:
-            recipe_addresses.setdefault(tree.method_ref, []).append(str(tree.recipe_dir.relative_to(cookbook.root)))
     recipe_verdicts = [
-        check_pinned_method_ref(client=client, name=", ".join(recipes), address=address) for address, recipes in sorted(recipe_addresses.items())
+        check_pinned_method_ref(client=client, name=", ".join(recipes), address=address)
+        for address, recipes in recipe_addresses(cookbook.root).items()
     ]
     for verdict in verdicts:
         _print_address_verdict(verdict, where="")
@@ -183,7 +186,12 @@ def _check_recipes(cookbook: Cookbook) -> int:
     if problems:
         return 1
     tree_count = len(find_trees(cookbook.root))
-    print(f"✓ {tree_count} recipe tree(s) name a pinned address their recipe calls, and every recipe declares the SDK and gates its types")
+    address_count = len({found.address for found in find_addresses(cookbook.root)})
+    shell_count = len(shell_scripts(cookbook.root))
+    print(
+        f"✓ {tree_count} recipe tree(s) name a pinned address their recipe calls, and every recipe declares the SDK and gates its types; "
+        f"{address_count} address(es) named in the recipes are pinned to a release tag, and {shell_count} shell script(s) parse"
+    )
     return 0
 
 
@@ -202,6 +210,12 @@ def _recipe_scripts(cookbook: Cookbook) -> int:
 def _recipe_packages(cookbook: Cookbook) -> int:
     for package_dir in typescript_packages(cookbook.root):
         print(package_dir.relative_to(cookbook.root))
+    return 0
+
+
+def _recipe_shell_scripts(cookbook: Cookbook) -> int:
+    for script in shell_scripts(cookbook.root):
+        print(script.relative_to(cookbook.root))
     return 0
 
 

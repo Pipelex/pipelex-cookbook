@@ -1,11 +1,13 @@
 name: Methods check
 
 # The cookbook's checks that need no API key: every method page equals a fresh render, every
-# method manifest carries the cookbook's version, every raw sample link answers (or, for a file
-# of this repository, is at least present here), every recipe's generated types match their lock
-# and the address its code calls, every Python recipe script type-checks in its own
-# environment, and every TypeScript recipe package passes its codegen gate and tsc. The checks that call production need PIPELEX_API_KEY, which CI does not hold:
-# they are `make check-hosted`, run by hand.
+# method manifest carries the cookbook's version, every raw sample link on the pages and in the
+# recipes answers (or, for a file of this repository, is at least present here), every recipe's
+# generated types match their lock and the address its code calls, every address a recipe names
+# is pinned to a release tag, every Python recipe script type-checks in its own environment,
+# every TypeScript recipe package passes its codegen gate and tsc, and every recipe's shell
+# script parses and passes shellcheck, which the runner image carries. The checks that call
+# production need PIPELEX_API_KEY, which CI does not hold: they are `make check-hosted`, run by hand.
 
 on:
   pull_request:
