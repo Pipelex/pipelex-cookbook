@@ -4,6 +4,7 @@
 
 ### Added
 
+- **Recipes to make a method yours**: `recipes/yours/` holds requests to a coding agent with the Pipelex plugin: the document question answering method copied at its tag, changed to answer in the language of the question with `/pipelex-edit`, proven on its sample, saved to the catalog with `/pipelex-catalog`, and run by its new id; and a CV and job-offer match designed from one sentence with `/pipelex-design` and proven by `/pipelex-lab` against answer keys on test documents with planted facts.
 - **App recipes**: `recipes/app/` holds recipes that turn a method into a web app with the method-app template: the energy diagnostic extraction made into an app from its address in one command, built for production, with what a deployment needs, the key as a server secret and an access control in front; and the method library's invoice extraction added to that app as a second tab by its address.
 - **Run recipes**: `recipes/run/` holds recipes that run a method by an address pinned to a release tag, with nothing to build: the research report started by `/pipelex-run` in Claude Code or Codex and followed later, from another session, by its run id alone; and a shell script that reads an energy diagnostic through the hosted API's three calls with `curl`, start, status and results, with an exit status for each outcome, which are the same calls n8n, Zapier or any tool that makes HTTP calls makes.
 - **Python recipes**: `recipes/code/python/` holds recipes that each run a method by an address pinned to a release tag, from one script `uv run` installs and runs, reading the result through types generated from the method: a FastAPI endpoint answering questions from documents, the method library's invoice extraction over every row of a CSV with bounded concurrency, the research report as a CrewAI agent's tool, and a weekly digest that turns a Discord server's messages into an HTML newsletter.
@@ -14,6 +15,7 @@
 ### Changed
 
 - **`make refresh` renders before it generates**: it writes the contract snapshots, then renders the pages and the page snippets' sidecars, then regenerates every recipe's and page snippet's types, so it is the one command to run whenever a bundle changes. `scripts/sdk/recipe_codegen.py` generates a tree from the `.mthds` files its sidecar names as well as from a pinned address.
+- **The pages' "Make it yours" section says where a change goes**: `/pipelex-edit` applies a change that keeps what the method takes and returns, and hands one that changes them to `/pipelex-design`, which is what most pages' suggested change does.
 - **A long sample is fetched rather than written out**: when a method's sample inputs are too long to show, its TypeScript, Python and HTTP snippets fetch them from the method's `inputs.json` at the page's tag, which shrinks the Discord newsletter's page to a fraction of its size.
 
 ## [v0.18.0] - 2026-09-25

@@ -111,7 +111,7 @@ The form and the result view come from the method's contract. `make serve` print
 
 Ask your agent: "Copy github.com/Pipelex/pipelex-cookbook/research_report@v0.18.0 into ./research, research five angles instead of three, prove it on the sample, and save it to my Pipelex account." From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
 
-This is done by hand today: the agent copies the package, changes it with `/pipelex-edit`, proves it with `/pipelex-run`, and saves the directory as a new method with `/pipelex-catalog`. The saved method keeps no record of the address it came from, since no gesture yet saves a published method into your account in one step.
+This is done by hand today: the agent copies the package, changes it with `/pipelex-edit`, which hands a change to what the method takes or returns to `/pipelex-design`, proves it with `/pipelex-run`, and saves the directory as a new method with `/pipelex-catalog`. The saved method keeps no record of the address it came from, since no gesture yet saves a published method into your account in one step.
 
 ## What you get
 
