@@ -34,4 +34,13 @@ Each recipe is a small package calling the method through [`@pipelex/sdk`](https
 | [A run started now and read hours later](code/typescript/durable-run/) | One command that starts a run and exits with its id, and another that reads the result by that id whenever it is ready | [Research report](../methods/research_report/) |
 | [A local file sent through an upload grant](code/typescript/upload-grant/) | An image from this machine sent to storage with a one-time grant, then read by the method by its storage uri | [Gantt chart extraction](../methods/extract_gantt/) |
 
+## Make it an app
+
+These recipes turn a method into a web app whose form and result view come from the method's contract, with the [`webapp-js`](https://github.com/Pipelex/pipelex-method-apps/tree/main/webapp-js#readme) template of `pipelex-method-apps`. Each needs Node.js 22.12 or later and a Pipelex API key, and each run from the app spends credit on your Pipelex account.
+
+| Recipe | What it shows | Method |
+|---|---|---|
+| [From an address to a web app you deploy](app/deployed-app/) | One command from an address to a running app, its production build, and what a deployment needs: the key as a server secret and an access control in front | [Energy diagnostic (DPE) extraction](../methods/extract_dpe/) |
+| [A second method as a second tab](app/second-tab/) | `make add-method` adding a method by its address to that app, which becomes one tab per method, and moving a method to another release | [Invoice extraction](https://github.com/Pipelex/methods/tree/v0.1.1/methods/invoice_extraction), from the method library |
+
 To add one, read [docs/adding-a-recipe.md](../docs/adding-a-recipe.md).
