@@ -2,8 +2,9 @@
 
 Offline, needing no key: `render`, `check-render`, `check-lockstep`, `check-links` (which only fetches public sample URLs), `check-recipes`, and
 `recipe-trees`, `recipe-scripts`, `recipe-packages` and `recipe-shell-scripts`, which list what the Makefile hands the SDK script, the type
-checkers and shellcheck: the recipes' code, and the page snippets `render` writes under `tests/snippets/`. `refresh-library` needs no key
-either: it downloads the method library's tarball at the tag `cookbook.toml` pins and writes `library.json`.
+checkers and shellcheck: the recipes' code, and the page snippets `render` writes under `tests/snippets/`. `refresh-library` and
+`check-library` need no key either: each downloads the method library's tarball at the tag `cookbook.toml` pins, the first to write
+`library.json` and the second to check that it is what that tarball holds.
 Keyed, calling production with `PIPELEX_API_KEY`: `refresh`, `check-methods`, `check-addresses`.
 """
 
@@ -16,7 +17,7 @@ from scripts.checks import check_links, http_status, lockstep_problems, orphan_s
 from scripts.cookbook import Cookbook, load_cookbook
 from scripts.exceptions import CookbookError
 from scripts.hosted import AddressState, AddressVerdict, check_address, check_pinned_method_ref, client_from_env, validate_packages
-from scripts.library import LIBRARY_FILE, download, fetch_library
+from scripts.library import LIBRARY_FILE, download, fetch_library, snapshot_is_current
 from scripts.recipes import (
     find_addresses,
     find_trees,
@@ -42,6 +43,7 @@ def main(argv: list[str] | None = None) -> int:
         "check-render": _check_render,
         "check-lockstep": _check_lockstep,
         "check-links": _check_links,
+        "check-library": _check_library,
         "refresh": _refresh,
         "refresh-library": _refresh_library,
         "check-methods": _check_methods,
@@ -63,6 +65,7 @@ def main(argv: list[str] | None = None) -> int:
         ),
         "check-lockstep": "Fail when a manifest's version is not the cookbook's",
         "check-links": "Fetch every sample URL in the packages, and every raw URL on the pages and in the recipes",
+        "check-library": "Fail when library.json differs from a fresh snapshot of the library's tarball at the tag cookbook.toml pins",
         "refresh": "Validate every package on production and write its contract.json (needs PIPELEX_API_KEY)",
         "refresh-library": "Take the method library's snapshot, library.json, from its tarball at the tag cookbook.toml pins",
         "check-methods": "Validate every package on production from its files, and check its contract snapshot (needs PIPELEX_API_KEY)",
@@ -158,6 +161,16 @@ def _check_links(cookbook: Cookbook) -> int:
         return 1
     print(f"✓ {len(verdicts)} link(s) checked")
     return 0
+
+
+def _check_library(cookbook: Cookbook) -> int:
+    settings = cookbook.settings.library
+    snapshot = cookbook.library
+    if snapshot is not None and snapshot_is_current(snapshot, settings, fetch=download):
+        print(f"✓ {LIBRARY_FILE} is the snapshot of {settings.repository} at {settings.tag}")
+        return 0
+    print(f"✗ {LIBRARY_FILE} differs from a fresh snapshot of {settings.repository} at {settings.tag}: run `make refresh-library`, never edit it")
+    return 1
 
 
 def _refresh(cookbook: Cookbook) -> int:

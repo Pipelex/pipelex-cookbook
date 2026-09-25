@@ -130,6 +130,7 @@ Between the lists, written by hand.
 # The fixture library's snapshot, as `make refresh-library` writes it: two methods, sorted by name.
 LIBRARY_SNAPSHOT = LibrarySnapshot(
     address=LIBRARY_ADDRESS,
+    repository=LIBRARY_REPOSITORY,
     tag=LIBRARY_TAG,
     methods=[
         LibraryMethod(

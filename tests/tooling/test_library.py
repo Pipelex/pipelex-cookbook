@@ -7,7 +7,7 @@ import pytest
 from scripts.checks import stale_pages
 from scripts.cookbook import load_cookbook
 from scripts.exceptions import CookbookLayoutError
-from scripts.library import LibraryMethod, LibrarySettings, fetch_library, load_library, snapshot_from_tarball
+from scripts.library import LibraryMethod, LibrarySettings, fetch_library, load_library, snapshot_from_tarball, snapshot_is_current
 from scripts.render import render_all, render_front_page
 from tests.tooling.test_data import LIBRARY_ADDRESS, LIBRARY_REPOSITORY, LIBRARY_SNAPSHOT, LIBRARY_TAG, MakeCookbook
 
@@ -58,8 +58,7 @@ class TestLibrarySnapshot:
         )
         snapshot = snapshot_from_tarball(data, SETTINGS)
 
-        assert snapshot.address == LIBRARY_ADDRESS
-        assert snapshot.tag == LIBRARY_TAG
+        assert (snapshot.repository, snapshot.address, snapshot.tag) == (LIBRARY_REPOSITORY, LIBRARY_ADDRESS, LIBRARY_TAG)
         assert snapshot.methods == [
             LibraryMethod(
                 name="invoice_extraction", display_name="Invoice Extraction", description="Does one thing.", main_pipe="run_invoice_extraction"
@@ -105,6 +104,20 @@ class TestLibrarySnapshot:
         (tmp_path / "library.json").write_text(LIBRARY_SNAPSHOT.to_json(), encoding="utf-8")
         assert load_library(tmp_path, SETTINGS) == LIBRARY_SNAPSHOT
 
+    def test_a_snapshot_is_current_only_while_it_is_what_the_tarball_holds(self):
+        tarball = _tarball(
+            {
+                f"{TOP_DIR}/methods/invoice_extraction/METHODS.toml": _manifest(name="invoice_extraction"),
+                f"{TOP_DIR}/methods/text_stats/METHODS.toml": _manifest(name="text_stats"),
+            }
+        )
+        taken = snapshot_from_tarball(tarball, SETTINGS)
+        assert snapshot_is_current(taken, SETTINGS, fetch=lambda _: tarball)
+
+        edited_method = taken.methods[0].model_copy(update={"description": "Edited by hand."})
+        edited = taken.model_copy(update={"methods": [edited_method, taken.methods[1]]})
+        assert not snapshot_is_current(edited, SETTINGS, fetch=lambda _: tarball)
+
 
 class TestLibraryInTheCookbook:
     def test_a_snapshot_taken_at_another_tag_fails_loading(self, make_cookbook: MakeCookbook):
@@ -113,8 +126,16 @@ class TestLibraryInTheCookbook:
         cookbook_toml.write_text(cookbook_toml.read_text(encoding="utf-8").replace(f'tag = "{LIBRARY_TAG}"', 'tag = "v0.5.0"'), encoding="utf-8")
         with pytest.raises(
             CookbookLayoutError,
-            match=r"was taken from github.com/Pipelex/methods at v0.4.0, but cookbook.toml pins .* at v0.5.0: run `make refresh-library`",
+            match=r"from Pipelex/methods \(github.com/Pipelex/methods\) at v0.4.0, but cookbook.toml pins .* at v0.5.0: run `make refresh-library`",
         ):
+            load_cookbook(root)
+
+    def test_a_snapshot_taken_from_another_repository_fails_loading(self, make_cookbook: MakeCookbook):
+        root = make_cookbook()
+        cookbook_toml = root / "cookbook.toml"
+        moved = cookbook_toml.read_text(encoding="utf-8").replace(f'repository = "{LIBRARY_REPOSITORY}"', 'repository = "Someone/methods-fork"')
+        cookbook_toml.write_text(moved, encoding="utf-8")
+        with pytest.raises(CookbookLayoutError, match=r"but cookbook.toml pins Someone/methods-fork \(github.com/Pipelex/methods\) at v0.4.0"):
             load_cookbook(root)
 
     def test_a_missing_snapshot_fails_loading_unless_the_command_rewrites_it(self, make_cookbook: MakeCookbook):

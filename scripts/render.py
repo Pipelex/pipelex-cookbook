@@ -25,6 +25,7 @@ from scripts.contract import Contract, ContractField, ContractInput, short_conce
 from scripts.cookbook import INPUTS_FILE, KEY_FILE, METHODS_DIR, SNIPPETS_DIR, Cookbook, MethodPackage
 from scripts.exceptions import CookbookLayoutError
 from scripts.key import KeyLine
+from scripts.library import LIBRARY_METHODS_DIR
 from scripts.recipes import GENERATED_DIR, PYTHON_TARGET, SIDECAR_FILE, TYPESCRIPT_TARGET
 
 PAGE_TEMPLATE = "method_page.md.j2"
@@ -250,7 +251,7 @@ def build_library_context(cookbook: Cookbook) -> LibraryContext:
         methods=[
             LibraryLine(
                 display_name=method.display_name,
-                url=f"{repository_url}/{METHODS_DIR}/{method.name}",
+                url=f"{repository_url}/{LIBRARY_METHODS_DIR}/{method.name}",
                 address=f"{snapshot.address}/{method.name}@{snapshot.tag}",
                 description=_sentence(method.description),
             )

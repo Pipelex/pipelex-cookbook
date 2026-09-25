@@ -3,7 +3,8 @@
 `cookbook.toml`'s `[library]` table pins the library's address, its GitHub repository and a release tag. `make refresh-library` downloads that
 tag's tarball from GitHub, which needs no key and no git, reads every `methods/<name>/METHODS.toml` in it in memory with the MTHDS standard's own
 manifest parser, and writes `library.json` at the root, keeping only what the front page prints. `make render` reads only that snapshot, so the
-front page renders with no network, and loading the cookbook refuses a snapshot taken at another tag or address than the one pinned.
+front page renders with no network, and loading the cookbook refuses a snapshot taken from another repository, address or tag than the one pinned.
+`make check-library` takes the snapshot again and fails when the committed one differs, as a hand edit makes it.
 """
 
 import io
@@ -21,8 +22,9 @@ from scripts.exceptions import CookbookError, CookbookLayoutError
 
 LIBRARY_FILE = "library.json"
 TARBALL_URL = "https://codeload.github.com/{repository}/tar.gz/refs/tags/{tag}"
+# Where the library keeps its packages, `methods/<name>/`, which the front page links each method's directory under.
+LIBRARY_METHODS_DIR = "methods"
 _MANIFEST_FILE = "METHODS.toml"
-_METHODS_DIR = "methods"
 _REFRESH_HINT = "run `make refresh-library` to take the snapshot again"
 
 
@@ -57,11 +59,12 @@ class LibraryMethod(BaseModel):
 
 
 class LibrarySnapshot(BaseModel):
-    """The contents of `library.json`: the library's methods at one tag, sorted by name."""
+    """The contents of `library.json`: the library's methods at one tag of one repository, sorted by name."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     address: str
+    repository: str
     tag: str
     methods: list[LibraryMethod]
 
@@ -70,10 +73,11 @@ class LibrarySnapshot(BaseModel):
 
 
 def load_library(root: Path, settings: LibrarySettings) -> LibrarySnapshot:
-    """Read `library.json`, and hold it to the tag and the address `cookbook.toml` pins.
+    """Read `library.json`, and hold it to the repository, the address and the tag `cookbook.toml` pins.
 
     Raises:
-        CookbookLayoutError: The snapshot is missing or does not load, or it was taken at another tag or address than the one pinned.
+        CookbookLayoutError: The snapshot is missing or does not load, or it was taken from another repository, address or tag than the one
+            pinned.
     """
     path = root / LIBRARY_FILE
     if not path.is_file():
@@ -84,11 +88,10 @@ def load_library(root: Path, settings: LibrarySettings) -> LibrarySnapshot:
     except ValidationError as exc:
         msg = f"{path} does not load, so {_REFRESH_HINT}:\n{exc}"
         raise CookbookLayoutError(msg) from exc
-    if snapshot.tag != settings.tag or snapshot.address != settings.address:
-        msg = (
-            f"{path} was taken from {snapshot.address} at {snapshot.tag}, but cookbook.toml pins {settings.address} at {settings.tag}: "
-            f"{_REFRESH_HINT}"
-        )
+    taken = (snapshot.repository, snapshot.address, snapshot.tag)
+    pinned = (settings.repository, settings.address, settings.tag)
+    if taken != pinned:
+        msg = f"{path} was taken from {_coordinates(*taken)}, but cookbook.toml pins {_coordinates(*pinned)}: {_REFRESH_HINT}"
         raise CookbookLayoutError(msg)
     return snapshot
 
@@ -115,14 +118,21 @@ def snapshot_from_tarball(data: bytes, settings: LibrarySettings) -> LibrarySnap
         msg = f"the tarball of {settings.repository} at {settings.tag} does not open: {exc}"
         raise CookbookLayoutError(msg) from exc
     if not methods:
-        msg = f"the tarball of {settings.repository} at {settings.tag} holds no {_METHODS_DIR}/<name>/{_MANIFEST_FILE}"
+        msg = f"the tarball of {settings.repository} at {settings.tag} holds no {LIBRARY_METHODS_DIR}/<name>/{_MANIFEST_FILE}"
         raise CookbookLayoutError(msg)
-    return LibrarySnapshot(address=settings.address, tag=settings.tag, methods=sorted(methods, key=lambda method: method.name))
+    return LibrarySnapshot(
+        address=settings.address, repository=settings.repository, tag=settings.tag, methods=sorted(methods, key=lambda method: method.name)
+    )
 
 
 def fetch_library(settings: LibrarySettings, *, fetch: Callable[[str], bytes]) -> LibrarySnapshot:
     """Download the library's tarball at the pinned tag with `fetch`, and build its snapshot."""
     return snapshot_from_tarball(fetch(TARBALL_URL.format(repository=settings.repository, tag=settings.tag)), settings)
+
+
+def snapshot_is_current(snapshot: LibrarySnapshot, settings: LibrarySettings, *, fetch: Callable[[str], bytes]) -> bool:
+    """Whether the committed snapshot equals one taken again now from the tarball at the pinned tag, which a hand edit breaks."""
+    return fetch_library(settings, fetch=fetch) == snapshot
 
 
 def download(url: str) -> bytes:
@@ -145,13 +155,13 @@ def download(url: str) -> bytes:
 def _package_name(member: tarfile.TarInfo) -> str | None:
     """The package's name when the member is `<top>/methods/<name>/METHODS.toml`, the layout of a GitHub tarball of the library."""
     parts = PurePosixPath(member.name).parts
-    if member.isfile() and len(parts) == 4 and parts[1] == _METHODS_DIR and parts[3] == _MANIFEST_FILE:
+    if member.isfile() and len(parts) == 4 and parts[1] == LIBRARY_METHODS_DIR and parts[3] == _MANIFEST_FILE:
         return parts[2]
     return None
 
 
 def _library_method(*, name: str, text: str, settings: LibrarySettings) -> LibraryMethod:
-    where = f"{_METHODS_DIR}/{name}/{_MANIFEST_FILE} at {settings.tag}"
+    where = f"{LIBRARY_METHODS_DIR}/{name}/{_MANIFEST_FILE} at {settings.tag}"
     try:
         manifest = parse_methods_toml(text)
     except ManifestError as exc:
@@ -170,3 +180,7 @@ def _library_method(*, name: str, text: str, settings: LibrarySettings) -> Libra
         msg = f"{where} names no main_pipe, so its address runs nothing"
         raise CookbookLayoutError(msg)
     return LibraryMethod(name=name, display_name=manifest.display_name or name, description=manifest.description, main_pipe=manifest.main_pipe)
+
+
+def _coordinates(repository: str, address: str, tag: str) -> str:
+    return f"{repository} ({address}) at {tag}"
