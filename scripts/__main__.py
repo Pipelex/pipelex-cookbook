@@ -1,7 +1,7 @@
 """The command line behind the Makefile's cookbook targets: `python -m scripts <command>`.
 
 Offline, needing no key: `render`, `check-render`, `check-lockstep`, `check-links` (which only fetches public sample URLs), `check-recipes`, and
-`recipe-trees` and `recipe-scripts`, which list what the Makefile hands the SDK script and the type checker.
+`recipe-trees`, `recipe-scripts` and `recipe-packages`, which list what the Makefile hands the SDK script and the type checkers.
 Keyed, calling production with `PIPELEX_API_KEY`: `refresh`, `check-methods`, `check-addresses`.
 """
 
@@ -14,7 +14,7 @@ from scripts.checks import check_links, http_status, lockstep_problems, stale_pa
 from scripts.cookbook import Cookbook, load_cookbook
 from scripts.exceptions import CookbookError
 from scripts.hosted import AddressState, AddressVerdict, check_address, check_pinned_method_ref, client_from_env, validate_packages
-from scripts.recipes import find_trees, python_scripts, recipe_problems
+from scripts.recipes import find_trees, python_scripts, recipe_problems, typescript_packages
 from scripts.render import render_all, render_pages
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -36,6 +36,7 @@ def main(argv: list[str] | None = None) -> int:
         "check-recipes": _check_recipes,
         "recipe-trees": _recipe_trees,
         "recipe-scripts": _recipe_scripts,
+        "recipe-packages": _recipe_packages,
     }
     helps = {
         "render": "Write every methods/<name>/README.md from its package and cookbook.toml, and the front page's list of methods",
@@ -48,6 +49,7 @@ def main(argv: list[str] | None = None) -> int:
         "check-recipes": "Fail when a recipe's generated tree names no pinned address, or names one its code does not call as a string literal",
         "recipe-trees": "Print every recipe's generated tree, one directory per line",
         "recipe-scripts": "Print every Python recipe script, one per line",
+        "recipe-packages": "Print every TypeScript recipe package, one directory per line",
     }
     for command_name in commands:
         subparsers.add_parser(command_name, help=helps[command_name])
@@ -181,7 +183,7 @@ def _check_recipes(cookbook: Cookbook) -> int:
     if problems:
         return 1
     tree_count = len(find_trees(cookbook.root))
-    print(f"✓ {tree_count} recipe tree(s) name a pinned address their recipe calls, and every Python recipe script declares pipelex-sdk")
+    print(f"✓ {tree_count} recipe tree(s) name a pinned address their recipe calls, and every recipe declares the SDK and gates its types")
     return 0
 
 
@@ -194,6 +196,12 @@ def _recipe_trees(cookbook: Cookbook) -> int:
 def _recipe_scripts(cookbook: Cookbook) -> int:
     for script in python_scripts(cookbook.root):
         print(script.relative_to(cookbook.root))
+    return 0
+
+
+def _recipe_packages(cookbook: Cookbook) -> int:
+    for package_dir in typescript_packages(cookbook.root):
+        print(package_dir.relative_to(cookbook.root))
     return 0
 
 

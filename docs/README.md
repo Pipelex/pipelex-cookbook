@@ -75,20 +75,21 @@ The "Takes" and "Returns" lines come from production: `POST /v1/validate` answer
 
 ## The recipes
 
-A recipe is a small project under `recipes/<door>/<name>/`, grouped by the door it shows: `code/` for calling a method from your own code. Each has a `README.md` saying what it shows, what it needs, how to run it and what you get, and calls its method by an address pinned to a release tag, from the cookbook or from the method library, so the method never changes under it. A reader copies one directory and nothing else: a Python recipe is a single script declaring its dependencies inline, which `uv run` reads.
+A recipe is a small project under `recipes/<door>/<name>/`, grouped by the door it shows: `code/` for calling a method from your own code. Each has a `README.md` saying what it shows, what it needs, how to run it and what you get, and calls its method by an address pinned to a release tag, from the cookbook or from the method library, so the method never changes under it. A reader copies one directory and nothing else: a Python recipe is a single script declaring its dependencies inline, which `uv run` reads, and a TypeScript recipe is a small package with its `package.json` and `package-lock.json`, which `npm install` reads.
 
 A code recipe carries the types of the method it calls, generated from that address, in `generated/<method>/`:
 
 | File | What it is |
 |---|---|
-| `models.py` | The method's concepts as pydantic models, stamped by codegen. Never edited by hand |
+| `models.py` | For a Python recipe, the method's concepts as pydantic models, stamped by codegen. Never edited by hand |
+| `types.ts`, `binder.ts` | For a TypeScript recipe, the method's concepts as zod schemas and their types, and a `parse…` function per concept, stamped by codegen. Never edited by hand |
 | `codegen.lock` | The hash of every stamped file and the fingerprint of the method they were generated from |
 | `sources.json` | The pinned address and the codegen target the tree comes from: the one file of the tree a person writes |
-| `__init__.py` | Empty files making the tree importable as `generated.<method>`, which codegen never emits |
+| `__init__.py` | For a Python recipe, empty files making the tree importable as `generated.<method>`, which codegen never emits |
 
-The script imports its types as `generated.<method>.models`, from the directory it runs in. `make refresh` regenerates every tree from its sidecar, through `POST /v1/codegen` with the address, `make check-codegen` checks every tree against its lock with no key, and `make check-codegen-live` asks production whether each lock records the crate its address resolves to today, which catches a sidecar pointed at another address without a regeneration. All three run `scripts/sdk/recipe_codegen.py`, the one piece of the tooling that uses `pipelex-sdk`, in an environment of its own made by `uv run --script`, which needs the network the first time it installs the SDK. Ruff never touches a generated tree, since a reformatted file no longer matches its lock.
+A Python script imports its types as `generated.<method>.models`, from the directory it runs in, and TypeScript code imports them from `generated/<method>/binder` and `types`. `make refresh` regenerates every tree from its sidecar, through `POST /v1/codegen` with the address, `make check-codegen` checks every tree against its lock with no key, and `make check-codegen-live` asks production whether each lock records the crate its address resolves to today, which catches a sidecar pointed at another address without a regeneration. All three run `scripts/sdk/recipe_codegen.py`, the one piece of the tooling that uses `pipelex-sdk`, in an environment of its own made by `uv run --script`, which needs the network the first time it installs the SDK. Ruff never touches a generated tree, since a reformatted file no longer matches its lock.
 
-Each Python recipe script is type-checked by pyright in the environment its own inline dependencies describe, under `recipes/pyrightconfig.json`, in strict mode: the check proves that the recipe calls the SDK as it is, and that it reads the method's result through the types generated from it.
+Each Python recipe script is type-checked by pyright in the environment its own inline dependencies describe, under `recipes/pyrightconfig.json`, in strict mode: the check proves that the recipe calls the SDK as it is, and that it reads the method's result through the types generated from it. Each TypeScript recipe package is installed with `npm ci` from its own lock, then runs its `codegen:check` script, the `pipelex-integrate` skill's `codegen-check.mjs` copied into `scripts/` as it is, which checks each of its trees against their lock with `@pipelex/sdk`, and `tsc --noEmit` under its own strict `tsconfig.json`.
 
 ## The checks
 
@@ -98,9 +99,9 @@ Each Python recipe script is type-checked by pyright in the environment its own 
 | `make check-lockstep` | Nothing | Every manifest carries the cookbook's version |
 | `make check-links` | The network | Every URL in the packages' inputs and every raw URL on the pages answers, following redirects. A URL into this repository must name a file this checkout holds; if it answers 404, it is reported as not published, since the next release publishes it |
 | `make check-methods` | `PIPELEX_API_KEY` | Every package validates on production from its files, and its contract snapshot is current |
-| `make check-recipes` | Nothing | Every directory under a recipe's `generated/` has a sidecar naming an address pinned to a release tag and a target its language reads, the recipe's code calls that same address as a whole string literal, and every Python recipe script declares `pipelex-sdk` |
+| `make check-recipes` | Nothing | Every directory under a recipe's `generated/` has a sidecar naming an address pinned to a release tag and a target its language reads, the recipe's code calls that same address as a whole string literal, every Python recipe script declares `pipelex-sdk`, and every TypeScript recipe's `package.json` depends on `@pipelex/sdk` and has its `codegen:check` script check each of its trees |
 | `make check-codegen` | The network, once, to install `pipelex-sdk` into the script's environment | Every recipe's generated types still match their `codegen.lock`: no file edited, missing or left over |
-| `make check-recipe-types` | The network, to install each script's dependencies | Every Python recipe script type-checks in strict mode, in its own environment |
+| `make check-recipe-types` | The network, to install each recipe's dependencies, and Node.js 22 with npm | Every Python recipe script type-checks in strict mode, in its own environment, and every TypeScript recipe package passes its codegen gate and `tsc --noEmit` |
 | `make check-addresses` | `PIPELEX_API_KEY` | Every page's address validates on production at the page's tag, as a reader running it would reach it, and so does every address a recipe pins. A page's method the tag does not carry yet, or a tag not pushed yet, is reported as not released rather than failed: production answers the first with a 404 whose problem type is `method-package-not-found-error`, and the second with a `MethodFetchError` saying the tag names no git tag. Any other refusal fails, and so does a recipe's address that does not resolve, released or not, since its types were generated from it |
 | `make check-codegen-live` | `PIPELEX_API_KEY` | Every recipe's `codegen.lock` records the crate fingerprint its address resolves to today, as `POST /v1/codegen` reports it |
 | `make refresh` | `PIPELEX_API_KEY` | Rewrites every contract snapshot, and every recipe's generated types, from production |

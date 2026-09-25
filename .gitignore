@@ -47,3 +47,9 @@ telemetry_override.toml
 # Claude AI
 examples/c_advanced/crewai_with_pipelex_tools/outbox.txt
 outbox.txt
+
+# The TypeScript recipes' installed packages and build output
+recipes/**/node_modules/
+recipes/**/.next/
+recipes/**/next-env.d.ts
+recipes/**/*.tsbuildinfo
