@@ -10,7 +10,7 @@ It shows what an app on a published method is made of:
 
 ## What it needs
 
-- Node.js 22.12 or later, `make` and `git`.
+- Node.js 22.12 or later, `make`, `git`, and `lsof`, which `make serve` uses to check the server it starts: macOS ships it, and on Linux it comes from your distribution's packages.
 - A Pipelex API key, from [app.pipelex.com](https://app.pipelex.com), in `PIPELEX_API_KEY`. Creating the app reads the method's contract from the API with it, which spends no credit.
 - Credit on your Pipelex account: each run from the app's form is one run on the hosted API.
 
@@ -22,7 +22,7 @@ npm create @pipelex/method-app@latest dpe-app -- --method github.com/Pipelex/pip
 make -C dpe-app serve
 ```
 
-The first command writes the app into `dpe-app/`, commits the template as it came, and then generates the method's part of it, which it leaves uncommitted for you to read before you commit it. The second starts the development server in the background and prints its URL once the page answers. Open it, drop the [sample DPE](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/assets/extract_dpe/dpe_single_page.pdf) on the form and run it. `make stop` stops the server.
+The first command writes the app into `dpe-app/`, commits the template as it came, and then generates the method's part of it, which it leaves uncommitted for you to read before you commit it. The second starts the development server in the background and prints its URL once the page answers. Open it, drop the [sample DPE](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/assets/extract_dpe/dpe_single_page.pdf) on the form and run it. `make -C dpe-app stop` stops the server.
 
 Your agent does the same with `/pipelex-scaffold` from the Pipelex plugin: ask it to make an app for the address.
 
