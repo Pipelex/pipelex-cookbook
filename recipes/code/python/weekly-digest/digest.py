@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["pipelex-sdk==0.12.0"]
+# dependencies = ["pipelex-sdk==0.12.0", "httpx>=0.24", "pydantic>=2.10.6"]
 # ///
 """Turn a week of a Discord server's messages into an HTML newsletter, and post it where your readers are.
 
@@ -9,7 +9,7 @@ shapes them into the input the cookbook's Discord newsletter method takes, runs 
 the newsletter to newsletter.html. With `DIGEST_WEBHOOK_URL` set, it also posts the HTML there: an email service, a
 CMS, or any endpoint that takes an HTML body.
 
-    uv run digest.py <channel id>...     # needs DISCORD_BOT_TOKEN, a bot invited to the server with Read Message History
+    uv run digest.py <channel id>...     # needs DISCORD_BOT_TOKEN: a bot with the Message Content intent, invited with Read Message History
     uv run digest.py --sample            # the method's own sample week, no Discord needed
 
 `PIPELEX_API_KEY` must be set; each newsletter is one run on the hosted API and spends credit.
@@ -32,6 +32,7 @@ METHOD_REF = "github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.18.0"
 SAMPLE_INPUTS_URL = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/methods/discord_newsletter/inputs.json"
 DISCORD_API = "https://discord.com/api/v10"
 DAYS = 7
+TOO_MANY_REQUESTS = 429
 
 
 # What Discord's API returns, cut down to what the newsletter reads.
@@ -63,21 +64,40 @@ class DiscordApiMessage(BaseModel):
 class DiscordChannel(BaseModel):
     id: str
     name: str
-    position: int = 0
     guild_id: str
+
+
+class RateLimited(BaseModel):
+    """The body of Discord's 429: how many seconds to wait before asking again."""
+
+    retry_after: float
 
 
 MESSAGES = TypeAdapter(list[DiscordApiMessage])
 
 
-async def fetch_channel_update(http: httpx.AsyncClient, channel_id: str, *, since: datetime) -> DiscordChannelUpdate:
-    """One channel's messages since `since`, oldest first, in the shape the method's `DiscordChannelUpdate` declares."""
-    channel = DiscordChannel.model_validate((await http.get(f"/channels/{channel_id}")).raise_for_status().json())
+async def discord_get(http: httpx.AsyncClient, path: str, *, params: dict[str, str | int] | None = None) -> httpx.Response:
+    """GET from Discord's API, waiting out a rate limit as Discord asks rather than failing on it."""
+    while True:
+        response = await http.get(path, params=params)
+        if response.status_code != TOO_MANY_REQUESTS:
+            return response.raise_for_status()
+        wait = RateLimited.model_validate(response.json()).retry_after
+        print(f"rate limited by Discord, waiting {wait:.1f}s", file=sys.stderr)
+        await asyncio.sleep(wait)
+
+
+async def fetch_channel_update(http: httpx.AsyncClient, channel_id: str, *, position: int, since: datetime) -> DiscordChannelUpdate:
+    """One channel's messages since `since`, oldest first, in the shape the method's `DiscordChannelUpdate` declares.
+
+    `position` is where the channel's section goes in the newsletter, which the method orders its sections by.
+    """
+    channel = DiscordChannel.model_validate((await discord_get(http, f"/channels/{channel_id}")).json())
     messages: list[DiscordApiMessage] = []
     before: str | None = None
     while True:
-        params = {"limit": 100} | ({"before": before} if before else {})
-        page = MESSAGES.validate_python((await http.get(f"/channels/{channel_id}/messages", params=params)).raise_for_status().json())
+        params: dict[str, str | int] = {"limit": 100} | ({"before": before} if before else {})
+        page = MESSAGES.validate_python((await discord_get(http, f"/channels/{channel_id}/messages", params=params)).json())
         recent = [message for message in page if message.timestamp >= since]
         messages.extend(recent)
         if len(recent) < len(page) or len(page) < 100:
@@ -85,7 +105,7 @@ async def fetch_channel_update(http: httpx.AsyncClient, channel_id: str, *, sinc
         before = page[-1].id
     return DiscordChannelUpdate(
         name=channel.name,
-        position=channel.position,
+        position=position,
         messages=[
             DiscordMessage(
                 author=message.author.global_name or message.author.username,
@@ -102,7 +122,7 @@ async def fetch_channel_update(http: httpx.AsyncClient, channel_id: str, *, sinc
 async def fetch_week(channel_ids: list[str], *, token: str) -> list[DiscordChannelUpdate]:
     since = datetime.now(UTC) - timedelta(days=DAYS)
     async with httpx.AsyncClient(base_url=DISCORD_API, headers={"Authorization": f"Bot {token}"}) as http:
-        return [await fetch_channel_update(http, channel_id, since=since) for channel_id in channel_ids]
+        return [await fetch_channel_update(http, channel_id, position=index, since=since) for index, channel_id in enumerate(channel_ids)]
 
 
 async def fetch_sample_week() -> list[DiscordChannelUpdate]:
@@ -129,13 +149,18 @@ async def write_newsletter(updates: list[DiscordChannelUpdate]) -> str:
 
 
 async def post(html: str, *, webhook_url: str) -> None:
-    async with httpx.AsyncClient() as http:
-        response = await http.post(webhook_url, content=html, headers={"Content-Type": "text/html; charset=utf-8"})
-        response.raise_for_status()
-    print(f"posted to {webhook_url} (HTTP {response.status_code})", file=sys.stderr)
+    """Post the newsletter to the webhook, never printing its URL: a webhook URL often carries its secret in its path."""
+    try:
+        async with httpx.AsyncClient() as http:
+            response = await http.post(webhook_url, content=html, headers={"Content-Type": "text/html; charset=utf-8"})
+    except httpx.HTTPError as exc:
+        sys.exit(f"the webhook could not be reached ({type(exc).__name__}); the newsletter is saved all the same")
+    if response.is_error:
+        sys.exit(f"the webhook refused the newsletter (HTTP {response.status_code}); it is saved all the same")
+    print(f"posted to DIGEST_WEBHOOK_URL (HTTP {response.status_code})", file=sys.stderr)
 
 
-async def run(channel_ids: list[str], *, sample: bool) -> str:
+async def gather_and_write(channel_ids: list[str], *, sample: bool) -> str:
     if sample:
         updates = await fetch_sample_week()
     else:
@@ -145,10 +170,7 @@ async def run(channel_ids: list[str], *, sample: bool) -> str:
         updates = await fetch_week(channel_ids, token=token)
     message_count = sum(len(update.messages or []) for update in updates)
     print(f"{message_count} message(s) from {len(updates)} channel(s)", file=sys.stderr)
-    html = await write_newsletter(updates)
-    if webhook_url := os.environ.get("DIGEST_WEBHOOK_URL"):
-        await post(html, webhook_url=webhook_url)
-    return html
+    return await write_newsletter(updates)
 
 
 def main() -> None:
@@ -159,9 +181,12 @@ def main() -> None:
     arguments = parser.parse_args()
     if not arguments.sample and not arguments.channel_ids:
         parser.error("name at least one channel id, or pass --sample")
-    html = asyncio.run(run(arguments.channel_ids, sample=arguments.sample))
+    html = asyncio.run(gather_and_write(arguments.channel_ids, sample=arguments.sample))
+    # Saved before it is posted, so a webhook that refuses it loses nothing the run paid for.
     arguments.output.write_text(html, encoding="utf-8")
     print(arguments.output)
+    if webhook_url := os.environ.get("DIGEST_WEBHOOK_URL"):
+        asyncio.run(post(html, webhook_url=webhook_url))
 
 
 if __name__ == "__main__":
