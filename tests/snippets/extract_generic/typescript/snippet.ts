@@ -12,3 +12,21 @@ const result = await client.startAndWaitForResult({
   },
 });
 console.log(result.main_stuff);
+
+// Not on the page: the output read through the types `make refresh` generates from the package's .mthds files into
+// generated/extract_generic/, as the concept the page's "Returns" line names, which loading the cookbook holds to the main
+// pipe's declared output, so tsc fails when the page names a concept those types no longer hold.
+import { parseText } from "./generated/extract_generic/binder";
+
+/** The items of a list output: the SDK documents the envelope {"items": [...]}, while the hosted API answers a bare list today. */
+function listItems(mainStuff: unknown): unknown[] {
+  if (Array.isArray(mainStuff)) {
+    return mainStuff;
+  }
+  if (typeof mainStuff === "object" && mainStuff !== null && "items" in mainStuff && Array.isArray(mainStuff.items)) {
+    return mainStuff.items;
+  }
+  throw new Error('expected a list output, bare or as {"items": [...]}');
+}
+
+const output = listItems(result.main_stuff).map((item) => parseText(item));

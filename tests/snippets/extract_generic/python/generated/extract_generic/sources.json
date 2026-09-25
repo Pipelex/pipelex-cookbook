@@ -1,0 +1,6 @@
+{
+  "comment": "The .mthds files and the codegen target these types are generated from, written by `make render` from the method's package. `make refresh` regenerates the tree from this file, and `make check-codegen` checks it against codegen.lock; never edit this file or a generated one by hand.",
+  "generator": "pipelex-cookbook",
+  "method": { "files": ["methods/extract_generic/bundle.mthds"] },
+  "target": "python-pydantic"
+}

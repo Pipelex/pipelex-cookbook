@@ -7,6 +7,7 @@ from pydantic import JsonValue
 
 from scripts.cookbook import load_cookbook
 from scripts.exceptions import CookbookLayoutError
+from scripts.recipes import find_trees, recipe_problems
 from scripts.render import (
     INLINE_INPUTS_LIMIT,
     python_literal,
@@ -17,10 +18,12 @@ from scripts.render import (
     type_phrase,
     typescript_literal,
 )
-from tests.tooling.test_data import WIDGETS_SAMPLE_URL, MakeCookbook
+from tests.tooling.test_data import WIDGETS_SAMPLE_URL, WORDS_BUNDLE, WORDS_CONTRACT, MakeCookbook
 
 # Each snippet file, by its path under `tests/snippets/<name>/`, with the fence its block has on the page and the prefix of its comment lines.
 SNIPPET_FILES = {"typescript/snippet.ts": ("ts", "//"), "python/snippet.py": ("python", "#")}
+# Each generated tree's sidecar, by its path under `tests/snippets/<name>/`, `{name}` standing for the method's, with the target it names.
+SIDECARS = {"typescript/generated/{name}/sources.json": "ts-zod", "python/generated/{name}/sources.json": "python-pydantic"}
 
 
 def _fenced_block(page: str, *, language: str) -> str:
@@ -28,6 +31,18 @@ def _fenced_block(page: str, *, language: str) -> str:
     blocks: list[str] = re.findall(rf"^```{language}\n(.*?)^```$", page, flags=re.MULTILINE | re.DOTALL)
     [block] = blocks
     return block
+
+
+def _split_snippet(snippet: str, *, block: str) -> tuple[str, str]:
+    """The lines of a snippet file above the page's block and those below it, once the block is found in the file verbatim."""
+    header, found, typed_read = snippet.partition(block)
+    assert found, "the page's snippet is not in the file verbatim"
+    return header, typed_read
+
+
+def _snippet_files(root: Path, name: str) -> tuple[Path, Path]:
+    """The TypeScript and Python snippet files of a method."""
+    return root / "tests" / "snippets" / name / "typescript" / "snippet.ts", root / "tests" / "snippets" / name / "python" / "snippet.py"
 
 
 class TestRender:
@@ -146,13 +161,15 @@ class TestRender:
         assert f"[sample catalogue 1]({first}) · [sample catalogue 2]({second})" in page
         assert f"on {first} and {second}" in page
 
-    def test_each_snippet_file_is_the_pages_snippet_under_comment_lines(self, make_cookbook: MakeCookbook, templates_dir: Path):
+    def test_each_snippet_file_is_the_pages_snippet_under_comment_lines_then_a_typed_read(self, make_cookbook: MakeCookbook, templates_dir: Path):
         root = make_cookbook()
         cookbook = load_cookbook(root)
         pages = render_pages(cookbook=cookbook, templates_dir=templates_dir)
         snippets = render_snippets(cookbook=cookbook, templates_dir=templates_dir)
         assert sorted(snippets) == sorted(
-            root / "tests" / "snippets" / name / relative_path for name in ("count_words", "extract_widgets") for relative_path in SNIPPET_FILES
+            root / "tests" / "snippets" / name / relative_path.format(name=name)
+            for name in ("count_words", "extract_widgets")
+            for relative_path in [*SNIPPET_FILES, *SIDECARS]
         )
         for name in ("count_words", "extract_widgets"):
             page = pages[root / "methods" / name / "README.md"]
@@ -160,10 +177,100 @@ class TestRender:
                 snippet = snippets[root / "tests" / "snippets" / name / relative_path]
                 block = _fenced_block(page, language=language)
                 assert f"github.com/Pipelex/pipelex-cookbook/{name}@v0.9.0" in block
-                assert snippet.endswith(block)
-                header = snippet.removesuffix(block)
+                header, typed_read = _split_snippet(snippet, block=block)
                 assert header.endswith("never edit this file by hand.\n")
                 assert all(line.startswith(comment) for line in header.splitlines())
+                # A blank line, two in Python, sets the typed read apart from the page's snippet.
+                assert typed_read.startswith("\n")
+                assert typed_read.lstrip("\n").startswith(f"{comment} Not on the page: the output read through the types `make refresh` generates")
+                assert block not in typed_read
+
+    def test_the_typed_read_never_reaches_the_page(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        root = make_cookbook()
+        for page in render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir).values():
+            assert "Not on the page" not in page
+            assert "read_output" not in page
+            assert "/binder" not in page
+            assert "RunResults" not in page
+
+    @pytest.mark.parametrize(
+        ("name", "concept"),
+        [("extract_widgets", "WidgetList"), ("count_words", "Text")],
+    )
+    def test_the_typed_read_parses_the_output_concept_the_returns_line_names(
+        self, make_cookbook: MakeCookbook, templates_dir: Path, name: str, concept: str
+    ):
+        root = make_cookbook()
+        cookbook = load_cookbook(root)
+        page = render_pages(cookbook=cookbook, templates_dir=templates_dir)[root / "methods" / name / "README.md"]
+        snippets = render_snippets(cookbook=cookbook, templates_dir=templates_dir)
+        typescript_path, python_path = _snippet_files(root, name)
+
+        assert f"**Returns** a `{concept}`" in page
+        assert snippets[typescript_path].endswith(
+            f'import {{ parse{concept} }} from "./generated/{name}/binder";\n\nconst output = parse{concept}(result.main_stuff);\n'
+        )
+        python = snippets[python_path]
+        assert f"from pipelex_sdk.runs import RunResults\n\nfrom generated.{name}.models import {concept}\n" in python
+        assert python.endswith(
+            f'def read_output(result: RunResults) -> {concept}:\n    """The method returns one `{concept}`."""\n'
+            f"    return {concept}.model_validate(result.main_stuff)\n"
+        )
+        assert "listItems" not in snippets[typescript_path]
+        assert "TypeAdapter" not in python
+
+    @pytest.mark.parametrize(("output", "multiplicity", "item_count"), [("Text[]", "variable", None), ("Text[3]", "fixed", 3)])
+    def test_a_list_output_is_read_as_a_bare_list_or_in_its_envelope(
+        self, make_cookbook: MakeCookbook, templates_dir: Path, output: str, multiplicity: str, item_count: int | None
+    ):
+        root = make_cookbook()
+        package_dir = root / "methods" / "count_words"
+        (package_dir / "bundle.mthds").write_text(WORDS_BUNDLE.replace('output = "Text"', f'output = "{output}"'), encoding="utf-8")
+        contract = WORDS_CONTRACT.model_copy(
+            update={"output": WORDS_CONTRACT.output.model_copy(update={"multiplicity": multiplicity, "item_count": item_count})}
+        )
+        (package_dir / "contract.json").write_text(contract.to_json(), encoding="utf-8")
+        snippets = render_snippets(cookbook=load_cookbook(root), templates_dir=templates_dir)
+        typescript_path, python_path = _snippet_files(root, "count_words")
+
+        typescript = snippets[typescript_path]
+        assert 'import { parseText } from "./generated/count_words/binder";\n' in typescript
+        assert "if (Array.isArray(mainStuff)) {\n    return mainStuff;\n  }\n" in typescript
+        assert '"items" in mainStuff && Array.isArray(mainStuff.items)' in typescript
+        assert typescript.endswith("const output = listItems(result.main_stuff).map((item) => parseText(item));\n")
+        python = snippets[python_path]
+        assert "from pydantic import BaseModel, TypeAdapter\n\nfrom generated.count_words.models import Text\n" in python
+        assert "class TextList(BaseModel):\n" in python
+        assert "    items: list[Text]\n" in python
+        assert "def read_output(result: RunResults) -> list[Text]:\n" in python
+        assert "    output = TypeAdapter[list[Text] | TextList](list[Text] | TextList).validate_python(result.main_stuff)\n" in python
+        assert python.endswith("    return output.items if isinstance(output, TextList) else output\n")
+
+    def test_each_generated_tree_gets_a_sidecar_naming_the_packages_files(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        root = make_cookbook()
+        (root / "methods" / "extract_widgets" / "widgets.mthds").write_text('domain = "widgets"\n', encoding="utf-8")
+        snippets = render_snippets(cookbook=load_cookbook(root), templates_dir=templates_dir)
+        for relative_path, target in SIDECARS.items():
+            sidecar = json.loads(snippets[root / "tests" / "snippets" / "extract_widgets" / relative_path.format(name="extract_widgets")])
+            assert sidecar["generator"] == "pipelex-cookbook"
+            assert sidecar["method"] == {"files": ["methods/extract_widgets/bundle.mthds", "methods/extract_widgets/widgets.mthds"]}
+            assert sidecar["target"] == target
+            assert "`make refresh` regenerates the tree from this file" in sidecar["comment"]
+
+    def test_the_rendered_sidecars_read_cleanly_as_snippet_trees(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        root = make_cookbook()
+        for path, contents in render_all(cookbook=load_cookbook(root), templates_dir=templates_dir).items():
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(contents, encoding="utf-8")
+        (root / "tests" / "snippets" / "package.json").write_text("{}", encoding="utf-8")
+        trees = find_trees(root)
+        assert [(tree.directory.relative_to(root).as_posix(), tree.files, tree.target) for tree in trees] == [
+            ("tests/snippets/count_words/python/generated/count_words", ["methods/count_words/bundle.mthds"], "python-pydantic"),
+            ("tests/snippets/count_words/typescript/generated/count_words", ["methods/count_words/bundle.mthds"], "ts-zod"),
+            ("tests/snippets/extract_widgets/python/generated/extract_widgets", ["methods/extract_widgets/bundle.mthds"], "python-pydantic"),
+            ("tests/snippets/extract_widgets/typescript/generated/extract_widgets", ["methods/extract_widgets/bundle.mthds"], "ts-zod"),
+        ]
+        assert recipe_problems(root) == []
 
     def test_the_python_snippet_file_opens_with_its_inline_dependencies(self, make_cookbook: MakeCookbook, templates_dir: Path):
         root = make_cookbook()
@@ -179,9 +286,13 @@ class TestRender:
             "README.md",
             "methods/count_words/README.md",
             "methods/extract_widgets/README.md",
+            "tests/snippets/count_words/python/generated/count_words/sources.json",
             "tests/snippets/count_words/python/snippet.py",
+            "tests/snippets/count_words/typescript/generated/count_words/sources.json",
             "tests/snippets/count_words/typescript/snippet.ts",
+            "tests/snippets/extract_widgets/python/generated/extract_widgets/sources.json",
             "tests/snippets/extract_widgets/python/snippet.py",
+            "tests/snippets/extract_widgets/typescript/generated/extract_widgets/sources.json",
             "tests/snippets/extract_widgets/typescript/snippet.ts",
         ]
 
@@ -208,14 +319,14 @@ class TestRender:
         if extra_characters:
             assert text not in page
             assert all(fetch in page for fetch in fetches)
-            assert typescript.endswith(_fenced_block(page, language="ts"))
-            assert python.endswith(_fenced_block(page, language="python"))
-            assert '# dependencies = ["pipelex-sdk==0.12.0", "httpx>=0.25"]\n' in python
+            _split_snippet(typescript, block=_fenced_block(page, language="ts"))
+            _split_snippet(python, block=_fenced_block(page, language="python"))
+            assert '# dependencies = ["pipelex-sdk==0.12.0", "httpx>=0.25", "pydantic>=2.10.6"]\n' in python
         else:
             assert page.count(text) == 3
             assert not any(fetch in page for fetch in fetches)
             assert "import httpx" not in python
-            assert '# dependencies = ["pipelex-sdk==0.12.0"]\n' in python
+            assert '# dependencies = ["pipelex-sdk==0.12.0", "pydantic>=2.10.6"]\n' in python
 
     @pytest.mark.parametrize(
         ("inputs", "unchecked"),
@@ -237,9 +348,8 @@ class TestRender:
         python = render_snippets(cookbook=cookbook, templates_dir=templates_dir)[
             root / "tests" / "snippets" / "extract_widgets" / "python" / "snippet.py"
         ]
-        block = _fenced_block(page, language="python")
-        assert python.endswith(block)
-        assert ("\n# pyright: reportArgumentType=false\n" in python.removesuffix(block)) is unchecked
+        header, _ = _split_snippet(python, block=_fenced_block(page, language="python"))
+        assert ("\n# pyright: reportArgumentType=false\n" in header) is unchecked
         assert "pyright" not in page
 
     def test_python_strings_are_quoted_as_ruff_quotes_them(self):

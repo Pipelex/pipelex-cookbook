@@ -12,3 +12,10 @@ const result = await client.startAndWaitForResult({
   },
 });
 console.log(result.main_stuff);
+
+// Not on the page: the output read through the types `make refresh` generates from the package's .mthds files into
+// generated/extract_dpe/, as the concept the page's "Returns" line names, which loading the cookbook holds to the main
+// pipe's declared output, so tsc fails when the page names a concept those types no longer hold.
+import { parseDpe } from "./generated/extract_dpe/binder";
+
+const output = parseDpe(result.main_stuff);

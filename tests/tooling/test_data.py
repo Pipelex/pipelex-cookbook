@@ -21,6 +21,32 @@ yours_dir = "widgets"
 yours_change = "add each widget's price to what it extracts"
 """
 
+# The fixture packages' bundles, each declaring the main pipe and the output its contract snapshot records.
+WIDGETS_BUNDLE = """domain = "widgets"
+main_pipe = "extract_widgets"
+
+[concept]
+CataloguePage = "A page of a widget catalogue"
+Widget = "A widget"
+WidgetList = "Every widget on the page"
+
+[pipe.extract_widgets]
+type = "PipeLLM"
+inputs = { catalogue = "CataloguePage" }
+output = "WidgetList"
+prompt = "List every widget on @catalogue."
+"""
+
+WORDS_BUNDLE = """domain = "words"
+main_pipe = "count_words"
+
+[pipe.count_words]
+type = "PipeLLM"
+inputs = { text = "Text" }
+output = "Text"
+prompt = "Count the words of @text."
+"""
+
 WIDGETS_KEY = """# Key: catalogue
 
 Inputs: one catalogue page listing three widgets.

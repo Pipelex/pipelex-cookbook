@@ -7,7 +7,8 @@ inherits it at the next render.
 
 The page's TypeScript and Python snippets are also written as files, `tests/snippets/<name>/typescript/snippet.ts` and
 `tests/snippets/<name>/python/snippet.py`, from the same templates under `templates/snippets/`, so that what the page shows is what the type
-checkers read.
+checkers read. Each file ends with a typed read of the output the page does not show, through the types generated beside it, and each
+language's generated tree gets its `sources.json` here too, naming the package's `.mthds` files that `make refresh` generates the types from.
 
 The front page, `README.md`, is written by hand except for one region between two markers, which lists every method with its page and its pitch.
 """
@@ -17,16 +18,22 @@ import re
 from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
-from pydantic import BaseModel, ConfigDict, JsonValue
+from pydantic import BaseModel, ConfigDict, Field, JsonValue
 
 from scripts.contract import Contract, ContractField, ContractInput, short_concept
 from scripts.cookbook import INPUTS_FILE, KEY_FILE, METHODS_DIR, SNIPPETS_DIR, Cookbook, MethodPackage
 from scripts.exceptions import CookbookLayoutError
 from scripts.key import KeyLine
+from scripts.recipes import GENERATED_DIR, PYTHON_TARGET, SIDECAR_FILE, TYPESCRIPT_TARGET
 
 PAGE_TEMPLATE = "method_page.md.j2"
 # Each file `make render` writes in a method's `tests/snippets/<name>/`, mapped to the template writing it around the page's snippet.
 SNIPPET_TEMPLATES = {"typescript/snippet.ts": "snippets/file.ts.j2", "python/snippet.py": "snippets/file.py.j2"}
+# The sidecar of each language's generated tree, `tests/snippets/<name>/<language>/generated/<name>/sources.json`, with the codegen target
+# `make refresh` generates the tree for. It names the package's `.mthds` files rather than the page's address, since the page names the last
+# release's tag, which does not hold a method added since.
+SIDECAR_TEMPLATE = "snippets/sources.json.j2"
+SIDECAR_TARGETS = {"typescript": TYPESCRIPT_TARGET, "python": PYTHON_TARGET}
 # The most characters of sample inputs, serialised as JSON, that the code snippets write out. Above it, every snippet fetches the inputs from
 # the method's `inputs.json` at the page's tag instead, since a sample written out in three languages would bury the page's doors.
 INLINE_INPUTS_LIMIT = 4096
@@ -48,6 +55,8 @@ _KIND_NOUNS = {"prose": "text", "list": None}
 # A concept refining the native `Text` carries a single `text` field, which says nothing the concept's own description does not.
 _TEXT_ONLY_FIELDS = ["text"]
 _NATIVE_PREFIX = "native."
+# The output multiplicities that make the main pipe return a list.
+_LIST_MULTIPLICITIES = frozenset({"variable", "fixed"})
 
 _SCALAR_PHRASES = {
     "text": ("text", "texts"),
@@ -86,6 +95,9 @@ class PageContext(BaseModel):
     takes: list[str]
     returns: str
     returns_fields: list[str]
+    output_concept: str = Field(description="The output concept's name without its domain, which the generated types name it by")
+    output_is_list: bool
+    bundle_sources: list[str] = Field(description="The package's `.mthds` files, by their paths from the repository root")
     chatbot: str
     fetches_inputs: bool
     python_inputs_typed: bool
@@ -156,20 +168,27 @@ def render_front_page(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, 
 
 
 def render_snippets(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, str]:
-    """Render every package's TypeScript and Python snippets as files, each the page's own snippet under a header saying where it comes from.
+    """Render every package's TypeScript and Python snippets as files, and the sidecar of each one's generated tree.
+
+    Each snippet file is the page's own snippet under a header saying where it comes from, followed by a typed read of the output that the
+    page does not show. Each sidecar names the package's `.mthds` files and the codegen target its tree is generated for.
 
     Returns:
-        Each snippet file's path, under `tests/snippets/<name>/`, mapped to its rendered contents.
+        Each file's path, under `tests/snippets/<name>/`, mapped to its rendered contents.
 
     Raises:
         CookbookLayoutError: A package has no contract snapshot yet.
     """
     environment = make_environment(templates_dir)
+    sidecar_template = environment.get_template(SIDECAR_TEMPLATE)
     snippets: dict[Path, str] = {}
     for package in cookbook.packages:
         context = build_page_context(cookbook=cookbook, package=package)
+        snippets_dir = cookbook.root / SNIPPETS_DIR / package.name
         for relative_path, template_name in SNIPPET_TEMPLATES.items():
-            snippets[cookbook.root / SNIPPETS_DIR / package.name / relative_path] = environment.get_template(template_name).render(page=context)
+            snippets[snippets_dir / relative_path] = environment.get_template(template_name).render(page=context)
+        for language, target in SIDECAR_TARGETS.items():
+            snippets[snippets_dir / language / GENERATED_DIR / package.name / SIDECAR_FILE] = sidecar_template.render(page=context, target=target)
     return snippets
 
 
@@ -235,6 +254,9 @@ def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageCon
         returns_fields=[]
         if [contract_field.name for contract_field in contract.output.fields] == _TEXT_ONLY_FIELDS
         else [_field_line(contract_field) for contract_field in contract.output.fields],
+        output_concept=short_concept(contract.output.concept),
+        output_is_list=contract.output.multiplicity in _LIST_MULTIPLICITIES,
+        bundle_sources=[f"{METHODS_DIR}/{package.name}/{bundle_file}" for bundle_file in package.bundle_files],
         chatbot=chatbot,
         fetches_inputs=fetches_inputs,
         python_inputs_typed=fetches_inputs or all(_python_sdk_admits(value) for value in snippet_inputs.values()),

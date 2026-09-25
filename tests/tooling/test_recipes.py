@@ -17,6 +17,8 @@ from scripts.recipes import (
 ADDRESS = "github.com/Pipelex/methods/invoice_extraction@v0.1.1"
 SCRIPT_HEADER = '# /// script\n# dependencies = ["pipelex-sdk==0.12.0"]\n# ///\n'
 DPE_ADDRESS = "github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.18.0"
+# The files a page snippet's sidecar names, from the repository root: the `.mthds` files of its method's package.
+SNIPPET_FILES = ["methods/extract_gantt/bundle.mthds", "methods/extract_gantt/charts.mthds"]
 
 
 def _python_recipe(root: Path, *, address: str = ADDRESS, code_address: str = ADDRESS, header: str = SCRIPT_HEADER) -> Path:
@@ -158,12 +160,42 @@ class TestRecipes:
         [problem] = recipe_problems(tmp_path)
         assert problem.startswith("recipes/code/typescript/upload/package.json: must be JSON")
 
+    def test_a_recipe_tree_generated_from_files_is_a_problem(self, tmp_path: Path):
+        recipe = _python_recipe(tmp_path)
+        sidecar = {"method": {"files": ["methods/invoice_extraction/bundle.mthds"]}, "target": "python-pydantic"}
+        (recipe / "generated" / "invoice_extraction" / "sources.json").write_text(json.dumps(sidecar), encoding="utf-8")
+        [problem] = recipe_problems(tmp_path)
+        assert problem == (
+            "recipes/code/python/batch/generated/invoice_extraction/sources.json: "
+            "names files rather than an address, but a recipe's types come from the address its code calls"
+        )
+        assert recipe_addresses(tmp_path) == {}
+
+    @pytest.mark.parametrize(
+        "method",
+        [
+            {"method_ref": ADDRESS, "files": ["methods/invoice_extraction/bundle.mthds"]},
+            {},
+            {"method_ref": None, "files": None},
+        ],
+    )
+    def test_a_sidecar_naming_both_an_address_and_files_or_neither_is_a_problem(self, tmp_path: Path, method: dict[str, object]):
+        recipe = _python_recipe(tmp_path)
+        (recipe / "generated" / "invoice_extraction" / "sources.json").write_text(
+            json.dumps({"method": method, "target": "python-pydantic"}), encoding="utf-8"
+        )
+        [problem] = recipe_problems(tmp_path)
+        assert problem == (
+            "recipes/code/python/batch/generated/invoice_extraction/sources.json: "
+            "must be JSON naming `target` and exactly one of `method.method_ref` and `method.files`"
+        )
+
 
 def _snippets(root: Path, *, with_trees: bool = False) -> Path:
     """The page snippets of one method under `tests/snippets/`, with their shared package, and a generated tree per language if asked.
 
-    Nothing here keeps a recipe's promises: the trees name a floating address the snippets never call, the script declares no SDK, and the
-    package names neither the SDK nor a gate.
+    Nothing here keeps a recipe's promises: the trees name the package's files rather than an address the snippets call, the script
+    declares no SDK, and the package names neither the SDK nor a gate.
     """
     snippets = root / "tests" / "snippets"
     (snippets / "extract_gantt" / "typescript").mkdir(parents=True)
@@ -179,7 +211,7 @@ def _snippets(root: Path, *, with_trees: bool = False) -> Path:
         for language, target in (("typescript", "ts-zod"), ("python", "python-pydantic")):
             tree = snippets / "extract_gantt" / language / "generated" / "extract_gantt"
             tree.mkdir(parents=True)
-            (tree / "sources.json").write_text(json.dumps({"method": {"method_ref": "github.com/Pipelex/x"}, "target": target}), encoding="utf-8")
+            (tree / "sources.json").write_text(json.dumps({"method": {"files": SNIPPET_FILES}, "target": target}), encoding="utf-8")
     return snippets
 
 
@@ -197,6 +229,13 @@ class TestSnippets:
         typescript_tree = trees["extract_gantt/typescript/generated/extract_gantt"]
         assert typescript_tree.recipe_dir == snippets / "extract_gantt" / "typescript"
         assert typescript_tree.package_dir == snippets
+
+    def test_a_snippet_trees_sidecar_naming_its_packages_files_is_read(self, tmp_path: Path):
+        _snippets(tmp_path, with_trees=True)
+        assert [(tree.method_ref, tree.files, tree.target, tree.sidecar_problem) for tree in find_trees(tmp_path)] == [
+            (None, SNIPPET_FILES, "python-pydantic", None),
+            (None, SNIPPET_FILES, "ts-zod", None),
+        ]
 
     def test_the_rules_only_a_recipe_needs_do_not_fire_on_snippets(self, tmp_path: Path):
         _snippets(tmp_path, with_trees=True)

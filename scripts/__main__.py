@@ -162,7 +162,7 @@ def _refresh(cookbook: Cookbook) -> int:
         print(f"{'· unchanged' if previous == contents else '✎ wrote'} {contract_path.relative_to(cookbook.root)}")
     if failed:
         return 1
-    print("Run `make render` next, so the pages carry the refreshed contracts.")
+    print("Render next, as `make refresh` does, so the pages carry the refreshed contracts.")
     return 0
 
 

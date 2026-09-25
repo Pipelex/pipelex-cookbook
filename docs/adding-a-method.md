@@ -37,19 +37,19 @@ Write it from the sample, before the method runs on it, so that the run is score
 
 With `PIPELEX_API_KEY` set:
 
-1. `make refresh` validates every package on production from its files and writes each `contract.json`. A package that is not valid prints the verdict and keeps its old snapshot.
+1. `make refresh` validates every package on production from its files and writes each `contract.json`, then renders, which writes the page and the sidecars of its snippets' generated trees, then generates those trees' types from the package's files. A package that is not valid prints the verdict and keeps its old snapshot, and the refresh stops before rendering. Run `make refresh` again whenever a bundle changes, since `make check-codegen-live` compares the snippets' types with what the package's files make.
 2. Run the method once on its sample, from its files, for instance with `/pipelex-run` on the package directory or through the Pipelex MCP. A run spends inference, so it is started by hand, once.
 3. Score the output against the key. When the pass bar is not met, fix the method, not the key, and run it again.
 
 ## 4. Give it its page
 
 1. Add an entry to `cookbook.toml` under `[methods.<name>]` with the title, the pitch, the sample's link text, the chatbot sentence and the "Make it yours" change. Every field is optional.
-2. `make render` writes `methods/<name>/README.md`, and the page's TypeScript and Python snippets as files under `tests/snippets/<name>/`. Read the page as a reader would, and commit the snippet files with it.
+2. `make render` writes `methods/<name>/README.md`, and the page's TypeScript and Python snippets as files under `tests/snippets/<name>/`, each reading the output through the types `make refresh` generated beside it. Read the page as a reader would, and commit everything under `tests/snippets/<name>/` with it, generated types included.
 
 ## 5. Check and open the pull request
 
 1. `make agent-check` and `make agent-test`: the linters, the page freshness, the lockstep versions and the tests.
-2. `make check-recipe-types`, which type-checks the page's snippet files against the SDK, each in its own environment.
+2. `make check-recipe-types`, which type-checks the page's snippet files against the SDK and the method's generated types, each in its own environment.
 3. `make check-hosted`, by hand, since CI holds no key.
 4. An entry in `CHANGELOG.md` under `## [Unreleased]`.
 

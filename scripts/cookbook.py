@@ -2,7 +2,8 @@
 
 A package is a directory holding a `METHODS.toml` manifest, its `.mthds` bundles, a sample `inputs.json`, an answer key `key.md`, and the contract
 snapshot `contract.json` that `make refresh` writes. Loading checks the package's identity: its manifest's `name` is its directory's name and its
-`address` is the cookbook's, since the runtime locates a package by that pair and never by its path.
+`address` is the cookbook's, since the runtime locates a package by that pair and never by its path. It also holds the contract snapshot to the
+package's files: the main pipe, its output concept and its multiplicity must be what the `.mthds` files declare.
 """
 
 import json
@@ -15,6 +16,7 @@ from mthds.package.manifest.parser import parse_methods_toml
 from mthds.package.manifest.schema import MethodsManifest
 from pydantic import BaseModel, ConfigDict, Field, JsonValue, ValidationError
 
+from scripts.bundles import DeclaredOutput, declared_main_output
 from scripts.contract import CONTRACT_FILE, Contract, load_contract
 from scripts.exceptions import CookbookLayoutError
 from scripts.key import AnswerKey, parse_key
@@ -183,6 +185,12 @@ def _load_package(*, directory: Path, settings: CookbookSettings, read_contract:
     key = parse_key(key_path.read_text(encoding="utf-8"), source=str(key_path))
     contract_path = directory / CONTRACT_FILE
     contract = load_contract(contract_path) if read_contract and contract_path.is_file() else None
+    if contract is not None:
+        _check_contract_against_bundles(
+            contract=contract,
+            contract_path=contract_path,
+            declared=declared_main_output(bundle_paths=[directory / bundle_file for bundle_file in bundle_files], main_pipe=manifest.main_pipe),
+        )
 
     return MethodPackage(
         directory=directory,
@@ -193,6 +201,35 @@ def _load_package(*, directory: Path, settings: CookbookSettings, read_contract:
         contract=contract,
         editorial=settings.methods.get(directory.name) or EditorialEntry(),
     )
+
+
+def _check_contract_against_bundles(*, contract: Contract, contract_path: Path, declared: DeclaredOutput) -> None:
+    """Refuse a snapshot whose main pipe, output concept or multiplicity is not what the package's `.mthds` files declare.
+
+    Raises:
+        CookbookLayoutError: The snapshot and the files disagree, which means a bundle changed without `make refresh`.
+    """
+    recorded = DeclaredOutput(
+        pipe=contract.pipe,
+        concept=contract.output.concept,
+        multiplicity=contract.output.multiplicity,
+        item_count=contract.output.item_count,
+    )
+    if recorded != declared:
+        msg = (
+            f"{contract_path} says the main pipe `{recorded.pipe}` returns {_phrase_output(recorded)}, "
+            f"but the package's .mthds files declare `{declared.pipe}` returning {_phrase_output(declared)}: "
+            "run `make refresh` to take the contract again"
+        )
+        raise CookbookLayoutError(msg)
+
+
+def _phrase_output(output: DeclaredOutput) -> str:
+    if output.multiplicity == "single":
+        return f"one `{output.concept}`"
+    if output.item_count is not None:
+        return f"a list of {output.item_count} `{output.concept}`"
+    return f"a list of `{output.concept}`"
 
 
 def _load_inputs(path: Path) -> dict[str, JsonValue]:
