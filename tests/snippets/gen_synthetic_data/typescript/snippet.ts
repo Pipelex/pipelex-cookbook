@@ -17,7 +17,8 @@ const result = await client.startAndWaitForResult({
 console.log(result.main_stuff);
 
 // Not on the page: the output read through the types `make refresh` generates from the package's .mthds files into
-// generated/gen_synthetic_data/, so that tsc holds the page's call to the concept its "Returns" line names.
+// generated/gen_synthetic_data/, as the concept the page's "Returns" line names, which loading the cookbook holds to the main
+// pipe's declared output, so tsc fails when the page names a concept those types no longer hold.
 import { parseSample } from "./generated/gen_synthetic_data/binder";
 
 /** The items of a list output: the SDK documents the envelope {"items": [...]}, while the hosted API answers a bare list today. */

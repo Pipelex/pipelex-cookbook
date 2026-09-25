@@ -24,7 +24,8 @@ asyncio.run(main())
 
 
 # Not on the page: the output read through the types `make refresh` generates from the package's .mthds files into
-# generated/discord_newsletter/, so that the type checker holds the page's call to the concept its "Returns" line names.
+# generated/discord_newsletter/, as the concept the page's "Returns" line names, which loading the cookbook holds to the main
+# pipe's declared output, so the type checker fails when the page names a concept those types no longer hold.
 from pipelex_sdk.runs import RunResults
 
 from generated.discord_newsletter.models import HtmlNewsletter

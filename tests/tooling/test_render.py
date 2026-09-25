@@ -18,7 +18,7 @@ from scripts.render import (
     type_phrase,
     typescript_literal,
 )
-from tests.tooling.test_data import WIDGETS_SAMPLE_URL, WORDS_CONTRACT, MakeCookbook
+from tests.tooling.test_data import WIDGETS_SAMPLE_URL, WORDS_BUNDLE, WORDS_CONTRACT, MakeCookbook
 
 # Each snippet file, by its path under `tests/snippets/<name>/`, with the fence its block has on the page and the prefix of its comment lines.
 SNIPPET_FILES = {"typescript/snippet.ts": ("ts", "//"), "python/snippet.py": ("python", "#")}
@@ -219,11 +219,17 @@ class TestRender:
         assert "listItems" not in snippets[typescript_path]
         assert "TypeAdapter" not in python
 
-    @pytest.mark.parametrize("multiplicity", ["variable", "fixed"])
-    def test_a_list_output_is_read_as_a_bare_list_or_in_its_envelope(self, make_cookbook: MakeCookbook, templates_dir: Path, multiplicity: str):
+    @pytest.mark.parametrize(("output", "multiplicity", "item_count"), [("Text[]", "variable", None), ("Text[3]", "fixed", 3)])
+    def test_a_list_output_is_read_as_a_bare_list_or_in_its_envelope(
+        self, make_cookbook: MakeCookbook, templates_dir: Path, output: str, multiplicity: str, item_count: int | None
+    ):
         root = make_cookbook()
-        contract = WORDS_CONTRACT.model_copy(update={"output": WORDS_CONTRACT.output.model_copy(update={"multiplicity": multiplicity})})
-        (root / "methods" / "count_words" / "contract.json").write_text(contract.to_json(), encoding="utf-8")
+        package_dir = root / "methods" / "count_words"
+        (package_dir / "bundle.mthds").write_text(WORDS_BUNDLE.replace('output = "Text"', f'output = "{output}"'), encoding="utf-8")
+        contract = WORDS_CONTRACT.model_copy(
+            update={"output": WORDS_CONTRACT.output.model_copy(update={"multiplicity": multiplicity, "item_count": item_count})}
+        )
+        (package_dir / "contract.json").write_text(contract.to_json(), encoding="utf-8")
         snippets = render_snippets(cookbook=load_cookbook(root), templates_dir=templates_dir)
         typescript_path, python_path = _snippet_files(root, "count_words")
 

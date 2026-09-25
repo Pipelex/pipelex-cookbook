@@ -26,7 +26,8 @@ asyncio.run(main())
 
 
 # Not on the page: the output read through the types `make refresh` generates from the package's .mthds files into
-# generated/research_report/, so that the type checker holds the page's call to the concept its "Returns" line names.
+# generated/research_report/, as the concept the page's "Returns" line names, which loading the cookbook holds to the main
+# pipe's declared output, so the type checker fails when the page names a concept those types no longer hold.
 from pipelex_sdk.runs import RunResults
 
 from generated.research_report.models import FormattedReport
