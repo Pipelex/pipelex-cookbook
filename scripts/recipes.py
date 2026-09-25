@@ -18,16 +18,19 @@ sidecar's is; `make check-addresses` validates them with the sidecars' addresses
 
 The page snippets `make render` writes under `tests/snippets/` are code of the same kinds, a Python script per page and one TypeScript
 package for them all, so the finders of trees, scripts and packages read them too, and `make check-recipe-types` type-checks them with
-the recipes. The rules only a recipe needs stay with the recipes: its tree's address, the literal its code calls, the SDK its script
-declares and the gate its package runs, since `make check-render` holds each snippet to its page instead.
+the recipes. A snippet's tree comes from its method's `.mthds` files rather than from an address, so its sidecar, which `make render`
+writes, names `method.files` where a recipe's names `method.method_ref`. The rules only a recipe needs stay with the recipes: its tree's
+address, the literal its code calls, the SDK its script declares and the gate its package runs, since `make check-render` holds each
+snippet and its sidecars to its page and its package instead.
 """
 
 import os
 import re
 import subprocess
 from pathlib import Path, PurePosixPath
+from typing import Self
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
 from scripts.cookbook import SNIPPETS_DIR
 
@@ -62,11 +65,21 @@ _TAG_TRAILING_PUNCTUATION = "."
 
 
 class SidecarMethod(BaseModel):
-    method_ref: str
+    """What the types come from: a recipe's pinned address, or the `.mthds` files of a page snippet's package, never both."""
+
+    method_ref: str | None = None
+    files: list[str] | None = None
+
+    @model_validator(mode="after")
+    def _names_one_source(self) -> Self:
+        if (self.method_ref is None) == (self.files is None):
+            msg = "`method` must name exactly one of `method_ref` and `files`"
+            raise ValueError(msg)
+        return self
 
 
 class Sidecar(BaseModel):
-    """The part of a tree's `sources.json` the tooling reads: the address the types come from and the codegen target."""
+    """The part of a tree's `sources.json` the tooling reads: what the types come from and the codegen target."""
 
     method: SidecarMethod
     target: str
@@ -98,7 +111,8 @@ class RecipeTree(BaseModel):
     package_dir: Path | None = Field(
         default=None, description="The nearest directory at or above the tree holding a `package.json`, which type-checks a TypeScript tree"
     )
-    method_ref: str | None
+    method_ref: str | None = Field(description="The address a recipe's sidecar names, or None for one naming files or one not read")
+    files: list[str] | None = Field(default=None, description="The `.mthds` files a page snippet's sidecar names, from the repository root")
     target: str | None
     sidecar_problem: str | None = None
 
@@ -196,11 +210,13 @@ def recipe_problems(root: Path) -> list[str]:
     trees = find_trees(root)
     for tree in trees:
         where = tree.directory.relative_to(root)
-        if tree.method_ref is None or tree.target is None:
+        if tree.sidecar_problem is not None or tree.target is None:
             problems.append(f"{where}/{SIDECAR_FILE}: {tree.sidecar_problem}")
             continue
         is_recipe = in_recipes(tree.directory, root=root)
-        if is_recipe and not _PINNED_ADDRESS.match(tree.method_ref):
+        if is_recipe and tree.method_ref is None:
+            problems.append(f"{where}/{SIDECAR_FILE}: names files rather than an address, but a recipe's types come from the address its code calls")
+        elif is_recipe and tree.method_ref is not None and not _PINNED_ADDRESS.match(tree.method_ref):
             problems.append(f"{where}/{SIDECAR_FILE}: {tree.method_ref!r} {_NOT_PINNED}")
         if tree.target not in TARGET_MARKERS:
             problems.append(f"{where}/{SIDECAR_FILE}: target {tree.target!r} is none of {', '.join(sorted(TARGET_MARKERS))}")
@@ -208,7 +224,11 @@ def recipe_problems(root: Path) -> list[str]:
             # A TypeScript tree is read by the nearest package at or above it, a Python tree by a script beside its `generated/`.
             place = f"{tree.recipe_dir.relative_to(root)}{' or above it' if tree.target == TYPESCRIPT_TARGET else ''}"
             problems.append(f"{where}: target {tree.target} needs {TARGET_MARKERS[tree.target]} in {place}")
-        if is_recipe and not any(_names_address(code, address=tree.method_ref) for code in _recipe_code(_code_dir(tree))):
+        if (
+            is_recipe
+            and tree.method_ref is not None
+            and not any(_names_address(code, address=tree.method_ref) for code in _recipe_code(_code_dir(tree)))
+        ):
             problems.append(
                 f"{where}: the recipe's code never names {tree.method_ref} as a string, so its types may describe another method than it calls"
             )
@@ -272,10 +292,15 @@ def _read_tree(directory: Path, *, code_root: Path) -> RecipeTree:
     try:
         sidecar = Sidecar.model_validate_json(sidecar_path.read_text(encoding="utf-8"))
     except ValidationError:
-        problem = "must be JSON naming `method.method_ref` and `target`"
+        problem = "must be JSON naming `target` and exactly one of `method.method_ref` and `method.files`"
         return _unread_tree(recipe_dir=recipe_dir, directory=directory, package_dir=package_dir, problem=problem)
     return RecipeTree(
-        recipe_dir=recipe_dir, directory=directory, package_dir=package_dir, method_ref=sidecar.method.method_ref, target=sidecar.target
+        recipe_dir=recipe_dir,
+        directory=directory,
+        package_dir=package_dir,
+        method_ref=sidecar.method.method_ref,
+        files=sidecar.method.files,
+        target=sidecar.target,
     )
 
 
