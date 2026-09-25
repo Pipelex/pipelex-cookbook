@@ -3,7 +3,7 @@ import pytest
 
 from scripts.cookbook import load_cookbook
 from scripts.exceptions import HostedApiError
-from scripts.hosted import AddressState, HostedClient, check_address, check_method_ref
+from scripts.hosted import AddressState, HostedClient, check_address, check_method_ref, check_pinned_method_ref
 from tests.tooling.test_data import MakeCookbook
 
 # The problem details production answered on 2026-09-25, cut down to what the address check reads.
@@ -75,6 +75,16 @@ class TestHosted:
         verdict = check_method_ref(client=_client(), name="recipes/code/python/csv-batch", address=address)
         assert (verdict.name, verdict.address, verdict.state) == ("recipes/code/python/csv-batch", address, AddressState.VALID)
         assert requests[0]["method_ref"] == address
+
+    @pytest.mark.parametrize(("status", "body"), [(404, PACKAGE_NOT_FOUND), (422, NO_SUCH_TAG)], ids=["package-not-at-the-tag", "no-such-tag"])
+    def test_a_recipe_address_that_does_not_resolve_fails_rather_than_waiting_for_a_release(
+        self, monkeypatch: pytest.MonkeyPatch, status: int, body: dict[str, object]
+    ):
+        _answering(monkeypatch, status=status, body=body)
+        address = "github.com/Pipelex/methods/invoice_extraction@v0.1.99"
+        verdict = check_pinned_method_ref(client=_client(), name="recipes/code/python/csv-batch", address=address)
+        assert verdict.state is AddressState.FAILED
+        assert verdict.report == body["detail"]
 
     @pytest.mark.parametrize(
         ("status", "body", "expected"),

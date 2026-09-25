@@ -13,7 +13,7 @@ from pathlib import Path
 from scripts.checks import check_links, http_status, lockstep_problems, stale_pages
 from scripts.cookbook import Cookbook, load_cookbook
 from scripts.exceptions import CookbookError
-from scripts.hosted import AddressState, AddressVerdict, check_address, check_method_ref, client_from_env, validate_packages
+from scripts.hosted import AddressState, AddressVerdict, check_address, check_pinned_method_ref, client_from_env, validate_packages
 from scripts.recipes import find_trees, python_scripts, recipe_problems
 from scripts.render import render_all, render_pages
 
@@ -44,8 +44,8 @@ def main(argv: list[str] | None = None) -> int:
         "check-links": "Fetch every sample URL in the packages and every raw URL on the pages",
         "refresh": "Validate every package on production and write its contract.json (needs PIPELEX_API_KEY)",
         "check-methods": "Validate every package on production from its files, and check its contract snapshot (needs PIPELEX_API_KEY)",
-        "check-addresses": "Validate every address on production, each page's at its tag and each recipe's as pinned (needs PIPELEX_API_KEY)",
-        "check-recipes": "Fail when a recipe's generated tree names no pinned address, or names one its code does not call",
+        "check-addresses": "Validate every address on production: each page's at its tag, each recipe's as it pins it (needs PIPELEX_API_KEY)",
+        "check-recipes": "Fail when a recipe's generated tree names no pinned address, or names one its code does not call as a string literal",
         "recipe-trees": "Print every recipe's generated tree, one directory per line",
         "recipe-scripts": "Print every Python recipe script, one per line",
     }
@@ -153,7 +153,7 @@ def _check_addresses(cookbook: Cookbook) -> int:
         if tree.method_ref is not None:
             recipe_addresses.setdefault(tree.method_ref, []).append(str(tree.recipe_dir.relative_to(cookbook.root)))
     recipe_verdicts = [
-        check_method_ref(client=client, name=", ".join(recipes), address=address) for address, recipes in sorted(recipe_addresses.items())
+        check_pinned_method_ref(client=client, name=", ".join(recipes), address=address) for address, recipes in sorted(recipe_addresses.items())
     ]
     for verdict in verdicts:
         _print_address_verdict(verdict, where="")

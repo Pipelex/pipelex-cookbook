@@ -6,8 +6,9 @@ a `sources.json` naming the address and the codegen target they come from. `make
 (`scripts/sdk/recipe_codegen.py`, which runs beside `pipelex-sdk`), and this module is what the rest of the tooling reads a tree from.
 
 The offline checks here hold each tree to its recipe: the sidecar names an address pinned to a tag and a target the recipe's language
-reads, the recipe's own code calls that same address, and a Python recipe script declares `pipelex-sdk` among its inline dependencies.
-Whether the types still match their lock is the SDK's check, and whether the address resolves is `make check-addresses`.
+reads, the recipe's own code calls that same address as a whole string literal, and a Python recipe script declares `pipelex-sdk` among
+its inline dependencies. Whether the types still match their lock is the SDK's check, whether the lock comes from what the address
+resolves to is `make check-codegen-live`, and whether the address resolves is `make check-addresses`.
 """
 
 import re
@@ -54,16 +55,19 @@ class RecipeTree(BaseModel):
 
 
 def find_trees(root: Path) -> list[RecipeTree]:
-    """Every directory under a recipe's `generated/` holding a `codegen.lock` or a `sources.json`, with its sidecar read."""
+    """Every directory directly under a recipe's `generated/`, with its sidecar read.
+
+    A tree is found by where it is, not by the files it should hold, so a tree that lost its sidecar and its lock is still found and
+    reported rather than skipped.
+    """
     recipes_root = root / RECIPES_DIR
     if not recipes_root.is_dir():
         return []
     tree_dirs: set[Path] = set()
-    for marker in ("codegen.lock", SIDECAR_FILE):
-        for path in recipes_root.rglob(marker):
-            if _is_skipped(path, root=recipes_root) or path.parent.parent.name != GENERATED_DIR:
-                continue
-            tree_dirs.add(path.parent)
+    for generated_dir in recipes_root.rglob(GENERATED_DIR):
+        if not generated_dir.is_dir() or _is_skipped(generated_dir, root=recipes_root):
+            continue
+        tree_dirs.update(child for child in generated_dir.iterdir() if child.is_dir() and child.name not in _SKIPPED_DIRS)
     return [_read_tree(directory) for directory in sorted(tree_dirs)]
 
 
@@ -95,8 +99,10 @@ def recipe_problems(root: Path) -> list[str]:
             problems.append(f"{where}/{SIDECAR_FILE}: target {tree.target!r} is none of {', '.join(sorted(TARGET_MARKERS))}")
         elif not _recipe_reads(tree.recipe_dir, target=tree.target):
             problems.append(f"{where}: target {tree.target} needs {TARGET_MARKERS[tree.target]} in {tree.recipe_dir.relative_to(root)}")
-        if not any(tree.method_ref in code for code in _recipe_code(tree.recipe_dir)):
-            problems.append(f"{where}: the recipe's code never names {tree.method_ref}, so its types may describe another method than it calls")
+        if not any(_names_address(code, address=tree.method_ref) for code in _recipe_code(tree.recipe_dir)):
+            problems.append(
+                f"{where}: the recipe's code never names {tree.method_ref} as a string, so its types may describe another method than it calls"
+            )
     for script in python_scripts(root):
         block = _script_block(script) or ""
         if SDK_DEPENDENCY not in block:
@@ -140,6 +146,11 @@ def _recipe_code(recipe_dir: Path) -> list[str]:
 
 def _is_own_generated_or_skipped(path: Path, *, recipe_dir: Path) -> bool:
     return _is_skipped(path, root=recipe_dir) or GENERATED_DIR in path.relative_to(recipe_dir).parts
+
+
+def _names_address(code: str, *, address: str) -> bool:
+    """Whether the code holds the address as a whole string literal: `@v0.1.1` does not name `@v0.1.10`, nor does a mention in prose."""
+    return re.search(rf"""(["'`]){re.escape(address)}\1""", code) is not None
 
 
 def _recipe_reads(recipe_dir: Path, *, target: str) -> bool:

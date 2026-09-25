@@ -160,6 +160,16 @@ def check_method_ref(*, client: HostedClient, name: str, address: str) -> Addres
     return AddressVerdict(name=name, address=address, state=state, report=report)
 
 
+def check_pinned_method_ref(*, client: HostedClient, name: str, address: str) -> AddressVerdict:
+    """Validate an address a recipe calls, which must resolve today: its types were generated from it, so unreleased is a failure."""
+    verdict = check_method_ref(client=client, name=name, address=address)
+    match verdict.state:
+        case AddressState.UNRELEASED:
+            return verdict.model_copy(update={"state": AddressState.FAILED})
+        case AddressState.VALID | AddressState.FAILED:
+            return verdict
+
+
 def _is_unreleased(error: HostedApiError) -> bool:
     problem_type = str(error.problem.get("type") or "")
     if error.status_code == 404 and _PACKAGE_NOT_FOUND_TYPE in problem_type:

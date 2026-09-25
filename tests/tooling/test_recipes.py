@@ -40,6 +40,27 @@ class TestRecipes:
         [problem] = recipe_problems(tmp_path)
         assert f"never names {ADDRESS}" in problem
 
+    def test_code_naming_another_release_of_the_address_is_a_problem(self, tmp_path: Path):
+        _python_recipe(tmp_path, code_address=f"{ADDRESS}0")
+        [problem] = recipe_problems(tmp_path)
+        assert f"never names {ADDRESS}" in problem
+
+    def test_an_address_named_only_in_prose_is_a_problem(self, tmp_path: Path):
+        recipe = _python_recipe(tmp_path)
+        (recipe / "batch.py").write_text(f"{SCRIPT_HEADER}# Calls {ADDRESS} by its address.\nMETHOD_REF = 'somewhere else'\n", encoding="utf-8")
+        [problem] = recipe_problems(tmp_path)
+        assert f"never names {ADDRESS}" in problem
+
+    def test_a_tree_that_lost_its_sidecar_and_its_lock_is_still_found(self, tmp_path: Path):
+        recipe = _python_recipe(tmp_path)
+        tree = recipe / "generated" / "invoice_extraction"
+        (tree / "sources.json").unlink()
+        (tree / "codegen.lock").unlink()
+        (recipe / "generated" / "__pycache__").mkdir()
+        assert [found.directory for found in find_trees(tmp_path)] == [tree]
+        [problem] = recipe_problems(tmp_path)
+        assert problem.startswith("recipes/code/python/batch/generated/invoice_extraction/sources.json: missing")
+
     def test_a_tree_without_its_sidecar_is_a_problem(self, tmp_path: Path):
         recipe = _python_recipe(tmp_path)
         (recipe / "generated" / "invoice_extraction" / "sources.json").unlink()

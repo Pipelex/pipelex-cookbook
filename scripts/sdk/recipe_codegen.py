@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["pipelex-sdk==0.12.0"]
+# dependencies = ["pipelex-sdk==0.12.0", "mthds>=0.15", "pydantic>=2.10.6"]
 # ///
 """Generate and check the typed trees the code recipes carry.
 
@@ -13,20 +13,25 @@ the one place the cookbook reaches `pipelex-sdk` for them, and it runs in an env
   answer verbatim with `write_codegen_tree`, which is what keeps the offline check able to trust it. It needs
   `PIPELEX_API_KEY`, and `make refresh` runs it.
 - `check <tree>...` is the offline drift check, `run_codegen_check`: pure hashing of each tree against its lock, with
-  no key and no network. CI runs it.
+  no key, and no network once the SDK is installed. CI runs it.
+- `verify <tree>...` asks the hosted API what each tree's address resolves to today and compares that crate's
+  fingerprint with the one its lock records, which the offline check never asks: a sidecar pointed at another address
+  without a regeneration passes the offline check and fails this one. It needs `PIPELEX_API_KEY`, and
+  `make check-hosted` runs it.
 
-Exit codes: 0 when every tree is written or current, 1 when one drifted or could not be generated, 2 when the
-arguments or a sidecar cannot be read.
+Exit codes: 0 when every tree is written, current or verified, 1 when one drifted, could not be generated or does not
+come from its address, 2 when the arguments or a sidecar cannot be read.
 """
 
 import asyncio
 import sys
 from pathlib import Path
 
+from mthds.protocol.exceptions import PipelineRequestError
 from pipelex_sdk.client import PipelexAPIClient
 from pipelex_sdk.codegen_check import run_codegen_check
 from pipelex_sdk.codegen_writer import write_codegen_tree
-from pipelex_sdk.crate_models import CodegenRequest, CodegenTarget, CodegenValidReport
+from pipelex_sdk.crate_models import CodegenRequest, CodegenTarget, CodegenValidReport, CrateInvalidReport
 from pipelex_sdk.errors import CodegenError, CodegenLockError
 from pydantic import BaseModel, ValidationError
 
@@ -94,23 +99,47 @@ def ensure_python_packages(tree: Path) -> None:
             init_file.write_text("", encoding="utf-8")
 
 
-async def generate(trees: list[Path]) -> int:
-    """Regenerate every tree from its sidecar's address, reporting each; one failure does not stop the others."""
+def read_sidecars(trees: list[Path]) -> dict[Path, Sidecar] | None:
+    """Every tree's sidecar, or None once one cannot be read, which has been reported."""
     sidecars: dict[Path, Sidecar] = {}
     for tree in trees:
         try:
             sidecars[tree] = read_sidecar(tree)
         except SidecarError as exc:
             sys.stderr.write(f"✗ {exc}\n")
-            return EXIT_UNREADABLE
+            return None
+    return sidecars
+
+
+async def codegen_for(client: PipelexAPIClient, *, tree: Path, sidecar: Sidecar) -> CodegenValidReport | None:
+    """The hosted API's types for a tree's address, or None once a failure has been reported.
+
+    The API refuses an address that does not resolve (`ApiResponseError`) and cannot always be reached (`ApiUnreachableError`), both
+    request errors; an address that resolves to a method that does not validate comes back as an invalid report instead.
+    """
+    request = CodegenRequest(method_ref=sidecar.method_ref, kind="types", target=sidecar.target)
+    try:
+        response = await client.codegen(request)
+    except PipelineRequestError as exc:
+        sys.stderr.write(f"✗ {tree}: {sidecar.method_ref} could not be resolved: {exc}\n")
+        return None
+    if isinstance(response, CrateInvalidReport):
+        errors = "; ".join(item.message for item in response.validation_errors)
+        sys.stderr.write(f"✗ {tree}: {sidecar.method_ref} resolves to a method that does not validate: {errors}\n")
+        return None
+    return response
+
+
+async def generate(trees: list[Path]) -> int:
+    """Regenerate every tree from its sidecar's address, reporting each; one failure does not stop the others."""
+    sidecars = read_sidecars(trees)
+    if sidecars is None:
+        return EXIT_UNREADABLE
     exit_code = EXIT_OK
     async with PipelexAPIClient() as client:
         for tree, sidecar in sidecars.items():
-            request = CodegenRequest(method_ref=sidecar.method_ref, kind="types", target=sidecar.target)
-            response = await client.codegen(request)
-            if not isinstance(response, CodegenValidReport):
-                errors = "; ".join(item.message for item in response.validation_errors)
-                sys.stderr.write(f"✗ {tree}: {sidecar.method_ref} does not resolve: {errors}\n")
+            response = await codegen_for(client, tree=tree, sidecar=sidecar)
+            if response is None:
                 exit_code = EXIT_FAILED
                 continue
             try:
@@ -150,13 +179,48 @@ def check(trees: list[Path]) -> int:
     return exit_code
 
 
+async def verify(trees: list[Path]) -> int:
+    """Check that every tree's lock records the crate its address resolves to today, reporting each; one failure does not stop the others."""
+    sidecars = read_sidecars(trees)
+    if sidecars is None:
+        return EXIT_UNREADABLE
+    exit_code = EXIT_OK
+    async with PipelexAPIClient() as client:
+        for tree, sidecar in sidecars.items():
+            try:
+                locked = run_codegen_check(root=tree).crate_fingerprint
+            except CodegenLockError as exc:
+                sys.stderr.write(f"✗ {tree}: no verdict ({exc})\n")
+                exit_code = max(exit_code, EXIT_UNREADABLE)
+                continue
+            if locked is None:
+                sys.stderr.write(f"✗ {tree}: no codegen.lock, so nothing records what these types were generated from; run `make refresh`\n")
+                exit_code = max(exit_code, EXIT_FAILED)
+                continue
+            response = await codegen_for(client, tree=tree, sidecar=sidecar)
+            if response is None:
+                exit_code = max(exit_code, EXIT_FAILED)
+            elif locked != response.crate_fingerprint:
+                sys.stderr.write(
+                    f"✗ {tree}: its codegen.lock records crate {locked}, while {sidecar.method_ref} resolves to crate "
+                    f"{response.crate_fingerprint}; run `make refresh`\n"
+                )
+                exit_code = max(exit_code, EXIT_FAILED)
+            else:
+                sys.stdout.write(f"✓ {tree} was generated from {sidecar.method_ref} as it resolves today\n")
+    return exit_code
+
+
 def main(argv: list[str]) -> int:
-    if len(argv) < 2 or argv[0] not in {"generate", "check"}:
-        sys.stderr.write("usage: recipe_codegen.py generate|check <tree>...\n")
+    commands = {"generate", "check", "verify"}
+    if len(argv) < 2 or argv[0] not in commands:
+        sys.stderr.write(f"usage: recipe_codegen.py {'|'.join(sorted(commands))} <tree>...\n")
         return EXIT_UNREADABLE
     command, trees = argv[0], [Path(argument) for argument in argv[1:]]
     if command == "generate":
         return asyncio.run(generate(trees))
+    if command == "verify":
+        return asyncio.run(verify(trees))
     return check(trees)
 
 

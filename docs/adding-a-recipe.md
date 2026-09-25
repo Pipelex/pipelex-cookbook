@@ -30,9 +30,11 @@ One script, `<recipe>/<name>.py`, that a reader runs with `uv run <name>.py`:
   ```python
   # /// script
   # requires-python = ">=3.11"
-  # dependencies = ["pipelex-sdk==0.12.0"]
+  # dependencies = ["pipelex-sdk==0.12.0", "httpx>=0.24", "pydantic>=2.10.6"]
   # ///
   ```
+
+  The SDK brings `httpx`, `pydantic` and `mthds` with it, but a script that imports one of them declares it too, so it keeps working when the SDK's own dependencies move. `PipelineRequestError`, the base of every request error, is imported from `mthds.protocol.exceptions`.
 
 - Its docstring says what it does, how to run it, and that `PIPELEX_API_KEY` must be set and each run spends credit.
 - It holds the pinned address in a `METHOD_REF` constant, calls `PipelexAPIClient().start_and_wait(method_ref=METHOD_REF, inputs=…)`, and reads `results.main_stuff` through the generated models: `Model.model_validate(...)` for a single output, and for a list output a `TypeAdapter` that reads both a bare list and the `{"items": [...]}` envelope, as `code/python/csv-batch/batch.py` does.
@@ -45,5 +47,5 @@ One script, `<recipe>/<name>.py`, that a reader runs with `uv run <name>.py`:
 ## 5. Prove it and check it
 
 - Run it once on production, as a reader would, and read the result against what the README promises.
-- Run `make agent-check`, which includes `check-recipes` and `check-codegen`, then `make check-recipe-types`, which type-checks the script in its own environment, and `make check-addresses`, which validates the pinned address on production.
+- Run `make agent-check`, which includes `check-recipes` and `check-codegen`, then `make check-recipe-types`, which type-checks the script in its own environment, and `make check-hosted`, which validates the pinned address on production and checks that the types come from what it resolves to.
 - Add the recipe to `recipes/README.md`.
