@@ -12,7 +12,7 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.19.0",
+            method_ref="github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.19.1",
             inputs={
                 "gantt_chart_image": {
                     "url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_gantt/gantt_tree_house.png",

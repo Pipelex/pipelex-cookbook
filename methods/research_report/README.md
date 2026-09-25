@@ -4,7 +4,7 @@
 
 Read a research question and return a Markdown report with an executive summary, key findings and open questions, drafted from three angles out of the model's own knowledge without searching any source, so it is a first draft to check rather than verified research.
 
-`github.com/Pipelex/pipelex-cookbook/research_report@v0.19.0` · [bundle.mthds](bundle.mthds)
+`github.com/Pipelex/pipelex-cookbook/research_report@v0.19.1` · [bundle.mthds](bundle.mthds)
 
 **Takes** `question`, a text (`ResearchQuestion`): A well-formed research question to investigate.
 
@@ -15,7 +15,7 @@ Read a research question and return a Markdown report with an executive summary,
 With the Pipelex MCP in ChatGPT or Claude ([add it once](https://github.com/Pipelex/pipelex-mcp)), ask:
 
 ```text
-Run github.com/Pipelex/pipelex-cookbook/research_report@v0.19.0 on the question: what are the most promising approaches to improving battery energy density for electric vehicles?
+Run github.com/Pipelex/pipelex-cookbook/research_report@v0.19.1 on the question: what are the most promising approaches to improving battery energy density for electric vehicles?
 ```
 
 In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pipelex-plugins), the same sentence runs through `/pipelex-run`.
@@ -36,7 +36,7 @@ import { PipelexApiClient } from "@pipelex/sdk";
 
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/research_report@v0.19.0",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/research_report@v0.19.1",
   inputs: {
     question: {
       text: "What are the most promising approaches to improving battery energy density for electric vehicles?",
@@ -64,7 +64,7 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/research_report@v0.19.0",
+            method_ref="github.com/Pipelex/pipelex-cookbook/research_report@v0.19.1",
             inputs={
                 "question": {
                     "text": "What are the most promising approaches to improving battery energy density for electric vehicles?",
@@ -87,7 +87,7 @@ The start call answers at once with the run's id, or with the reason it refused 
 ```bash
 START=$(curl -s https://api.pipelex.com/v1/start \
   -H "Authorization: Bearer $PIPELEX_API_KEY" -H "Content-Type: application/json" \
-  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/research_report@v0.19.0", "inputs": {"question": {"text": "What are the most promising approaches to improving battery energy density for electric vehicles?"}}}')
+  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/research_report@v0.19.1", "inputs": {"question": {"text": "What are the most promising approaches to improving battery energy density for electric vehicles?"}}}')
 RUN_ID=$(printf '%s' "$START" | jq -r '.pipeline_run_id // empty')
 if [ -z "$RUN_ID" ]; then printf '%s\n' "$START"; else
   until [ "$(curl -s -o results.json -w '%{http_code}' https://api.pipelex.com/v1/runs/$RUN_ID/results \
@@ -98,12 +98,12 @@ fi
 
 </details>
 
-In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/research_report@v0.19.0`: it generates the result's types and writes one typed call.
+In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/research_report@v0.19.1`: it generates the result's types and writes one typed call.
 
 ## Make it an app
 
 ```bash
-npm create @pipelex/method-app@latest research-app -- --method github.com/Pipelex/pipelex-cookbook/research_report@v0.19.0
+npm create @pipelex/method-app@latest research-app -- --method github.com/Pipelex/pipelex-cookbook/research_report@v0.19.1
 make -C research-app serve
 ```
 
@@ -114,7 +114,7 @@ The form and the result view come from the method's contract. `make serve` print
 Ask your agent:
 
 ```text
-Copy github.com/Pipelex/pipelex-cookbook/research_report@v0.19.0 into ./research, research five angles instead of three, prove it on the sample, and save it to my Pipelex account.
+Copy github.com/Pipelex/pipelex-cookbook/research_report@v0.19.1 into ./research, research five angles instead of three, prove it on the sample, and save it to my Pipelex account.
 ```
 
 From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
@@ -124,6 +124,6 @@ From then on every door above takes your method's id (`mt_…`) in place of the 
 With the Pipelex runtime and your own provider keys ([set it up](https://docs.pipelex.com/latest/get-started/run-it-yourself/)):
 
 ```bash
-curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.19.0/methods/research_report/inputs.json
-pipelex run method github.com/Pipelex/pipelex-cookbook/research_report@v0.19.0 --inputs inputs.json
+curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.19.1/methods/research_report/inputs.json
+pipelex run method github.com/Pipelex/pipelex-cookbook/research_report@v0.19.1 --inputs inputs.json
 ```

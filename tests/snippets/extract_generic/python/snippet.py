@@ -12,7 +12,7 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.0",
+            method_ref="github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.1",
             inputs={
                 "document": {
                     "url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_generic/fintech_article_with_text_in_images.pdf",

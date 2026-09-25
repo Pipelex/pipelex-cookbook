@@ -4,7 +4,7 @@
 
 Take a number of employees and return, for each, three or four expense claims with a photographed receipt image and a label saying whether the claim is legitimate or a weekend, inflated, mismatched or vague one, plus an HTML expense report.
 
-`github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.0` · [bundle.mthds](bundle.mthds)
+`github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.1` · [bundle.mthds](bundle.mthds)
 
 **Takes** `nb_employees`, a number (`NbOfEmployees`): How many employees to generate.
 
@@ -19,7 +19,7 @@ Take a number of employees and return, for each, three or four expense claims wi
 With the Pipelex MCP in ChatGPT or Claude ([add it once](https://github.com/Pipelex/pipelex-mcp)), ask:
 
 ```text
-Run github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.0 for two employees
+Run github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.1 for two employees
 ```
 
 In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pipelex-plugins), the same sentence runs through `/pipelex-run`.
@@ -40,7 +40,7 @@ import { PipelexApiClient } from "@pipelex/sdk";
 
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.0",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.1",
   inputs: {
     nb_employees: {
       number: 2,
@@ -68,7 +68,7 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.0",
+            method_ref="github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.1",
             inputs={
                 "nb_employees": {
                     "number": 2,
@@ -91,7 +91,7 @@ The start call answers at once with the run's id, or with the reason it refused 
 ```bash
 START=$(curl -s https://api.pipelex.com/v1/start \
   -H "Authorization: Bearer $PIPELEX_API_KEY" -H "Content-Type: application/json" \
-  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.0", "inputs": {"nb_employees": {"number": 2}}}')
+  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.1", "inputs": {"nb_employees": {"number": 2}}}')
 RUN_ID=$(printf '%s' "$START" | jq -r '.pipeline_run_id // empty')
 if [ -z "$RUN_ID" ]; then printf '%s\n' "$START"; else
   until [ "$(curl -s -o results.json -w '%{http_code}' https://api.pipelex.com/v1/runs/$RUN_ID/results \
@@ -102,12 +102,12 @@ fi
 
 </details>
 
-In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.0`: it generates the result's types and writes one typed call.
+In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.1`: it generates the result's types and writes one typed call.
 
 ## Make it an app
 
 ```bash
-npm create @pipelex/method-app@latest expense-data-app -- --method github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.0
+npm create @pipelex/method-app@latest expense-data-app -- --method github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.1
 make -C expense-data-app serve
 ```
 
@@ -118,7 +118,7 @@ The form and the result view come from the method's contract. `make serve` print
 Ask your agent:
 
 ```text
-Copy github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.0 into ./expense-data, date the expenses in the current month instead of January 2026, prove it on the sample, and save it to my Pipelex account.
+Copy github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.1 into ./expense-data, date the expenses in the current month instead of January 2026, prove it on the sample, and save it to my Pipelex account.
 ```
 
 From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
@@ -128,6 +128,6 @@ From then on every door above takes your method's id (`mt_…`) in place of the 
 With the Pipelex runtime and your own provider keys ([set it up](https://docs.pipelex.com/latest/get-started/run-it-yourself/)):
 
 ```bash
-curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.19.0/methods/gen_expense_data/inputs.json
-pipelex run method github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.0 --inputs inputs.json
+curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.19.1/methods/gen_expense_data/inputs.json
+pipelex run method github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.1 --inputs inputs.json
 ```

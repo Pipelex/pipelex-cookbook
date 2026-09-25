@@ -12,7 +12,7 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/blog_article_generator@v0.19.0",
+            method_ref="github.com/Pipelex/pipelex-cookbook/blog_article_generator@v0.19.1",
             inputs={
                 "user_prompt": {
                     "text": "Write a fun and engaging blog article",
