@@ -44,7 +44,7 @@ With `PIPELEX_API_KEY` set:
 ## 4. Give it its page
 
 1. Add an entry to `cookbook.toml` under `[methods.<name>]` with the title, the pitch, the sample's link text, the chatbot sentence and the "Make it yours" change. Every field is optional.
-2. `make render` writes `methods/<name>/README.md`. Read it as a reader would.
+2. `make render` writes `methods/<name>/README.md`, and the page's TypeScript and Python snippets as files under `tests/snippets/<name>/`. Read the page as a reader would, and commit the snippet files with it.
 
 ## 5. Check and open the pull request
 

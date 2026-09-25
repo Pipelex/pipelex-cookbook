@@ -11,7 +11,7 @@ import sys
 from collections.abc import Callable
 from pathlib import Path
 
-from scripts.checks import check_links, http_status, lockstep_problems, stale_pages
+from scripts.checks import check_links, http_status, lockstep_problems, orphan_snippet_dirs, stale_pages
 from scripts.cookbook import Cookbook, load_cookbook
 from scripts.exceptions import CookbookError
 from scripts.hosted import AddressState, AddressVerdict, check_address, check_pinned_method_ref, client_from_env, validate_packages
@@ -41,8 +41,14 @@ def main(argv: list[str] | None = None) -> int:
         "recipe-shell-scripts": _recipe_shell_scripts,
     }
     helps = {
-        "render": "Write every methods/<name>/README.md from its package and cookbook.toml, and the front page's list of methods",
-        "check-render": "Fail when a committed page, or the front page's list of methods, differs from a fresh render",
+        "render": (
+            "Write every methods/<name>/README.md from its package and cookbook.toml, its snippet files under tests/snippets/<name>/, "
+            "and the front page's list of methods"
+        ),
+        "check-render": (
+            "Fail when a committed page, snippet file or the front page's list of methods differs from a fresh render, "
+            "or when a snippet directory belongs to no method"
+        ),
         "check-lockstep": "Fail when a manifest's version is not the cookbook's",
         "check-links": "Fetch every sample URL in the packages, and every raw URL on the pages and in the recipes",
         "refresh": "Validate every package on production and write its contract.json (needs PIPELEX_API_KEY)",
@@ -77,22 +83,35 @@ def _render(cookbook: Cookbook) -> int:
     rendered = render_all(cookbook=cookbook, templates_dir=_templates_dir(cookbook))
     stale = set(stale_pages(cookbook=cookbook, rendered=rendered))
     for page_path, contents in rendered.items():
+        page_path.parent.mkdir(parents=True, exist_ok=True)
         page_path.write_text(contents, encoding="utf-8")
         relative = page_path.relative_to(cookbook.root)
         print(f"{'✎ rewrote' if relative in stale else '· unchanged'} {relative}")
-    return 0
+    orphans = orphan_snippet_dirs(cookbook)
+    _print_orphans(orphans)
+    return 1 if orphans else 0
 
 
 def _check_render(cookbook: Cookbook) -> int:
     rendered = render_all(cookbook=cookbook, templates_dir=_templates_dir(cookbook))
     stale = stale_pages(cookbook=cookbook, rendered=rendered)
+    orphans = orphan_snippet_dirs(cookbook)
+    for relative in stale:
+        print(f"✗ {relative} differs from a fresh render")
     if stale:
-        for relative in stale:
-            print(f"✗ {relative} differs from a fresh render")
-        print("Pages are generated: run `make render` and commit what it writes, never edit a page by hand.")
+        print("Pages and their snippet files are generated: run `make render` and commit what it writes, never edit one by hand.")
+    _print_orphans(orphans)
+    if stale or orphans:
         return 1
-    print(f"✓ {len(cookbook.packages)} method page(s) and the front page's list of methods match a fresh render at {cookbook.tag}")
+    print(
+        f"✓ {len(cookbook.packages)} method page(s), their snippet files and the front page's list of methods match a fresh render at {cookbook.tag}"
+    )
     return 0
+
+
+def _print_orphans(orphans: list[Path]) -> None:
+    for relative in orphans:
+        print(f"✗ {relative}/ holds the snippets of no method under methods/: delete it, since `make render` never does")
 
 
 def _check_lockstep(cookbook: Cookbook) -> int:

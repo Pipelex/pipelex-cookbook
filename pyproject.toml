@@ -72,6 +72,8 @@ exclude = [
   "^.*\\.venv/.*$",
   "^examples/c_advanced/using_inference_plugins/hello_inference_plugin/.*$",
   "^scripts/sdk/.*$",
+  # The page snippets are written by `make render` and run beside `pipelex-sdk`, which `make check-recipe-types` type-checks them against.
+  "^tests/snippets/.*$",
 ]
 mypy_path = "."
 packages = ["utils", "examples", "scripts", "tests"]
@@ -111,6 +113,7 @@ exclude = [
   "examples/c_advanced/crewai_with_pipelex_tools/run_crew_with_pipelex.py",
   # Each runs beside `pipelex-sdk`, in an environment of its own, and `make check-recipe-types` type-checks it there.
   "scripts/sdk",
+  "tests/snippets",
 ]
 extraPaths = ["./tests"]
 include = ["utils", "examples", "scripts", "tests"]
@@ -242,6 +245,8 @@ exclude = [
   # A recipe's generated types are written verbatim by codegen and vouched for by their codegen.lock: a formatter that
   # touched them would make the drift check read them as hand-edited.
   "recipes/**/generated",
+  # The page snippets are written by `make render`, so a formatter that touched them would make `make check-render` fail.
+  "tests/snippets",
 ]
 line-length = 150
 target-version = "py311"

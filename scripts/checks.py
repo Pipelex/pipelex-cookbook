@@ -1,5 +1,6 @@
 """The checks that need no API key, run on every pull request: the pages are fresh, the manifests are in lockstep, and every sample link answers.
 
+Freshness covers every file `make render` writes, the pages' snippet files included, and a snippet directory left behind by a method that is gone.
 The links are read from the packages' inputs, from the pages and from the recipes' own files.
 """
 
@@ -11,13 +12,15 @@ from urllib.parse import unquote
 import httpx
 from pydantic import BaseModel, ConfigDict, JsonValue
 
-from scripts.cookbook import INPUTS_FILE, Cookbook
+from scripts.cookbook import INPUTS_FILE, SNIPPETS_DIR, Cookbook
 from scripts.recipes import recipe_files
 from scripts.render import RAW_BASE_URL
 
 _RAW_URL_PATTERN = re.compile(r"https://raw\.githubusercontent\.com/[^\s)\"'`<>]+")
 _SENTENCE_PUNCTUATION = ".,;:!?"
 _NOT_FOUND = 404
+# The snippets' TypeScript package installs its dependencies beside the methods' snippet directories, and they belong to no method.
+_INSTALLED_PACKAGES_DIR = "node_modules"
 
 
 class LinkVerdict(BaseModel):
@@ -32,13 +35,30 @@ class LinkVerdict(BaseModel):
 
 
 def stale_pages(*, cookbook: Cookbook, rendered: dict[Path, str]) -> list[Path]:
-    """The pages whose committed contents differ from a fresh render, including a page that was never written."""
+    """The rendered files, pages and snippet files alike, whose committed contents differ from a fresh render, including one never written."""
     stale: list[Path] = []
     for page_path, contents in rendered.items():
         committed = page_path.read_text(encoding="utf-8") if page_path.is_file() else None
         if committed != contents:
             stale.append(page_path.relative_to(cookbook.root))
     return stale
+
+
+def orphan_snippet_dirs(cookbook: Cookbook) -> list[Path]:
+    """The directories under `tests/snippets/` that belong to no package under `methods/`, such as a removed or renamed method's.
+
+    `make render` writes each method's snippet files into a directory of its own there and never deletes one, so a directory a method left
+    behind would go on being type-checked while no page shows it.
+    """
+    snippets_root = cookbook.root / SNIPPETS_DIR
+    if not snippets_root.is_dir():
+        return []
+    names = {package.name for package in cookbook.packages}
+    return sorted(
+        child.relative_to(cookbook.root)
+        for child in snippets_root.iterdir()
+        if child.is_dir() and child.name not in names and child.name != _INSTALLED_PACKAGES_DIR
+    )
 
 
 def lockstep_problems(cookbook: Cookbook) -> list[str]:

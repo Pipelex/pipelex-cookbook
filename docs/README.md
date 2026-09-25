@@ -35,6 +35,8 @@ What a page says about its method comes from the package:
 - **"What you get"** is the answer key's `## Must` lines. The page shows them without the planted facts, so each Must line states its facts in full; the renderer refuses one that cites a planted fact such as `F2`.
 - **The title, the pitch, the chatbot sentence and the "Make it yours" change** come from the method's entry in `cookbook.toml`. Every field is optional: a method with no entry gets its title and pitch from its manifest and a default sentence for the rest.
 
+**The code snippets are written as files too.** The TypeScript and Python snippets of "Put it in your code" come from `templates/snippets/`, which the page includes inside its fences and which `make render` also writes, under a header saying where they come from, as `tests/snippets/<name>/typescript/snippet.ts` and `tests/snippets/<name>/python/snippet.py`. The Python file opens with the inline dependencies `uv run` reads. Like the pages, these files are never edited by hand: `make check-render` holds them to a fresh render, and fails on a directory under `tests/snippets/` that belongs to no method, since `make render` never deletes one.
+
 **The front page lists the methods.** `README.md` at the root is written by hand except for one region, between the markers `<!-- BEGIN methods, … -->` and `<!-- END methods -->`, where `make render` lists every method with its title, its page and its pitch, followed by a line linking the method library. `make check-render` holds that region to a fresh render as it does the pages, and leaves every other line of the front page alone.
 
 Setup is never repeated on a page. Adding the Pipelex MCP, installing the plugin and creating a key are links to the front doors of [pipelex-mcp](https://github.com/Pipelex/pipelex-mcp) and [pipelex-plugins](https://github.com/Pipelex/pipelex-plugins), so a page carries only the commands that name its method.
@@ -62,7 +64,7 @@ The renderer is a small Python package in `scripts/`, run as `python -m scripts 
 - `scripts/cookbook.py` loads the cookbook: the version, `cookbook.toml`, and every package, checking its identity with the MTHDS standard's own manifest parser.
 - `scripts/key.py` reads an answer key.
 - `scripts/contract.py` projects a validation verdict onto the main pipe's contract, and reads and writes `contract.json`.
-- `scripts/render.py` derives each page's context and renders `templates/method_page.md.j2`, which includes one template per door from `templates/doors/`, and renders the front page's list of methods from `templates/front_region.md.j2`. Wording and links live in the templates; everything method-specific is computed in Python.
+- `scripts/render.py` derives each page's context and renders `templates/method_page.md.j2`, which includes one template per door from `templates/doors/`, and renders the front page's list of methods from `templates/front_region.md.j2`. The code door includes its TypeScript and Python snippets from `templates/snippets/`, where `file.ts.j2` and `file.py.j2` wrap the same snippets into the files under `tests/snippets/`. Wording and links live in the templates; everything method-specific is computed in Python.
 - `scripts/checks.py` holds the checks that need no key, and `scripts/hosted.py` the calls to production.
 
 Its tests are in `tests/tooling/`. They build a small cookbook in a temporary directory, render it with the real templates, and boot no Pipelex runtime.
@@ -97,7 +99,7 @@ Each Python recipe script is type-checked by pyright in the environment its own 
 
 | Target | Needs | What it proves |
 |---|---|---|
-| `make check-render` | Nothing | Every committed page equals a fresh render |
+| `make check-render` | Nothing | Every committed page and snippet file equals a fresh render, and every directory under `tests/snippets/` belongs to a method |
 | `make check-lockstep` | Nothing | Every manifest carries the cookbook's version |
 | `make check-links` | The network | Every URL in the packages' inputs, and every raw URL on the pages and in the recipes' own files, answers, following redirects. A URL into this repository must name a file this checkout holds; if it answers 404, it is reported as not published, since the next release publishes it |
 | `make check-methods` | `PIPELEX_API_KEY` | Every package validates on production from its files, and its contract snapshot is current |

@@ -5,6 +5,10 @@ samples and the code snippets' inputs from `inputs.json`, the "Takes" and "Retur
 answer key. The templates under `templates/` hold the wording and the links, one block per door, so a change to a door is made once and every page
 inherits it at the next render.
 
+The page's TypeScript and Python snippets are also written as files, `tests/snippets/<name>/typescript/snippet.ts` and
+`tests/snippets/<name>/python/snippet.py`, from the same templates under `templates/snippets/`, so that what the page shows is what the type
+checkers read.
+
 The front page, `README.md`, is written by hand except for one region between two markers, which lists every method with its page and its pitch.
 """
 
@@ -16,11 +20,13 @@ from jinja2 import Environment, FileSystemLoader, StrictUndefined
 from pydantic import BaseModel, ConfigDict, JsonValue
 
 from scripts.contract import Contract, ContractField, ContractInput, short_concept
-from scripts.cookbook import INPUTS_FILE, KEY_FILE, METHODS_DIR, Cookbook, MethodPackage
+from scripts.cookbook import INPUTS_FILE, KEY_FILE, METHODS_DIR, SNIPPETS_DIR, Cookbook, MethodPackage
 from scripts.exceptions import CookbookLayoutError
 from scripts.key import KeyLine
 
 PAGE_TEMPLATE = "method_page.md.j2"
+# Each file `make render` writes in a method's `tests/snippets/<name>/`, mapped to the template writing it around the page's snippet.
+SNIPPET_TEMPLATES = {"typescript/snippet.ts": "snippets/file.ts.j2", "python/snippet.py": "snippets/file.py.j2"}
 FRONT_PAGE_FILE = "README.md"
 FRONT_REGION_TEMPLATE = "front_region.md.j2"
 FRONT_REGION_BEGIN = "<!-- BEGIN methods, written by `make render` from methods/ and cookbook.toml: never edit this region by hand -->"
@@ -144,9 +150,31 @@ def render_front_page(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, 
     return {front_page_path: current[: begin + len(FRONT_REGION_BEGIN)] + "\n" + region + current[end:]}
 
 
+def render_snippets(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, str]:
+    """Render every package's TypeScript and Python snippets as files, each the page's own snippet under a header saying where it comes from.
+
+    Returns:
+        Each snippet file's path, under `tests/snippets/<name>/`, mapped to its rendered contents.
+
+    Raises:
+        CookbookLayoutError: A package has no contract snapshot yet.
+    """
+    environment = make_environment(templates_dir)
+    snippets: dict[Path, str] = {}
+    for package in cookbook.packages:
+        context = build_page_context(cookbook=cookbook, package=package)
+        for relative_path, template_name in SNIPPET_TEMPLATES.items():
+            snippets[cookbook.root / SNIPPETS_DIR / package.name / relative_path] = environment.get_template(template_name).render(page=context)
+    return snippets
+
+
 def render_all(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, str]:
-    """Every file `make render` writes: each method's page, and the front page with its list of methods."""
-    return render_pages(cookbook=cookbook, templates_dir=templates_dir) | render_front_page(cookbook=cookbook, templates_dir=templates_dir)
+    """Every file `make render` writes: each method's page and its snippet files, and the front page with its list of methods."""
+    return (
+        render_pages(cookbook=cookbook, templates_dir=templates_dir)
+        | render_snippets(cookbook=cookbook, templates_dir=templates_dir)
+        | render_front_page(cookbook=cookbook, templates_dir=templates_dir)
+    )
 
 
 def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageContext:

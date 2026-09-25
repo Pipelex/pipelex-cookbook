@@ -76,8 +76,8 @@ make erd                      - Shorthand -> export-requirements-dev
 make validate                 - Validate config, libraries, and every shipped .mthds bundle
 make validate-bundles         - Static-validate all .mthds bundles (tutorial, examples, methods, installed library)
 
-make render                   - Write every methods/<name>/README.md from its package and cookbook.toml
-make check-render             - Fail when a committed method page differs from a fresh render
+make render                   - Write every methods/<name>/README.md from its package and cookbook.toml, and its snippet files under tests/snippets/<name>/
+make check-render             - Fail when a committed method page or snippet file differs from a fresh render, or a snippet directory belongs to no method
 make check-lockstep           - Fail when a method manifest's version is not the cookbook's
 make check-links              - Fetch every sample URL in the packages, and every raw URL on the pages and in the recipes
 make check-recipes            - Fail when a recipe's generated types name no pinned address or one its code does not call, when a recipe names an unpinned address, or when its shell script does not parse
@@ -265,11 +265,11 @@ RECIPE_CODEGEN := uv run --quiet --script scripts/sdk/recipe_codegen.py
 RECIPE_TREES = $$($(VENV_PYTHON) -m scripts recipe-trees)
 
 render: env
-	$(call PRINT_TITLE,"Rendering every method page")
+	$(call PRINT_TITLE,"Rendering every method page and its snippet files")
 	$(VENV_PYTHON) -m scripts render
 
 check-render: env
-	$(call PRINT_TITLE,"Checking that every method page matches a fresh render")
+	$(call PRINT_TITLE,"Checking that every method page and snippet file matches a fresh render")
 	$(VENV_PYTHON) -m scripts check-render
 
 check-lockstep: env
