@@ -21,7 +21,7 @@ In an empty directory, ask your agent:
 
 > Design a method that takes a CV and a job offer, both PDFs, analyzes whether they match, and generates 5 questions for the interview. Then prove it with /pipelex-lab.
 
-The agent designs the method, then the lab frames the experiment and stops to show you its answer keys, the budget it proposes and what a round will cost. Correct a key there if it is wrong, and give your go with the budget you accept: the lab proposed $2 here, and the go allowed up to $5. From then on it runs, scores, logs and fixes by itself, and ends on a scorecard.
+The agent designs the method, then the lab frames the experiment and stops to show you its answer keys, the budget it proposes and what a round will cost. Correct a key there if it is wrong, and give your go with the budget you accept: here the lab proposed $2, and the go accepted it. From then on it runs, scores, logs and fixes by itself, and ends on a scorecard.
 
 ## What you get
 
