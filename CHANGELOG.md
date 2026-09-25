@@ -17,6 +17,14 @@
 - **`make refresh` renders before it generates**: it writes the contract snapshots, then renders the pages and the page snippets' sidecars, then regenerates every recipe's and page snippet's types, so it is the one command to run whenever a bundle changes. `scripts/sdk/recipe_codegen.py` generates a tree from the `.mthds` files its sidecar names as well as from a pinned address.
 - **The pages' "Make it yours" section says where a change goes**: `/pipelex-edit` applies a change that keeps what the method takes and returns, and hands one that changes them to `/pipelex-design`, which is what most pages' suggested change does.
 - **A long sample is fetched rather than written out**: when a method's sample inputs are too long to show, its TypeScript, Python and HTTP snippets fetch them from the method's `inputs.json` at the page's tag, which shrinks the Discord newsletter's page to a fraction of its size.
+- **`CONTRIBUTING.md` says how to add a method or a recipe**: it points to `docs/adding-a-method.md` and `docs/adding-a-recipe.md`, lists the checks to run before a pull request, and names the branches CI admits into `dev`.
+- **The project declares the Pythons CI runs**: `requires-python` is `>=3.11,<3.14`, matching the 3.11, 3.12 and 3.13 legs of the lint and test matrices, and the trove classifiers, which named 3.14, are gone.
+
+### Removed
+
+- **The old example tree (Breaking)**: `examples/`, `utils/`, the local runtime configuration under `.pipelex/`, the borrowed `documents` package under `.mthds/`, and their tests are gone. Every example that met the hosted bar lives on as a method under `methods/`, runnable by address, and the rest can still be read at the `v0.18.0` tag. `plxt.toml` moved to the root, since the formatter still reads it.
+- **The runtime pin (Breaking)**: the cookbook's own project is now its tooling alone. `pipelex` and its provider extras, `beautifulsoup4`, the `crewai` and `compat` extras, the type stubs only the old tree used, and the exported `requirements.txt` and `requirements-dev.txt` are gone; the recipes declare their own dependencies. `.env.example` keeps only `PIPELEX_API_KEY`, which the keyed checks read.
+- **The old tree's Makefile targets (Breaking)**: `validate`, `validate-bundles`, `export-requirements`, `export-requirements-dev`, `test-inference` and their shorthands, and the pytest markers only the old tests used. `make gha-tests` and `make agent-test` run the tooling's tests.
 
 ## [v0.18.0] - 2026-09-25
 

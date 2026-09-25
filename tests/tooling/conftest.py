@@ -1,6 +1,6 @@
 """Fixtures for the cookbook tooling's tests: a small cookbook written to a temporary directory, and the repository's real templates.
 
-These tests exercise the renderer and the checks alone, so unlike the tests of the old examples they boot no Pipelex runtime.
+These tests exercise the renderer and the checks alone: they call no API and need no key.
 """
 
 import json

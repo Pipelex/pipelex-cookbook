@@ -1,6 +1,6 @@
 # pipelex-cookbook
 
-The cookbook holds Pipelex's example methods as packages runnable by address, each with a generated page. `docs/README.md` explains how it works, and `docs/adding-a-method.md` and `docs/adding-a-recipe.md` how to add a method or a recipe. The older examples under `examples/` stay until the new layout replaces them.
+The cookbook holds Pipelex's example methods as packages runnable by address, each with a generated page. `docs/README.md` explains how it works, and `docs/adding-a-method.md` and `docs/adding-a-recipe.md` how to add a method or a recipe.
 
 - **Method pages are generated.** `methods/<name>/README.md` is written by `make render` from the package (`METHODS.toml`, `inputs.json`, `key.md`, `contract.json`), `cookbook.toml` and `templates/`, and so are the page's snippet files under `tests/snippets/<name>/` and the list of methods between the `BEGIN methods` and `END methods` markers of the root `README.md`. Never edit a page, anything under `tests/snippets/<name>/` or that region by hand: change its sources and run `make render`. `make check-render` fails on any difference.
 - **When a bundle changes**, run `make refresh` (needs `PIPELEX_API_KEY`): it rewrites every `contract.json`, renders, then regenerates the types under every `generated/` tree, the page snippets' included, whose sidecars name the package's `.mthds` files. `make check-codegen-live` fails on a snippet's types that no longer come from its package's files. Every other command fails first, when a main pipe no longer returns what its `contract.json` records.
