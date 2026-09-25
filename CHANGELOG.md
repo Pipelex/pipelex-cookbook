@@ -22,7 +22,7 @@
 
 ### Removed
 
-- **The old example tree (Breaking)**: `examples/`, `utils/`, the local runtime configuration under `.pipelex/`, the borrowed `documents` package under `.mthds/`, and their tests are gone. Every example that met the hosted bar lives on as a method under `methods/`, runnable by address, and the rest can still be read at the `v0.18.0` tag. `plxt.toml` moved to the root, since the formatter still reads it.
+- **The old example tree (Breaking)**: `examples/`, `utils/`, the local runtime configuration under `.pipelex/`, the borrowed `documents` package under `.mthds/`, the samples under `assets/` only the old examples used, and their tests are gone. Every example that met the hosted bar lives on as a method under `methods/`, runnable by address, and the rest can still be read at the `v0.18.0` tag. `plxt.toml` moved to the root, since the formatter still reads it.
 - **The runtime pin (Breaking)**: the cookbook's own project is now its tooling alone. `pipelex` and its provider extras, `beautifulsoup4`, the `crewai` and `compat` extras, the type stubs only the old tree used, and the exported `requirements.txt` and `requirements-dev.txt` are gone; the recipes declare their own dependencies. `.env.example` keeps only `PIPELEX_API_KEY`, which the keyed checks read.
 - **The old tree's Makefile targets (Breaking)**: `validate`, `validate-bundles`, `export-requirements`, `export-requirements-dev`, `test-inference` and their shorthands, and the pytest markers only the old tests used. `make gha-tests` and `make agent-test` run the tooling's tests.
 

@@ -10,7 +10,7 @@ The runtime itself lives in [Pipelex/pipelex](https://github.com/Pipelex/pipelex
 
 ## Set up
 
-1. Fork and clone this repository, then run `make install`, which installs the cookbook's tooling with `uv`. `make check-recipe-types` also needs Node.js 22 with npm, and shellcheck.
+1. Fork and clone this repository, then run `make install`, which installs the cookbook's tooling with `uv`. `make check-cookbook` also needs Node.js 22 with npm, and shellcheck, to type-check the recipes.
 2. Copy `.env.example` to `.env` and put a `PIPELEX_API_KEY` in it, created in your console at [app.pipelex.com](https://app.pipelex.com). Only the checks that validate on production read it, and none of them spends inference.
 
 [`docs/README.md`](docs/README.md) explains how the cookbook works: the packages, the generated pages, the recipes and every check.
@@ -24,7 +24,7 @@ The runtime itself lives in [Pipelex/pipelex](https://github.com/Pipelex/pipelex
 
 ## Before the pull request
 
-1. Run `make agent-check`, `make agent-test` and `make check-recipe-types`.
+1. Run `make agent-check`, `make agent-test` and `make check-cookbook`, which is what CI runs on your pull request, sample links included.
 2. When your change touches a method, a page or a recipe, also run `make check-hosted`, with your key in `.env`. CI holds no key, so it cannot run these checks, and a maintainer runs them on your pull request too.
 3. Add an entry under `## [Unreleased]` in `CHANGELOG.md`.
 
