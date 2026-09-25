@@ -4,7 +4,7 @@
 
 Read a week of Discord channel messages and return an HTML newsletter with a weekly summary, the new members, a section per channel and the geographic hubs.
 
-`github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.18.0` · [bundle.mthds](bundle.mthds)
+`github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.19.0` · [bundle.mthds](bundle.mthds)
 
 **Takes** `discord_channel_updates`, a list of `DiscordChannelUpdate`.
 
@@ -14,7 +14,7 @@ Read a week of Discord channel messages and return an HTML newsletter with a wee
 
 With the Pipelex MCP in ChatGPT or Claude ([add it once](https://github.com/Pipelex/pipelex-mcp)), ask:
 
-> Run github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.18.0 with the sample inputs in https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/methods/discord_newsletter/inputs.json
+> Run github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.19.0 with the sample inputs in https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.19.0/methods/discord_newsletter/inputs.json
 
 In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pipelex-plugins), the same sentence runs through `/pipelex-run`.
 
@@ -22,7 +22,7 @@ In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pip
 
 Each call runs the method on the hosted API with your `PIPELEX_API_KEY` ([create one](https://app.pipelex.com)).
 
-The sample inputs are too long to write out here, so each snippet below fetches them from the method's [`inputs.json`](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/methods/discord_newsletter/inputs.json).
+The sample inputs are too long to write out here, so each snippet below fetches them from the method's [`inputs.json`](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.19.0/methods/discord_newsletter/inputs.json).
 
 <details>
 <summary>TypeScript</summary>
@@ -34,11 +34,11 @@ npm install @pipelex/sdk
 ```ts
 import { PipelexApiClient } from "@pipelex/sdk";
 
-const response = await fetch("https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/methods/discord_newsletter/inputs.json");
+const response = await fetch("https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.19.0/methods/discord_newsletter/inputs.json");
 const inputs = (await response.json()) as Record<string, unknown>;
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.18.0",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.19.0",
   inputs,
 });
 console.log(result.main_stuff);
@@ -61,10 +61,10 @@ from pipelex_sdk.client import PipelexAPIClient
 
 
 async def main() -> None:
-    inputs = httpx.get("https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/methods/discord_newsletter/inputs.json").json()
+    inputs = httpx.get("https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.19.0/methods/discord_newsletter/inputs.json").json()
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.18.0",
+            method_ref="github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.19.0",
             inputs=inputs,
         )
         print(result.main_stuff)
@@ -81,8 +81,8 @@ asyncio.run(main())
 The start call answers at once with the run's id, or with the reason it refused the run; the results call answers 202 while the run is going, 200 with the results once it has completed, and 409 if it failed. The snippet uses `jq` to wrap the sample inputs into the start call's body and to read the id.
 
 ```bash
-START=$(curl -sL https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/methods/discord_newsletter/inputs.json |
-  jq -c '{method_ref: "github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.18.0", inputs: .}' |
+START=$(curl -sL https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.19.0/methods/discord_newsletter/inputs.json |
+  jq -c '{method_ref: "github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.19.0", inputs: .}' |
   curl -s https://api.pipelex.com/v1/start \
     -H "Authorization: Bearer $PIPELEX_API_KEY" -H "Content-Type: application/json" \
     -d @-)
@@ -96,12 +96,12 @@ fi
 
 </details>
 
-In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.18.0`: it generates the result's types and writes one typed call.
+In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.19.0`: it generates the result's types and writes one typed call.
 
 ## Make it an app
 
 ```bash
-npm create @pipelex/method-app@latest newsletter-app -- --method github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.18.0
+npm create @pipelex/method-app@latest newsletter-app -- --method github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.19.0
 make -C newsletter-app serve
 ```
 
@@ -109,7 +109,7 @@ The form and the result view come from the method's contract. `make serve` print
 
 ## Make it yours
 
-Ask your agent: "Copy github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.18.0 into ./newsletter, add a section listing the links shared during the week, prove it on the sample, and save it to my Pipelex account." From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
+Ask your agent: "Copy github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.19.0 into ./newsletter, add a section listing the links shared during the week, prove it on the sample, and save it to my Pipelex account." From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
 
 This is done by hand today: the agent copies the package, changes it with `/pipelex-edit`, which hands a change to what the method takes or returns to `/pipelex-design`, proves it with `/pipelex-run`, and saves the directory as a new method with `/pipelex-catalog`. The saved method keeps no record of the address it came from, since no gesture yet saves a published method into your account in one step.
 
@@ -135,6 +135,6 @@ The method's [answer key](key.md), written before its first run, says what a rig
 With the Pipelex runtime and your own provider keys ([set it up](https://docs.pipelex.com/latest/get-started/run-it-yourself/)):
 
 ```bash
-curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/methods/discord_newsletter/inputs.json
-pipelex run method github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.18.0 --inputs inputs.json
+curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.19.0/methods/discord_newsletter/inputs.json
+pipelex run method github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.19.0 --inputs inputs.json
 ```

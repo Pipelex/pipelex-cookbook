@@ -4,7 +4,7 @@ import { PipelexApiClient } from "@pipelex/sdk";
 
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/blog_article_generator@v0.18.0",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/blog_article_generator@v0.19.0",
   inputs: {
     user_prompt: {
       text: "Write a fun and engaging blog article",

@@ -4,7 +4,7 @@ import { PipelexApiClient } from "@pipelex/sdk";
 
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.18.0",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.19.0",
   inputs: {
     gantt_chart_image: {
       url: "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_gantt/gantt_tree_house.png",

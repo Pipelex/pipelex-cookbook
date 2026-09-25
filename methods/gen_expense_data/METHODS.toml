@@ -2,7 +2,7 @@
 name = "gen_expense_data"
 display_name = "Synthetic Expense Data Generation"
 address = "github.com/Pipelex/pipelex-cookbook"
-version = "0.18.0"
+version = "0.19.0"
 description = "Generate employees with expense claims, each backed by a photographed receipt image and labelled as legitimate or as one of four fraud patterns, plus an HTML expense report per employee."
 authors = ["Evotis S.A.S"]
 license = "MIT"

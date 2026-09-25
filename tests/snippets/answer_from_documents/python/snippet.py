@@ -15,7 +15,7 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.18.0",
+            method_ref="github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.19.0",
             inputs={
                 "documents": [
                     {
