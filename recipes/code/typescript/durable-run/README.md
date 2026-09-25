@@ -25,13 +25,13 @@ It prints the run's id, such as `run_8bf12c67-…`. Later, read the report:
 
 ```bash
 npm run --silent result -- run_8bf12c67-…            # the report if the run is done, or a line saying it is still going
-npm run --silent result -- run_8bf12c67-… --wait     # waits for the run to end, then prints the report
+npm run --silent result -- run_8bf12c67-… --wait     # waits up to twenty minutes for the run to end, then prints the report
 npm run --silent result -- run_8bf12c67-… > report.md
 ```
 
 ## What you get
 
-The report in Markdown on stdout: the question, an executive summary, the key findings from its three angles, and the questions it leaves open. A run that is still going exits with status 3, and one that failed exits with status 1 and says why, so a scheduler can tell the two apart.
+The report in Markdown on stdout: the question, an executive summary, the key findings from its three angles, and the questions it leaves open. A run that is still going exits with status 3, and one that failed exits with status 1 and says why. A run that could not be read at all, with the API unreachable for instance, exits with status 4, since it says nothing about the run itself. A scheduler asks again on 3 and 4, and gives up on 1.
 
 ## How it is built
 
