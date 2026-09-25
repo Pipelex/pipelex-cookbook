@@ -114,7 +114,8 @@ def main() -> None:
     parser.add_argument("--concurrency", type=positive_int, default=4, help="How many runs to keep going at once (default: 4)")
     arguments = parser.parse_args()
 
-    with arguments.input.open(newline="", encoding="utf-8") as input_file:
+    # utf-8-sig drops the byte-order mark a spreadsheet's "CSV UTF-8" export starts with, and reads a file without one as utf-8 does.
+    with arguments.input.open(newline="", encoding="utf-8-sig") as input_file:
         reader = csv.DictReader(input_file)
         if URL_COLUMN not in (reader.fieldnames or []):
             parser.error(f"{arguments.input} has no {URL_COLUMN} column: name the column holding the invoices' links {URL_COLUMN}")
