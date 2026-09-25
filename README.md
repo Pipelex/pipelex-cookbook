@@ -52,7 +52,7 @@ More methods, ready to run the same way, are in the [Pipelex method library](htt
 
 <!-- END methods -->
 
-**[Recipes](recipes/)** take one way of using a method further, on a real case: a FastAPI endpoint, a method over every row of a CSV, a method as a CrewAI agent's tool, a weekly digest.
+**[Recipes](recipes/)** take one way of using a method further, on a real case: a run in your coding agent followed later by its id, the three HTTP calls any tool can make, a FastAPI endpoint, a method over every row of a CSV, a method as a CrewAI agent's tool, a weekly digest.
 
 # 🚀 Quick Start
 

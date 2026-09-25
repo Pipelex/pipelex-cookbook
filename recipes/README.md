@@ -1,6 +1,15 @@
 # Recipes
 
-Each method page shows every way to use its method in a few lines. A recipe goes further on one way, on a real case: a small project you copy as one directory, calling its method by an address pinned to a release tag, with code the cookbook's checks hold to that method.
+Each method page shows every way to use its method in a few lines. A recipe goes further on one way, on a real case, calling its method by an address pinned to a release tag: a request to your coding agent, a few HTTP calls, or a small project you copy as one directory, with code the cookbook's checks hold to that method.
+
+## Run a method
+
+These recipes run a method with nothing to build: from your coding agent, or with any tool that makes HTTP calls. Each run spends credit on your Pipelex account.
+
+| Recipe | What it shows | Method |
+|---|---|---|
+| [A run in your coding agent, followed later by its id](run/coding-agent/) | `/pipelex-run` in Claude Code or Codex starting a long run by its address, then following it from another session by its id alone and saving it to `runs/<run_id>/` | [Research report](../methods/research_report/) |
+| [A method over HTTP: start, poll, results](run/http/) | The three calls that run a method from a shell script with `curl`, each outcome with its own exit status, and how n8n, Zapier or any tool that makes HTTP calls makes the same calls | [Energy diagnostic (DPE) extraction](../methods/extract_dpe/) |
 
 ## Put a method in your code
 
