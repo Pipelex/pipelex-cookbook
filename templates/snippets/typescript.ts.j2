@@ -1,8 +1,16 @@
 import { PipelexApiClient } from "@pipelex/sdk";
 
+{% if page.fetches_inputs %}
+const response = await fetch("{{ page.inputs_url }}");
+const inputs = (await response.json()) as Record<string, unknown>;
+{% endif %}
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
   method_ref: "{{ page.address }}",
+{% if page.fetches_inputs %}
+  inputs,
+{% else %}
   inputs: {{ page.inputs_typescript }},
+{% endif %}
 });
 console.log(result.main_stuff);

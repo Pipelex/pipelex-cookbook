@@ -1,3 +1,4 @@
+import json
 import re
 from pathlib import Path
 
@@ -6,7 +7,16 @@ from pydantic import JsonValue
 
 from scripts.cookbook import load_cookbook
 from scripts.exceptions import CookbookLayoutError
-from scripts.render import python_literal, render_all, render_front_page, render_pages, render_snippets, type_phrase, typescript_literal
+from scripts.render import (
+    INLINE_INPUTS_LIMIT,
+    python_literal,
+    render_all,
+    render_front_page,
+    render_pages,
+    render_snippets,
+    type_phrase,
+    typescript_literal,
+)
 from tests.tooling.test_data import WIDGETS_SAMPLE_URL, MakeCookbook
 
 # Each snippet file, by its path under `tests/snippets/<name>/`, with the fence its block has on the page and the prefix of its comment lines.
@@ -174,6 +184,38 @@ class TestRender:
             "tests/snippets/extract_widgets/python/snippet.py",
             "tests/snippets/extract_widgets/typescript/snippet.ts",
         ]
+
+    @pytest.mark.parametrize("extra_characters", [0, 1])
+    def test_a_sample_above_the_limit_is_fetched_by_every_snippet(self, make_cookbook: MakeCookbook, templates_dir: Path, extra_characters: int):
+        root = make_cookbook()
+        # `{"text": "…"}` serialises to the text's length and twelve characters more.
+        text = "x" * (INLINE_INPUTS_LIMIT - 12 + extra_characters)
+        (root / "methods" / "count_words" / "inputs.json").write_text(json.dumps({"text": text}), encoding="utf-8")
+        cookbook = load_cookbook(root)
+        page = render_pages(cookbook=cookbook, templates_dir=templates_dir)[root / "methods" / "count_words" / "README.md"]
+        snippets = render_snippets(cookbook=cookbook, templates_dir=templates_dir)
+        typescript = snippets[root / "tests" / "snippets" / "count_words" / "typescript" / "snippet.ts"]
+        python = snippets[root / "tests" / "snippets" / "count_words" / "python" / "snippet.py"]
+        inputs_url = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.9.0/methods/count_words/inputs.json"
+        fetches = [
+            f"each snippet below fetches them from the method's [`inputs.json`]({inputs_url})",
+            f'const response = await fetch("{inputs_url}");\nconst inputs = (await response.json()) as Record<string, unknown>;',
+            "  inputs,\n",
+            f'    inputs = httpx.get("{inputs_url}").json()',
+            "            inputs=inputs,\n",
+            f"START=$(curl -sL {inputs_url} |\n  jq -c '{{method_ref: \"github.com/Pipelex/pipelex-cookbook/count_words@v0.9.0\", inputs: .}}' |",
+        ]
+        if extra_characters:
+            assert text not in page
+            assert all(fetch in page for fetch in fetches)
+            assert typescript.endswith(_fenced_block(page, language="ts"))
+            assert python.endswith(_fenced_block(page, language="python"))
+            assert '# dependencies = ["pipelex-sdk==0.12.0", "httpx>=0.25"]\n' in python
+        else:
+            assert page.count(text) == 3
+            assert not any(fetch in page for fetch in fetches)
+            assert "import httpx" not in python
+            assert '# dependencies = ["pipelex-sdk==0.12.0"]\n' in python
 
     def test_python_strings_are_quoted_as_ruff_quotes_them(self):
         assert python_literal("plain") == '"plain"'

@@ -27,6 +27,9 @@ from scripts.key import KeyLine
 PAGE_TEMPLATE = "method_page.md.j2"
 # Each file `make render` writes in a method's `tests/snippets/<name>/`, mapped to the template writing it around the page's snippet.
 SNIPPET_TEMPLATES = {"typescript/snippet.ts": "snippets/file.ts.j2", "python/snippet.py": "snippets/file.py.j2"}
+# The most characters of sample inputs, serialised as JSON, that the code snippets write out. Above it, every snippet fetches the inputs from
+# the method's `inputs.json` at the page's tag instead, since a sample written out in three languages would bury the page's doors.
+INLINE_INPUTS_LIMIT = 4096
 FRONT_PAGE_FILE = "README.md"
 FRONT_REGION_TEMPLATE = "front_region.md.j2"
 FRONT_REGION_BEGIN = "<!-- BEGIN methods, written by `make render` from methods/ and cookbook.toml: never edit this region by hand -->"
@@ -84,6 +87,7 @@ class PageContext(BaseModel):
     returns: str
     returns_fields: list[str]
     chatbot: str
+    fetches_inputs: bool
     inputs_typescript: str
     inputs_python: str
     start_body_json: str
@@ -230,6 +234,7 @@ def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageCon
         if [contract_field.name for contract_field in contract.output.fields] == _TEXT_ONLY_FIELDS
         else [_field_line(contract_field) for contract_field in contract.output.fields],
         chatbot=chatbot,
+        fetches_inputs=len(json.dumps(snippet_inputs, ensure_ascii=False)) > INLINE_INPUTS_LIMIT,
         inputs_typescript=_indent_continuation(typescript_literal(snippet_inputs), prefix="  "),
         inputs_python=_indent_continuation(python_literal(snippet_inputs), prefix="            "),
         start_body_json=_shell_single_quote(json.dumps({"method_ref": address, "inputs": snippet_inputs}, ensure_ascii=False)),

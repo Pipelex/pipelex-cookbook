@@ -31,7 +31,7 @@ What a page says about its method comes from the package:
 
 - **The address** is `address/name@tag`, where the tag is `v` followed by the version in `pyproject.toml`. On `dev` that is the latest release, since each release is merged back into `dev`; on a release branch it is the release being cut, and the release commit re-renders every page. A method added since the last release therefore names that release's tag, which does not hold it: `check-links` reports its links as not published and `check-addresses` its address as not released, rather than as broken, and the next release re-renders its page at the new tag.
 - **"Takes" and "Returns"** come from the contract snapshot.
-- **The samples and the code snippets' inputs** come from `inputs.json`.
+- **The samples and the code snippets' inputs** come from `inputs.json`. When the inputs, written as JSON, run longer than `INLINE_INPUTS_LIMIT` in `scripts/render.py`, the snippets do not write them out: the TypeScript, Python and HTTP snippets all fetch them from the raw `inputs.json` at the page's tag, the file "Run it on your own machine" links and `make check-links` fetches, and send them as they are, `{concept, content}` wrappers included.
 - **"What you get"** is the answer key's `## Must` lines. The page shows them without the planted facts, so each Must line states its facts in full; the renderer refuses one that cites a planted fact such as `F2`.
 - **The title, the pitch, the chatbot sentence and the "Make it yours" change** come from the method's entry in `cookbook.toml`. Every field is optional: a method with no entry gets its title and pitch from its manifest and a default sentence for the rest.
 
