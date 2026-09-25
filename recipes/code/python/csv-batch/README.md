@@ -20,7 +20,7 @@ export PIPELEX_API_KEY=…
 uv run batch.py invoices.csv --output results.csv --concurrency 4
 ```
 
-`invoices.csv` holds two sample invoices from the cookbook's `assets/`, linked at the release tag `v0.18.0`. Point the script at your own CSV: it reads the `invoice_url` column, and each URL must be one the hosted API can fetch, such as a public link or a presigned URL.
+`invoices.csv` holds two sample invoices from the cookbook's `assets/`, linked at the release tag `v0.18.0`. Point the script at your own CSV: it reads the `invoice_url` column, refusing a CSV that has none, and each URL must be one the hosted API can fetch, such as a public link or a presigned URL.
 
 ## What you get
 
@@ -41,6 +41,8 @@ invoice_url,vendor,invoice_number,issue_date,amount_excl_tax,vat_amount,amount_i
 …/restaurant_invoice.pdf,JFK 5B Food Hall,JFK5BFDH6707,2025-03-09,8.88,0.81,9.96,run_…,
 …/invoice_1.pdf,Johnny Rockets,2080,2025-03-11,27.94,2.34,30.28,run_…,
 ```
+
+A text cell that starts like a spreadsheet formula, with `=`, `+`, `-` or `@`, is written with a leading apostrophe, so an invoice whose vendor name reads `=HYPERLINK(...)` stays a text in the spreadsheet you open the results in. The amounts are numbers and are written as they are.
 
 Progress goes to the terminal as each run starts and ends, and the last line counts the invoices written and the documents that gave none.
 

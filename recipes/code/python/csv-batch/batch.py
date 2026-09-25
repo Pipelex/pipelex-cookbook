@@ -31,6 +31,8 @@ from generated.invoice_extraction.models import Invoice
 METHOD_REF = "github.com/Pipelex/methods/invoice_extraction@v0.1.1"
 URL_COLUMN = "invoice_url"
 OUTPUT_COLUMNS = ["invoice_url", "vendor", "invoice_number", "issue_date", "amount_excl_tax", "vat_amount", "amount_incl_tax", "run_id", "error"]
+# What a spreadsheet may read as the start of a formula, per OWASP's guidance on CSV injection.
+FORMULA_STARTS = ("=", "+", "-", "@", "\t", "\r", "\n")
 
 
 class InvoiceList(BaseModel):
@@ -83,6 +85,20 @@ async def extract_all(urls: list[str], *, concurrency: int) -> list[dict[str, An
     return [row for rows in per_url for row in rows]
 
 
+def inert_text(text: str) -> str:
+    """Keep a cell a text when a spreadsheet opens the results.
+
+    A vendor's name or an invoice number is read from the document, so a hostile invoice can make it start like a formula,
+    `=HYPERLINK(...)` for instance, which a spreadsheet opening results.csv would evaluate. A leading apostrophe keeps it a text.
+    """
+    return f"'{text}" if text.lstrip(" ").startswith(FORMULA_STARTS) else text
+
+
+def spreadsheet_safe(row: dict[str, Any]) -> dict[str, Any]:
+    """The row with every text cell made inert; the amounts are numbers, so a credit note's negative total stays one."""
+    return {column: inert_text(value) if isinstance(value, str) else value for column, value in row.items()}
+
+
 def positive_int(value: str) -> int:
     number = int(value)
     if number < 1:
@@ -99,13 +115,17 @@ def main() -> None:
     arguments = parser.parse_args()
 
     with arguments.input.open(newline="", encoding="utf-8") as input_file:
-        urls = [row[URL_COLUMN].strip() for row in csv.DictReader(input_file) if row.get(URL_COLUMN, "").strip()]
+        reader = csv.DictReader(input_file)
+        if URL_COLUMN not in (reader.fieldnames or []):
+            parser.error(f"{arguments.input} has no {URL_COLUMN} column: name the column holding the invoices' links {URL_COLUMN}")
+        # A row shorter than the header has no cell for the column, which reads as an empty one.
+        urls = [url for row in reader if (url := (row.get(URL_COLUMN) or "").strip())]
     rows = asyncio.run(extract_all(urls, concurrency=arguments.concurrency))
 
     with arguments.output.open("w", newline="", encoding="utf-8") as output_file:
         writer = csv.DictWriter(output_file, fieldnames=OUTPUT_COLUMNS)
         writer.writeheader()
-        writer.writerows(rows)
+        writer.writerows(spreadsheet_safe(row) for row in rows)
     without_invoice = sum(1 for row in rows if row.get("error"))
     print(f"{arguments.output}: {len(rows) - without_invoice} invoice(s) from {len(urls)} document(s), {without_invoice} document(s) without one")
 
