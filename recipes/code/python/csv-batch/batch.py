@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["pipelex-sdk==0.12.0", "mthds>=0.15", "httpx>=0.24", "pydantic>=2.10.6"]
+# dependencies = ["pipelex-sdk==0.12.0", "mthds>=0.15", "httpx>=0.25", "pydantic>=2.10.6"]
 # ///
 """Extract every invoice a CSV lists, a few at a time, and write what each one says to a results CSV.
 

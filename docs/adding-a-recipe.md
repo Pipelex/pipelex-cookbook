@@ -30,7 +30,7 @@ One script, `<recipe>/<name>.py`, that a reader runs with `uv run <name>.py`:
   ```python
   # /// script
   # requires-python = ">=3.11"
-  # dependencies = ["pipelex-sdk==0.12.0", "httpx>=0.24", "pydantic>=2.10.6"]
+  # dependencies = ["pipelex-sdk==0.12.0", "httpx>=0.25", "pydantic>=2.10.6"]
   # ///
   ```
 

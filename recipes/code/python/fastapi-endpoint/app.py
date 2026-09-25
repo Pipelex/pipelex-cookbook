@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["pipelex-sdk==0.12.0", "fastapi>=0.115", "uvicorn>=0.30", "mthds>=0.15", "httpx>=0.24", "pydantic>=2.10.6"]
+# dependencies = ["pipelex-sdk==0.12.0", "fastapi>=0.115", "uvicorn>=0.30", "mthds>=0.15", "httpx>=0.25", "pydantic>=2.10.6"]
 # ///
 """An HTTP endpoint that answers a question from documents, typed end to end by the method it runs.
 

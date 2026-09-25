@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["pipelex-sdk==0.12.0", "httpx>=0.24", "pydantic>=2.10.6"]
+# dependencies = ["pipelex-sdk==0.12.0", "httpx>=0.25", "pydantic>=2.10.6"]
 # ///
 """Turn a week of a Discord server's messages into an HTML newsletter, and post it where your readers are.
 
