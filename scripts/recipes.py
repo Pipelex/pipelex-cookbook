@@ -249,6 +249,10 @@ def _package_problems(package_dir: Path, *, root: Path, trees: list[RecipeTree])
     problems: list[str] = []
     if SDK_PACKAGE not in manifest.dependencies:
         problems.append(f"{where}: its dependencies do not name {SDK_PACKAGE}")
+    # A recipe package is a code recipe, which carries generated types, so it needs the gate over them even when no tree is found: `make
+    # check-recipe-types` runs the script only if it is present, since the snippets' package has none.
+    if CODEGEN_CHECK_SCRIPT not in manifest.scripts:
+        problems.append(f"{where}: it has no `{CODEGEN_CHECK_SCRIPT}` script, the gate over its generated types")
     # Each word of the script read as a path, so `./generated/<method>/` names the same tree as `generated/<method>`, as it does to the gate.
     checked = {PurePosixPath(word).as_posix() for word in manifest.scripts.get(CODEGEN_CHECK_SCRIPT, "").split()}
     for tree in trees:

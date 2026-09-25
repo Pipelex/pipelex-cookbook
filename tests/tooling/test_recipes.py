@@ -142,6 +142,16 @@ class TestRecipes:
         _typescript_recipe(tmp_path, codegen_check="node scripts/codegen-check.mjs ./generated/extract_gantt/")
         assert recipe_problems(tmp_path) == []
 
+    def test_a_package_without_a_codegen_gate_is_a_problem_even_with_no_tree(self, tmp_path: Path):
+        recipe = _typescript_recipe(tmp_path)
+        for generated_file in (recipe / "generated" / "extract_gantt").iterdir():
+            generated_file.unlink()
+        (recipe / "generated" / "extract_gantt").rmdir()
+        (recipe / "generated").rmdir()
+        (recipe / "package.json").write_text(json.dumps({"dependencies": {"@pipelex/sdk": "0.25.1"}, "scripts": {}}), encoding="utf-8")
+        [problem] = recipe_problems(tmp_path)
+        assert problem == "recipes/code/typescript/upload/package.json: it has no `codegen:check` script, the gate over its generated types"
+
     def test_an_unreadable_package_json_is_a_problem(self, tmp_path: Path):
         recipe = _typescript_recipe(tmp_path)
         (recipe / "package.json").write_text("{not json", encoding="utf-8")
