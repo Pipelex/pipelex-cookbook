@@ -81,13 +81,13 @@ make check-render             - Fail when a committed method page or snippet fil
 make check-lockstep           - Fail when a method manifest's version is not the cookbook's
 make check-links              - Fetch every sample URL in the packages, and every raw URL on the pages and in the recipes
 make check-recipes            - Fail when a recipe's generated types name no pinned address or one its code does not call, when a recipe names an unpinned address, or when its shell script does not parse
-make check-codegen            - Check every recipe's generated types against their codegen.lock (offline)
+make check-codegen            - Check the generated types of every recipe and page snippet against their codegen.lock (offline)
 make check-recipe-types       - Type-check every recipe and page snippet: each Python script with pyright in its own environment, each TypeScript package with tsc after its codegen gate, each recipe's shell script with shellcheck
 make check-cookbook           - The checks that need no key: the pages and their snippets, the manifests, the links and the recipes (what CI runs)
-make refresh                  - Write every method's contract.json and every recipe's generated types from production (needs PIPELEX_API_KEY)
+make refresh                  - Write every method's contract.json from production, render, then write every recipe's and page snippet's generated types (needs PIPELEX_API_KEY)
 make check-methods            - Validate every method on production from its files (needs PIPELEX_API_KEY)
 make check-addresses          - Validate every page's address at its tag, and every address a recipe names, on production (needs PIPELEX_API_KEY)
-make check-codegen-live       - Check that every recipe's types come from what its address resolves to today (needs PIPELEX_API_KEY)
+make check-codegen-live       - Check that every recipe's and page snippet's types come from what its sidecar names as it is today (needs PIPELEX_API_KEY)
 make check-hosted             - Every check that calls production, run by hand before each PR and at each release (needs PIPELEX_API_KEY)
 
 make format                   - format with ruff and plxt
@@ -258,9 +258,12 @@ validate-bundles: env
 # type-checked by pyright in the environment its inline dependencies describe, under
 # recipes/pyrightconfig.json. Each TypeScript recipe package is installed with npm ci from its own
 # lock, then runs its codegen:check script, the pipelex-integrate skill's gate, and tsc --noEmit.
-# The page snippets make render writes under tests/snippets/ are type-checked the same way: each
-# snippet.py by pyright in its own environment, and their one shared TypeScript package by tsc,
-# which has no codegen:check script of its own, since check-codegen checks every tree.
+# The page snippets make render writes under tests/snippets/ carry generated types too, whose
+# sidecars, which render writes as well, name the package's .mthds files rather than an address,
+# so refresh renders before it generates. They are type-checked the same way: each snippet.py by
+# pyright in its own environment, under tests/snippets/pyrightconfig.json, which extends the
+# recipes' and roots the import of its generated tree beside it, and their one shared TypeScript
+# package by tsc, which has no codegen:check script of its own, since check-codegen checks every tree.
 # Each recipe's shell script is parsed by `sh -n` within check-recipes and read by shellcheck within
 # check-recipe-types. Where shellcheck is not installed, check-recipe-types says so and goes on,
 # except in CI, where the runner image carries it and its absence fails the check.
@@ -288,15 +291,16 @@ check-recipes: env
 	$(VENV_PYTHON) -m scripts check-recipes
 
 check-codegen: env
-	$(call PRINT_TITLE,"Checking the generated types of every recipe against their codegen.lock")
-	@trees="$(RECIPE_TREES)" || exit 1; if [ -n "$$trees" ]; then $(RECIPE_CODEGEN) check $$trees; else echo "no recipe carries generated types"; fi
+	$(call PRINT_TITLE,"Checking the generated types of every recipe and page snippet against their codegen.lock")
+	@trees="$(RECIPE_TREES)" || exit 1; if [ -n "$$trees" ]; then $(RECIPE_CODEGEN) check $$trees; else echo "no recipe or page snippet carries generated types"; fi
 
 check-recipe-types: env
 	$(call PRINT_TITLE,"Type-checking the Python scripts and TypeScript packages of every recipe and page snippet and linting the shell scripts")
 	@scripts="$$($(VENV_PYTHON) -m scripts recipe-scripts)" || exit 1; status=0; for script in scripts/sdk/recipe_codegen.py $$scripts; do \
 		echo "· $$script"; \
 		uv sync --quiet --script "$$script" || { status=1; continue; }; \
-		$(VENV_PYRIGHT) -p recipes/pyrightconfig.json --pythonpath "$$(uv python find --script "$$script")" "$$script" || status=1; \
+		config=recipes/pyrightconfig.json; case "$$script" in tests/snippets/*) config=tests/snippets/pyrightconfig.json;; esac; \
+		$(VENV_PYRIGHT) -p "$$config" --pythonpath "$$(uv python find --script "$$script")" "$$script" || status=1; \
 	done; \
 	packages="$$($(VENV_PYTHON) -m scripts recipe-packages)" || exit 1; for package in $$packages; do \
 		echo "· $$package"; \
@@ -312,8 +316,9 @@ check-cookbook: check-render check-lockstep check-links check-recipes check-code
 	@echo "> done: check-cookbook"
 
 refresh: env
-	$(call PRINT_TITLE,"Refreshing from production the contract snapshot of every method and the types of every recipe")
+	$(call PRINT_TITLE,"Refreshing every contract from production, then the pages, then every generated tree")
 	$(VENV_PYTHON) -m scripts refresh
+	$(VENV_PYTHON) -m scripts render
 	@trees="$(RECIPE_TREES)" || exit 1; if [ -n "$$trees" ]; then $(RECIPE_CODEGEN) generate $$trees; fi
 
 check-methods: env
@@ -325,8 +330,8 @@ check-addresses: env
 	$(VENV_PYTHON) -m scripts check-addresses
 
 check-codegen-live: env
-	$(call PRINT_TITLE,"Checking on production that the types of every recipe come from what its address resolves to")
-	@trees="$(RECIPE_TREES)" || exit 1; if [ -n "$$trees" ]; then $(RECIPE_CODEGEN) verify $$trees; else echo "no recipe carries generated types"; fi
+	$(call PRINT_TITLE,"Checking on production that every generated tree comes from what its sidecar names")
+	@trees="$(RECIPE_TREES)" || exit 1; if [ -n "$$trees" ]; then $(RECIPE_CODEGEN) verify $$trees; else echo "no recipe or page snippet carries generated types"; fi
 
 check-hosted: check-methods check-addresses check-codegen-live
 	@echo "> done: check-hosted"

@@ -12,3 +12,9 @@ const result = await client.startAndWaitForResult({
   },
 });
 console.log(result.main_stuff);
+
+// Not on the page: the output read through the types `make refresh` generates from the package's .mthds files into
+// generated/extract_gantt/, so that tsc holds the page's call to the concept its "Returns" line names.
+import { parseGanttChart } from "./generated/extract_gantt/binder";
+
+const output = parseGanttChart(result.main_stuff);

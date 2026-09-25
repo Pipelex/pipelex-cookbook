@@ -12,3 +12,9 @@ const result = await client.startAndWaitForResult({
   },
 });
 console.log(result.main_stuff);
+
+// Not on the page: the output read through the types `make refresh` generates from the package's .mthds files into
+// generated/research_report/, so that tsc holds the page's call to the concept its "Returns" line names.
+import { parseFormattedReport } from "./generated/research_report/binder";
+
+const output = parseFormattedReport(result.main_stuff);

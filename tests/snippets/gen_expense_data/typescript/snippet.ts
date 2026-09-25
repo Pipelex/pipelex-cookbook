@@ -12,3 +12,20 @@ const result = await client.startAndWaitForResult({
   },
 });
 console.log(result.main_stuff);
+
+// Not on the page: the output read through the types `make refresh` generates from the package's .mthds files into
+// generated/gen_expense_data/, so that tsc holds the page's call to the concept its "Returns" line names.
+import { parseEmployeeExpenseReport } from "./generated/gen_expense_data/binder";
+
+/** The items of a list output: the SDK documents the envelope {"items": [...]}, while the hosted API answers a bare list today. */
+function listItems(mainStuff: unknown): unknown[] {
+  if (Array.isArray(mainStuff)) {
+    return mainStuff;
+  }
+  if (typeof mainStuff === "object" && mainStuff !== null && "items" in mainStuff && Array.isArray(mainStuff.items)) {
+    return mainStuff.items;
+  }
+  throw new Error('expected a list output, bare or as {"items": [...]}');
+}
+
+const output = listItems(result.main_stuff).map((item) => parseEmployeeExpenseReport(item));

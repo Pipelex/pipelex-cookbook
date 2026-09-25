@@ -12,3 +12,9 @@ const result = await client.startAndWaitForResult({
   },
 });
 console.log(result.main_stuff);
+
+// Not on the page: the output read through the types `make refresh` generates from the package's .mthds files into
+// generated/extract_slides/, so that tsc holds the page's call to the concept its "Returns" line names.
+import { parseText } from "./generated/extract_slides/binder";
+
+const output = parseText(result.main_stuff);

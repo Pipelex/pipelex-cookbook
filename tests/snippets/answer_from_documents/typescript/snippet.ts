@@ -17,3 +17,9 @@ const result = await client.startAndWaitForResult({
   },
 });
 console.log(result.main_stuff);
+
+// Not on the page: the output read through the types `make refresh` generates from the package's .mthds files into
+// generated/answer_from_documents/, so that tsc holds the page's call to the concept its "Returns" line names.
+import { parseDocumentAnswer } from "./generated/answer_from_documents/binder";
+
+const output = parseDocumentAnswer(result.main_stuff);

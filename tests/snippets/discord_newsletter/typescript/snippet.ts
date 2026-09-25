@@ -10,3 +10,9 @@ const result = await client.startAndWaitForResult({
   inputs,
 });
 console.log(result.main_stuff);
+
+// Not on the page: the output read through the types `make refresh` generates from the package's .mthds files into
+// generated/discord_newsletter/, so that tsc holds the page's call to the concept its "Returns" line names.
+import { parseHtmlNewsletter } from "./generated/discord_newsletter/binder";
+
+const output = parseHtmlNewsletter(result.main_stuff);

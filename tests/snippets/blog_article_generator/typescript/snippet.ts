@@ -16,3 +16,9 @@ const result = await client.startAndWaitForResult({
   },
 });
 console.log(result.main_stuff);
+
+// Not on the page: the output read through the types `make refresh` generates from the package's .mthds files into
+// generated/blog_article_generator/, so that tsc holds the page's call to the concept its "Returns" line names.
+import { parseBlogArticle } from "./generated/blog_article_generator/binder";
+
+const output = parseBlogArticle(result.main_stuff);

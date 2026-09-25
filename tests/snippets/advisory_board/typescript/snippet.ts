@@ -10,3 +10,9 @@ const result = await client.startAndWaitForResult({
   },
 });
 console.log(result.main_stuff);
+
+// Not on the page: the output read through the types `make refresh` generates from the package's .mthds files into
+// generated/advisory_board/, so that tsc holds the page's call to the concept its "Returns" line names.
+import { parseMarkdownReport } from "./generated/advisory_board/binder";
+
+const output = parseMarkdownReport(result.main_stuff);
