@@ -12,7 +12,7 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/research_report@v0.19.0",
+            method_ref="github.com/Pipelex/pipelex-cookbook/research_report@v0.19.1",
             inputs={
                 "question": {
                     "text": "What are the most promising approaches to improving battery energy density for electric vehicles?",

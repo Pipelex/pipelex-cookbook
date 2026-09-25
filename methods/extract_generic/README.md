@@ -4,7 +4,7 @@
 
 Read any document and return each page as Markdown, including the text that only appears inside its images and diagrams.
 
-`github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.0` · [bundle.mthds](bundle.mthds) · [sample article](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_generic/fintech_article_with_text_in_images.pdf)
+`github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.1` · [bundle.mthds](bundle.mthds) · [sample article](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_generic/fintech_article_with_text_in_images.pdf)
 
 **Takes** `document`, a document (`Document`).
 
@@ -14,7 +14,9 @@ Read any document and return each page as Markdown, including the text that only
 
 With the Pipelex MCP in ChatGPT or Claude ([add it once](https://github.com/Pipelex/pipelex-mcp)), ask:
 
-> Run github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.0 on https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_generic/fintech_article_with_text_in_images.pdf
+```text
+Run github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.1 on https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_generic/fintech_article_with_text_in_images.pdf
+```
 
 In ChatGPT you can attach your own file instead of the link; Claude takes a link. In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pipelex-plugins), the same sentence runs through `/pipelex-run`.
 
@@ -34,7 +36,7 @@ import { PipelexApiClient } from "@pipelex/sdk";
 
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.0",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.1",
   inputs: {
     document: {
       url: "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_generic/fintech_article_with_text_in_images.pdf",
@@ -62,7 +64,7 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.0",
+            method_ref="github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.1",
             inputs={
                 "document": {
                     "url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_generic/fintech_article_with_text_in_images.pdf",
@@ -85,7 +87,7 @@ The start call answers at once with the run's id, or with the reason it refused 
 ```bash
 START=$(curl -s https://api.pipelex.com/v1/start \
   -H "Authorization: Bearer $PIPELEX_API_KEY" -H "Content-Type: application/json" \
-  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.0", "inputs": {"document": {"url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_generic/fintech_article_with_text_in_images.pdf"}}}')
+  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.1", "inputs": {"document": {"url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_generic/fintech_article_with_text_in_images.pdf"}}}')
 RUN_ID=$(printf '%s' "$START" | jq -r '.pipeline_run_id // empty')
 if [ -z "$RUN_ID" ]; then printf '%s\n' "$START"; else
   until [ "$(curl -s -o results.json -w '%{http_code}' https://api.pipelex.com/v1/runs/$RUN_ID/results \
@@ -96,12 +98,12 @@ fi
 
 </details>
 
-In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.0`: it generates the result's types and writes one typed call.
+In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.1`: it generates the result's types and writes one typed call.
 
 ## Make it an app
 
 ```bash
-npm create @pipelex/method-app@latest extract-app -- --method github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.0
+npm create @pipelex/method-app@latest extract-app -- --method github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.1
 make -C extract-app serve
 ```
 
@@ -109,29 +111,19 @@ The form and the result view come from the method's contract. `make serve` print
 
 ## Make it yours
 
-Ask your agent: "Copy github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.0 into ./extract, turn the tables it finds into CSV alongside the Markdown, prove it on the sample, and save it to my Pipelex account." From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
+Ask your agent:
 
-This is done by hand today: the agent copies the package, changes it with `/pipelex-edit`, which hands a change to what the method takes or returns to `/pipelex-design`, proves it with `/pipelex-run`, and saves the directory as a new method with `/pipelex-catalog`. The saved method keeps no record of the address it came from, since no gesture yet saves a published method into your account in one step.
+```text
+Copy github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.1 into ./extract, turn the tables it finds into CSV alongside the Markdown, prove it on the sample, and save it to my Pipelex account.
+```
 
-## What you get
-
-The method's [answer key](key.md), written before its first run, says what a right answer on the sample holds:
-
-- The output is a list of two texts, one per page, the first page's first.
-- The first page's `text` opens with the title "QuantumFlex: Revolutionizing the Financial Technology Landscape" as a heading, followed by headings for Introduction, The Technology Behind QuantumFlex and Market applications.
-- The first page's `text` says the Boston-based startup NexaCore secured $87 million in Series B funding led by Vertex Ventures and Sequoia Capital.
-- The first page's `text` names the Neural Quantum Mesh (NQM) architecture and Dr. Amara Chen as NexaCore's Chief Technology Officer.
-- The first page's `text` gives, under Market applications, the three applications drawn in the circles, each with its description: RiskSphere, a quantum-enhanced risk assessment tool that dynamically evaluates portfolios; MarketPulse, a predictive analytics engine that forecasts market movements by analyzing quantum correlations; AlphaQuant, an investment strategy optimizer that automatically rebalances portfolios based on quantum probability distributions.
-- The second page's `text` has headings for Industry Response, Future Developments, Challenges and Concerns and Conclusion, in that order.
-- The second page's `text` gives Vanessa Rodriguez's quote as one continuous passage under Future Developments, running from "Our vision extends beyond institutional finance" to "through partnerships with major retail banks."
-- The second page's `text` keeps the paragraph on a cloud-based API for third-party developers under Future Developments, before Challenges and Concerns.
-- The second page's `text` names Marcus Blakely of Goldman Sachs, the Quantum Finance Working Group, the SEC and Dr. Jason Mendoza of the CyberDefend Institute.
+From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
 
 ## Run it on your own machine
 
 With the Pipelex runtime and your own provider keys ([set it up](https://docs.pipelex.com/latest/get-started/run-it-yourself/)):
 
 ```bash
-curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.19.0/methods/extract_generic/inputs.json
-pipelex run method github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.0 --inputs inputs.json
+curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.19.1/methods/extract_generic/inputs.json
+pipelex run method github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.1 --inputs inputs.json
 ```

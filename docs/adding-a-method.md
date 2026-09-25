@@ -31,7 +31,7 @@ Create `methods/<name>/`, where `<name>` is snake_case and becomes the last part
 
 `methods/<name>/key.md` lists what a right answer on the sample holds, in the format of the Pipelex lab skill (`/pipelex-lab`): `# Key: <case>`, an `Inputs:` line, then `## Planted facts`, `## Must`, `## Must not`, `## Also acceptable` and `## Pass bar`, every line labelled (`F1.`, `M1.`, `N1.`, `A1.`). One checkable fact per line, naming the output field it reads.
 
-Write it from the sample, before the method runs on it, so that the run is scored against it rather than the key fitted to the run. The page shows the `## Must` lines as "What you get", on their own, so each Must line states its facts in full rather than citing a planted fact.
+Write it from the sample, before the method runs on it, so that the run is scored against it rather than the key fitted to the run.
 
 ## 3. Prove it on production
 

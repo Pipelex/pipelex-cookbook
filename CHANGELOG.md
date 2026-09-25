@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.19.1] - 2026-09-25
+
+### Changed
+
+- **A method page is about using the method**: the sentence for the chatbot and the instruction for the agent in "Make it yours" each sit in their own code block, ready to copy; "Make it yours" no longer explains which Pipelex skills the agent chains; and the page no longer shows the answer key's lines as "What you get". Each package still carries its `key.md`, which checks a run on the sample.
+
 ## [v0.19.0] - 2026-09-25
 
 ### Highlights

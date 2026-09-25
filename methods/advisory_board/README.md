@@ -4,7 +4,7 @@
 
 Read a business problem told in plain words, consult five to ten expert advisory boards on it, and return one strategic report in Markdown with their consensus, the choices they disagree on, a phased roadmap, risks, resources and success metrics.
 
-`github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.0` · [bundle.mthds](bundle.mthds) · [presentation.mthds](presentation.mthds)
+`github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.1` · [bundle.mthds](bundle.mthds) · [presentation.mthds](presentation.mthds)
 
 **Takes** `user_input`, a text (`Text`).
 
@@ -14,7 +14,9 @@ Read a business problem told in plain words, consult five to ten expert advisory
 
 With the Pipelex MCP in ChatGPT or Claude ([add it once](https://github.com/Pipelex/pipelex-mcp)), ask:
 
-> Run github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.0 on this problem: "We're a B2B SaaS company with $5M ARR whose annual churn rose from 8% to 15%. How do we get it under 10% within six months on a $500K budget?"
+```text
+Run github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.1 on this problem: "We're a B2B SaaS company with $5M ARR whose annual churn rose from 8% to 15%. How do we get it under 10% within six months on a $500K budget?"
+```
 
 In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pipelex-plugins), the same sentence runs through `/pipelex-run`.
 
@@ -34,7 +36,7 @@ import { PipelexApiClient } from "@pipelex/sdk";
 
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.0",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.1",
   inputs: {
     user_input: "We're a mid-stage B2B SaaS company (50 employees, $5M ARR) facing declining customer retention. Our churn rate has increased from 8% to 15% annually over the past 6 months.\n\nKey challenges:\n- Customer onboarding takes 4-6 weeks (industry average is 2-3 weeks)\n- Support response time averages 24 hours\n- Feature adoption is low - only 30% of customers use our advanced features\n- Competition from 3 new entrants with better UX\n\nOur goal is to reduce churn to under 10% within 6 months while maintaining growth targets.\nWe have a budget of $500K and need to prioritize initiatives that will have the biggest impact.\n\nCurrent team: 8 engineers, 4 sales, 3 marketing, 2 customer success, 5 operations.\nKey stakeholders: CEO, VP Product, VP Sales, Head of Customer Success.",
   },
@@ -60,7 +62,7 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.0",
+            method_ref="github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.1",
             inputs={
                 "user_input": "We're a mid-stage B2B SaaS company (50 employees, $5M ARR) facing declining customer retention. Our churn rate has increased from 8% to 15% annually over the past 6 months.\n\nKey challenges:\n- Customer onboarding takes 4-6 weeks (industry average is 2-3 weeks)\n- Support response time averages 24 hours\n- Feature adoption is low - only 30% of customers use our advanced features\n- Competition from 3 new entrants with better UX\n\nOur goal is to reduce churn to under 10% within 6 months while maintaining growth targets.\nWe have a budget of $500K and need to prioritize initiatives that will have the biggest impact.\n\nCurrent team: 8 engineers, 4 sales, 3 marketing, 2 customer success, 5 operations.\nKey stakeholders: CEO, VP Product, VP Sales, Head of Customer Success.",
             },
@@ -81,7 +83,7 @@ The start call answers at once with the run's id, or with the reason it refused 
 ```bash
 START=$(curl -s https://api.pipelex.com/v1/start \
   -H "Authorization: Bearer $PIPELEX_API_KEY" -H "Content-Type: application/json" \
-  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.0", "inputs": {"user_input": "We'\''re a mid-stage B2B SaaS company (50 employees, $5M ARR) facing declining customer retention. Our churn rate has increased from 8% to 15% annually over the past 6 months.\n\nKey challenges:\n- Customer onboarding takes 4-6 weeks (industry average is 2-3 weeks)\n- Support response time averages 24 hours\n- Feature adoption is low - only 30% of customers use our advanced features\n- Competition from 3 new entrants with better UX\n\nOur goal is to reduce churn to under 10% within 6 months while maintaining growth targets.\nWe have a budget of $500K and need to prioritize initiatives that will have the biggest impact.\n\nCurrent team: 8 engineers, 4 sales, 3 marketing, 2 customer success, 5 operations.\nKey stakeholders: CEO, VP Product, VP Sales, Head of Customer Success."}}')
+  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.1", "inputs": {"user_input": "We'\''re a mid-stage B2B SaaS company (50 employees, $5M ARR) facing declining customer retention. Our churn rate has increased from 8% to 15% annually over the past 6 months.\n\nKey challenges:\n- Customer onboarding takes 4-6 weeks (industry average is 2-3 weeks)\n- Support response time averages 24 hours\n- Feature adoption is low - only 30% of customers use our advanced features\n- Competition from 3 new entrants with better UX\n\nOur goal is to reduce churn to under 10% within 6 months while maintaining growth targets.\nWe have a budget of $500K and need to prioritize initiatives that will have the biggest impact.\n\nCurrent team: 8 engineers, 4 sales, 3 marketing, 2 customer success, 5 operations.\nKey stakeholders: CEO, VP Product, VP Sales, Head of Customer Success."}}')
 RUN_ID=$(printf '%s' "$START" | jq -r '.pipeline_run_id // empty')
 if [ -z "$RUN_ID" ]; then printf '%s\n' "$START"; else
   until [ "$(curl -s -o results.json -w '%{http_code}' https://api.pipelex.com/v1/runs/$RUN_ID/results \
@@ -92,12 +94,12 @@ fi
 
 </details>
 
-In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.0`: it generates the result's types and writes one typed call.
+In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.1`: it generates the result's types and writes one typed call.
 
 ## Make it an app
 
 ```bash
-npm create @pipelex/method-app@latest advisory-app -- --method github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.0
+npm create @pipelex/method-app@latest advisory-app -- --method github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.1
 make -C advisory-app serve
 ```
 
@@ -105,36 +107,19 @@ The form and the result view come from the method's contract. `make serve` print
 
 ## Make it yours
 
-Ask your agent: "Copy github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.0 into ./advisory-board, replace the sixteen boards it can consult with the teams of your own company, prove it on the sample, and save it to my Pipelex account." From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
+Ask your agent:
 
-This is done by hand today: the agent copies the package, changes it with `/pipelex-edit`, which hands a change to what the method takes or returns to `/pipelex-design`, proves it with `/pipelex-run`, and saves the directory as a new method with `/pipelex-catalog`. The saved method keeps no record of the address it came from, since no gesture yet saves a published method into your account in one step.
+```text
+Copy github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.1 into ./advisory-board, replace the sixteen boards it can consult with the teams of your own company, prove it on the sample, and save it to my Pipelex account.
+```
 
-## What you get
-
-The method's [answer key](key.md), written before its first run, says what a right answer on the sample holds:
-
-- The output is one Markdown document organised under headings, starting directly with the report.
-- The report opens with an executive summary.
-- The report restates the problem with its figures: annual churn up from 8% to 15%, and the goal of bringing it under 10% within six months.
-- The report lists the boards consulted, between five and ten of them, each one of the sixteen the method offers: Executive Leadership, Product Management, GTM, Engineering & Technology, Operation & Infra, Supply Chain & Procurement, Marketing & Communication, Sales & Business Operation, Growth Consulting, Customer Success & Support, Finance & Corporate Development, HR & People, Design & UX, Data Science & Analytics, Legal & Compliance, and Security & Risk Management (in any close wording, with or without "Advisory Board").
-- The Customer Success & Support board is among the boards consulted.
-- The report names its top three consensus recommendations.
-- At least one recommendation targets onboarding, which the problem puts at 4 to 6 weeks against an industry average of 2 to 3 weeks.
-- At least one recommendation targets the 24-hour support response time or the 30% adoption of advanced features.
-- The consensus recommendations each name the boards supporting them and a confidence score or priority.
-- The report sets out at least one strategic choice where boards disagree, giving each side's position, the core tension and a way to decide.
-- The report gives insights by domain or functional area.
-- The implementation roadmap has three phases, covering the first 30 days, one to three months, and beyond three months (in any close wording), each with actions and who leads them.
-- The risk assessment lists risks each with a severity (high, medium or low), a mitigation and an owner.
-- The resource requirements name the budget the plan spends, together with the people or technology it needs.
-- The success metrics include churn, with a target under 10% within six months, and say how and how often each metric is measured.
-- The report ends with next steps and a review schedule.
+From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
 
 ## Run it on your own machine
 
 With the Pipelex runtime and your own provider keys ([set it up](https://docs.pipelex.com/latest/get-started/run-it-yourself/)):
 
 ```bash
-curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.19.0/methods/advisory_board/inputs.json
-pipelex run method github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.0 --inputs inputs.json
+curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.19.1/methods/advisory_board/inputs.json
+pipelex run method github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.1 --inputs inputs.json
 ```
