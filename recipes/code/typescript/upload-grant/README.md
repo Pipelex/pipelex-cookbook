@@ -2,9 +2,9 @@
 
 A method reads its documents and images from links the hosted API can fetch, and a file on your machine or in your visitor's browser has none. This recipe sends a local image of a Gantt chart to Pipelex storage through an upload grant, then runs the cookbook's [Gantt chart extraction](../../../../methods/extract_gantt/) on it and prints every task and milestone it reads.
 
-It shows the three steps of an upload:
+It shows the steps of an upload:
 
-- **The grant.** `requestUploadGrant` asks the hosted API for a one-time place to put one file of a given name, type and size. It is the only step that needs the API key.
+- **The grant.** `requestUploadGrant` asks the hosted API for a one-time place to put one file of a given name, type and size. It is the only step of the upload itself that needs the API key, and the run that follows needs it too.
 - **The upload.** `uploadWithGrant` sends the bytes straight to storage with the grant, not through the API. In a web app, the server asks for the grant and the browser does this step, with `uploadWithGrant` from `@pipelex/sdk/upload`, the SDK's browser-safe entry, so the file never passes through your server and the key never reaches the browser.
 - **The run.** The upload answers with a storage uri, `pipelex-storage://…`, which the method reads as the image's `url`.
 

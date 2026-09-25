@@ -126,6 +126,10 @@ class TestRecipes:
         [problem] = recipe_problems(tmp_path)
         assert "its `codegen:check` script does not check generated/extract_gantt" in problem
 
+    def test_a_codegen_gate_naming_its_tree_by_another_spelling_of_the_path_is_clean(self, tmp_path: Path):
+        _typescript_recipe(tmp_path, codegen_check="node scripts/codegen-check.mjs ./generated/extract_gantt/")
+        assert recipe_problems(tmp_path) == []
+
     def test_an_unreadable_package_json_is_a_problem(self, tmp_path: Path):
         recipe = _typescript_recipe(tmp_path)
         (recipe / "package.json").write_text("{not json", encoding="utf-8")

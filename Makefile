@@ -256,7 +256,8 @@ validate-bundles: env
 # against their codegen.lock (offline), and checks that the lock records what the address resolves
 # to today (keyed, within check-hosted). Each Python recipe script, and that script itself, is
 # type-checked by pyright in the environment its inline dependencies describe, under
-# recipes/pyrightconfig.json.
+# recipes/pyrightconfig.json. Each TypeScript recipe package is installed with npm ci from its own
+# lock, then runs its codegen:check script, the pipelex-integrate skill's gate, and tsc --noEmit.
 RECIPE_CODEGEN := uv run --quiet --script scripts/sdk/recipe_codegen.py
 RECIPE_TREES = $$($(VENV_PYTHON) -m scripts recipe-trees)
 

@@ -13,7 +13,7 @@ resolves to is `make check-codegen-live`, and whether the address resolves is `m
 """
 
 import re
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
@@ -143,7 +143,8 @@ def _package_problems(package_dir: Path, *, root: Path, trees: list[RecipeTree])
     problems: list[str] = []
     if SDK_PACKAGE not in manifest.dependencies:
         problems.append(f"{where}: its dependencies do not name {SDK_PACKAGE}")
-    checked = manifest.scripts.get(CODEGEN_CHECK_SCRIPT, "").split()
+    # Each word of the script read as a path, so `./generated/<method>/` names the same tree as `generated/<method>`, as it does to the gate.
+    checked = {PurePosixPath(word).as_posix() for word in manifest.scripts.get(CODEGEN_CHECK_SCRIPT, "").split()}
     for tree in trees:
         tree_path = tree.directory.relative_to(package_dir).as_posix()
         if tree_path not in checked:

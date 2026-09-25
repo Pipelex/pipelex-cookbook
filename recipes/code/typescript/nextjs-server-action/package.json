@@ -6,16 +6,15 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -H 127.0.0.1",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -H 127.0.0.1",
     "codegen:check": "node scripts/codegen-check.mjs generated/blog_article_generator",
     "typecheck": "tsc --noEmit",
     "check": "npm run codegen:check && npm run typecheck"
   },
   "dependencies": {
     "@pipelex/sdk": "0.25.1",
-    "mthds": "^0.25.0",
     "next": "^16.3.5",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
