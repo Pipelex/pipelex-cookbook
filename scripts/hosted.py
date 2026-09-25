@@ -1,6 +1,7 @@
 """The checks and the refresh that call production, which need `PIPELEX_API_KEY` and are run by hand (`make check-hosted`, `make refresh`).
 
-A package is validated from its files (`make check-methods`), and its page's address is validated at the page's tag (`make check-addresses`).
+A package is validated from its files (`make check-methods`), and so is each of the tutorial's bundles, alone; a page's address is validated at
+the page's tag (`make check-addresses`).
 
 Only `POST /v1/validate` is called, and no call spends inference. The call is made with `httpx`. The key is read from the environment and sent only
 as the `Authorization` header; nothing here prints it.
@@ -9,6 +10,7 @@ as the `Authorization` header; nothing here prints it.
 import os
 from collections.abc import Mapping
 from enum import StrEnum
+from pathlib import Path
 from typing import Any, cast
 
 import httpx
@@ -33,6 +35,16 @@ class MethodVerdict(BaseModel):
     is_valid: bool
     report: str
     contract: Contract | None
+
+
+class BundleVerdict(BaseModel):
+    """What production said of one bundle validated alone from its file, such as a tutorial lesson."""
+
+    model_config = ConfigDict(frozen=True)
+
+    source: str
+    is_valid: bool
+    report: str
 
 
 class HostedClient:
@@ -106,6 +118,14 @@ def validate_package(*, client: HostedClient, package: MethodPackage) -> MethodV
         return MethodVerdict(name=package.name, is_valid=False, report=report, contract=None)
     main_pipe = package.manifest.main_pipe or ""
     return MethodVerdict(name=package.name, is_valid=True, report=report, contract=project_contract(verdict=verdict, main_pipe=main_pipe))
+
+
+def validate_bundle_file(*, client: HostedClient, path: Path, root: Path) -> BundleVerdict:
+    """Validate one self-contained bundle on production from its file, naming it by its path from the repository root."""
+    source = path.relative_to(root).as_posix()
+    verdict = client.validate_files(contents=[path.read_text(encoding="utf-8")], sources=[source])
+    report = str(verdict.get("rendered_markdown") or verdict.get("message") or "")
+    return BundleVerdict(source=source, is_valid=verdict.get("is_valid") is True, report=report)
 
 
 def validate_packages(*, cookbook: Cookbook, client: HostedClient) -> list[MethodVerdict]:

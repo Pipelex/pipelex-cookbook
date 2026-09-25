@@ -16,7 +16,16 @@ from pathlib import Path
 from scripts.checks import check_links, http_status, lockstep_problems, orphan_snippet_dirs, stale_pages
 from scripts.cookbook import Cookbook, load_cookbook
 from scripts.exceptions import CookbookError
-from scripts.hosted import AddressState, AddressVerdict, check_address, check_pinned_method_ref, client_from_env, validate_packages
+from scripts.hosted import (
+    AddressState,
+    AddressVerdict,
+    HostedClient,
+    check_address,
+    check_pinned_method_ref,
+    client_from_env,
+    validate_bundle_file,
+    validate_packages,
+)
 from scripts.library import LIBRARY_FILE, download, fetch_library, snapshot_is_current
 from scripts.recipes import (
     find_addresses,
@@ -29,6 +38,7 @@ from scripts.recipes import (
     typescript_packages,
 )
 from scripts.render import build_library_context, render_all, render_pages
+from scripts.tutorial import tutorial_bundles
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR_NAME = "templates"
@@ -68,7 +78,10 @@ def main(argv: list[str] | None = None) -> int:
         "check-library": "Fail when library.json differs from a fresh snapshot of the library's tarball at the tag cookbook.toml pins",
         "refresh": "Validate every package on production and write its contract.json (needs PIPELEX_API_KEY)",
         "refresh-library": "Take the method library's snapshot, library.json, from its tarball at the tag cookbook.toml pins",
-        "check-methods": "Validate every package on production from its files, and check its contract snapshot (needs PIPELEX_API_KEY)",
+        "check-methods": (
+            "Validate every package on production from its files, and check its contract snapshot, "
+            "then every tutorial bundle from its file (needs PIPELEX_API_KEY)"
+        ),
         "check-addresses": (
             "Validate every address on production: each page's at its tag, each recipe's as it pins it, "
             "and each library method's the front page lists (needs PIPELEX_API_KEY)"
@@ -207,6 +220,11 @@ def _refresh_library(cookbook: Cookbook) -> int:
 
 def _check_methods(cookbook: Cookbook) -> int:
     client = client_from_env()
+    problems = _check_packages(cookbook, client) + check_tutorial(cookbook, client)
+    return 1 if problems else 0
+
+
+def _check_packages(cookbook: Cookbook, client: HostedClient) -> int:
     problems = 0
     for package, verdict in zip(cookbook.packages, validate_packages(cookbook=cookbook, client=client), strict=True):
         if verdict.contract is None:
@@ -217,7 +235,20 @@ def _check_methods(cookbook: Cookbook) -> int:
             print(f"✗ {package.name} is valid, but its contract.json no longer matches production: run `make refresh`, then `make render`")
         else:
             print(f"✓ {package.name} is valid on production, and its contract snapshot is current")
-    return 1 if problems else 0
+    return problems
+
+
+def check_tutorial(cookbook: Cookbook, client: HostedClient) -> int:
+    """Validate every tutorial bundle on production from its file, print one line for each, and return how many are not valid."""
+    problems = 0
+    for bundle_path in tutorial_bundles(cookbook.root):
+        verdict = validate_bundle_file(client=client, path=bundle_path, root=cookbook.root)
+        if verdict.is_valid:
+            print(f"✓ {verdict.source} is valid on production")
+        else:
+            problems += 1
+            print(f"✗ {verdict.source} is not valid on production:\n{verdict.report}")
+    return problems
 
 
 def _check_addresses(cookbook: Cookbook) -> int:

@@ -2,8 +2,7 @@
 
 Welcome to the Pipelex tutorials! Learn how to build AI pipelines step by step.
 
-
-> **Note**: The easiest way to create pipelines is with the [Pipe Builder](https://docs.pipelex.com/home/9-tools/pipe-builder/). These tutorials teach you the fundamentals by writing pipelines manually.
+> **Note**: The easiest way to make a method is to ask your coding agent, with the Pipelex plugin, as the cookbook's [front page](../README.md#try-a-method-in-a-minute) shows. These tutorials teach you to write one by hand, and to run it on your own machine.
 
 ## Tutorials
 
@@ -24,22 +23,30 @@ Welcome to the Pipelex tutorials! Learn how to build AI pipelines step by step.
 
 ```bash
 uv tool install pipelex
+pipelex init
+pipelex doctor
 ```
 
-**2. Get your API key**
+`pipelex init` writes your `~/.pipelex` configuration and offers to install the editor extension; `pipelex doctor` reports what is configured and what is missing. Some providers and features need an extra, such as the document extraction of the `3_document_qa` lesson: [Run It Yourself](https://docs.pipelex.com/latest/get-started/run-it-yourself/) lists them.
 
-Sign up at [app.pipelex.com](https://app.pipelex.com) to get **free API credits** with access to all models.
+**2. Give the runtime access to models**
 
-Add your key to `.env`:
+Bring your own provider keys, or run models locally: [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/) says how.
+
+**3. Get the tutorials**
+
 ```bash
-PIPELEX_GATEWAY_API_KEY=your_api_key_here
+git clone https://github.com/Pipelex/pipelex-cookbook.git
+cd pipelex-cookbook
 ```
 
-**3. Run your first tutorial**
+**4. Run your first tutorial**
 
 ```bash
 pipelex run bundle tutorial/easy/llm_basics/1_hello_world.mthds
 ```
+
+**The editor extension** highlights `.mthds` files and draws their flowcharts: the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=pipelex.pipelex), or the [Open VSX Registry](https://open-vsx.org/extension/Pipelex/pipelex) for Cursor, Windsurf and other VS Code forks. `pipelex init` offers to install it when it detects your IDE.
 
 ## Key Concepts
 
