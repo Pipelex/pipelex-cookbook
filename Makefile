@@ -288,7 +288,7 @@ refresh-library: env
 	$(VENV_PYTHON) -m scripts refresh-library
 
 refresh: env
-	$(call PRINT_TITLE,"Refreshing the snapshot of the library, every contract from production, and then the pages and every generated tree")
+	$(call PRINT_TITLE,"Refreshing the library snapshot and the contracts and pages and types")
 	$(VENV_PYTHON) -m scripts refresh-library
 	$(VENV_PYTHON) -m scripts refresh
 	$(VENV_PYTHON) -m scripts render
