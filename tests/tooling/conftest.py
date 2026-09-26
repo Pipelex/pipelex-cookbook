@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 
 from scripts.contract import Contract
+from tests.tooling.fake_api import FakeApi
 from tests.tooling.test_data import (
     COOKBOOK_TOML,
     FIXTURE_ADDRESS,
@@ -69,6 +70,12 @@ def write_package(
 @pytest.fixture
 def templates_dir() -> Path:
     return REPO_ROOT / "templates"
+
+
+@pytest.fixture
+def fake_api() -> FakeApi:
+    """A stand-in for production, with no answer queued yet: its `client` sends every call to it rather than to the network."""
+    return FakeApi()
 
 
 @pytest.fixture
