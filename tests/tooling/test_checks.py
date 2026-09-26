@@ -16,14 +16,14 @@ from scripts.checks import (
     stale_pages,
     stale_snapshots,
 )
-from scripts.contract import ContractInput
 from scripts.cookbook import load_cookbook
 from scripts.render import render_all, render_pages
 from tests.tooling.test_data import (
-    WIDGETS_CONTRACT,
     WIDGETS_OUTPUT,
     WIDGETS_SAMPLE_URL,
     MakeCookbook,
+    drop_widgets_record,
+    make_widgets_sample_a_document,
     make_widgets_sample_synthetic,
     png_bytes,
     write_snapshot,
@@ -234,17 +234,25 @@ class TestSampleAndSnapshotChecks:
 
     def test_a_document_sample_kept_here_needs_its_preview(self, make_cookbook: MakeCookbook):
         root = make_cookbook(with_sample=True)
-        contract = WIDGETS_CONTRACT.model_copy(
-            update={"inputs": [ContractInput(name="catalogue", concept="widgets.CataloguePage", kind="document", multiplicity="single")]}
-        )
-        (root / "methods" / "extract_widgets" / "contract.json").write_text(contract.to_json(), encoding="utf-8")
+        make_widgets_sample_a_document(root)
         problems = sample_problems(load_cookbook(root))
         assert (
             "methods/extract_widgets: the document sample assets/extract_widgets/catalogue.png has no preview, "
-            "assets/extract_widgets/catalogue.preview.png; `make snapshot METHOD=extract_widgets` renders it"
+            "assets/extract_widgets/catalogue.preview.png; `make previews` renders it, with no key and no run"
         ) in problems
         (root / "assets" / "extract_widgets" / "catalogue.preview.png").write_bytes(b"png")
         assert len(sample_problems(load_cookbook(root))) == 1
+
+    def test_a_document_sample_without_its_record_is_reported_for_the_record_alone(self, make_cookbook: MakeCookbook):
+        root = make_cookbook(with_sample=True)
+        make_widgets_sample_a_document(root)
+        drop_widgets_record(root)
+        problems = sample_problems(load_cookbook(root))
+        assert (
+            "methods/extract_widgets: the sample input `catalogue` has no source-and-licence record "
+            "under [methods.extract_widgets.samples.catalogue] in cookbook.toml"
+        ) in problems
+        assert not [problem for problem in problems if "preview" in problem]
 
     def test_a_method_without_a_snapshot_is_a_problem(self, make_cookbook: MakeCookbook):
         root = make_cookbook(with_sample=True)

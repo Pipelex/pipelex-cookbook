@@ -2,8 +2,9 @@
 
 The sample is shown by the kind the contract gives each input: an image embedded, a document as its first-page preview linking to the file, prose
 as a quotation, a structure as a field and value table. The output is shown as a reader would use it: a flat structure as a field and value
-table, a list of structures as a table, Markdown text as Markdown under demoted headings and folded when long, HTML embedded without its head,
-styles and scripts, and a file the output holds as an embedded image or a link. Two hints of `[methods.<name>.output]` in `cookbook.toml` settle
+table, a list of structures as a table, Markdown text as Markdown under demoted headings, HTML embedded without its head, styles and scripts,
+and a file the output holds as an embedded image or a link. An output that renders longer than `OUTPUT_FOLD_LINES` lines is folded whole, under
+a summary naming it, so that the page's contract and doors stay near its top. Two hints of `[methods.<name>.output]` in `cookbook.toml` settle
 what the contract cannot: `formats`, how a text field reads, and `item_label`, the noun naming each item of a list output.
 
 The page's sentences, headings and links live in `templates/method_page.md.j2`; what is computed here is the method-specific Markdown.
@@ -24,9 +25,8 @@ from scripts.snapshot import OUTPUT_DIR, OutputSnapshot, SnapshotRoute, preview_
 # The page's own sections are `##`, so a heading the output holds starts at `###`, and at `####` inside an item of a list output.
 SECTION_LEVEL = 2
 MAX_HEADING_LEVEL = 6
-# A Markdown or plain text longer than this many lines shows its first part and folds the rest.
-FOLD_LINES = 60
-FOLD_SUMMARY = "Read the rest"
+# An output rendering to more lines than this is folded whole in a `<details>` block, the run's line above it left in view.
+OUTPUT_FOLD_LINES = 150
 # A text longer than this, or holding a line break, is shown as a paragraph under its field's name rather than in the field and value table.
 TABLE_TEXT_LIMIT = 120
 # How wide the page shows a document's preview and an image in a table cell, in pixels.
@@ -54,6 +54,8 @@ _HTML_DROPPED = [
     re.compile(r"</?(?:html|body)\b[^>]*>", re.IGNORECASE),
 ]
 _HTML_HEADING = re.compile(r"<(/?)h([1-6])\b", re.IGNORECASE)
+# A concept code's words: `MarkdownReport` is `Markdown` and `Report`, and `DPEReport` is `DPE` and `Report`.
+_CAMEL_WORD = re.compile(r"[A-Z]+(?=[A-Z][a-z])|[A-Z]?[a-z]+|[A-Z]+|\d+")
 
 
 class SampleView(BaseModel):
@@ -64,6 +66,7 @@ class SampleView(BaseModel):
     name: str
     label: str
     body: str = Field(description="The input itself, as Markdown")
+    is_file: bool = Field(description="Whether the input is a file, such as a PDF or an image, rather than a text or a structure written inline")
     record: SampleRecord | None = Field(description="Its source and licence, or None while its record is missing")
 
 
@@ -77,6 +80,7 @@ class OutputView(BaseModel):
     from_files: bool = Field(description="Whether the run was from the package's files rather than by its address")
     method_ref: str | None
     body: str = Field(description="The output, as Markdown")
+    summary: str | None = Field(description="What the fold a long output sits in names it, such as `The pages`; None when it is shown open")
 
 
 def sample_label(*, package: MethodPackage, input_name: str) -> str:
@@ -111,20 +115,34 @@ def sample_views(*, cookbook: Cookbook, package: MethodPackage, contract: Contra
                 body = f"<details>\n<summary>The {label}, as JSON</summary>\n\n```json\n{written}\n```\n\n</details>"
         else:
             body = _quotation(str(content))
-        views.append(SampleView(name=input_name, label=label, body=body, record=package.editorial.samples.get(input_name)))
+        views.append(SampleView(name=input_name, label=label, body=body, is_file=bool(urls), record=package.editorial.samples.get(input_name)))
     return views
 
 
 def output_view(*, contract: Contract, hints: OutputHints, snapshot: OutputSnapshot) -> OutputView:
     """The snapshot's output, rendered from the contract's multiplicity and the method's hints, with the run's date and duration."""
     finished = snapshot.run.finished_at
+    body = output_markdown(contract=contract, hints=hints, output=snapshot.output)
     return OutputView(
         date=day_phrase(finished.date()),
         duration=duration_phrase(snapshot.run.duration_seconds),
         from_files=snapshot.run.route == SnapshotRoute.FILES,
         method_ref=snapshot.run.method_ref,
-        body=output_markdown(contract=contract, hints=hints, output=snapshot.output),
+        body=body,
+        summary=output_summary(contract=contract, hints=hints) if len(body.split("\n")) > OUTPUT_FOLD_LINES else None,
     )
+
+
+def output_summary(*, contract: Contract, hints: OutputHints) -> str:
+    """What a folded output is, as its fold's summary says it: the items of a list output by their label, a single one by its concept.
+
+    A list output of pages reads `The pages`, and a single `presentation.MarkdownReport` reads `The markdown report`.
+    """
+    if contract.output.multiplicity in _LIST_MULTIPLICITIES:
+        return f"The {_plural((hints.item_label or DEFAULT_ITEM_LABEL).lower())}"
+    concept_code = contract.output.concept.rpartition(".")[2]
+    words = [word if word.isupper() and len(word) > 1 else word.lower() for word in _CAMEL_WORD.findall(concept_code)]
+    return f"The {' '.join(words) or 'output'}"
 
 
 def output_markdown(*, contract: Contract, hints: OutputHints, output: JsonValue) -> str:
@@ -141,6 +159,15 @@ def output_markdown(*, contract: Contract, hints: OutputHints, output: JsonValue
         items = [output]
     label = hints.item_label or DEFAULT_ITEM_LABEL
     return "\n\n".join(f"{'#' * level} {label} {index}\n\n{_value(item, hints=hints, level=level + 1)}" for index, item in enumerate(items, start=1))
+
+
+def _plural(noun: str) -> str:
+    """The plural of an item label, a noun the cookbook chooses: `page` is `pages`, `summary` is `summaries`, `box` is `boxes`."""
+    if noun.endswith(("s", "x", "z", "ch", "sh")):
+        return f"{noun}es"
+    if noun.endswith("y") and noun[-2:-1] not in {"a", "e", "i", "o", "u", ""}:
+        return f"{noun[:-1]}ies"
+    return f"{noun}s"
 
 
 def day_phrase(day: date) -> str:
@@ -265,11 +292,11 @@ def _list(items: list[JsonValue], *, hints: OutputHints, level: int) -> str:
 def _text(text: str, *, text_format: TextFormat, level: int) -> str:
     match text_format:
         case "markdown":
-            return _fold(_demote_markdown(text.strip(), level=level))
+            return _demote_markdown(text.strip(), level=level)
         case "html":
             return _html(text, level=level)
         case "text":
-            return _fold(text.strip())
+            return text.strip()
 
 
 def _demote_markdown(text: str, *, level: int) -> str:
@@ -297,24 +324,6 @@ def _demote_markdown(text: str, *, level: int) -> str:
         else:
             demoted.append(line)
     return "\n".join(demoted)
-
-
-def _fold(text: str) -> str:
-    """Show a long text's first part and fold the rest, cutting at the first blank line past `FOLD_LINES` outside a code block."""
-    lines = text.split("\n")
-    if len(lines) <= FOLD_LINES:
-        return text
-    in_fence = False
-    for index, line in enumerate(lines):
-        if _FENCE.match(line):
-            in_fence = not in_fence
-        elif index >= FOLD_LINES and not in_fence and not line.strip():
-            head = "\n".join(lines[:index]).rstrip()
-            rest = "\n".join(lines[index:]).strip()
-            if not rest:
-                return text
-            return f"{head}\n\n<details>\n<summary>{FOLD_SUMMARY}</summary>\n\n{rest}\n\n</details>"
-    return text
 
 
 def _html(text: str, *, level: int) -> str:

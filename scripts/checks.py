@@ -76,7 +76,10 @@ def orphan_snippet_dirs(cookbook: Cookbook) -> list[Path]:
 
 
 def sample_problems(cookbook: Cookbook) -> list[str]:
-    """Every sample input without its source-and-licence record, and every document sample kept in this repository without its preview."""
+    """Every sample input without its source-and-licence record, and every recorded document sample kept in this repository without its preview.
+
+    A document sample without its record is reported for the record alone: it gets no preview until the record is written.
+    """
     problems: list[str] = []
     for package in cookbook.packages:
         package_dir = package.directory.relative_to(cookbook.root)
@@ -95,7 +98,7 @@ def sample_problems(cookbook: Cookbook) -> list[str]:
             if not preview_path(document).is_file():
                 problems.append(
                     f"{package_dir}: the document sample {document.relative_to(cookbook.root)} has no preview, "
-                    f"{preview_path(document).relative_to(cookbook.root)}; `make snapshot METHOD={package.name}` renders it"
+                    f"{preview_path(document).relative_to(cookbook.root)}; `make previews` renders it, with no key and no run"
                 )
     return problems
 

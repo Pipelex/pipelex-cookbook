@@ -33,7 +33,7 @@ Read a description of a record and a count, and return that many varied syntheti
 > - **Example Style**: [Many real-world examples / Abstract concepts / Mix]
 > - **Question Format**: [Multiple choice / Short answer / Open discussion]
 
-*Fictional, made for this example.* Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.
+*Written for this example.* Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.
 
 **Sample count**
 
@@ -41,7 +41,7 @@ Read a description of a record and a count, and return that many varied syntheti
 |---|---|
 | `number` | 5 |
 
-*Fictional, made for this example.* Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.
+*Written for this example.* Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.
 
 **Takes**
 

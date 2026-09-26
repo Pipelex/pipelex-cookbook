@@ -8,7 +8,6 @@ import pytest
 from PIL import Image
 from pydantic import JsonValue, ValidationError
 
-from scripts.contract import ContractInput
 from scripts.cookbook import MethodPackage, load_cookbook
 from scripts.exceptions import CookbookLayoutError
 from scripts.snapshot import (
@@ -28,9 +27,18 @@ from scripts.snapshot import (
     render_preview,
     rewrite_output,
     storage_references,
+    unrecorded_documents,
     write_previews,
 )
-from tests.tooling.test_data import WIDGETS_CONTRACT, WIDGETS_OUTPUT, WIDGETS_SAMPLE_PATH, MakeCookbook, png_bytes, write_snapshot
+from tests.tooling.test_data import (
+    WIDGETS_OUTPUT,
+    WIDGETS_SAMPLE_PATH,
+    MakeCookbook,
+    drop_widgets_record,
+    make_widgets_sample_a_document,
+    png_bytes,
+    write_snapshot,
+)
 
 RECEIPT_URI = "pipelex-storage://org_1/runs/run_1/outputs/2325fcfe.png"
 RECEIPT_LINK = "https://bucket.s3.amazonaws.com/org_1/runs/run_1/outputs/2325fcfe.png?X-Amz-Credential=AKIA%2F&X-Amz-Signature=abc123"
@@ -211,15 +219,27 @@ class TestPreviews:
         assert document_samples(cookbook=load_cookbook(root), package=package) == []
 
         (root / WIDGETS_SAMPLE_PATH).write_bytes(_pdf_bytes(width=300, height=200))
-        contract = WIDGETS_CONTRACT.model_copy(
-            update={"inputs": [ContractInput(name="catalogue", concept="widgets.CataloguePage", kind="document", multiplicity="single")]}
-        )
-        (package.directory / "contract.json").write_text(contract.to_json(), encoding="utf-8")
+        make_widgets_sample_a_document(root)
         cookbook = load_cookbook(root)
         package = _package(root, "extract_widgets")
+        preview = root / "assets" / "extract_widgets" / "catalogue.preview.png"
         assert document_samples(cookbook=cookbook, package=package) == [root / WIDGETS_SAMPLE_PATH]
-        assert write_previews(cookbook=cookbook, package=package) == [root / "assets" / "extract_widgets" / "catalogue.preview.png"]
-        assert (root / "assets" / "extract_widgets" / "catalogue.preview.png").is_file()
+        assert write_previews(cookbook=cookbook, package=package) == [preview]
+        assert preview.is_file()
+        # A preview already holding what the rendering gives is left as it is.
+        assert write_previews(cookbook=cookbook, package=package) == []
+
+    def test_a_document_sample_without_its_record_never_gets_a_preview(self, make_cookbook: MakeCookbook):
+        root = make_cookbook(with_sample=True)
+        (root / WIDGETS_SAMPLE_PATH).write_bytes(_pdf_bytes(width=300, height=200))
+        make_widgets_sample_a_document(root)
+        drop_widgets_record(root)
+        cookbook = load_cookbook(root)
+        package = _package(root, "extract_widgets")
+        assert document_samples(cookbook=cookbook, package=package) == []
+        assert unrecorded_documents(cookbook=cookbook, package=package) == [root / WIDGETS_SAMPLE_PATH]
+        assert write_previews(cookbook=cookbook, package=package) == []
+        assert not (root / "assets" / "extract_widgets" / "catalogue.preview.png").exists()
 
 
 def test_snapshot_rejects_an_unknown_field():

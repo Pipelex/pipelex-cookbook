@@ -5,7 +5,7 @@ from pydantic import JsonValue
 
 from scripts.contract import Contract, ContractInput, ContractOutput
 from scripts.cookbook import OutputHints, load_cookbook
-from scripts.views import FOLD_LINES, FOLD_SUMMARY, day_phrase, duration_phrase, output_markdown, sample_views
+from scripts.views import OUTPUT_FOLD_LINES, day_phrase, duration_phrase, output_markdown, output_summary, sample_views
 from tests.tooling.test_data import WIDGETS_CONTRACT, WORDS_CONTRACT, MakeCookbook
 
 
@@ -45,13 +45,25 @@ class TestOutputView:
             "### Report\n\n#### Findings\n\n```md\n# not a heading\n```\n\nText."
         )
 
-    def test_a_long_markdown_text_folds_after_its_first_part(self):
-        paragraphs = [f"Paragraph {index}." for index in range(FOLD_LINES)]
-        markdown = output_markdown(contract=_contract(), hints=OutputHints(), output={"text": "\n\n".join(paragraphs)})
-        head, _, rest = markdown.partition(f"\n\n<details>\n<summary>{FOLD_SUMMARY}</summary>\n\n")
-        assert head.startswith("Paragraph 0.")
-        assert len(head.split("\n")) <= FOLD_LINES + 1
-        assert rest.endswith(f"Paragraph {FOLD_LINES - 1}.\n\n</details>")
+    def test_a_long_text_is_shown_whole_since_the_page_folds_a_long_output_as_a_whole(self):
+        text = "\n\n".join(f"Paragraph {index}." for index in range(OUTPUT_FOLD_LINES))
+        assert output_markdown(contract=_contract(), hints=OutputHints(), output={"text": text}) == text
+
+    @pytest.mark.parametrize(
+        ("concept", "multiplicity", "item_label", "expected"),
+        [
+            ("presentation.MarkdownReport", "single", None, "The markdown report"),
+            ("dpe.DPEReport", "single", None, "The DPE report"),
+            ("native.Text", "single", None, "The text"),
+            ("native.Text", "variable", "Page", "The pages"),
+            ("synthetic_data_generation.Sample", "variable", "Profile", "The profiles"),
+            ("demo.Result", "fixed", None, "The items"),
+            ("demo.Summary", "variable", "Summary", "The summaries"),
+        ],
+    )
+    def test_a_folded_output_is_named_by_its_item_label_or_its_concept(self, concept: str, multiplicity: str, item_label: str | None, expected: str):
+        contract = Contract(pipe="demo.run", output=ContractOutput(concept=concept, multiplicity=multiplicity))
+        assert output_summary(contract=contract, hints=OutputHints(item_label=item_label)) == expected
 
     def test_a_field_hinted_markdown_or_html_is_rendered_so(self):
         hints = OutputHints(formats={"content": "markdown", "text": "html"})
@@ -103,6 +115,7 @@ class TestSampleView:
         [package] = [package for package in cookbook.packages if package.name == "extract_widgets"]
         [view] = sample_views(cookbook=cookbook, package=package, contract=WIDGETS_CONTRACT)
         assert view.body == "![sample catalogue](../../assets/extract_widgets/catalogue.png)"
+        assert view.is_file is True
         assert view.record is not None
         assert view.record.attribution == "The Widget Society"
 
@@ -129,6 +142,7 @@ class TestSampleView:
         [view] = sample_views(cookbook=cookbook, package=package, contract=WORDS_CONTRACT)
         assert view.body == "> ### Brief\n>\n> The quick fox."
         assert view.label == "sample text"
+        assert view.is_file is False
         assert view.record is None
 
         inputs_path.write_text('{"text": {"words": 4, "language": "en"}}', encoding="utf-8")

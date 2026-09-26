@@ -18,6 +18,7 @@ from scripts.render import (
     type_phrase,
     typescript_literal,
 )
+from scripts.views import OUTPUT_FOLD_LINES
 from tests.tooling.test_data import (
     WIDGETS_OUTPUT,
     WIDGETS_SAMPLE_URL,
@@ -25,6 +26,7 @@ from tests.tooling.test_data import (
     WORDS_BUNDLE,
     WORDS_CONTRACT,
     MakeCookbook,
+    add_words_synthetic_record,
     make_widgets_sample_synthetic,
     write_snapshot,
 )
@@ -104,6 +106,28 @@ class TestRender:
             "![sample catalogue](../../assets/extract_widgets/catalogue.png)\n\n*Fictional, made for this example.* "
             "Licence: [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/). Credit: The Widget Society.\n\n**Takes**"
         ) in page
+
+    def test_an_inline_sample_made_up_for_the_example_says_it_was_written_for_it(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        root = make_cookbook()
+        add_words_synthetic_record(root)
+        page = render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir)[root / "methods" / "count_words" / "README.md"]
+        assert (
+            "## The sample\n\n> The quick brown fox\n\n*Written for this example.* "
+            "Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.\n\n**Takes**"
+        ) in page
+        assert "Fictional" not in page
+
+    def test_a_long_output_is_folded_whole_under_its_name_below_the_runs_line(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        root = make_cookbook(with_sample=True)
+        widgets: JsonValue = [{"name": f"Widget {index}", "colour": "red"} for index in range(OUTPUT_FOLD_LINES)]
+        write_snapshot(root, "extract_widgets", output={"widgets": widgets})
+        page = render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir)[root / "methods" / "extract_widgets" / "README.md"]
+        # GitHub renders the Markdown inside a `<details>` block only after a blank line following its `</summary>`.
+        assert (
+            "This is what it returned:\n\n<details>\n<summary>The widget list</summary>\n\n"
+            "**`widgets`**\n\n| `name` | `colour` |\n|---|---|\n| Widget 0 | red |\n"
+        ) in page
+        assert f"| Widget {OUTPUT_FOLD_LINES - 1} | red |\n\n</details>\n\n**Takes**" in page
 
     def test_a_sample_without_its_record_is_shown_without_a_credit_line(self, make_cookbook: MakeCookbook, templates_dir: Path):
         root = make_cookbook()

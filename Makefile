@@ -64,7 +64,9 @@ make install                  - Create local virtualenv & install all dependenci
 make update                   - Upgrade dependencies via uv
 
 make render                   - Write every methods/<name>/README.md from its package and cookbook.toml, and its snippet files under tests/snippets/<name>/
-make check-render             - Fail when a committed method page or snippet file differs from a fresh render, or a snippet directory belongs to no method
+make previews                 - Render the first-page preview of every recorded document sample, beside it under assets/ (no key, no run)
+make check-render             - Fail when a committed method page or snippet file differs from a fresh render, or a snippet directory belongs to no method,
+                                or when a sample lacks its record or its preview, or an output snapshot is missing or out of step
 make check-lockstep           - Fail when a method manifest's version is not the cookbook's
 make check-links              - Fetch every sample URL in the packages, and every raw URL on the pages and in the recipes
 make check-recipes            - Fail when a recipe's generated types name no pinned address or one its code does not call, when a recipe names an unpinned address, or when its shell script does not parse
@@ -137,7 +139,7 @@ export HELP
 	codex-tests gha-tests \
 	run-all-tests \
 	check c cc agent-check agent-test \
-	render check-render check-lockstep check-links check-library check-recipes check-codegen check-recipe-types check-cookbook \
+	render previews check-render check-lockstep check-links check-library check-recipes check-codegen check-recipe-types check-cookbook \
 	refresh refresh-library check-methods check-addresses check-codegen-live check-hosted check-smoke snapshot \
 	merge-check-ruff-lint merge-check-ruff-format merge-check-plxt-format merge-check-plxt-lint merge-check-mypy merge-check-pyright \
 	li check-unused-imports fix-unused-imports check-uv check-TODOs
@@ -209,7 +211,7 @@ update: env-verbose
 ##########################################################################################
 
 # The renderer and the checks live in scripts/, and are described in docs/README.md.
-# render, check-render and check-lockstep read committed files only. check-links fetches public
+# render, check-render and check-lockstep read committed files only, and previews renders from them with pypdfium2. check-links fetches public
 # sample URLs and needs no key, and refresh-library and check-library download the method library's public tarball at the pinned tag.
 # refresh, check-methods, check-addresses, check-codegen-live and check-hosted call
 # production with PIPELEX_API_KEY and spend no inference; CI holds no key, so they are run by hand.
@@ -240,6 +242,11 @@ RECIPE_TREES = $$($(VENV_PYTHON) -m scripts recipe-trees)
 render: env
 	$(call PRINT_TITLE,"Rendering every method page and its snippet files")
 	$(VENV_PYTHON) -m scripts render
+
+# No key, no network and no run: the preview of every document sample whose source-and-licence record is written.
+previews: env
+	$(call PRINT_TITLE,"Rendering the preview of every recorded document sample")
+	$(VENV_PYTHON) -m scripts previews
 
 check-render: env
 	$(call PRINT_TITLE,"Checking that every method page and snippet file matches a fresh render")

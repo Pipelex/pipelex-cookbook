@@ -2,7 +2,8 @@
 
 Offline, needing no key: `render`, `check-render`, `check-lockstep`, `check-links` (which only fetches public sample URLs), `check-recipes`, and
 `recipe-trees`, `recipe-scripts`, `recipe-packages` and `recipe-shell-scripts`, which list what the Makefile hands the SDK script, the type
-checkers and shellcheck: the recipes' code, and the page snippets `render` writes under `tests/snippets/`. `refresh-library` and
+checkers and shellcheck: the recipes' code, and the page snippets `render` writes under `tests/snippets/`. `previews` renders the first-page
+preview of every document sample whose source-and-licence record is written, with no key and no network. `refresh-library` and
 `check-library` need no key either: each downloads the method library's tarball at the tag `cookbook.toml` pins, the first to write
 `library.json` and the second to check that it is what that tarball holds.
 Keyed, calling production with `PIPELEX_API_KEY`: `refresh`, `check-methods`, `check-addresses`, and `snapshot <name>`, the one command here
@@ -48,7 +49,7 @@ from scripts.recipes import (
     typescript_packages,
 )
 from scripts.render import build_library_context, render_all, render_pages
-from scripts.snapshot import SNAPSHOT_FILE, read_snapshot, take_snapshot
+from scripts.snapshot import SNAPSHOT_FILE, document_samples, preview_path, read_snapshot, take_snapshot, unrecorded_documents, write_previews
 from scripts.tutorial import tutorial_bundles
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -62,6 +63,7 @@ def main(argv: list[str] | None = None) -> int:
     subparsers = parser.add_subparsers(dest="command", required=True)
     commands: dict[str, Callable[[Cookbook], int]] = {
         "render": _render,
+        "previews": _previews,
         "check-render": _check_render,
         "check-lockstep": _check_lockstep,
         "check-links": _check_links,
@@ -80,6 +82,10 @@ def main(argv: list[str] | None = None) -> int:
         "render": (
             "Write every methods/<name>/README.md from its package and cookbook.toml, its snippet files under tests/snippets/<name>/, "
             "and the front page's two lists, of the methods and of the library's methods"
+        ),
+        "previews": (
+            "Render the first-page preview of every document sample kept under assets/ whose source-and-licence record is written, "
+            "beside it as <stem>.preview.png, with no key and no run"
         ),
         "check-render": (
             "Fail when a committed page, snippet file or either of the front page's lists differs from a fresh render, "
@@ -156,6 +162,20 @@ def _render(cookbook: Cookbook) -> int:
                 f"until `make snapshot METHOD={package.name}`, and `make check-render` fails on it"
             )
     return 1 if orphans else 0
+
+
+def _previews(cookbook: Cookbook) -> int:
+    for package in cookbook.packages:
+        written = set(write_previews(cookbook=cookbook, package=package))
+        for document in document_samples(cookbook=cookbook, package=package):
+            preview = preview_path(document).relative_to(cookbook.root)
+            print(f"{'✎ rendered' if preview_path(document) in written else '· unchanged'} {preview}")
+        for document in unrecorded_documents(cookbook=cookbook, package=package):
+            print(
+                f"· {document.relative_to(cookbook.root)} gets no preview: its sample has no source-and-licence record "
+                f"under [methods.{package.name}.samples] in cookbook.toml"
+            )
+    return 0
 
 
 def _check_render(cookbook: Cookbook) -> int:

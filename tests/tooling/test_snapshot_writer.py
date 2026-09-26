@@ -16,7 +16,7 @@ from scripts.exceptions import SnapshotError
 from scripts.hosted import HostedClient, MethodVerdict
 from scripts.snapshot import PRODUCTION_URL, bundle_digest, inputs_digest, load_snapshot, take_snapshot
 from tests.tooling.fake_api import FAKE_API_KEY, FakeApi
-from tests.tooling.test_data import MakeCookbook, png_bytes
+from tests.tooling.test_data import WIDGETS_SAMPLE_PATH, MakeCookbook, drop_widgets_record, make_widgets_sample_a_document, png_bytes
 
 START = "/v1/start"
 UPLOAD = "/v1/upload"
@@ -196,3 +196,30 @@ def test_render_names_every_method_without_a_snapshot(make_cookbook: MakeCookboo
     assert main(["--root", str(root), "render"]) == 0
     printed = capsys.readouterr().out
     assert '· methods/count_words has no output.json yet: its page has no "What you get" until `make snapshot METHOD=count_words`' in printed
+
+
+def test_the_previews_command_renders_each_recorded_document_sample_and_skips_one_without_a_record(
+    make_cookbook: MakeCookbook, capsys: pytest.CaptureFixture[str]
+):
+    from scripts.__main__ import main
+
+    root = make_cookbook(with_sample=True)
+    pdf = io.BytesIO()
+    Image.new("RGB", (300, 200), "white").save(pdf, format="PDF")
+    (root / WIDGETS_SAMPLE_PATH).write_bytes(pdf.getvalue())
+    make_widgets_sample_a_document(root)
+    preview = "assets/extract_widgets/catalogue.preview.png"
+
+    assert main(["--root", str(root), "previews"]) == 0
+    assert f"✎ rendered {preview}" in capsys.readouterr().out
+    assert main(["--root", str(root), "previews"]) == 0
+    assert f"· unchanged {preview}" in capsys.readouterr().out
+
+    (root / preview).unlink()
+    drop_widgets_record(root)
+    assert main(["--root", str(root), "previews"]) == 0
+    assert capsys.readouterr().out == (
+        f"· {WIDGETS_SAMPLE_PATH} gets no preview: its sample has no source-and-licence record "
+        "under [methods.extract_widgets.samples] in cookbook.toml\n"
+    )
+    assert not (root / preview).exists()

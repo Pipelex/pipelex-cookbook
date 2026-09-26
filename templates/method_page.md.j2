@@ -17,7 +17,7 @@
 
 {% if sample.record %}
 {% if sample.record.synthetic %}
-*Fictional, made for this example.* Licence: [{{ sample.record.license }}]({{ sample.record.license_url }}). Credit: {{ sample.record.attribution | sentence }}
+*{% if sample.is_file %}Fictional, made for this example.{% else %}Written for this example.{% endif %}* Licence: [{{ sample.record.license }}]({{ sample.record.license_url }}). Credit: {{ sample.record.attribution | sentence }}
 {% else %}
 *From [{{ sample.record.source }}]({{ sample.record.source }}), copied on {{ sample.record.retrieved.isoformat() }}.{% if sample.record.changes %} {{ sample.record.changes | sentence }}{% endif %}* Licence: [{{ sample.record.license }}]({{ sample.record.license_url }}). Credit: {{ sample.record.attribution | sentence }}
 {% endif %}
@@ -29,7 +29,16 @@
 
 Run on production on {{ page.output.date }}, {% if page.output.from_files %}from the package's files{% else %}by its address `{{ page.output.method_ref }}`{% endif %}, in {{ page.output.duration }}. This is what it returned:
 
+{% if page.output.summary %}
+<details>
+<summary>{{ page.output.summary }}</summary>
+
 {{ page.output.body }}
+
+</details>
+{% else %}
+{{ page.output.body }}
+{% endif %}
 
 {% endif %}
 {% if page.takes | length == 1 %}

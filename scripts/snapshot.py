@@ -231,23 +231,40 @@ def preview_path(sample: Path) -> Path:
 
 
 def document_samples(*, cookbook: Cookbook, package: MethodPackage) -> list[Path]:
-    """The local files of the inputs the contract calls documents, each of which the page shows as its preview.
+    """The local files of the inputs the contract calls documents and whose source-and-licence record is written: those the page previews.
+
+    A document without its record never gets a preview, since its provenance is not settled: it may hold a real person's data, which the
+    page must not show.
 
     Raises:
         CookbookLayoutError: A URL into this repository names a file this checkout does not hold.
     """
+    return [path for input_name, path in _local_documents(cookbook=cookbook, package=package) if input_name in package.editorial.samples]
+
+
+def unrecorded_documents(*, cookbook: Cookbook, package: MethodPackage) -> list[Path]:
+    """The local document samples without their source-and-licence record, which get no preview until it is written.
+
+    Raises:
+        CookbookLayoutError: A URL into this repository names a file this checkout does not hold.
+    """
+    return [path for input_name, path in _local_documents(cookbook=cookbook, package=package) if input_name not in package.editorial.samples]
+
+
+def _local_documents(*, cookbook: Cookbook, package: MethodPackage) -> list[tuple[str, Path]]:
+    """Each input the contract calls a document with the local file of its sample, for every file it names in this repository."""
     contract = package.contract
     if contract is None:
         return []
     kinds = {contract_input.name: contract_input.kind for contract_input in contract.inputs}
-    found: list[Path] = []
+    found: list[tuple[str, Path]] = []
     for input_name, value in package.inputs.items():
         if kinds.get(input_name) != DOCUMENT_KIND:
             continue
         for url in file_urls(input_content(value)):
             path = _sample_file(cookbook=cookbook, package=package, url=url)
             if path is not None:
-                found.append(path)
+                found.append((input_name, path))
     return found
 
 
@@ -279,11 +296,20 @@ def render_preview(document: Path) -> bytes:
 
 
 def write_previews(*, cookbook: Cookbook, package: MethodPackage) -> list[Path]:
-    """Write the preview of every document sample the package keeps in this repository, and return their paths."""
+    """Render the preview of every document sample `document_samples` names, and return those written because they were missing or differed.
+
+    A preview that already holds what the rendering gives is left as it is. Rendering needs no key and no network.
+
+    Raises:
+        CookbookLayoutError: The sample names a file this checkout does not hold, or a document sample cannot be previewed.
+    """
     written: list[Path] = []
     for document in document_samples(cookbook=cookbook, package=package):
         path = preview_path(document)
-        path.write_bytes(render_preview(document))
+        rendered = render_preview(document)
+        if path.is_file() and path.read_bytes() == rendered:
+            continue
+        path.write_bytes(rendered)
         written.append(path)
     return written
 
@@ -461,7 +487,7 @@ def fit_image(data: bytes, *, content_type: str | None) -> tuple[bytes, bool]:
 
 
 class TakenSnapshot(BaseModel):
-    """What `make snapshot` did: the snapshot it wrote, the run it took it from, and the previews it rendered."""
+    """What `make snapshot` did: the snapshot it wrote, the run it took it from, and the previews it wrote because they were missing or differed."""
 
     model_config = ConfigDict(frozen=True)
 

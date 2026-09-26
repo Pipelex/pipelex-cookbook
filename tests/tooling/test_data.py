@@ -238,6 +238,32 @@ def make_widgets_sample_synthetic(root: Path) -> None:
     cookbook_path.write_text(contents.replace(real_lines, "synthetic = true\n").replace('changes = "Cut to its first page"\n', ""), encoding="utf-8")
 
 
+def drop_widgets_record(root: Path) -> None:
+    """Remove the fixture's widget sample record, as for a sample whose provenance is not settled."""
+    cookbook_path = root / "cookbook.toml"
+    contents = cookbook_path.read_text(encoding="utf-8")
+    header = "[methods.extract_widgets.samples.catalogue]\n"
+    assert header in contents
+    cookbook_path.write_text(contents[: contents.index(header)], encoding="utf-8")
+
+
+def make_widgets_sample_a_document(root: Path) -> None:
+    """Make the fixture's widget sample a document input in its contract snapshot, which the page shows by its preview."""
+    contract = WIDGETS_CONTRACT.model_copy(
+        update={"inputs": [ContractInput(name="catalogue", concept="widgets.CataloguePage", kind="document", multiplicity="single")]}
+    )
+    (root / "methods" / "extract_widgets" / "contract.json").write_text(contract.to_json(), encoding="utf-8")
+
+
+def add_words_synthetic_record(root: Path) -> None:
+    """Give the fixture's inline text sample the record of one written for the example."""
+    with (root / "cookbook.toml").open("a", encoding="utf-8") as cookbook_file:
+        cookbook_file.write(
+            '\n[methods.count_words.samples.text]\nlabel = "sample text"\nsynthetic = true\nlicense = "MIT"\n'
+            'license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"\nattribution = "Evotis S.A.S"\n'
+        )
+
+
 # What the fixture's widget extraction returned on its sample, as its output snapshot holds it.
 WIDGETS_OUTPUT: JsonValue = {"widgets": [{"name": "Sprocket", "colour": "red"}, {"name": "Flange", "colour": "blue"}]}
 RUN_STARTED_AT = datetime(2026, 9, 28, 9, 14, 2, tzinfo=UTC)
