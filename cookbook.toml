@@ -37,6 +37,23 @@ attribution = "Evotis S.A.S"
 [methods.blog_article_generator.output]
 formats = { content = "markdown" }
 
+[methods.discord_newsletter]
+title = "Weekly newsletter for a Discord community"
+pitch = "Read a week of a community's Discord channels and return the members' newsletter in the team's fixed format, as HTML ready for the email tool: the week in a few lines, the new members welcomed, a section for each channel in the server's order with each conversation given as its outcome, and the news of each local hub, in English whatever language a message was written in."
+app_dir = "newsletter-app"
+yours_dir = "newsletter"
+yours_change = "add a Coming up section after the week's summary, listing every event and deadline announced in the channels with its date"
+
+[methods.discord_newsletter.samples.discord_channel_updates]
+label = "sample week of a fictional community"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
+[methods.discord_newsletter.output]
+formats = { text = "html" }
+
 [methods.extract_dpe]
 title = "DPE record for a letting agency"
 pitch = "Read a French energy performance diagnostic (DPE) and return the record a letting agency files for the flat: the ADEME number and the dates, both classes with their figures, the estimated yearly energy costs with the date their prices refer to, and what the class means for letting the flat under the agency's letting rules."

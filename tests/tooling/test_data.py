@@ -161,6 +161,14 @@ RIGHT_OUTPUTS: dict[str, JsonValue] = {
         "meta_description": "Why capybaras get along with everyone.",
         "content": "# Capybaras\n\nCapybaras are the largest rodents in the world.",
     },
+    "discord_newsletter": {
+        "text": (
+            "<h2>☀️ Weekly Summary</h2>\n<p>Two new members joined, and the finishing thread settled on thinner coats in a cold workshop.</p>"
+            "<h2>🙌 New members</h2>\n<ul><li>Ada Example is a cabinetmaker near Nantes who joined to talk about pricing.</li></ul>"
+            "<h2>finishing</h2><p>Ben Example asked why his oil stayed tacky; the answer was one thin coat, wiped back hard.</p>"
+            "<h2>🌎 Geographic hubs</h2><h3>🇫🇷-lyon</h3><p>The monthly meetup is on Saturday 10 October at 10am.</p>"
+        ),
+    },
     "extract_dpe": {
         "address": "7 rue des Illustrations, 69007 Lyon, 2nd floor, lot 12",
         "dpe_number": "2669E0000000Y",
