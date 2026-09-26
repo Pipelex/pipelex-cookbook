@@ -16,7 +16,128 @@ Read a topic, an audience, a tone and a length, and return an SEO-optimized blog
 | `tone` | Casual |
 | `length` | Long |
 
-*Fictional, made for this example.* Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.
+*Written for this example.* Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.
+
+## What you get
+
+Run on production on 26 September 2026, from the package's files, in 35 seconds. This is what it returned:
+
+| Field | Value |
+|---|---|
+| `seo_title` | Capybara Fun Facts: Meet the World's Largest Rodent |
+| `meta_description` | Meet the capybara, the world's largest rodent! Kids can explore its watery home, social life, and fun facts. |
+
+**`content`**
+
+### Capybara Fun Facts: Meet the World's Largest Rodent
+
+#### Say Hello to the Capybara!
+
+Have you ever seen an animal that looks a little like a giant guinea pig, a tiny hippo, and a furry potato all rolled into one? Say hello to the **capybara**! This friendly-looking animal is the world’s largest rodent, which means it belongs to the same big animal group as mice, squirrels, beavers, and guinea pigs.
+
+Capybaras live in South America, where they spend lots of time near rivers, ponds, marshes, and grassy wetlands. They’re famous online because they often look incredibly calm, even when other animals are nearby. A bird might sit on a capybara’s back, or a monkey might hang around while the capybara keeps munching grass like nothing exciting is happening.
+
+But don’t let that relaxed face fool you. Capybaras are built for a busy life outdoors. They can swim, dive, run, communicate with their family group, and use their strong teeth to chew tough plants. They’re also very social animals, so they usually don’t like being alone.
+
+A capybara isn’t a giant hamster, even if it may look like one at first glance. It’s a wild animal with its own special home, habits, and skills. By the end of this article, you’ll know why capybaras love water, what they eat, how they make friends, and plenty of fun capybara facts to share with everyone you know.
+
+Ready to meet this super-sized rodent? Let’s wade in!
+
+#### What Makes a Capybara So Big?
+
+Capybaras are the biggest rodents on Earth, and they can get surprisingly large. An adult capybara may weigh around 77 to 146 pounds—that’s about as heavy as a large dog, a grown-up person’s suitcase packed for a very long trip, or several bowling balls put together.
+
+Most capybaras are about 3.5 to 4.5 feet long from nose to rump. They have chunky bodies, short legs, small ears, and broad, blunt noses. Their fur is usually reddish-brown, brown, or tan, which helps them blend into muddy riverbanks and dry grass.
+
+So, why are capybaras called rodents? Rodents have special front teeth called **incisors**. These teeth keep growing throughout their lives. That sounds wild, right? Capybaras need to chew lots of plants to wear their teeth down so they don’t become too long. Their teeth are great for slicing through grass and water plants.
+
+Even though capybaras are huge compared with other rodents, they aren’t built to chase animals or climb trees. Their bodies are made for a different kind of adventure: living near water. Their feet have partly webbed toes, which help them paddle while swimming. Their eyes, ears, and nostrils sit high on their heads, too. That means a capybara can stay mostly underwater while still peeking out to see, hear, and breathe.
+
+Imagine wearing swim goggles, headphones, and a snorkel all at once—that’s sort of how a capybara’s head is designed! Pretty clever for a furry grass-eater.
+
+#### Where Do Capybaras Like to Hang Out?
+
+If you wanted to find a capybara in the wild, you’d want to look near water in South America. Capybaras live in countries such as Brazil, Venezuela, Colombia, Argentina, Paraguay, Uruguay, Peru, and Bolivia. They especially like places with plenty of water and lots of plants to eat.
+
+A capybara’s favorite neighborhood might include a slow-moving river, a pond, a marsh, a swamp, or a flooded grassland. During the day, when the weather gets hot, capybaras often rest near water or in shady spots. In the evening, at night, or early in the morning, they may wander out to graze on grass.
+
+These animals need water nearby for more than just drinking. Water helps them cool off, hide from danger, and travel around their habitat. A muddy riverbank may not sound like the fanciest home, but for a capybara, it’s basically a dream vacation spot with snacks everywhere.
+
+Capybaras can live in several kinds of habitats as long as there’s enough water. You might spot them in tropical forests, open savannas, wetlands, or grassy plains. Some even live close to farms and ranches, where there may be ponds, ditches, or fields full of tasty plants.
+
+Of course, life in the wild isn’t always easy. Capybaras have predators, including jaguars, pumas, caimans, and large birds of prey. When danger appears, a capybara often makes a quick dash for the water. Its brown fur may help it disappear into the muddy edges of a pond, while its swimming skills help it escape.
+
+To a capybara, water isn’t just a place to splash around. It’s home, safety zone, snack bar, and swimming pool all in one.
+
+#### Splash Time: Why Capybaras Love Water
+
+Capybaras are excellent swimmers. In fact, you could call them the pool champions of the rodent world. They have slightly webbed feet that work like little paddles, helping them move through water without much trouble.
+
+When the weather is hot, capybaras often soak in ponds, rivers, or muddy pools to stay cool. Their fur isn’t super thick like a polar bear’s, so a nice dip helps them avoid overheating in warm South American weather. You might see a group of capybaras sitting in shallow water with just their heads sticking out. They can look like tiny floating islands with ears.
+
+Capybaras can also hold their breath underwater for about five minutes. That’s a long time! If a predator is nearby, a capybara may slip beneath the surface and hide. Because its eyes, ears, and nostrils are near the top of its head, it can keep much of its body underwater while still checking what’s going on above the surface.
+
+Water is useful for another reason: it helps capybaras rest. They may nap near the edge of the water or settle into a muddy spot during the hottest part of the day. Mud might sound messy to you, but it can be cool and comfortable for a capybara.
+
+Baby capybaras learn to swim when they’re very young, usually by following their mothers and the rest of the group. Picture a line of fuzzy little capybara pups paddling behind the adults like a very cute swimming class.
+
+Even though capybaras enjoy water, they don’t live underwater all the time. They still need land for grazing, walking, sleeping, and hanging out with their group. They’re really semi-aquatic animals, which means they spend part of their lives on land and part in water.
+
+#### Capybara Friends and Family
+
+Capybaras are super social animals. In the wild, they usually live in groups instead of wandering around alone. A capybara group may have around 10 to 20 members, although much bigger groups can gather near water during dry times.
+
+A typical group can include several adult females, their babies, a few younger capybaras, and often one main adult male. Living together helps capybaras stay safer. With lots of eyes and ears watching, the group has a better chance of noticing danger before it gets too close.
+
+Capybaras communicate in lots of ways. They can make whistles, barks, squeaks, clicks, and purr-like sounds. A young capybara may call out to its mother, while an adult may make a warning sound if it spots a predator. If you could understand capybara language, you might hear messages that mean something like, “Where are you?” “Watch out!” or “Hey, this grass is pretty good!”
+
+Baby capybaras are called **pups**. They’re born looking like mini versions of adults, complete with fur and open eyes. Pretty soon after birth, pups can walk, nibble plants, and follow the group. Their mothers feed them milk, but the pups begin trying grass and other foods early on.
+
+One especially sweet thing about capybara families is that adults in the group may help watch over young pups. The babies often stay close together, which makes it harder for predators to pick one out.
+
+You may have seen photos of capybaras sitting calmly near other animals. Sometimes wild animals do share the same space peacefully, especially around water or food. But capybaras still need room, respect, and the safety of their own group. They aren’t toys or jungle furniture—they’re wild animals with busy social lives.
+
+#### What Do Capybaras Eat?
+
+Capybaras are herbivores, which means they eat plants instead of meat. Their favorite food is grass, and they can spend a huge part of their day munching. If capybaras had a restaurant, the menu would probably say: grass, grass salad, fresh grass, and grass for dessert.
+
+Besides grass, capybaras may eat water plants, leaves, bark, fruit, and sometimes crops grown by people. What they eat can change depending on the season and what’s available nearby. During dry times, they may have to search harder for fresh plants.
+
+Eating grass sounds simple, but grass can be tough to digest. Capybaras have a special digestive system that helps them get nutrients from all those plants. They also do something that may sound a little gross at first: they sometimes eat special soft droppings made by their bodies. This helps them digest their food again and get more vitamins and nutrients from it.
+
+Lots of plant-eating animals have unusual ways of getting the most out of tough food. Rabbits do something similar, so capybaras aren’t the only ones with this strange-but-useful trick.
+
+A capybara’s front teeth never stop growing, so chewing is extra important. Every bite of grass helps wear down those sharp incisors. If they didn’t keep chewing, their teeth could grow too long and make eating difficult.
+
+Capybaras usually graze in the early morning, late afternoon, or evening, when it’s cooler outside. During the hottest hours, they may relax in shade or water instead. That’s a pretty smart schedule: snack when it’s comfortable, splash when it’s hot.
+
+And no, you shouldn’t feed a wild capybara if you ever see one. Wild animals need the right foods, and getting too close can be unsafe for both you and the animal. The best way to enjoy capybaras is by watching from a respectful distance.
+
+#### Fun Capybara Facts to Share!
+
+Now it’s time for some awesome capybara facts you can use to impress your friends, family, classmates, or maybe even your pet guinea pig.
+
+- **Capybaras are the largest rodents in the world.** They’re much bigger than rats, squirrels, and guinea pigs.
+
+- **They’re amazing swimmers.** Their partly webbed feet help them paddle, and they can stay underwater for about five minutes.
+
+- **Their eyes, ears, and nostrils sit high on their heads.** This lets them keep most of their body underwater while still breathing and watching for danger.
+
+- **Capybaras have teeth that never stop growing.** Luckily, all that chewing on grass keeps their teeth from getting too long.
+
+- **They live in South America.** You won’t find wild capybaras naturally living in forests in North America or Europe.
+
+- **They love company.** Capybaras often live in groups, communicate with squeaks and whistles, and help keep an eye on one another.
+
+- **Baby capybaras are ready to move quickly.** They’re born with fur, open eyes, and the ability to walk soon after birth.
+
+- **They’re related to guinea pigs.** Capybaras may look like giant guinea pigs because they’re both part of the rodent family.
+
+- **They can run on land, too.** Capybaras aren’t just swimmers. If they need to escape danger, they can move quickly toward water or cover.
+
+- **They help shape their habitats.** By eating plants and moving through wetlands, capybaras are part of the food web that connects many animals and plants.
+
+Capybaras may be calm, round, and wonderfully goofy-looking, but they’re also tough, clever, and perfectly suited to life near water. Next time you see a capybara photo, remember: that sleepy-looking animal is a swimming, whistling, grass-chomping giant rodent with a whole lot of skills.
 
 **Takes** `user_prompt`, an object (`BlogArticleRequest`): Structured request describing the blog article to generate.
 

@@ -22,7 +22,759 @@ Read a business problem told in plain words, consult five to ten expert advisory
 > Current team: 8 engineers, 4 sales, 3 marketing, 2 customer success, 5 operations.
 > Key stakeholders: CEO, VP Product, VP Sales, Head of Customer Success.
 
-*Fictional, made for this example.* Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.
+*Written for this example.* Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.
+
+## What you get
+
+Run on production on 26 September 2026, from the package's files, in 4 minutes 30 seconds. This is what it returned:
+
+<details>
+<summary>The markdown report</summary>
+
+### Strategic Retention Recovery Program
+
+#### Executive Summary
+
+The company must reduce annual churn from **15% to below 10% within six months** while maintaining growth, using a **$500K retention budget**.
+
+All eight advisory boards agree on an integrated retention recovery program focused on:
+
+- Accelerating time-to-value
+- Identifying and recovering at-risk accounts
+- Improving support responsiveness and resolution
+- Deepening meaningful feature adoption
+- Removing the highest-impact UX friction
+
+The recommended approach is staged:
+
+| Phase | Timing | Focus |
+|---|---:|---|
+| **Stabilize and diagnose** | Days 0–30 | Stop active customer harm, establish ownership, define metrics, and identify churn drivers. |
+| **Deploy and prove** | Months 1–3 | Roll out scalable onboarding, support, adoption, and targeted product improvements. |
+| **Scale and institutionalize** | Months 3–6 | Optimize proven interventions, save renewals, and embed the retention operating model. |
+
+Leadership should protect retention delivery capacity while preserving essential growth work and prioritize interventions based on **retained ARR**, rather than logo count alone.
+
+---
+
+#### Problem Statement
+
+A mid-stage B2B SaaS company with:
+
+| Attribute | Current State |
+|---|---|
+| Employees | 50 |
+| ARR | $5M |
+| Annual customer churn | 15% |
+| Retention objective | Reduce churn to below 10% within six months |
+| Available retention budget | $500K |
+| Engineers | 8 |
+| Customer Success staff | 2 |
+| Operations staff | 5 |
+| Sales staff | 4 |
+| Marketing staff | 3 |
+
+Likely churn drivers include:
+
+- A **4–6 week onboarding process** versus a **2–3 week benchmark**
+- A **24-hour average support response time**
+- Only **30% advanced-feature adoption**
+- Three new competitors offering a better UX
+
+The company must improve retention without halting growth and within significant capacity constraints.
+
+---
+
+#### Advisory Boards Consulted
+
+- Customer Success & Support Advisory Board
+- Product Management Advisory Board
+- Design & UX Advisory Board
+- Engineering & Technology Advisory Board
+- Operation & Infra Advisory Board
+- Growth Consulting Board
+- Sales & Business Operation Advisory Board
+- Data Science & Analytics Board
+
+---
+
+#### Top Consensus Recommendations
+
+1. **Make segmented, outcome-based onboarding and activation the first retention priority.**
+   - Define first value.
+   - Use role- and use-case-based paths.
+   - Automate simpler journeys.
+   - Reserve high-touch support for complex or strategic accounts.
+
+2. **Implement an account-level health and risk model with a weekly cross-functional retention cadence.**
+   - Assign every red-risk account a named owner.
+   - Require a documented recovery plan for every red-risk account.
+
+3. **Improve support and adoption while removing major UX friction.**
+   - Introduce severity-based response and resolution management.
+   - Drive meaningful adoption of retention-linked advanced features.
+   - Incrementally fix the highest-friction UX journeys.
+
+---
+
+#### Critical Decision Points
+
+| Decision | Required Direction |
+|---|---|
+| Funding model | Approve staged funding: fund no-regret stabilization and diagnostics immediately, then release larger product, tooling, and contractor investments after Weeks 2–4 evidence. |
+| Activation targets | Approve segment-specific targets: aspirational 7-day first value for low-complexity accounts, 14 days for standard accounts, and 14–21 days for strategic or complex accounts. |
+| Engineering allocation | Approve a protected portfolio allocation prioritizing retention-critical work while preserving reliability, security, and essential growth commitments. |
+| Capacity versus product remediation | Choose the balance of temporary onboarding/support capacity versus product/UX remediation based on affected ARR, urgency, recurrence, and retained ARR per dollar. |
+| Sales operating model | Implement sales-to-CS handoffs, qualification, and promise governance immediately; defer compensation changes until evidence supports a pilot. |
+
+---
+
+### Consensus Recommendations
+
+#### 1. Launch a Segmented, Outcome-Based Onboarding and Activation Program
+
+**Priority:** High  
+**Confidence score:** **10.0**
+
+Define customer-specific first-value events and standardize:
+
+- Role- and use-case-based pathways
+- Checklists
+- Templates
+- Guided setup
+- Escalation triggers
+
+Use:
+
+- **Digital-first delivery** for low-complexity accounts
+- **High-touch implementation** for strategic or complex accounts
+
+Target a **2–3 week median onboarding duration** for eligible standard cohorts.
+
+**Supporting boards:**
+
+- Customer Success & Support
+- Product Management
+- Design & UX
+- Engineering & Technology
+- Operation & Infra
+- Growth Consulting
+- Sales & Business Operation
+- Data Science & Analytics
+
+---
+
+#### 2. Create a Unified Account-Level Health and Retention Operating Model
+
+**Priority:** High  
+**Confidence score:** **10.0**
+
+Combine the following account-level signals:
+
+- Onboarding progress
+- Usage trends
+- Advanced-feature adoption
+- Support severity and unresolved ticket age
+- Renewal timing
+- ARR
+- Customer sentiment
+- Competitive signals
+
+Establish:
+
+- Weekly cross-functional account reviews
+- A named owner for every red account
+- A documented recovery plan for every red account
+
+**Supporting boards:**
+
+- Customer Success & Support
+- Product Management
+- Design & UX
+- Engineering & Technology
+- Operation & Infra
+- Growth Consulting
+- Sales & Business Operation
+- Data Science & Analytics
+
+---
+
+#### 3. Replace the 24-Hour Support Model With Severity-Based Support Operations
+
+**Priority:** High  
+**Confidence score:** **9.5**
+
+Replace the existing 24-hour average support model with:
+
+- Centralized support intake
+- Severity-based SLAs
+- Daily triage
+- A dedicated onboarding and at-risk escalation lane
+- Explicit Engineering escalation
+- Root-cause feedback into Product and Engineering
+
+Track:
+
+- First response time
+- Resolution time
+- Reopened and repeat-ticket rate
+- SLA attainment
+- Support CSAT
+
+**Supporting boards:**
+
+- Customer Success & Support
+- Product Management
+- Design & UX
+- Engineering & Technology
+- Operation & Infra
+- Growth Consulting
+- Data Science & Analytics
+
+---
+
+#### 4. Increase Meaningful Adoption of Retention-Linked Advanced Features
+
+**Priority:** High  
+**Confidence score:** **9.5**
+
+Focus on the **two to three advanced features** demonstrably associated with retained customer outcomes.
+
+Actions include:
+
+- Segment eligibility
+- Simplify discovery and setup through contextual guidance and templates
+- Provide targeted education
+- Use CSM follow-up for high-value accounts
+- Measure repeated use rather than one-time activation
+
+**Supporting boards:**
+
+- Customer Success & Support
+- Product Management
+- Design & UX
+- Engineering & Technology
+- Operation & Infra
+- Growth Consulting
+- Sales & Business Operation
+- Data Science & Analytics
+
+---
+
+#### 5. Address Competitive UX Through a Narrow, Evidence-Led Backlog
+
+**Priority:** High  
+**Confidence score:** **10.0**
+
+Focus UX improvements on:
+
+- Onboarding
+- Core workflows
+- Advanced-feature journeys
+
+Use:
+
+- Small, instrumented improvements
+- Phased rollouts
+- Evidence-led prioritization
+- Incremental releases
+
+Avoid a broad redesign or platform rewrite during the six-month recovery period.
+
+**Supporting boards:**
+
+- Customer Success & Support
+- Product Management
+- Design & UX
+- Engineering & Technology
+- Operation & Infra
+- Growth Consulting
+- Sales & Business Operation
+- Data Science & Analytics
+
+---
+
+#### 6. Instrument a Shared Retention Dashboard and Stable Metric Definitions
+
+**Priority:** High  
+**Confidence score:** **10.0**
+
+Create stable definitions and shared reporting for:
+
+- Activation
+- Time-to-value
+- Onboarding completion
+- Account health
+- Meaningful advanced-feature adoption
+- Support performance
+- Churn
+- Gross Revenue Retention (GRR)
+- Cohort outcomes
+
+Manage the program using leading indicators and **retained ARR by segment**.
+
+**Supporting boards:**
+
+- Customer Success & Support
+- Product Management
+- Design & UX
+- Engineering & Technology
+- Operation & Infra
+- Growth Consulting
+- Sales & Business Operation
+- Data Science & Analytics
+
+---
+
+#### 7. Install Disciplined Sales-to-CS Handoffs and Customer-Quality Controls
+
+**Priority:** High  
+**Confidence score:** **8.5**
+
+Implement:
+
+- Disciplined sales-to-CS handoffs
+- Realistic implementation commitments
+- ICP and qualification controls
+- Renewal plans for high-value and at-risk accounts
+- Early recovery action before renewal
+
+The sold outcome must match delivery capability.
+
+**Supporting boards:**
+
+- Customer Success & Support
+- Product Management
+- Operation & Infra
+- Growth Consulting
+- Sales & Business Operation
+- Data Science & Analytics
+
+---
+
+### Strategic Choices and Decision Frameworks
+
+#### 1. Diagnostic Analysis Before Spending vs. Immediate Operational Deployment
+
+| Element | Position |
+|---|---|
+| **Board A position** | Data Science & Analytics recommends a two-week churn-driver and cohort analysis, unified data, phased funding, and controlled or matched evaluation. Engineering & Technology similarly prioritizes telemetry in the first 2–3 weeks. |
+| **Board B position** | Customer Success & Support, Operation & Infra, and Growth Consulting recommend immediate stabilization through support SLAs and triage, renewal inventory, red-account ownership, onboarding milestones, and temporary capacity. |
+| **Core tension** | Evidence quality and spend efficiency versus urgency to stop active customer harm and near-term churn. |
+| **Decision framework** | Run a 10–14 day diagnostic in parallel with no-regret stabilization. Gate larger tools, contractor commitments, and product investments on affected ARR, churn-driver evidence, delivery feasibility, recurrence, and expected retained ARR per dollar. |
+| **Compromise option** | Release budget in stages: fund immediate service stabilization and measurement first; allocate the remaining budget after Week 2–4 findings and pilot evidence. |
+
+---
+
+#### 2. Onboarding Speed and First-Value Thresholds
+
+| Element | Position |
+|---|---|
+| **Board A position** | Design & UX seeks first meaningful value in 3–7 days. Customer Success & Support and Operation & Infra target 80% first value within 14 days, allowing 14–21 days for strategic or high-complexity customers. |
+| **Board B position** | Product Management, Engineering & Technology, Growth Consulting, and Data Science & Analytics target 70%+ activation in roughly 10–14 days and a 2–3 week median for standard cohorts, cautioning against a universal target. |
+| **Core tension** | Ambitious speed targets versus variable implementation complexity, integrations, and meaningful outcome definitions. |
+| **Decision framework** | Segment by ARR, implementation complexity, integration readiness, and use case. Evaluate speed together with customer-confirmed value and 90-day risk, not onboarding completion alone. |
+| **Compromise option** | Use 7 days as an aspirational target for low-complexity accounts, 14 days for standard accounts, and 14–21 days for strategic or complex accounts. Maintain a 2–3 week median target for eligible standard cohorts. |
+
+---
+
+#### 3. Engineering Capacity Allocation for Retention
+
+| Element | Position |
+|---|---|
+| **Board A position** | Product Management recommends 60% of engineering capacity for retention-critical work. Engineering & Technology recommends 50–60% organized into retention-focused squads. |
+| **Board B position** | Engineering & Technology also reserves 2 of 8 engineers for reliability, security, technical debt, and essential growth. Growth Consulting and Sales & Business Operation emphasize tightly scoped retention work that does not stall growth. |
+| **Core tension** | Concentrated retention delivery versus reliability and revenue-generating roadmap delivery. |
+| **Decision framework** | Review monthly using retained ARR at risk, committed revenue impact, reliability and security obligations, delivery confidence, unplanned work, and measured release outcomes. Require explicit revenue and churn trade-offs for displacement decisions. |
+| **Compromise option** | Start with six engineers allocated to retention and reliability enablement and two engineers allocated to core reliability and essential growth. Adjust after the first month based on evidence. |
+
+---
+
+#### 4. Temporary Customer-Facing Capacity vs. Product and UX Investment
+
+| Element | Position |
+|---|---|
+| **Board A position** | Customer Success & Support, Operation & Infra, and Growth Consulting emphasize implementation and support capacity, service workflows, health operations, and scalable delivery. |
+| **Board B position** | Product Management, Design & UX, and Engineering & Technology emphasize productized onboarding, advanced-feature journeys, analytics, and targeted UX and workflow fixes. |
+| **Core tension** | Immediate service recovery versus removal of root-cause friction and scalable product-led retention. |
+| **Decision framework** | Prioritize according to risk imminence and ARR, operational versus product-rooted evidence, time to deploy, ticket recurrence, and expected retained ARR per dollar. |
+| **Compromise option** | Fund temporary onboarding and support capacity plus core support workflows immediately; protect product capacity for the top measured friction points; retain contingency for the constraint proven most material. |
+
+---
+
+#### 5. Sales Compensation Changes During the Recovery Period
+
+| Element | Position |
+|---|---|
+| **Board A position** | Sales & Business Operation recommends piloting a 10–20% deferred quality component tied to onboarding milestones, first value, or 90-day activity for eligible new-logo deals. |
+| **Board B position** | Other boards emphasize immediate handoff, qualification, promise-governance, and account-tiering controls without recommending compensation redesign. |
+| **Core tension** | Longer-term incentive alignment versus implementation complexity, sales acceptance, and accountability for factors outside Sales control. |
+| **Decision framework** | Determine whether failed activation or churn is materially linked to ICP fit, nonstandard promises, or sales behavior after considering product and implementation constraints. Assess compensation timing, legal and HR effort, and sales-capacity risk. |
+| **Compromise option** | Implement handoff, ICP, and promise controls immediately. Consider a limited pilot for new high-ARR deals in the next compensation period using measures within Sales influence. |
+
+---
+
+### Domain Insights
+
+#### Executive Leadership
+
+Make retention a company-level growth priority by:
+
+- Approving staged budget and portfolio trade-offs
+- Chairing or sponsoring governance
+- Selectively engaging strategic at-risk accounts
+
+At **$5M ARR**, reducing churn restores growth efficiency and reduces the replacement ARR required merely to sustain growth.
+
+#### Customer Success and Support
+
+The two-person CS team cannot provide equal high-touch coverage across the customer base. The operating model should include:
+
+- ARR, risk, and complexity segmentation
+- Temporary onboarding and support capacity
+- 120/90-day renewal discipline
+- Red-account recovery plans
+- Scalable digital education
+
+#### Product, Design, and Engineering
+
+Do not pursue a broad redesign. Instead:
+
+- Instrument activation and friction first
+- Improve the highest-impact onboarding, integration, core-workflow, and advanced-feature journeys
+- Deliver small releases
+- Use progressive disclosure, content design, feature flags, QA, and phased rollout
+
+#### Operations and Infrastructure
+
+Treat closed-won through renewal as a single lifecycle operating system. Establish:
+
+- Centralized support intake
+- Severity tagging
+- Triage
+- SLAs
+- Knowledge management
+- CRM and data hygiene
+- Weekly customer-friction reviews
+
+#### Sales and Business Operations
+
+Improve customer quality without halting growth through:
+
+- Mandatory CRM handoffs
+- ICP and conditional deal acceptance
+- Promise governance
+- Competitive-loss coding
+- Joint renewal-risk command center
+
+Sales must not sell unsupported workflows or delivery timelines.
+
+#### Data and Analytics
+
+Use a unified account key and stable metrics. Prioritize based on:
+
+- Retained ARR
+- Renewal timing
+- Risk
+- Intervention feasibility
+
+Use cohort analysis and practical matched comparisons to validate which actions reduce risk. Avoid dashboard-only analytics.
+
+#### Marketing
+
+Create:
+
+- Role- and use-case-based lifecycle content
+- Onboarding assets
+- Webinars
+- Knowledge-base material
+- Customer stories
+- Release communications
+- Targeted adoption campaigns
+
+These assets should preserve CS capacity for high-value and high-risk interventions.
+
+#### Finance and Billing Operations
+
+Provide accurate reporting for:
+
+- Contracts
+- Renewals
+- ARR
+- Churn
+- Contraction and expansion
+- GRR
+- NRR
+
+Finance and Billing Operations should govern save-offer economics and support retained-ARR-based prioritization.
+
+---
+
+### Implementation Plan
+
+#### Phase 1 — Stabilize, Diagnose, and Establish Ownership
+
+**Timeline:** Days 0–30
+
+##### Actions
+
+- Appoint a CEO executive sponsor and retention program lead.
+- Establish weekly retention-growth and customer-friction reviews.
+- Complete a 10–14 day churn-driver and cohort analysis.
+- Define stable metrics, activation and first-value events, account identity, and baseline retained ARR at risk.
+- Identify all renewals due in the next 180 days.
+- Assign Red, Yellow, or Green health status and a written recovery plan and owner for every red account.
+- Launch support stabilization, including centralized intake, P1–P4 definitions, SLA dashboards, daily or rotating triage, onboarding and at-risk queues, Engineering escalation rules, and customer communication standards.
+- Map current onboarding and sales-to-CS handoffs.
+- Implement a mandatory handoff record, implementation-readiness checklist, first-value milestones, and segment definitions.
+- Interview churned, at-risk, newly onboarded, and high-adoption customers.
+- Conduct competitor workflow and support-ticket reviews to rank friction.
+- Secure temporary onboarding, implementation, and support coverage.
+- Protect initial Engineering capacity for telemetry, onboarding, and support enablement.
+
+##### Lead Responsibilities
+
+| Role | Responsibility |
+|---|---|
+| CEO | Sponsor program, make trade-off decisions, escalate strategic accounts. |
+| Head of Customer Success | Own health model, red-account plans, onboarding milestones, and renewal inventory. |
+| Operations Lead | Manage support triage, CRM and data hygiene, dashboards, handoff workflow, and meeting cadence. |
+| VP Product and Engineering Lead | Define activation, implement telemetry, analyze friction, and establish escalation paths. |
+| VP Sales | Ensure handoff compliance, conduct promise audits, and provide renewal and competitive intelligence. |
+| Marketing Lead | Recruit research participants and create initial lifecycle and education assets. |
+
+##### Deliverables
+
+- Retention charter, governance cadence, metric dictionary, and baseline dashboard
+- Ranked churn-driver and segment heatmap
+- Top at-risk ARR account list
+- Red-account recovery plans and 180-day renewal inventory
+- Severity-based support SLA and triage operating model
+- Sales-to-CS handoff template and readiness checklist
+- Initial onboarding blueprint
+- Prioritized retention UX and product backlog
+- Staged budget release decision
+
+---
+
+#### Phase 2 — Deploy Core Retention Motions and Prove Impact
+
+**Timeline:** Months 1–3
+
+##### Actions
+
+- Pilot and then roll out segmented onboarding.
+- Provide guided checklists, templates, status visibility, milestone nudges, training, and high-touch exception paths.
+- Implement the account-health dashboard and weekly intervention cadence.
+- Refine health rules using observed outcomes.
+- Ensure all red accounts have active recovery actions.
+- Reduce overall support first response to under 8 business hours.
+- Enforce P1 and P2 response commitments.
+- Build knowledge-base content.
+- Automate routing and customer context.
+- Address top recurring ticket causes.
+- Select two to three retention-linked advanced features.
+- Launch targeted in-product guidance, templates, role-based education, webinars, office hours, and high-value-account follow-up.
+- Deliver the first targeted onboarding, integration or import, core-workflow, and advanced-feature UX fixes through phased releases.
+- Activate ICP, qualification, deal acceptance, promise governance, and renewal planning.
+- Keep the sales pipeline focused on target-fit opportunities.
+- Use cohort and retained-ARR analysis to compare pilots.
+- Stop or re-scope weak interventions.
+- Release contingency funds toward the strongest bottleneck.
+
+##### Lead Responsibilities
+
+| Role | Responsibility |
+|---|---|
+| Head of Customer Success | Lead onboarding rollout, save plans, adoption outreach, and renewal readiness. |
+| VP Product | Own prioritized roadmap, feature-adoption design, and release hypotheses. |
+| Engineering Lead | Deliver onboarding and product telemetry, support integrations, workflow fixes, and release quality. |
+| Operations Lead | Manage SLA performance, workflow automation, data quality, and reporting. |
+| VP Sales | Lead qualification, handoffs, and strategic renewal participation. |
+| Marketing Lead | Deliver education, lifecycle campaigns, webinars, and customer stories. |
+| CEO | Make monthly funding and capacity decisions; conduct executive-sponsor outreach. |
+
+##### Deliverables
+
+- Segmented onboarding program live for eligible cohorts
+- Unified account-health and retention dashboard with weekly action log
+- Support SLA performance dashboard, knowledge base, and escalation workflow
+- Targeted advanced-feature adoption program for eligible accounts
+- First set of high-impact UX and workflow fixes released and measured
+- Operating ICP, promise-governance, and renewal-planning controls
+- Month-3 retention performance and budget-reallocation report
+
+---
+
+#### Phase 3 — Scale Proven Interventions and Institutionalize Retention
+
+**Timeline:** Months 3–6
+
+##### Actions
+
+- Scale onboarding automation and refine tier-specific pathways.
+- Optimize pathways based on time-to-value, completion, support burden, and 90-day risk.
+- Target intensive recovery for high-ARR and high-risk accounts.
+- Use executive-sponsored renewal support where appropriate.
+- Run formal 120/90-day renewal planning and monthly churn and near-churn reviews.
+- Reduce support first response to under 4 business hours.
+- Eliminate or materially reduce recurring root causes through product and process fixes.
+- Expand advanced-feature adoption to remaining eligible segments.
+- Measure sustained use, customer outcomes, health improvement, and retention by cohort.
+- Complete the remaining highest-value UX backlog items.
+- Communicate delivered customer improvements.
+- Maintain monthly competitor workflow reviews.
+- Rebalance Engineering and budget using retained ARR impact.
+- Complete six-month cohort evaluation.
+- Institutionalize the successful operating model.
+
+##### Lead Responsibilities
+
+| Role | Responsibility |
+|---|---|
+| CEO and Executive Team | Review target attainment, make portfolio decisions, and support strategic saves. |
+| Head of Customer Success and VP Sales | Execute renewals, manage recovery plans, and manage account tiering. |
+| VP Product and Engineering Lead | Deliver iterative product and UX fixes, reliability work, and adoption instrumentation. |
+| Operations Lead | Manage service operations, dashboards, process audits, and root-cause tracking. |
+| Marketing Lead | Scale enablement and customer communications. |
+| Finance and Billing Operations | Validate churn, GRR, NRR, and retained ARR outcomes. |
+
+##### Deliverables
+
+- Scaled onboarding, support, health, adoption, and renewal operating system
+- Support performance at target
+- Root-cause reduction backlog with ownership
+- Advanced-feature adoption and sustained-use cohort analysis
+- Six-month churn, GRR, and at-risk ARR outcome assessment
+- Next roadmap
+- Institutionalized governance, metric definitions, service levels, and resource plan
+
+---
+
+### Risks and Mitigations
+
+| Risk | Severity | Mitigation | Owner |
+|---|---|---|---|
+| Retention work is delayed by analysis, or funding is committed to the wrong churn drivers. | High | Run diagnostic analysis in parallel with no-regret stabilization. Release funding in stages and require a baseline, target segment, owner, retention hypothesis, and retained-ARR measure for every initiative. | CEO with Data/Analytics Owner and Retention Program Lead |
+| Customer Success capacity is overwhelmed by onboarding, red-account recovery, renewals, adoption, and research. | High | Segment by ARR, risk, and complexity. Reserve human coverage for high-value and high-risk accounts. Automate lower-touch journeys and add temporary onboarding, implementation, and support capacity. | Head of Customer Success |
+| Engineering capacity is fragmented by retention work, support escalations, reliability needs, and growth commitments. | High | Use explicit portfolio allocation, retention workstreams, a defined escalation rotation, small scoped releases, feature flags, and monthly trade-off governance. Prevent custom requests from bypassing prioritization. | VP Product and Engineering Lead |
+| Support response improves but resolution quality and root causes do not, leaving customer dissatisfaction unchanged. | Medium | Track resolution time, reopened and repeat tickets, CSAT, recurring categories, and unresolved critical issues. Route top drivers into the Product and Engineering backlog and preserve human escalation for blocked customers. | Operations/Support Lead |
+| Health scores are inaccurate, generate too many alerts, or are treated as reporting rather than action triggers. | Medium | Start with transparent rules, validate monthly against outcomes, prioritize by retained ARR and renewal timing, and require recovery-plan ownership for red accounts. | Head of Customer Success with Operations/Data Owner |
+| A broad competitive redesign creates scope creep, regressions, and misses the six-month outcome window. | High | Limit work to evidence-backed onboarding, core-workflow, and advanced-feature friction. Use task success, time-on-task, support demand, and churn linkage to prioritize. Release incrementally with QA and rollback plans. | VP Product |
+| Sales promises, poor-fit deals, or weak handoffs continue feeding preventable churn. | Medium | Make CRM handoff, implementation readiness, ICP and conditional acceptance, deal-desk approval, and approved promise language mandatory. Audit closed deals against onboarding delivery. | VP Sales |
+| Temporary save offers erode pricing discipline or mask unresolved value problems. | Medium | Require a documented root cause and recovery plan before concessions. Require executive approval for material discounts. Track saved-account profitability and post-save retention. | VP Sales with Finance and CEO |
+| Data privacy, security, or quality issues undermine integrated analytics and support tooling. | Low | Use existing tools where possible. Implement access controls, vendor review, stable account IDs, data-quality checks, and phased integrations. | Operations Lead with Engineering Lead |
+
+---
+
+### Resource Requirements
+
+#### Budget
+
+| Funding Area | Description | Quantity | Timeline |
+|---|---|---:|---|
+| Total retention budget | Stage the $500K retention budget rather than summing overlapping board proposals. Initial allocation should cover diagnostic and measurement, immediate support and onboarding stabilization, and temporary capacity. Reserve funds for the best-performing proven intervention after Weeks 2–4. | **$500K total**; hold **$60K–$100K** contingency or reserve for evidence-based reallocation. | Commit initial tranche in Days 0–30; release remaining funds after diagnostic and pilot evidence in Months 1–3. |
+| Onboarding acceleration and product friction removal | Central funding for onboarding acceleration, temporary implementation capacity, onboarding automation, education, and targeted product-friction removal. | $120K–$160K within total budget | Days 0–90, scaling through Month 6 |
+| Support coverage and enablement | Funding for support specialist or contractor coverage, helpdesk and knowledge-base workflows, routing, and service enablement. | $80K–$110K within total budget | Begin immediately; stabilize by Month 2 |
+| Analytics and health operations | Funding for unified analytics, health scoring, telemetry, CRM, product and support integration, and dashboarding. | $60K–$90K within total budget | Days 0–60 |
+| Feature adoption and UX improvements | Funding for advanced-feature adoption, in-app guidance, education, targeted UX research, and high-impact workflow fixes. | $100K–$140K within total budget | Months 1–6 |
+
+#### Personnel
+
+| Requirement | Description | Quantity | Timeline |
+|---|---|---|---|
+| Customer-facing capacity | Expand constrained customer-facing capacity without building a large permanent organization. Separate onboarding and implementation, frontline support, and strategic CS responsibilities. | One temporary onboarding or implementation specialist and one support specialist, or equivalent contractor coverage. Assign one CS staff member as Onboarding Program Owner. | Source in Days 0–30; deploy through six-month program |
+| Named ownership and cadence | Establish named functional ownership and a cross-functional operating cadence. | CEO sponsor; Head of Customer Success retention owner; Operations support lead and analytics/process owner; VP Product and Engineering leads; Sales and Marketing representatives; Finance and Billing support. | Appoint in first week; weekly cadence begins by Week 2 |
+| Engineering capacity | Protect capacity for retention and essential growth or reliability work. | Initial model: **6 of 8 engineers** across retention and reliability enablement, with **2 engineers** assigned to core reliability and essential growth. | Begin in Month 1; rebalance monthly based on evidence |
+
+#### Technology
+
+| Requirement | Description | Quantity | Timeline |
+|---|---|---|---|
+| Retention technology stack | Use configurable tools rather than custom platforms for product analytics, CRM and customer-health workflows, ticketing and knowledge base, lifecycle automation, and in-app guidance. Integrate tools through a common account key. | Product analytics and telemetry, CRM or customer-health workflow, helpdesk and knowledge base, lifecycle automation, and in-app guidance capabilities as needed. | Select and configure in Days 0–30; integrate and refine through Month 3 |
+
+---
+
+### Success Metrics
+
+| Metric | Target | Measurement Method | Review Frequency |
+|---|---|---|---|
+| Annualized customer churn | Below **10%** by end of Month 6; interim trajectory of approximately **12–13%** by Month 3 where measurable. | Monthly logo churn and annualized run-rate, validated with Finance and Billing; segment by cohort and retained ARR. | Monthly executive review; weekly leading-indicator review |
+| Gross Revenue Retention and at-risk ARR | GRR improves month-over-month; **100% of high-risk ARR** has an owner and intervention plan by Month 2. | Billing and CRM renewal data plus account-health dashboard; prioritize by ARR, renewal timing, and risk. | Weekly risk review; monthly executive review |
+| Onboarding time-to-value | Eligible standard cohorts achieve median onboarding of **2–3 weeks** by Months 3–5; **70%+** reach first value within 14 days, with segment-specific targets for low-complexity and strategic accounts. | Instrumented onboarding funnel, first-value event, completion, and elapsed-time cohorts. | Weekly during rollout; monthly cohort review |
+| Onboarding quality and early-life risk | **90%+** onboarding completion; onboarding-related support tickets reduced **25%+**; first-90-day churn or early cancellation reduced **30–40%** versus prior cohorts where data permits. | Onboarding records, support data, and cohort retention and risk comparison. | Monthly cohort review |
+| Support responsiveness and quality | Under **8 business hours** average or median first response by Month 2 and under **4 business hours** by Months 4–6; P1 response within 1 hour and P2 or onboarding-blocker response within 4 business hours during coverage; **90%+ SLA attainment**. | Ticketing dashboard by severity, lifecycle stage, ARR tier, median and p90 response and resolution, reopen and repeat rate, and CSAT. | Daily operational monitoring; weekly review |
+| Meaningful advanced-feature adoption | Increase from **30% to 40%** by Month 3 and **50%+** of eligible customers by Month 6; **60%+** of new eligible customers activate one relevant advanced feature within 45–60 days. | Product telemetry defining adoption as configured, successful, repeated use; compare health and retention outcomes by matched cohort. | Biweekly program review; monthly cohort review |
+| Customer health and recovery execution | **100%** of accounts assigned health status within 45 days; **100%** of red accounts have owner and recovery plan within 48 hours; **40–50%** of red accounts recover to yellow or green within 60–90 days. | Health dashboard, recovery-plan audit, and status transitions. | Weekly retention-risk review |
+| Product and UX friction reduction | Deliver at least **five high-impact fixes** by end of Month 3; improve targeted workflow completion **15–25%**; reduce associated support contacts **20%+**. | Usability tests, product funnel and task telemetry, support-ticket categorization, and phased-release cohorts. | Per release; monthly product review |
+| Growth protection and customer-quality controls | Maintain growth roadmap commitments within agreed variance; **95%+** of new customers have complete handoff records before onboarding; **100%** of nonstandard commitments receive approval. | Roadmap delivery reporting, CRM handoff audit, deal-desk records, pipeline reporting, and conversion reporting. | Weekly operating review; monthly executive review |
+
+---
+
+### Immediate Next Steps
+
+#### Within 48 Hours
+
+- CEO appoints the executive sponsor.
+- Appoint the retention program lead.
+- Define decision rights for budget, roadmap, and strategic-account escalations.
+
+#### Within One Week
+
+- Launch the weekly retention-growth and customer-friction review.
+- Publish the metric dictionary.
+- Define baseline dashboard requirements.
+- Publish the action log.
+
+#### Within Two Weeks
+
+- Complete churn-driver and cohort analysis.
+- Identify the top 20–30 at-risk accounts by retained ARR.
+- Inventory all renewals in the next 180 days.
+- Assign red-account owners and recovery plans.
+- Implement support severity definitions.
+- Establish centralized intake and triage ownership.
+- Implement Engineering escalation rules.
+- Create the onboarding and at-risk ticket lane.
+
+#### Within 30 Days
+
+- Make the CRM sales-to-CS handoff and implementation-readiness checklist mandatory.
+- Define segmented first-value milestones.
+- Pilot the onboarding workflow.
+- Contract or hire temporary onboarding, implementation, and support capacity, subject to staged budget approval.
+
+#### Day 30 Executive Gate
+
+Approve the following based on evidence:
+
+- Prioritized product and UX backlog
+- Advanced-feature adoption targets
+- Engineering allocation
+- Release of remaining retention funds
+
+#### By Month 2
+
+- Launch targeted advanced-feature adoption.
+- Launch the first guided onboarding releases.
+- Launch the first product-friction releases.
+- Discontinue or re-scope interventions not improving leading indicators within 4–6 weeks.
+
+---
+
+### Review Schedule
+
+| Cadence | Review Focus |
+|---|---|
+| **Daily** | Support SLA performance, P1/P2 blockers, and red-account escalation monitoring. |
+| **Weekly** | 45–60 minute cross-functional retention-growth review covering at-risk ARR, recovery actions, onboarding funnel, support performance, adoption, product friction, renewal pipeline, budget decisions, and named owners. |
+| **Biweekly** | Onboarding and adoption experiment review; product-release review. |
+| **Monthly** | CEO-led portfolio review of churn, GRR, NRR, cohort outcomes, Engineering allocation, budget reallocation, growth protection, and competitive risk. |
+| **Day 30** | Diagnostic and funding gate. |
+| **Day 90** | Formal progress assessment against interim churn trajectory and capacity plan. |
+| **Month 6** | Target validation, cohort analysis, and institutionalization of the operating model. |
+
+</details>
 
 **Takes** `user_input`, a text (`Text`).
 
