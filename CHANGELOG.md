@@ -16,6 +16,7 @@
 
 ### Removed
 
+- **The methods whose samples are reworked (Breaking)**: `answer_from_documents`, `discord_newsletter`, `extract_dpe`, `gen_expense_data` and `gen_synthetic_data` leave the cookbook with their packages, samples, pages and snippets, and will come back reworked as new examples. Their addresses at `v0.19.1` and earlier tags keep working, and the recipes built on them keep running them at `v0.18.0`, linking their pages at that release; an address without a tag no longer resolves.
 - **The answer keys**: no package carries a `key.md` any more, and loading the cookbook no longer asks for one. `docs/adding-a-method.md` proves a new method by reading its output as the person who would use it and by `make check-smoke`, rather than by scoring a run against a key.
 
 ## [v0.19.1] - 2026-09-25

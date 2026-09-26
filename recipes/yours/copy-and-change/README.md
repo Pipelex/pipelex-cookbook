@@ -1,6 +1,6 @@
 # Copy a method, change it, and make it yours
 
-A published method is a starting point. Your coding agent copies it at its tag, changes it, proves the change on the method's own sample and saves it to your Pipelex account, where it gets an id of its own, `mt_…`. From then on, your chatbot, your code and your app take that id where they took the address. This recipe does it with the cookbook's [document question answering](../../../methods/answer_from_documents/) method, which answers a question from a set of documents and quotes the passages its answer rests on. The change is the one its page suggests: answer in the language the question is asked in.
+A published method is a starting point. Your coding agent copies it at its tag, changes it, proves the change on the method's own sample and saves it to your Pipelex account, where it gets an id of its own, `mt_…`. From then on, your chatbot, your code and your app take that id where they took the address. This recipe does it with the cookbook's [document question answering](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/answer_from_documents) method, which answers a question from a set of documents and quotes the passages its answer rests on. The change is the one its page suggests: answer in the language the question is asked in.
 
 It shows what making a method yours involves today:
 

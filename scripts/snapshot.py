@@ -379,8 +379,8 @@ def storage_references(output: JsonValue) -> list[StorageReference]:
 def file_name(*, segments: Sequence[str | int], content_type: str | None, uri: str) -> str:
     """Name a copied file after the JSON path of its first reference: the trailing `url` dropped, every key and index joined by `-`.
 
-    `$.items[0].expenses_with_receipts[2].receipt.url` names `items-0-expenses_with_receipts-2-receipt.png`, and an output that is itself a
-    file names `output` with its extension.
+    `$.items[0].illustrations[2].image.url` names `items-0-illustrations-2-image.png`, and an output that is itself a file names `output`
+    with its extension.
     """
     parts = list(segments)
     if parts and parts[-1] == _URL_KEY:

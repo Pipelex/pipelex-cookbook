@@ -1,6 +1,6 @@
 # From an address to a web app you deploy
 
-An address is a whole method, and one command turns it into a web app. The initializer of [`pipelex-method-apps`](https://github.com/Pipelex/pipelex-method-apps) writes a Next.js app whose form and result view both come from the method's contract, so you write no form field and no result markup, and the app calls the method by its address with your key kept on the server. This recipe makes the app for the cookbook's [energy diagnostic (DPE) extraction](../../../methods/extract_dpe/) method, which reads a French energy performance diagnostic: its form takes a PDF, which the browser sends straight to Pipelex storage through a one-time upload grant.
+An address is a whole method, and one command turns it into a web app. The initializer of [`pipelex-method-apps`](https://github.com/Pipelex/pipelex-method-apps) writes a Next.js app whose form and result view both come from the method's contract, so you write no form field and no result markup, and the app calls the method by its address with your key kept on the server. This recipe makes the app for the cookbook's [energy diagnostic (DPE) extraction](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/extract_dpe) method, which reads a French energy performance diagnostic: its form takes a PDF, which the browser sends straight to Pipelex storage through a one-time upload grant.
 
 It shows what an app on a published method is made of:
 
