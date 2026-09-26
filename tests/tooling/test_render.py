@@ -63,10 +63,8 @@ class TestRender:
         assert f'  method_ref: "{address}",' in page
         assert f"npm create @pipelex/method-app@latest widgets-app -- --method {address}" in page
         assert f"```text\nCopy {address} into ./widgets, add each widget's price to what it extracts, prove it" in page
-        # The page is about using the method: the answer key and the skills the agent chains stay off it.
+        # The page is about using the method: the skills the agent chains stay off it.
         assert "What you get" not in page
-        assert "answer key" not in page
-        assert "Sprocket, Flange and Gasket" not in page
         assert "/pipelex-catalog" not in page
 
     def test_page_without_an_editorial_entry_comes_from_the_manifest(self, make_cookbook: MakeCookbook, templates_dir: Path):

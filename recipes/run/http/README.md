@@ -62,7 +62,7 @@ run run_… completed
 }
 ```
 
-The method's [answer key](../../../methods/extract_dpe/key.md) says what a right answer on the sample holds: the address at 51 rue du Roi de Sicile, 75004 Paris; issued on 2022-03-29 and valid until 2032-03-28; energy class G at 560 kWh per m² per year; CO₂ class C at 18 kg per m² per year; and yearly energy costs between 1260 and 1750 euros.
+These are the figures printed on the sample diagnostic: the address at 51 rue du Roi de Sicile, 75004 Paris; issued on 2022-03-29 and valid until 2032-03-28; energy class G at 560 kWh per m² per year; CO₂ class C at 18 kg per m² per year; and yearly energy costs between 1260 and 1750 euros.
 
 The exit status says what happened, in the pattern of the [durable run](../../code/typescript/durable-run/) recipe:
 

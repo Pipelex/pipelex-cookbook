@@ -6,11 +6,11 @@ class CookbookError(Exception):
 
 
 class CookbookLayoutError(CookbookError):
-    """The repository does not hold what the tooling expects: a package, a manifest, an answer key or `cookbook.toml` that does not load."""
+    """The repository does not hold what the tooling expects: a package, a manifest or `cookbook.toml` that does not load."""
 
 
 class HostedApiError(CookbookError):
-    """The hosted Pipelex API could not be reached, or answered without a verdict.
+    """The hosted Pipelex API could not be reached, refused a call, or answered in a way the tooling cannot read.
 
     When it answered, `status_code` is the HTTP status and `problem` the problem details its body carried (`type`, `title`, `detail`,
     `error_type`), empty when the body was not one.

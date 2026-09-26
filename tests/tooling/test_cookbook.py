@@ -41,12 +41,6 @@ class TestCookbookLoading:
         with pytest.raises(CookbookLayoutError, match="your_dir"):
             load_cookbook(root)
 
-    def test_a_package_without_an_answer_key_is_refused(self, make_cookbook: MakeCookbook):
-        root = make_cookbook()
-        (root / "methods" / "count_words" / "key.md").unlink()
-        with pytest.raises(CookbookLayoutError, match="holds no key.md"):
-            load_cookbook(root)
-
     def test_a_broken_contract_snapshot_is_refused_unless_contracts_are_left_unread(self, make_cookbook: MakeCookbook):
         root = make_cookbook()
         (root / "methods" / "count_words" / "contract.json").write_text("{not json", encoding="utf-8")

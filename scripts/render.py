@@ -1,9 +1,9 @@
 """Render every method's page, `methods/<name>/README.md`, from its package, its editorial fields and the templates, and the front page's methods.
 
 Everything a page says about its method is derived here, from committed files only: the address from the manifest and the version file, the
-samples and the code snippets' inputs from `inputs.json`, and the "Takes" and "Returns" lines from the contract snapshot; the answer key is
-not shown on the page. The templates under `templates/` hold the wording and the links, one block per door, so a change to a door is made
-once and every page inherits it at the next render.
+samples and the code snippets' inputs from `inputs.json`, and the "Takes" and "Returns" lines from the contract snapshot. The templates under
+`templates/` hold the wording and the links, one block per door, so a change to a door is made once and every page inherits it at the next
+render.
 
 The page's TypeScript and Python snippets are also written as files, `tests/snippets/<name>/typescript/snippet.ts` and
 `tests/snippets/<name>/python/snippet.py`, from the same templates under `templates/snippets/`, so that what the page shows is what the type

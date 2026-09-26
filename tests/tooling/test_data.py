@@ -1,4 +1,4 @@
-"""Constants for the cookbook tooling's tests: the fixture cookbook's editorial file, answer keys and contract snapshots."""
+"""Constants for the cookbook tooling's tests: the fixture cookbook's editorial file, bundles and contract snapshots, and hand-built outputs."""
 
 from collections.abc import Callable
 from pathlib import Path
@@ -56,36 +56,6 @@ type = "PipeLLM"
 inputs = { text = "Text" }
 output = "Text"
 prompt = "Count the words of @text."
-"""
-
-WIDGETS_KEY = """# Key: catalogue
-
-Inputs: one catalogue page listing three widgets.
-
-## Planted facts
-F1. The page lists three widgets: Sprocket, Flange and Gasket.
-
-## Must
-M1. `widgets` holds three widgets: Sprocket, Flange and Gasket.
-M2. Each widget's `colour` is the colour printed beside it,
-in any wording.
-
-## Must not
-N1. A widget listed twice.
-
-## Pass bar
-Every Must and Must not line.
-"""
-
-WORDS_KEY = """# Key: fox
-
-Inputs: one sentence of four words.
-
-## Must
-M1. The output says the text has four words.
-
-## Pass bar
-Every Must line.
 """
 
 WIDGETS_CONTRACT = Contract(

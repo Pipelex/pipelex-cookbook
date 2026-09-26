@@ -7,7 +7,7 @@ It shows what making a method yours involves today:
 - **A copy starts at a tag.** The agent takes the package from the cookbook's repository at `v0.18.0`, so what you change is exactly what the address `github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.18.0` runs.
 - **A change that keeps the contract is an edit.** `/pipelex-edit` rewrites prompts, models and wording itself, and validates the method before and after. A change to what the method takes or returns is design work, which it hands to `/pipelex-design`.
 - **A save is a deployment.** `/pipelex-catalog` saves the directory as a new method in your organization's catalog, and the saved method keeps no record of the address it came from: no gesture yet saves a published method into your account in one step.
-- **One run proves the change, not the method.** A run shows the change took, and the method's answer key says whether the answer is right. On this sample, one of the two runs miscounted, and the key is how you tell.
+- **One run proves the change, not the method.** A run shows the change took, and whether the answer is right is checked against the document itself. On this sample, one of the two runs miscounted, which only a look at the report's list of references shows.
 
 ## What it needs
 
@@ -57,7 +57,7 @@ status: answered · confidence: high · answer: 8
 Le rapport est rattaché au Pew Research Center. Parmi les 12 références des pages 21 et 22, cinq références de la page 21 et trois de la page 22 sont attribuées au Pew Research Center, soit huit au total.
 ```
 
-That is what the method's [answer key](../../../methods/answer_from_documents/key.md) asks for: 8, answered, from the report's references appendix.
+That is the right answer: the report's references appendix lists twelve references, eight of them Pew Research Center publications.
 
 `/pipelex-catalog` saves it and reports its id:
 
@@ -73,7 +73,7 @@ status: answered · confidence: high · answer: 9
 Pew Research Center is identified as the report's own research center. Of the 12 references across pages 21–22, nine are authored or published by Pew Research Center and three are from other institutions.
 ```
 
-The key says 8, so this run fails it. Both runs counted six of page 21's references as Pew's where the page shows five, and only the first caught it when writing the answer. A change is proven on one run; whether the method answers right is a question for several runs against the key, which is what `/pipelex-lab` does, as the [design-from-a-sentence recipe](../design-from-a-sentence/) shows.
+The appendix holds eight, so this run is wrong. Both runs counted six of page 21's references as Pew's where the page shows five, and only the first caught it when writing the answer. A change is proven on one run; whether the method answers right is a question for several runs, which is what `/pipelex-lab` measures, as the [design-from-a-sentence recipe](../design-from-a-sentence/) shows.
 
 Adding it to the DPE app of the [deployed-app recipe](../../app/deployed-app/) by its id, as a dry run, shows what the tab would be, and what an id is bound to:
 
@@ -91,7 +91,7 @@ add-method: method_id mt_…, via https://api.pipelex.com
 
 The recipe is a request to your agent, so it carries no code: the Pipelex plugin's skills do the work through the Pipelex tools.
 
-- **The copy.** No skill copies a published method: `/pipelex-edit` and `/pipelex-design` refuse an address, since a published method is not theirs to change. So the agent takes the package with git, at the tag the address names. The copy keeps the package's `METHODS.toml`, `README.md` and `key.md` as the cookbook wrote them, still naming the cookbook's address: edit them before you publish the package yourself.
+- **The copy.** No skill copies a published method: `/pipelex-edit` and `/pipelex-design` refuse an address, since a published method is not theirs to change. So the agent takes the package with git, at the tag the address names. The copy keeps the package's `METHODS.toml` and `README.md` as the cookbook wrote them, still naming the cookbook's address: edit them before you publish the package yourself.
 - **The change.** [`/pipelex-edit`](https://github.com/Pipelex/pipelex-plugins/blob/main/pipelex/skills/pipelex-edit/SKILL.md) validates every `.mthds` file with `mthds_validate` before it changes anything, applies the change, and validates again. It applies a change that keeps what the method takes and returns, and hands anything that changes them to `/pipelex-design`.
 - **The proof.** [`/pipelex-run`](https://github.com/Pipelex/pipelex-plugins/blob/main/pipelex/skills/pipelex-run/SKILL.md) runs the method from its files with `mthds_run`, on the package's own `inputs.json` and the question you gave, then by its id with `method_id`.
 - **The save.** [`/pipelex-catalog`](https://github.com/Pipelex/pipelex-plugins/blob/main/pipelex/skills/pipelex-catalog/SKILL.md) sends the directory's `.mthds` files with `mthds_save_method`, root file first, asks for a name when the method is new, and writes `pipelex-method.json` beside the root file, which links the directory to the method so that the next save updates it rather than creating another. Commit that file with the method. The link is written only when the plugin's tools can read the directory, which they can when your agent was started in it or above it.

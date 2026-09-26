@@ -1,7 +1,7 @@
 """Load the cookbook: its version, its editorial fields in `cookbook.toml`, every method package under `methods/`, and the library's snapshot.
 
-A package is a directory holding a `METHODS.toml` manifest, its `.mthds` bundles, a sample `inputs.json`, an answer key `key.md`, and the contract
-snapshot `contract.json` that `make refresh` writes. Loading checks the package's identity: its manifest's `name` is its directory's name and its
+A package is a directory holding a `METHODS.toml` manifest, its `.mthds` bundles, a sample `inputs.json`, and the contract snapshot
+`contract.json` that `make refresh` writes. Loading checks the package's identity: its manifest's `name` is its directory's name and its
 `address` is the cookbook's, since the runtime locates a package by that pair and never by its path. It also holds the contract snapshot to the
 package's files: the main pipe, its output concept and its multiplicity must be what the `.mthds` files declare. The method library's snapshot,
 `library.json`, must have been taken at the tag and the address `cookbook.toml` pins (`scripts/library.py`).
@@ -20,7 +20,6 @@ from pydantic import BaseModel, ConfigDict, Field, JsonValue, ValidationError
 from scripts.bundles import DeclaredOutput, declared_main_output
 from scripts.contract import CONTRACT_FILE, Contract, load_contract
 from scripts.exceptions import CookbookLayoutError
-from scripts.key import AnswerKey, parse_key
 from scripts.library import LibrarySettings, LibrarySnapshot, load_library
 
 COOKBOOK_FILE = "cookbook.toml"
@@ -28,7 +27,6 @@ PYPROJECT_FILE = "pyproject.toml"
 METHODS_DIR = "methods"
 MANIFEST_FILE = "METHODS.toml"
 INPUTS_FILE = "inputs.json"
-KEY_FILE = "key.md"
 PAGE_FILE = "README.md"
 # Where `make render` writes each method's page snippets as files, in `tests/snippets/<name>/`, for the type checkers to read.
 SNIPPETS_DIR = "tests/snippets"
@@ -68,7 +66,6 @@ class MethodPackage(BaseModel):
     manifest: MethodsManifest
     bundle_files: list[str] = Field(description="The package's `.mthds` files, relative to its directory, sorted")
     inputs: dict[str, JsonValue] = Field(description="The sample inputs of `inputs.json`")
-    key: AnswerKey
     contract: Contract | None = Field(description="The committed contract snapshot, or None before the first `make refresh`")
     editorial: EditorialEntry
 
@@ -186,11 +183,6 @@ def _load_package(*, directory: Path, settings: CookbookSettings, read_contract:
         raise CookbookLayoutError(msg)
 
     inputs = _load_inputs(directory / INPUTS_FILE)
-    key_path = directory / KEY_FILE
-    if not key_path.is_file():
-        msg = f"{directory} holds no {KEY_FILE}: every cookbook method carries an answer key for its sample"
-        raise CookbookLayoutError(msg)
-    key = parse_key(key_path.read_text(encoding="utf-8"), source=str(key_path))
     contract_path = directory / CONTRACT_FILE
     contract = load_contract(contract_path) if read_contract and contract_path.is_file() else None
     if contract is not None:
@@ -205,7 +197,6 @@ def _load_package(*, directory: Path, settings: CookbookSettings, read_contract:
         manifest=manifest,
         bundle_files=bundle_files,
         inputs=inputs,
-        key=key,
         contract=contract,
         editorial=settings.methods.get(directory.name) or EditorialEntry(),
     )
