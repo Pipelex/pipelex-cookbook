@@ -5,7 +5,8 @@ Offline, needing no key: `render`, `check-render`, `check-lockstep`, `check-link
 checkers and shellcheck: the recipes' code, and the page snippets `render` writes under `tests/snippets/`. `refresh-library` and
 `check-library` need no key either: each downloads the method library's tarball at the tag `cookbook.toml` pins, the first to write
 `library.json` and the second to check that it is what that tarball holds.
-Keyed, calling production with `PIPELEX_API_KEY`: `refresh`, `check-methods`, `check-addresses`.
+Keyed, calling production with `PIPELEX_API_KEY`: `refresh`, `check-methods`, `check-addresses`, and `snapshot <name>`, the one command here
+that spends inference credit: it runs a method once on production on its sample and writes its output snapshot.
 """
 
 import argparse
@@ -47,11 +48,12 @@ from scripts.recipes import (
     typescript_packages,
 )
 from scripts.render import build_library_context, render_all, render_pages
-from scripts.snapshot import SNAPSHOT_FILE, read_snapshot
+from scripts.snapshot import SNAPSHOT_FILE, read_snapshot, take_snapshot
 from scripts.tutorial import tutorial_bundles
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR_NAME = "templates"
+SNAPSHOT_COMMAND = "snapshot"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -108,6 +110,14 @@ def main(argv: list[str] | None = None) -> int:
     }
     for command_name in commands:
         subparsers.add_parser(command_name, help=helps[command_name])
+    snapshot_parser = subparsers.add_parser(
+        SNAPSHOT_COMMAND,
+        help=(
+            "Run one method once on production on its sample and write its output snapshot, methods/<name>/output.json, "
+            "and the previews of its document samples (needs PIPELEX_API_KEY, and spends inference credit)"
+        ),
+    )
+    snapshot_parser.add_argument("method", help="The method's name, its directory under methods/")
     arguments = parser.parse_args(argv)
     root = Path(arguments.root).resolve()
     try:
@@ -117,6 +127,8 @@ def main(argv: list[str] | None = None) -> int:
             read_contracts=arguments.command not in {"refresh", "refresh-library"},
             read_library=arguments.command != "refresh-library",
         )
+        if arguments.command == SNAPSHOT_COMMAND:
+            return _snapshot(cookbook, name=str(arguments.method))
         return commands[arguments.command](cookbook)
     except CookbookError as exc:
         print(f"✗ {exc}", file=sys.stderr)
@@ -166,6 +178,23 @@ def _check_render(cookbook: Cookbook) -> int:
         f"✓ {len(cookbook.packages)} method page(s), their snippet files and the front page's lists of methods match a fresh render at "
         f"{cookbook.tag}, the library's at {cookbook.settings.library.tag}, and every page's sample and output snapshot are in place"
     )
+    return 0
+
+
+def _snapshot(cookbook: Cookbook, *, name: str) -> int:
+    matches = [package for package in cookbook.packages if package.name == name]
+    if not matches:
+        print(f"✗ no method is named `{name}`: the methods are {', '.join(package.name for package in cookbook.packages)}")
+        return 1
+    [package] = matches
+    taken = take_snapshot(client=client_from_env(), cookbook=cookbook, package=package)
+    for preview in taken.previews:
+        print(f"✎ rendered the preview {preview.relative_to(cookbook.root)}")
+    package_dir = package.directory.relative_to(cookbook.root)
+    print(f"✎ wrote {package_dir}/{SNAPSHOT_FILE} from {taken.run.summary()}")
+    for relative, entry in taken.snapshot.files.items():
+        print(f"✎ copied {package_dir}/{relative}{', downscaled' if entry.resized else ''}")
+    print("Keep the run id, the cost and the duration in the example's working record, never in this repository, then run `make render`.")
     return 0
 
 

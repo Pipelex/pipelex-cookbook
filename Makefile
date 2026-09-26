@@ -80,6 +80,8 @@ make check-codegen-live       - Check that every recipe's and page snippet's typ
 make check-hosted             - Every check that calls production, run by hand before each PR and at each release (needs PIPELEX_API_KEY)
 make check-smoke              - Run every method once on production on its sample and check its output's shape: SPENDS CREDIT (needs PIPELEX_API_KEY;
                                 METHOD=<name> runs one method, ROUTE=address runs each page's address at its tag)
+make snapshot METHOD=<name>   - Run one method once on production on its sample and write its output snapshot and its samples' previews:
+                                SPENDS CREDIT (needs PIPELEX_API_KEY)
 
 make format                   - format with ruff and plxt
 make lint                     - lint with ruff and plxt
@@ -136,7 +138,7 @@ export HELP
 	run-all-tests \
 	check c cc agent-check agent-test \
 	render check-render check-lockstep check-links check-library check-recipes check-codegen check-recipe-types check-cookbook \
-	refresh refresh-library check-methods check-addresses check-codegen-live check-hosted check-smoke \
+	refresh refresh-library check-methods check-addresses check-codegen-live check-hosted check-smoke snapshot \
 	merge-check-ruff-lint merge-check-ruff-format merge-check-plxt-format merge-check-plxt-lint merge-check-mypy merge-check-pyright \
 	li check-unused-imports fix-unused-imports check-uv check-TODOs
 
@@ -211,8 +213,9 @@ update: env-verbose
 # sample URLs and needs no key, and refresh-library and check-library download the method library's public tarball at the pinned tag.
 # refresh, check-methods, check-addresses, check-codegen-live and check-hosted call
 # production with PIPELEX_API_KEY and spend no inference; CI holds no key, so they are run by hand.
-# check-smoke is the one target that spends inference credit: it runs every method once on production, through
+# check-smoke and snapshot are the targets that spend inference credit: check-smoke runs every method once on production, through
 # tests/smoke/, whose `smoke` marker pytest's addopts deselect everywhere else, and which skip unless COOKBOOK_SMOKE=1.
+# snapshot runs one method once on production and writes what it returned as the method's output snapshot.
 #
 # A code recipe's generated types come from scripts/sdk/recipe_codegen.py, which runs beside
 # pipelex-sdk in an environment of its own (`uv run --script`), so that the trees are written and
@@ -313,6 +316,12 @@ check-hosted: check-methods check-addresses check-codegen-live
 check-smoke: env
 	$(call PRINT_TITLE,"Running every method once on production: this spends credit")
 	COOKBOOK_SMOKE=1 COOKBOOK_SMOKE_METHOD="$(METHOD)" COOKBOOK_SMOKE_ROUTE="$(ROUTE)" $(VENV_PYTEST) tests/smoke -m smoke -s -p no:sugar -o log_level=WARNING
+
+# Spends inference credit too: one run of METHOD on production, on its sample, whose output becomes its page's "What you get".
+snapshot: env
+	$(call PRINT_TITLE,"Taking the output snapshot of $(METHOD) from one production run: this spends credit")
+	@if [ -z "$(METHOD)" ]; then echo "✗ name the method: make snapshot METHOD=<name>"; exit 1; fi
+	$(VENV_PYTHON) -m scripts snapshot "$(METHOD)"
 
 ##############################################################################################
 ############################      Cleaning                        ############################

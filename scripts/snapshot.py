@@ -18,7 +18,10 @@ import io
 import json
 import mimetypes
 import re
+import shutil
+import tempfile
 from collections.abc import Mapping, Sequence
+from datetime import UTC, datetime
 from enum import StrEnum
 from pathlib import Path, PurePosixPath
 from typing import cast
@@ -28,7 +31,9 @@ from PIL import Image
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, JsonValue, ValidationError, model_validator
 
 from scripts.cookbook import INPUTS_FILE, Cookbook, MethodPackage, file_urls, input_content
-from scripts.exceptions import CookbookLayoutError
+from scripts.exceptions import CookbookLayoutError, SnapshotError
+from scripts.hosted import STORAGE_SCHEME, HostedClient, HostedRun, RunRoute, download, run_package, validate_package
+from scripts.shape import shape_problems
 
 SNAPSHOT_FILE = "output.json"
 # The directory beside the package holding the files the output names, which exists only when there are such files.
@@ -42,7 +47,9 @@ PREVIEW_SUFFIX = ".preview.png"
 PREVIEW_LONG_SIDE = 1200
 # The input kind the contract gives a document, whose sample kept under `assets/` gets a preview.
 DOCUMENT_KIND = "document"
-STORAGE_SCHEME = "pipelex-storage://"
+# The most a file of the output may weigh when it is fetched, before any downscaling.
+MAX_FILE_BYTES = 50 * 1024 * 1024
+_DEFAULT_CONTENT_TYPE = "application/octet-stream"
 PUBLIC_URL_KEY = "public_url"
 _URL_KEY = "url"
 # The query parameters that sign a presigned link: S3's, Google Cloud Storage's and Azure's.
@@ -448,3 +455,142 @@ def fit_image(data: bytes, *, content_type: str | None) -> tuple[bytes, bool]:
     else:
         resized.save(buffer, format=image_format)
     return buffer.getvalue(), True
+
+
+# ── The writer ───────────────────────────────────────────────────────
+
+
+class TakenSnapshot(BaseModel):
+    """What `make snapshot` did: the snapshot it wrote, the run it took it from, and the previews it rendered."""
+
+    model_config = ConfigDict(frozen=True)
+
+    snapshot: OutputSnapshot
+    run: HostedRun
+    previews: list[Path]
+
+
+def take_snapshot(*, client: HostedClient, cookbook: Cookbook, package: MethodPackage) -> TakenSnapshot:
+    """Run a method once on production on its sample and write its output snapshot. The run spends inference credit.
+
+    Everything that can fail for free is done first: the client must be production's, the package must validate and its validation must give
+    the committed contract, and every document sample's preview is rendered. Then the method runs from the package's files, the output must
+    have its contract's shape, each file it holds is fetched through the storage resolve route, downscaled when it is a large image, and copied
+    into `output/`, which is replaced as a whole, and every reference to it is rewritten; nothing is written while a storage reference or a
+    signed link is left.
+
+    Raises:
+        SnapshotError: The client is not production's, the package does not validate or its contract is stale, the output does not have its
+            contract's shape, a file could not be resolved, or a reference or a signed link is left in the output.
+        CookbookLayoutError: The sample names a file this checkout does not hold, or a document sample cannot be previewed.
+        HostedApiError: A call to production failed.
+        HostedRunError: The run ended without a result.
+    """
+    package_dir = package.directory.relative_to(cookbook.root)
+    if client.base_url.rstrip("/") != PRODUCTION_URL:
+        msg = f"a snapshot shows what production returned, and this client calls {client.base_url}: unset PIPELEX_BASE_URL"
+        raise SnapshotError(msg)
+    contract = package.contract
+    if contract is None:
+        msg = f"{package_dir} has no contract snapshot yet: run `make refresh` before taking its output snapshot"
+        raise SnapshotError(msg)
+    verdict = validate_package(client=client, package=package)
+    if not verdict.is_valid:
+        msg = f"{package_dir} does not validate on production, so it is not run:\n{verdict.report}"
+        raise SnapshotError(msg)
+    if verdict.contract != contract:
+        msg = f"{package_dir}/contract.json is not the contract production gives the package's files: run `make refresh` first"
+        raise SnapshotError(msg)
+    previews = write_previews(cookbook=cookbook, package=package)
+    bundle_sha256 = bundle_digest(cookbook=cookbook, package=package)
+    inputs_sha256 = inputs_digest(cookbook=cookbook, package=package)
+
+    run = run_package(client=client, cookbook=cookbook, package=package)
+    problems = shape_problems(contract=contract, output=run.main_stuff)
+    if problems:
+        msg = f"{package_dir}: the output of {run.summary()} does not have its contract's shape, so no snapshot was written:\n- " + "\n- ".join(
+            problems
+        )
+        raise SnapshotError(msg)
+
+    with tempfile.TemporaryDirectory() as staging_name:
+        staging = Path(staging_name)
+        replacements, entries = _fetch_files(client=client, output=run.main_stuff, staging=staging, run=run)
+        output = rewrite_output(run.main_stuff, replacements=replacements)
+        leftovers = leftover_links(output)
+        if leftovers:
+            msg = f"{package_dir}: the output of {run.summary()} still holds links that must not reach the repository:\n- " + "\n- ".join(leftovers)
+            raise SnapshotError(msg)
+        snapshot = OutputSnapshot(
+            pipe=contract.pipe,
+            concept=contract.output.concept,
+            run=SnapshotRun(
+                started_at=_utc(run.started_at),
+                finished_at=_utc(run.finished_at),
+                server=PRODUCTION_URL,
+                route=SnapshotRoute(run.route.value),
+                method_ref=run.method_ref if run.route == RunRoute.ADDRESS else None,
+                commit_sha=run.commit_sha if run.route == RunRoute.ADDRESS else None,
+                bundle_sha256=bundle_sha256,
+                inputs_sha256=inputs_sha256,
+            ),
+            output=output,
+            files=entries,
+        )
+        output_dir = package.directory / OUTPUT_DIR
+        if output_dir.exists():
+            shutil.rmtree(output_dir)
+        if entries:
+            output_dir.mkdir()
+            for relative in entries:
+                shutil.copyfile(staging / PurePosixPath(relative).name, package.directory / relative)
+        snapshot_path(package).write_text(snapshot.to_json(), encoding="utf-8")
+    return TakenSnapshot(snapshot=snapshot, run=run, previews=previews)
+
+
+def _fetch_files(*, client: HostedClient, output: JsonValue, staging: Path, run: HostedRun) -> tuple[dict[str, str], dict[str, SnapshotFile]]:
+    """Fetch every file the output holds into `staging`, and say what each reference becomes and what `files` records.
+
+    Raises:
+        SnapshotError: The API resolved no link for a reference.
+        HostedApiError: A file could not be fetched.
+    """
+    references = storage_references(output)
+    if not references:
+        return {}, {}
+    resolved = {item.uri: item for item in client.resolve_storage_urls(uris=[reference.uri for reference in references])}
+    replacements: dict[str, str] = {}
+    entries: dict[str, SnapshotFile] = {}
+    for reference in references:
+        item = resolved.get(reference.uri)
+        if item is None or item.url is None:
+            reason = item.error.detail if item is not None and item.error is not None else "no link was resolved for it"
+            msg = f"the file the output holds at {reference.found_at}, from {run.summary()}, cannot be fetched: {reason}"
+            raise SnapshotError(msg)
+        content_type = item.content_type or mimetypes.guess_type(reference.uri.removeprefix(STORAGE_SCHEME))[0] or _DEFAULT_CONTENT_TYPE
+        data, resized = fit_image(download(item.url, max_bytes=MAX_FILE_BYTES), content_type=content_type)
+        name = _unique_name(file_name(segments=reference.segments, content_type=content_type, uri=reference.uri), taken=entries)
+        (staging / name).write_bytes(data)
+        relative = f"{OUTPUT_DIR}/{name}"
+        entries[relative] = SnapshotFile(sha256=sha256_of(data), content_type=content_type, resized=resized)
+        replacements[reference.uri] = relative
+        for public_url in reference.public_urls:
+            replacements[public_url] = relative
+    return replacements, entries
+
+
+def _unique_name(name: str, *, taken: Mapping[str, SnapshotFile]) -> str:
+    """The name, or the name with `-2`, `-3` and so on before its extension when another file of the output already has it."""
+    path = PurePosixPath(name)
+    candidate = name
+    index = 2
+    while f"{OUTPUT_DIR}/{candidate}" in taken:
+        candidate = f"{path.stem}-{index}{path.suffix}"
+        index += 1
+    return candidate
+
+
+def _utc(moment: datetime) -> datetime:
+    """A moment in UTC, to the second, as the snapshot records it; a naive one is read as UTC."""
+    aware = moment if moment.tzinfo is not None else moment.replace(tzinfo=UTC)
+    return aware.astimezone(UTC).replace(microsecond=0)

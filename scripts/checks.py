@@ -17,6 +17,7 @@ from pydantic import BaseModel, ConfigDict, JsonValue
 from scripts.cookbook import COOKBOOK_FILE, INPUTS_FILE, SNIPPETS_DIR, Cookbook, MethodPackage
 from scripts.exceptions import CookbookLayoutError
 from scripts.recipes import recipe_files
+from scripts.shape import shape_problems
 from scripts.snapshot import (
     OUTPUT_DIR,
     SNAPSHOT_FILE,
@@ -142,6 +143,7 @@ def _snapshot_problems(*, cookbook: Cookbook, package: MethodPackage, snapshot: 
             problems.append(f"was taken from the pipe `{snapshot.pipe}`, and contract.json names `{contract.pipe}`")
         if snapshot.concept != contract.output.concept:
             problems.append(f"holds a `{snapshot.concept}`, and contract.json says the method returns a `{contract.output.concept}`")
+        problems.extend(f"does not have its contract's shape: {problem}" for problem in shape_problems(contract=contract, output=snapshot.output))
     try:
         current_inputs = inputs_digest(cookbook=cookbook, package=package)
     except CookbookLayoutError as exc:
