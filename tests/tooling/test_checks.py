@@ -361,6 +361,8 @@ class TestSampleAndSnapshotChecks:
         (package_dir / "output" / "widgets-0-photo.png").write_bytes(b"edited")
         (package_dir / "output" / "extra.png").unlink()
         (package_dir / "output" / "stray.png").write_bytes(b"stray")
+        # What Finder leaves behind is no stray copy.
+        (package_dir / "output" / ".DS_Store").write_bytes(b"finder")
         path = package_dir / "output.json"
         path.write_text(
             path.read_text(encoding="utf-8").replace('"url": "output/widgets-0-photo.png"', '"url": "output/unlisted.png"'), encoding="utf-8"

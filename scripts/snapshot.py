@@ -58,8 +58,9 @@ MAX_FILE_BYTES = 50 * 1024 * 1024
 _DEFAULT_CONTENT_TYPE = "application/octet-stream"
 PUBLIC_URL_KEY = "public_url"
 _URL_KEY = "url"
-# The query parameters that sign a presigned link: S3's, Google Cloud Storage's and Azure's.
-_SIGNATURE_PATTERN = re.compile(r"[?&](?:X-Amz-Signature|X-Amz-Credential|X-Goog-Signature|X-Goog-Credential|Signature|sig)=", re.IGNORECASE)
+# The query parameters that sign a presigned link: S3's, Google Cloud Storage's, Azure's and CloudFront's. The separator before one may be
+# written `&`, as an HTML entity ending in `;` (`&amp;`, `&#38;`, `&#x26;`), as HTML writes a link, or percent-encoded (`%26`).
+_SIGNATURE_PATTERN = re.compile(r"(?:[?&;]|%26)(?:X-Amz-Signature|X-Amz-Credential|X-Goog-Signature|X-Goog-Credential|Signature|sig)=", re.IGNORECASE)
 _NAME_UNSAFE = re.compile(r"[^A-Za-z0-9_]+")
 _IDENTIFIER = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 # Extensions `mimetypes` would not pick for the file's usual name.

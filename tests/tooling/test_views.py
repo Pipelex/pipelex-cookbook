@@ -1,3 +1,4 @@
+import json
 from datetime import date
 
 import pytest
@@ -162,6 +163,18 @@ class TestSampleView:
             '<a href="../../assets/extract_widgets/catalogue.png">'
             '<img src="../../assets/extract_widgets/catalogue.preview.png" alt="sample catalogue" width="480"></a>'
         )
+
+    def test_a_sample_whose_name_holds_a_space_a_hash_or_parentheses_is_linked_by_one_encoded_target(self, make_cookbook: MakeCookbook):
+        root = make_cookbook(with_sample=True)
+        sample = root / "assets" / "extract_widgets" / "catalogue (2026) #1.png"
+        sample.write_bytes((root / "assets" / "extract_widgets" / "catalogue.png").read_bytes())
+        url = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_widgets/catalogue%20%282026%29%20%231.png"
+        inputs = {"catalogue": {"concept": "widgets.CataloguePage", "content": {"url": url}}}
+        (root / "methods" / "extract_widgets" / "inputs.json").write_text(json.dumps(inputs), encoding="utf-8")
+        cookbook = load_cookbook(root)
+        [package] = [package for package in cookbook.packages if package.name == "extract_widgets"]
+        [view] = sample_views(cookbook=cookbook, package=package, contract=WIDGETS_CONTRACT)
+        assert view.body == "![sample catalogue](../../assets/extract_widgets/catalogue%20%282026%29%20%231.png)"
 
     def test_a_document_sample_that_is_no_pdf_is_linked(self, make_cookbook: MakeCookbook):
         root = make_cookbook()

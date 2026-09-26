@@ -15,6 +15,7 @@ import json
 import re
 from datetime import date
 from pathlib import Path, PurePosixPath
+from urllib.parse import quote
 
 from pydantic import BaseModel, ConfigDict, Field, JsonValue
 
@@ -259,9 +260,10 @@ def _file_sample(*, cookbook: Cookbook, package: MethodPackage, url: str, label:
 
 
 def _relative_link(*, from_dir: Path, to_path: PurePosixPath) -> str:
-    """The link from a page's directory to a file, both given from the repository root."""
+    """The link from a page's directory to a file, both given from the repository root, each segment percent-encoded so that a file name
+    holding a space, a `#` or a parenthesis stays one link target."""
     depth = len(from_dir.parts)
-    return "/".join([".."] * depth + list(to_path.parts))
+    return "/".join([".."] * depth + [quote(part) for part in to_path.parts])
 
 
 def _text_of(content: JsonValue) -> str | None:

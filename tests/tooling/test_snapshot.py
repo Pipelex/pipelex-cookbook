@@ -45,7 +45,11 @@ from tests.tooling.test_data import (
 )
 
 RECEIPT_URI = "pipelex-storage://org_1/runs/run_1/outputs/2325fcfe.png"
-RECEIPT_LINK = "https://bucket.s3.amazonaws.com/org_1/runs/run_1/outputs/2325fcfe.png?X-Amz-Credential=AKIA%2F&X-Amz-Signature=abc123"
+# In a real SigV4 link's order, where every signing parameter follows an `&`, which HTML writes `&amp;`.
+RECEIPT_LINK = (
+    "https://bucket.s3.amazonaws.com/org_1/runs/run_1/outputs/2325fcfe.png"
+    "?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA%2F&X-Amz-Date=20260926T000000Z&X-Amz-Signature=abc123"
+)
 
 
 def _package(root: Path, name: str) -> MethodPackage:
@@ -197,6 +201,22 @@ class TestOutputFiles:
         assert "$.items[0].expenses_with_receipts[0].receipt.url holds a pipelex-storage:// reference" in leftovers
         assert "$.items[0].expenses_with_receipts[0].receipt.public_url is a presigned link" in leftovers
         assert "$.items[0].html_report.inner_html holds a signed link" in leftovers
+
+    @pytest.mark.parametrize("separator", ["&", "&amp;", "&#38;", "&#x26;", "%26"])
+    @pytest.mark.parametrize(
+        "query",
+        [
+            "X-Amz-Algorithm=AWS4-HMAC-SHA256{sep}X-Amz-Credential=AKIA%2F{sep}X-Amz-Signature=abc",
+            "AWSAccessKeyId=AKIA{sep}Expires=1{sep}Signature=abc",
+            "sv=2024-01-01{sep}se=2026-09-27{sep}sig=abc",
+            "X-Goog-Algorithm=GOOG4-RSA-SHA256{sep}X-Goog-Credential=svc{sep}X-Goog-Signature=abc",
+            "Expires=1{sep}Signature=abc{sep}Key-Pair-Id=K1",
+        ],
+    )
+    def test_a_signed_link_in_html_is_found_however_its_separators_are_written(self, separator: str, query: str):
+        # An input image the runtime renders into HTML carries its presigned link with every `&` escaped, and no storage reference beside it.
+        link = "https://files.example.com/org_1/photo.png?" + query.format(sep=separator)
+        assert leftover_links({"inner_html": f'<img src="{link}">'}) == ["$.inner_html holds a signed link"]
 
     def test_an_image_longer_than_the_limit_is_downscaled_in_its_format(self):
         data, resized = fit_image(png_bytes(width=3200, height=1000), content_type="image/png")

@@ -173,7 +173,8 @@ def _snapshot_problems(*, cookbook: Cookbook, package: MethodPackage, snapshot: 
     if output_dir.is_dir():
         for path in sorted(output_dir.rglob("*")):
             relative = path.relative_to(package.directory).as_posix()
-            if path.is_file() and relative not in snapshot.files:
+            # A hidden file, such as the `.DS_Store` Finder writes, is never a copy the writer made, whose names never open with a dot.
+            if path.is_file() and not path.name.startswith(".") and relative not in snapshot.files:
                 problems.append(f"does not name {relative}, which {OUTPUT_DIR}/ holds: `make snapshot` replaces {OUTPUT_DIR}/ as a whole")
     return problems
 
