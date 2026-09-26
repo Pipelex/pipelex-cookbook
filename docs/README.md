@@ -70,7 +70,7 @@ An entry for a method that does not exist, or a field the renderer does not know
 
 ### The sample records
 
-Every input of every method's sample has a record under `[methods.<name>.samples.<input>]`, which says where the input comes from and under which licence the cookbook shows it, as the making-examples design asks (DB3): a real input is a public-domain or openly licensed document copied into `assets/<name>/` with its source and licence named, and a made-up input is used only where privacy rules a real one out, and says so.
+Every input of every method's sample has a record under `[methods.<name>.samples.<input>]`, which says where the input comes from and under which licence the cookbook shows it: a real input is a public-domain or openly licensed document copied into `assets/<name>/` with its source and licence named, and a made-up input is used only where privacy rules a real one out, and says so.
 
 | Field | Meaning |
 |---|---|
