@@ -211,6 +211,16 @@ class TestRender:
         with pytest.raises(CookbookLayoutError, match="run `make refresh`"):
             render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir)
 
+    def test_the_chatbot_sentence_sends_the_inputs_that_are_not_files_to_the_inputs_file(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        root = make_cookbook()
+        inputs = {"catalogue": {"url": WIDGETS_SAMPLE_URL}, "note": "Only the red widgets."}
+        (root / "methods" / "extract_widgets" / "inputs.json").write_text(json.dumps(inputs), encoding="utf-8")
+        page = render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir)[root / "methods" / "extract_widgets" / "README.md"]
+
+        address = "github.com/Pipelex/pipelex-cookbook/extract_widgets@v0.9.0"
+        inputs_url = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.9.0/methods/extract_widgets/inputs.json"
+        assert f"```text\nRun {address} on {WIDGETS_SAMPLE_URL}, with the other sample inputs in {inputs_url}\n```" in page
+
     def test_a_chatbot_sentence_that_does_not_format_is_refused(self, make_cookbook: MakeCookbook, templates_dir: Path):
         root = make_cookbook()
         settings_path = root / "cookbook.toml"

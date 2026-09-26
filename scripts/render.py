@@ -51,6 +51,8 @@ LIBRARY_REGION_BEGIN = "<!-- BEGIN library, written by `make render` from librar
 LIBRARY_REGION_END = "<!-- END library -->"
 GITHUB_BASE_URL = "https://github.com"
 DEFAULT_CHATBOT_WITH_SAMPLES = "Run {address} on {samples}"
+# When some inputs are files and others are not, the sentence links the files and sends the chatbot to the inputs file for the rest.
+DEFAULT_CHATBOT_WITH_SAMPLES_AND_OTHER_INPUTS = "Run {address} on {samples}, with the other sample inputs in {inputs_url}"
 DEFAULT_CHATBOT_WITHOUT_SAMPLES = "Run {address} with the sample inputs in {inputs_url}"
 DEFAULT_YOURS_CHANGE = "adapt what it does to my case"
 
@@ -316,7 +318,13 @@ def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageCon
     inputs_url = f"{RAW_BASE_URL}/{cookbook.settings.repository}/{cookbook.tag}/{METHODS_DIR}/{package.name}/{INPUTS_FILE}"
     fetches_inputs = len(json.dumps(snippet_inputs, ensure_ascii=False)) > INLINE_INPUTS_LIMIT
 
-    chatbot_template = editorial.chatbot or (DEFAULT_CHATBOT_WITH_SAMPLES if samples else DEFAULT_CHATBOT_WITHOUT_SAMPLES)
+    if not samples:
+        default_chatbot = DEFAULT_CHATBOT_WITHOUT_SAMPLES
+    elif any(not file_urls(content) for content in snippet_inputs.values()):
+        default_chatbot = DEFAULT_CHATBOT_WITH_SAMPLES_AND_OTHER_INPUTS
+    else:
+        default_chatbot = DEFAULT_CHATBOT_WITH_SAMPLES
+    chatbot_template = editorial.chatbot or default_chatbot
     try:
         chatbot = chatbot_template.format(address=address, samples=" and ".join(sample.url for sample in samples), inputs_url=inputs_url)
     except (KeyError, IndexError, AttributeError, ValueError) as exc:

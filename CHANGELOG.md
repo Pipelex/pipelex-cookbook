@@ -14,6 +14,10 @@
 
 - **Every sample input has a source-and-licence record (Breaking)**: `[methods.<name>.samples.<input>]` in `cookbook.toml` replaces `sample_labels`, giving the sample's link text, whether it was made up, where a real one was copied from and when, its licence, its credit line and what was changed. A real sample that is a file must be copied under `assets/<name>/`, a recorded document sample kept there needs a first-page preview beside it, and `make check-render` fails on an input without a record.
 
+### Fixed
+
+- **The chatbot sentence of a method with inputs that are not files**: when a method takes files and other inputs, its page's default chatbot sentence links the files and sends the chatbot to the sample inputs file for the rest, where it used to name the files alone.
+
 ### Removed
 
 - **The methods whose samples are reworked (Breaking)**: `answer_from_documents`, `discord_newsletter`, `extract_dpe`, `gen_expense_data` and `gen_synthetic_data` leave the cookbook with their packages, samples, pages and snippets, and will come back reworked as new examples. Their addresses at `v0.19.1` and earlier tags keep working, and the recipes built on them keep running them at `v0.18.0`, linking their pages at that release; an address without a tag no longer resolves.
