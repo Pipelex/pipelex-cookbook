@@ -156,11 +156,6 @@ MakeCookbook = Callable[..., Path]
 # An output of the right shape for each method under methods/, written by hand from its contract.json, for the shape check's tests. Each is
 # made up and short: the shape check reads the shape, never the content.
 RIGHT_OUTPUTS: dict[str, JsonValue] = {
-    "blog_article_generator": {
-        "seo_title": "Capybaras, the calmest animals on the riverbank",
-        "meta_description": "Why capybaras get along with everyone.",
-        "content": "# Capybaras\n\nCapybaras are the largest rodents in the world.",
-    },
     "discord_newsletter": {
         "text": (
             "<h2>☀️ Weekly Summary</h2>\n<p>Two new members joined, and the finishing thread settled on thinner coats in a cold workshop.</p>"

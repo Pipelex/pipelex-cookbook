@@ -1,6 +1,6 @@
 # A Next.js form whose server action runs a method
 
-Your site needs a form that writes something for its visitor: here, a blog article from a topic, an audience, a tone and a length. This recipe is a Next.js app with one page whose server action runs the cookbook's [blog article generator](../../../../methods/blog_article_generator/) by its address, and renders the article it returns.
+Your site needs a form that writes something for its visitor: here, a blog article from a topic, an audience, a tone and a length. This recipe is a Next.js app with one page whose server action runs the cookbook's [blog article generator](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/blog_article_generator) by its address, and renders the article it returns.
 
 It shows how a method becomes part of a web app:
 

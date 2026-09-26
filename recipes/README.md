@@ -30,7 +30,7 @@ Each recipe is a small package calling the method through [`@pipelex/sdk`](https
 
 | Recipe | What it shows | Method |
 |---|---|---|
-| [A Next.js form whose server action runs a method](code/typescript/nextjs-server-action/) | A page whose form is validated against the method's input type and whose server action renders its typed output, with the key kept on the server | [Blog article generator](../methods/blog_article_generator/) |
+| [A Next.js form whose server action runs a method](code/typescript/nextjs-server-action/) | A page whose form is validated against the method's input type and whose server action renders its typed output, with the key kept on the server | [Blog article generator](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/blog_article_generator), at the cookbook's `v0.18.0` release |
 | [A run started now and read hours later](code/typescript/durable-run/) | One command that starts a run and exits with its id, and another that reads the result by that id whenever it is ready | [Research report](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/research_report), at the cookbook's `v0.18.0` release |
 | [A local file sent through an upload grant](code/typescript/upload-grant/) | An image from this machine sent to storage with a one-time grant, then read by the method by its storage uri | [Gantt chart extraction](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/extract_gantt), at the cookbook's `v0.18.0` release |
 

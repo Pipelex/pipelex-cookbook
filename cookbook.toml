@@ -19,24 +19,6 @@ address = "github.com/Pipelex/methods"
 repository = "Pipelex/methods"
 tag = "v0.1.2"
 
-[methods.blog_article_generator]
-title = "Blog article generation"
-pitch = "Read a topic, an audience, a tone and a length, and return an SEO-optimized blog article in Markdown with its SEO title and meta description."
-chatbot = "Run {address} to write a long, casual blog article about capybaras for kids"
-app_dir = "blog-app"
-yours_dir = "blog"
-yours_change = "add a list of target keywords to the request and make the article use them"
-
-[methods.blog_article_generator.samples.user_prompt]
-label = "sample request"
-synthetic = true
-license = "MIT"
-license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
-attribution = "Evotis S.A.S"
-
-[methods.blog_article_generator.output]
-formats = { content = "markdown" }
-
 [methods.discord_newsletter]
 title = "Weekly newsletter for a Discord community"
 pitch = "Read a week of a community's Discord channels and return the members' newsletter in the team's fixed format, as HTML ready for the email tool: the week in a few lines, the new members welcomed, a section for each channel in the server's order with each conversation given as its outcome, and the news of each local hub, in English whatever language a message was written in."
