@@ -1,0 +1,49 @@
+{
+  "pipe": "nda_review.review_nda_against_playbook",
+  "inputs": [
+    {
+      "name": "nda",
+      "concept": "native.Document",
+      "kind": "document",
+      "description": "A document",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    },
+    {
+      "name": "playbook",
+      "concept": "nda_review.NdaPlaybook",
+      "kind": "prose",
+      "description": "The company's NDA playbook: numbered positions, each saying what the company accepts, negotiates or refuses in an NDA, with the fallback wording it offers",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    }
+  ],
+  "output": {
+    "concept": "nda_review.NdaReview",
+    "description": "A first-pass review of a counterparty's NDA against the company's NDA playbook",
+    "multiplicity": "single",
+    "item_count": null,
+    "fields": [
+      {
+        "name": "verdict",
+        "type": "text",
+        "description": "What the company should do with the draft",
+        "required": true
+      },
+      {
+        "name": "note_for_counsel",
+        "type": "text",
+        "description": "A short note for the lawyer who signs off on NDAs",
+        "required": true
+      },
+      {
+        "name": "positions",
+        "type": "list[PositionReview]",
+        "description": "One row for each position of the playbook, in the playbook's order",
+        "required": true
+      }
+    ]
+  }
+}

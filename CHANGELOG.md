@@ -9,6 +9,7 @@
 - **The output snapshot, `output.json`**: `make snapshot METHOD=<name>` runs a method once on production on its sample, spending inference credit, and commits what it returned beside the package, the files it holds under `methods/<name>/output/` with every storage reference and presigned link rewritten to the copies. `make check-render` fails on a method without one, on one whose pipe, concept or shape no longer matches its contract, whose sample changed since, or whose files are out of step, and warns when only its bundles changed.
 - **`make previews`**: renders the first-page preview of every document sample under `assets/` whose source-and-licence record is written, with no key, no network and no run; a sample without its record never gets one.
 - **Output hints**: `[methods.<name>.output]` in `cookbook.toml` says how the page shows an output where its contract cannot, with `formats` naming a text field that holds Markdown or HTML, and `item_label` naming the items of a list output.
+- **`review_nda`, an NDA review against a playbook**: reads a counterparty's NDA and the company's NDA playbook and returns one row per playbook position, with the clause that deals with it, whether it is acceptable, to negotiate or to refuse, and the playbook's fallback wording, then a verdict and a note for the lawyer who signs off. Its sample is Common Paper's Mutual NDA, under CC BY 4.0, with a playbook written for the example.
 
 ### Changed
 
