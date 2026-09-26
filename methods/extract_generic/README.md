@@ -6,6 +6,12 @@ Read any document and return each page as Markdown, including the text that only
 
 `github.com/Pipelex/pipelex-cookbook/extract_generic@v0.19.1` · [bundle.mthds](bundle.mthds) · [sample article](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_generic/fintech_article_with_text_in_images.pdf)
 
+## The sample
+
+[sample article](../../assets/extract_generic/fintech_article_with_text_in_images.pdf)
+
+*Fictional, made for this example.* Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.
+
 **Takes** `document`, a document (`Document`).
 
 **Returns** a list of `Text`.

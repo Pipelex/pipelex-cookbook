@@ -4,7 +4,17 @@
 
 Read a set of documents and a question, and return a short answer with the verbatim passages it rests on, a confidence level, and a status saying whether the documents answer it fully, in part, or not at all.
 
-`github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.19.1` · [bundle.mthds](bundle.mthds) · [sample report](https://huggingface.co/datasets/yubo2333/MMLongBench-Doc/resolve/main/documents/PH_2016.06.08_Economy-Final.pdf)
+`github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.19.1` · [bundle.mthds](bundle.mthds) · [sample documents](https://huggingface.co/datasets/yubo2333/MMLongBench-Doc/resolve/main/documents/PH_2016.06.08_Economy-Final.pdf)
+
+## The sample
+
+**Sample documents**
+
+[sample documents](https://huggingface.co/datasets/yubo2333/MMLongBench-Doc/resolve/main/documents/PH_2016.06.08_Economy-Final.pdf)
+
+**Sample question**
+
+> Among all 12 references in this report, how many are from its own research center?
 
 **Takes**
 

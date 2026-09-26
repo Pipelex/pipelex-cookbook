@@ -17,47 +17,71 @@ tag = "v0.1.2"
 [methods.extract_gantt]
 title = "Gantt chart extraction"
 pitch = "Read a Gantt chart image and return every task with its start and end dates, and every milestone with its date."
-sample_labels = { gantt_chart_image = "sample chart" }
 chatbot = "Run {address} on {samples}"
 app_dir = "gantt-app"
 yours_dir = "gantt"
 yours_change = "add each task's owner to what it extracts"
 
+[methods.extract_gantt.samples.gantt_chart_image]
+label = "sample chart"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
 [methods.extract_dpe]
 title = "Energy diagnostic (DPE) extraction"
 pitch = "Read a French energy performance diagnostic (DPE) and return the dwelling's address, the issue and expiry dates, the energy and CO₂ classes with their figures per m², and the estimated yearly energy costs."
-sample_labels = { document = "sample DPE" }
 chatbot = "Run {address} on {samples}"
 app_dir = "dpe-app"
 yours_dir = "dpe"
 yours_change = "add the living area and the year of construction to what it extracts"
 
+# The DPE sample has no source-and-licence record yet: where it comes from was never recorded, and it names real people (L-260926-0d3059).
+
 [methods.answer_from_documents]
 title = "Document question answering"
 pitch = "Read a set of documents and a question, and return a short answer with the verbatim passages it rests on, a confidence level, and a status saying whether the documents answer it fully, in part, or not at all."
-sample_labels = { documents = "sample report" }
 chatbot = "Run {address} on {samples} with the question \"Among all 12 references in this report, how many are from its own research center?\""
 app_dir = "qa-app"
 yours_dir = "document-qa"
 yours_change = "have it answer in the language of the question"
 
+# The two inputs of this sample have no source-and-licence record yet: the report is linked where a benchmark dataset hosts it, under terms not
+# established as allowing its copy here, and the question comes from that benchmark.
+
 [methods.extract_slides]
 title = "Slide deck extraction"
 pitch = "Read a slide deck in PDF and return one Markdown text giving each slide its title, its text and a description of its layout and charts."
-sample_labels = { document = "sample deck" }
 chatbot = "Run {address} on {samples}"
 app_dir = "slides-app"
 yours_dir = "slides"
 yours_change = "add the speaker's key message for each slide to what it extracts"
 
+[methods.extract_slides.samples.document]
+label = "sample deck"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
 [methods.extract_generic]
 title = "Generic document extraction"
 pitch = "Read any document and return each page as Markdown, including the text that only appears inside its images and diagrams."
-sample_labels = { document = "sample article" }
 chatbot = "Run {address} on {samples}"
 app_dir = "extract-app"
 yours_dir = "extract"
 yours_change = "turn the tables it finds into CSV alongside the Markdown"
+
+[methods.extract_generic.samples.document]
+label = "sample article"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
+[methods.extract_generic.output]
+item_label = "Page"
 
 [methods.advisory_board]
 title = "Advisory board consultation"
@@ -67,6 +91,13 @@ app_dir = "advisory-app"
 yours_dir = "advisory-board"
 yours_change = "replace the sixteen boards it can consult with the teams of your own company"
 
+[methods.advisory_board.samples.user_input]
+label = "sample problem"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
 [methods.blog_article_generator]
 title = "Blog article generation"
 pitch = "Read a topic, an audience, a tone and a length, and return an SEO-optimized blog article in Markdown with its SEO title and meta description."
@@ -74,6 +105,16 @@ chatbot = "Run {address} to write a long, casual blog article about capybaras fo
 app_dir = "blog-app"
 yours_dir = "blog"
 yours_change = "add a list of target keywords to the request and make the article use them"
+
+[methods.blog_article_generator.samples.user_prompt]
+label = "sample request"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
+[methods.blog_article_generator.output]
+formats = { content = "markdown" }
 
 [methods.research_report]
 title = "Research report"
@@ -83,12 +124,24 @@ app_dir = "research-app"
 yours_dir = "research"
 yours_change = "research five angles instead of three"
 
+[methods.research_report.samples.question]
+label = "sample question"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
 [methods.discord_newsletter]
 title = "Discord newsletter"
 pitch = "Read a week of Discord channel messages and return an HTML newsletter with a weekly summary, the new members, a section per channel and the geographic hubs."
 app_dir = "newsletter-app"
 yours_dir = "newsletter"
 yours_change = "add a section listing the links shared during the week"
+
+# The Discord sample has no source-and-licence record yet: it was pseudonymised from a real server's messages (L-260926-da6740).
+
+[methods.discord_newsletter.output]
+formats = { text = "html" }
 
 [methods.gen_synthetic_data]
 title = "Synthetic data generation"
@@ -98,6 +151,23 @@ app_dir = "synthetic-data-app"
 yours_dir = "synthetic-data"
 yours_change = "make it fill customer profiles instead of student profiles"
 
+[methods.gen_synthetic_data.samples.data_description]
+label = "sample description"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
+[methods.gen_synthetic_data.samples.nb_samples]
+label = "sample count"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
+[methods.gen_synthetic_data.output]
+item_label = "Profile"
+
 [methods.gen_expense_data]
 title = "Synthetic expense data generation"
 pitch = "Take a number of employees and return, for each, three or four expense claims with a photographed receipt image and a label saying whether the claim is legitimate or a weekend, inflated, mismatched or vague one, plus an HTML expense report."
@@ -105,3 +175,13 @@ chatbot = "Run {address} for two employees"
 app_dir = "expense-data-app"
 yours_dir = "expense-data"
 yours_change = "date the expenses in the current month instead of January 2026"
+
+[methods.gen_expense_data.samples.nb_employees]
+label = "sample count"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
+[methods.gen_expense_data.output]
+item_label = "Employee"

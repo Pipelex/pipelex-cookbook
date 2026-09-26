@@ -4,7 +4,11 @@
 
 Read a French energy performance diagnostic (DPE) and return the dwelling's address, the issue and expiry dates, the energy and CO₂ classes with their figures per m², and the estimated yearly energy costs.
 
-`github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.19.1` · [bundle.mthds](bundle.mthds) · [sample DPE](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_dpe/dpe_single_page.pdf)
+`github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.19.1` · [bundle.mthds](bundle.mthds) · [sample document](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_dpe/dpe_single_page.pdf)
+
+## The sample
+
+[sample document](../../assets/extract_dpe/dpe_single_page.pdf)
 
 **Takes** `document`, a document (`DpeDocument`): A French energy performance diagnostic (DPE) of a dwelling, as a PDF.
 

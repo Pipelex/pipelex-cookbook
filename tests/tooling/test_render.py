@@ -18,7 +18,16 @@ from scripts.render import (
     type_phrase,
     typescript_literal,
 )
-from tests.tooling.test_data import WIDGETS_SAMPLE_URL, WORDS_BUNDLE, WORDS_CONTRACT, MakeCookbook
+from tests.tooling.test_data import (
+    WIDGETS_OUTPUT,
+    WIDGETS_SAMPLE_URL,
+    WIDGETS_SOURCE,
+    WORDS_BUNDLE,
+    WORDS_CONTRACT,
+    MakeCookbook,
+    make_widgets_sample_synthetic,
+    write_snapshot,
+)
 
 # Each snippet file, by its path under `tests/snippets/<name>/`, with the fence its block has on the page and the prefix of its comment lines.
 SNIPPET_FILES = {"typescript/snippet.ts": ("ts", "//"), "python/snippet.py": ("python", "#")}
@@ -63,9 +72,49 @@ class TestRender:
         assert f'  method_ref: "{address}",' in page
         assert f"npm create @pipelex/method-app@latest widgets-app -- --method {address}" in page
         assert f"```text\nCopy {address} into ./widgets, add each widget's price to what it extracts, prove it" in page
-        # The page is about using the method: the skills the agent chains stay off it.
+        # The page is about using the method: the skills the agent chains stay off it, and with no snapshot yet it has no "What you get".
         assert "What you get" not in page
         assert "/pipelex-catalog" not in page
+
+    def test_the_page_shows_the_sample_then_what_it_returned_then_its_contract_then_the_doors(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        root = make_cookbook(with_sample=True)
+        write_snapshot(root, "extract_widgets", output=WIDGETS_OUTPUT)
+        page = render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir)[root / "methods" / "extract_widgets" / "README.md"]
+
+        order = ["# Widget extraction", "`github.com/Pipelex/pipelex-cookbook/extract_widgets@v0.9.0`", "## The sample", "## What you get"]
+        order += ["**Takes**", "**Returns**", "## Try it in your chatbot", "## Put it in your code", "## Run it on your own machine"]
+        positions = [page.index(marker) for marker in order]
+        assert positions == sorted(positions)
+        assert (
+            "## The sample\n\n![sample catalogue](../../assets/extract_widgets/catalogue.png)\n\n"
+            f"*From [{WIDGETS_SOURCE}]({WIDGETS_SOURCE}), copied on 2026-09-20. Cut to its first page.* "
+            "Licence: [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/). Credit: The Widget Society.\n\n## What you get\n\n"
+        ) in page
+        assert (
+            "Run on production on 28 September 2026, from the package's files, in 37 seconds. This is what it returned:\n\n"
+            "**`widgets`**\n\n| `name` | `colour` |\n|---|---|\n| Sprocket | red |\n| Flange | blue |\n\n**Takes**"
+        ) in page
+
+    def test_a_method_without_a_snapshot_gets_its_page_without_what_you_get(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        root = make_cookbook(with_sample=True)
+        make_widgets_sample_synthetic(root)
+        page = render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir)[root / "methods" / "extract_widgets" / "README.md"]
+        assert "## What you get" not in page
+        assert (
+            "![sample catalogue](../../assets/extract_widgets/catalogue.png)\n\n*Fictional, made for this example.* "
+            "Licence: [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/). Credit: The Widget Society.\n\n**Takes**"
+        ) in page
+
+    def test_a_sample_without_its_record_is_shown_without_a_credit_line(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        root = make_cookbook()
+        page = render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir)[root / "methods" / "count_words" / "README.md"]
+        assert "## The sample\n\n> The quick brown fox\n\n**Takes**" in page
+
+    def test_several_inputs_are_each_named(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        root = make_cookbook()
+        (root / "methods" / "count_words" / "inputs.json").write_text('{"text": "The quick brown fox", "language": "en"}', encoding="utf-8")
+        page = render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir)[root / "methods" / "count_words" / "README.md"]
+        assert "## The sample\n\n**Sample text**\n\n> The quick brown fox\n\n**Sample language**\n\n> en\n\n**Takes**" in page
 
     def test_page_without_an_editorial_entry_comes_from_the_manifest(self, make_cookbook: MakeCookbook, templates_dir: Path):
         root = make_cookbook()
@@ -162,6 +211,7 @@ class TestRender:
         first, second = "https://example.com/a.png", "https://example.com/b.png"
         inputs_path = root / "methods" / "extract_widgets" / "inputs.json"
         inputs_path.write_text(f'{{"catalogue": [{{"url": "{first}"}}, {{"url": "{second}"}}]}}', encoding="utf-8")
+        make_widgets_sample_synthetic(root)
         page = render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir)[root / "methods" / "extract_widgets" / "README.md"]
         assert f"[sample catalogue 1]({first}) · [sample catalogue 2]({second})" in page
         assert f"on {first} and {second}" in page
@@ -322,13 +372,15 @@ class TestRender:
             f"START=$(curl -sL {inputs_url} |\n  jq -c '{{method_ref: \"github.com/Pipelex/pipelex-cookbook/count_words@v0.9.0\", inputs: .}}' |",
         ]
         if extra_characters:
-            assert text not in page
+            # Only "The sample" still quotes it.
+            assert page.count(text) == 1
             assert all(fetch in page for fetch in fetches)
             _split_snippet(typescript, block=_fenced_block(page, language="ts"))
             _split_snippet(python, block=_fenced_block(page, language="python"))
             assert '# dependencies = ["pipelex-sdk==0.12.0", "httpx>=0.25", "pydantic>=2.10.6"]\n' in python
         else:
-            assert page.count(text) == 3
+            # "The sample" quotes it, and the TypeScript, Python and HTTP snippets write it out.
+            assert page.count(text) == 4
             assert not any(fetch in page for fetch in fetches)
             assert "import httpx" not in python
             assert '# dependencies = ["pipelex-sdk==0.12.0", "pydantic>=2.10.6"]\n' in python

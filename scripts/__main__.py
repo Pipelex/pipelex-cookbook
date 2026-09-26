@@ -13,7 +13,16 @@ import sys
 from collections.abc import Callable
 from pathlib import Path
 
-from scripts.checks import check_links, http_status, lockstep_problems, orphan_snippet_dirs, stale_pages
+from scripts.checks import (
+    check_links,
+    http_status,
+    lockstep_problems,
+    orphan_snippet_dirs,
+    sample_problems,
+    snapshot_problems,
+    stale_pages,
+    stale_snapshots,
+)
 from scripts.cookbook import Cookbook, load_cookbook
 from scripts.exceptions import CookbookError
 from scripts.hosted import (
@@ -38,6 +47,7 @@ from scripts.recipes import (
     typescript_packages,
 )
 from scripts.render import build_library_context, render_all, render_pages
+from scripts.snapshot import SNAPSHOT_FILE, read_snapshot
 from scripts.tutorial import tutorial_bundles
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -71,7 +81,8 @@ def main(argv: list[str] | None = None) -> int:
         ),
         "check-render": (
             "Fail when a committed page, snippet file or either of the front page's lists differs from a fresh render, "
-            "or when a snippet directory belongs to no method"
+            "when a snippet directory belongs to no method, when a sample input has no source-and-licence record or a document sample "
+            "no preview, or when a method's output snapshot is missing or out of step with its contract, its sample or its files"
         ),
         "check-lockstep": "Fail when a manifest's version is not the cookbook's",
         "check-links": "Fetch every sample URL in the packages, and every raw URL on the pages and in the recipes",
@@ -126,6 +137,12 @@ def _render(cookbook: Cookbook) -> int:
         print(f"{'✎ rewrote' if relative in stale else '· unchanged'} {relative}")
     orphans = orphan_snippet_dirs(cookbook)
     _print_orphans(orphans)
+    for package in cookbook.packages:
+        if read_snapshot(package) is None:
+            print(
+                f'· {package.directory.relative_to(cookbook.root)} has no {SNAPSHOT_FILE} yet: its page has no "What you get" '
+                f"until `make snapshot METHOD={package.name}`, and `make check-render` fails on it"
+            )
     return 1 if orphans else 0
 
 
@@ -138,11 +155,16 @@ def _check_render(cookbook: Cookbook) -> int:
     if stale:
         print("Pages, their snippet files and the front page's lists are generated: run `make render` and commit what it writes, never edit them.")
     _print_orphans(orphans)
-    if stale or orphans:
+    shown = sample_problems(cookbook) + snapshot_problems(cookbook)
+    for problem in shown:
+        print(f"✗ {problem}")
+    for warning in stale_snapshots(cookbook):
+        print(f"! {warning}")
+    if stale or orphans or shown:
         return 1
     print(
         f"✓ {len(cookbook.packages)} method page(s), their snippet files and the front page's lists of methods match a fresh render at "
-        f"{cookbook.tag}, the library's at {cookbook.settings.library.tag}"
+        f"{cookbook.tag}, the library's at {cookbook.settings.library.tag}, and every page's sample and output snapshot are in place"
     )
     return 0
 

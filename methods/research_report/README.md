@@ -6,6 +6,12 @@ Read a research question and return a Markdown report with an executive summary,
 
 `github.com/Pipelex/pipelex-cookbook/research_report@v0.19.1` · [bundle.mthds](bundle.mthds)
 
+## The sample
+
+> What are the most promising approaches to improving battery energy density for electric vehicles?
+
+*Fictional, made for this example.* Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.
+
 **Takes** `question`, a text (`ResearchQuestion`): A well-formed research question to investigate.
 
 **Returns** a `FormattedReport`: A markdown-formatted report ready for distribution.

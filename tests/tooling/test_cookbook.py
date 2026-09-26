@@ -1,8 +1,10 @@
+from datetime import date
+
 import pytest
 
-from scripts.cookbook import Cookbook, LocalFile, load_cookbook
+from scripts.cookbook import Cookbook, LocalFile, OutputHints, load_cookbook
 from scripts.exceptions import CookbookLayoutError
-from tests.tooling.test_data import WIDGETS_SAMPLE_URL, MakeCookbook
+from tests.tooling.test_data import WIDGETS_SAMPLE_URL, WIDGETS_SOURCE, MakeCookbook, make_widgets_sample_synthetic
 
 RAW_REPOSITORY_URL = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook"
 SAMPLE_PATH = "assets/extract_widgets/catalogue.png"
@@ -110,3 +112,73 @@ class TestLocalFiles:
         with pytest.raises(CookbookLayoutError) as raised:
             cookbook.local_file_of(url)
         assert str(raised.value) == problem
+
+
+class TestSampleRecords:
+    def test_a_record_loads_with_its_date_and_hints_default_to_none(self, make_cookbook: MakeCookbook):
+        cookbook = load_cookbook(make_cookbook())
+        widgets = cookbook.packages[1]
+        record = widgets.editorial.samples["catalogue"]
+        assert (record.label, record.synthetic, record.retrieved) == ("sample catalogue", False, date(2026, 9, 20))
+        assert widgets.editorial.output == OutputHints()
+        assert cookbook.packages[0].editorial.samples == {}
+
+    @pytest.mark.parametrize(
+        ("old", "new", "message"),
+        [
+            ("synthetic = false\n", "synthetic = true\n", "has no `source`"),
+            (f'source = "{WIDGETS_SOURCE}"\nretrieved = 2026-09-20\n', "", "names the URL it was copied from"),
+            ("retrieved = 2026-09-20\n", "", "gives the date it was copied"),
+            ('attribution = "The Widget Society"\n', "", "attribution"),
+            ('attribution = "The Widget Society"\n', 'attribution = "The Widget Society"\ncredit = "x"\n', "credit"),
+        ],
+    )
+    def test_a_record_with_a_field_missing_unknown_or_out_of_place_is_refused(self, make_cookbook: MakeCookbook, old: str, new: str, message: str):
+        root = make_cookbook()
+        cookbook_toml = root / "cookbook.toml"
+        contents = cookbook_toml.read_text(encoding="utf-8")
+        assert old in contents
+        cookbook_toml.write_text(contents.replace(old, new), encoding="utf-8")
+        with pytest.raises(CookbookLayoutError, match=message):
+            load_cookbook(root)
+
+    def test_a_made_up_sample_takes_no_retrieval_date(self, make_cookbook: MakeCookbook):
+        root = make_cookbook()
+        make_widgets_sample_synthetic(root)
+        cookbook_toml = root / "cookbook.toml"
+        cookbook_toml.write_text(
+            cookbook_toml.read_text(encoding="utf-8").replace("synthetic = true\n", "synthetic = true\nretrieved = 2026-09-20\n")
+        )
+        with pytest.raises(CookbookLayoutError, match="names none"):
+            load_cookbook(root)
+
+    def test_a_record_for_an_input_the_sample_does_not_give_is_refused(self, make_cookbook: MakeCookbook):
+        root = make_cookbook()
+        cookbook_toml = root / "cookbook.toml"
+        cookbook_toml.write_text(cookbook_toml.read_text(encoding="utf-8").replace("samples.catalogue]", "samples.brochure]"), encoding="utf-8")
+        with pytest.raises(CookbookLayoutError, match="inputs its inputs.json does not give: brochure"):
+            load_cookbook(root)
+
+    @pytest.mark.parametrize(
+        "url",
+        [
+            "https://widgets.example.org/catalogue.png",
+            "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/count_words/catalogue.png",
+        ],
+    )
+    def test_a_real_file_sample_kept_anywhere_but_its_own_assets_is_refused(self, make_cookbook: MakeCookbook, url: str):
+        root = make_cookbook()
+        (root / "methods" / "extract_widgets" / "inputs.json").write_text(f'{{"catalogue": {{"url": "{url}"}}}}', encoding="utf-8")
+        with pytest.raises(CookbookLayoutError, match="copied under assets/extract_widgets/"):
+            load_cookbook(root)
+        make_widgets_sample_synthetic(root)
+        assert load_cookbook(root).packages[1].editorial.samples["catalogue"].synthetic is True
+
+    def test_an_output_hint_outside_its_vocabulary_is_refused(self, make_cookbook: MakeCookbook):
+        root = make_cookbook()
+        cookbook_toml = root / "cookbook.toml"
+        cookbook_toml.write_text(
+            cookbook_toml.read_text(encoding="utf-8") + '\n[methods.extract_widgets.output]\nformats = { widgets = "pdf" }\n', encoding="utf-8"
+        )
+        with pytest.raises(CookbookLayoutError, match="widgets"):
+            load_cookbook(root)

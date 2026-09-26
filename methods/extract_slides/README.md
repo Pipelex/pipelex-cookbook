@@ -6,6 +6,12 @@ Read a slide deck in PDF and return one Markdown text giving each slide its titl
 
 `github.com/Pipelex/pipelex-cookbook/extract_slides@v0.19.1` · [bundle.mthds](bundle.mthds) · [sample deck](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/presentations/CatOps.pdf)
 
+## The sample
+
+[sample deck](../../assets/presentations/CatOps.pdf)
+
+*Fictional, made for this example.* Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.
+
 **Takes** `document`, a document (`Document`).
 
 **Returns** a `Text`.

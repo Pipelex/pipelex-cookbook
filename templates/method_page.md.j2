@@ -6,6 +6,32 @@
 
 `{{ page.address }}` · {{ page.header_links }}
 
+## The sample
+
+{% for sample in page.sample_views %}
+{% if page.sample_views | length > 1 %}
+**{{ sample.label[:1] | upper }}{{ sample.label[1:] }}**
+
+{% endif %}
+{{ sample.body }}
+
+{% if sample.record %}
+{% if sample.record.synthetic %}
+*Fictional, made for this example.* Licence: [{{ sample.record.license }}]({{ sample.record.license_url }}). Credit: {{ sample.record.attribution | sentence }}
+{% else %}
+*From [{{ sample.record.source }}]({{ sample.record.source }}), copied on {{ sample.record.retrieved.isoformat() }}.{% if sample.record.changes %} {{ sample.record.changes | sentence }}{% endif %}* Licence: [{{ sample.record.license }}]({{ sample.record.license_url }}). Credit: {{ sample.record.attribution | sentence }}
+{% endif %}
+
+{% endif %}
+{% endfor %}
+{% if page.output %}
+## What you get
+
+Run on production on {{ page.output.date }}, {% if page.output.from_files %}from the package's files{% else %}by its address `{{ page.output.method_ref }}`{% endif %}, in {{ page.output.duration }}. This is what it returned:
+
+{{ page.output.body }}
+
+{% endif %}
 {% if page.takes | length == 1 %}
 **Takes** {{ page.takes[0] }}
 

@@ -6,6 +6,10 @@ Read a week of Discord channel messages and return an HTML newsletter with a wee
 
 `github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.19.1` · [bundle.mthds](bundle.mthds)
 
+## The sample
+
+[The sample discord channel updates, in inputs.json](inputs.json)
+
 **Takes** `discord_channel_updates`, a list of `DiscordChannelUpdate`.
 
 **Returns** a `HtmlNewsletter`: The final newsletter content in html format with organized channel summaries.

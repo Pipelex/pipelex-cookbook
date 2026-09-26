@@ -6,6 +6,18 @@ Read a topic, an audience, a tone and a length, and return an SEO-optimized blog
 
 `github.com/Pipelex/pipelex-cookbook/blog_article_generator@v0.19.1` · [bundle.mthds](bundle.mthds)
 
+## The sample
+
+| Field | Value |
+|---|---|
+| `text` | Write a fun and engaging blog article |
+| `topic` | Capybara |
+| `audience` | Kids |
+| `tone` | Casual |
+| `length` | Long |
+
+*Fictional, made for this example.* Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.
+
 **Takes** `user_prompt`, an object (`BlogArticleRequest`): Structured request describing the blog article to generate.
 
 **Returns** a `BlogArticle`: Final blog article, with the metadata search engines read.

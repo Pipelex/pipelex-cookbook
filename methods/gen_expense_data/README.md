@@ -6,6 +6,14 @@ Take a number of employees and return, for each, three or four expense claims wi
 
 `github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.1` · [bundle.mthds](bundle.mthds)
 
+## The sample
+
+| Field | Value |
+|---|---|
+| `number` | 2 |
+
+*Fictional, made for this example.* Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.
+
 **Takes** `nb_employees`, a number (`NbOfEmployees`): How many employees to generate.
 
 **Returns** a list of `EmployeeExpenseReport`: An employee with their list of expenses, receipts, and HTML report.

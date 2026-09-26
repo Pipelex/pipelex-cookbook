@@ -18,10 +18,12 @@ from tests.tooling.test_data import (
     LIBRARY_SNAPSHOT,
     WIDGETS_BUNDLE,
     WIDGETS_CONTRACT,
+    WIDGETS_SAMPLE_PATH,
     WIDGETS_SAMPLE_URL,
     WORDS_BUNDLE,
     WORDS_CONTRACT,
     MakeCookbook,
+    png_bytes,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -76,18 +78,24 @@ def fake_api() -> FakeApi:
 
 @pytest.fixture
 def make_cookbook(tmp_path: Path) -> MakeCookbook:
-    """A factory writing a two-method cookbook: `extract_widgets`, with an editorial entry and a sample URL, and `count_words`, with neither.
+    """A factory writing a two-method cookbook: `extract_widgets`, with an editorial entry, a sample linked into `assets/` and its record, and
+    `count_words`, with neither an entry nor a file sample.
 
     Its front page holds the two regions listing the methods and the library's methods, still empty, and its `library.json` lists two methods.
+    Neither method has an output snapshot, and the widget sample's file is written under `assets/` only with `with_sample=True`.
     """
 
-    def _make(*, version: str = FIXTURE_VERSION, widgets_version: str | None = None) -> Path:
+    def _make(*, version: str = FIXTURE_VERSION, widgets_version: str | None = None, with_sample: bool = False) -> Path:
         root = tmp_path / "cookbook"
         root.mkdir()
         (root / "pyproject.toml").write_text(f'[project]\nname = "fixture-cookbook"\nversion = "{version}"\n', encoding="utf-8")
         (root / "cookbook.toml").write_text(COOKBOOK_TOML, encoding="utf-8")
         (root / "README.md").write_text(FRONT_PAGE, encoding="utf-8")
         (root / "library.json").write_text(LIBRARY_SNAPSHOT.to_json(), encoding="utf-8")
+        if with_sample:
+            sample_path = root / WIDGETS_SAMPLE_PATH
+            sample_path.parent.mkdir(parents=True)
+            sample_path.write_bytes(png_bytes(width=40, height=30))
         write_package(
             root=root,
             name="extract_widgets",

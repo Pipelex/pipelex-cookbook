@@ -6,6 +6,43 @@ Read a description of a record and a count, and return that many varied syntheti
 
 `github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.19.1` · [bundle.mthds](bundle.mthds)
 
+## The sample
+
+**Sample description**
+
+> ### Student Profile: [Student Name]
+>
+> #### Basic Info
+> - **Current Performance**: [Struggling / Average / Advanced]
+>
+> #### Learning Style
+> - **Learns Best With**: [Visual examples / Step-by-step text / Hands-on practice / Videos]
+> - **Pace**: [Needs more time / Normal / Fast learner]
+> - **Complexity**: [Prefers simple explanations / Balanced / Likes deep details]
+>
+> #### Background
+> - **Strengths**: [subjects or topics they're good at]
+> - **Needs Help With**: [areas where they struggle]
+> - **Prior Knowledge**: [relevant topics they already know]
+>
+> #### Interests
+> - **Hobbies/Interests**: [e.g., soccer, video games, music]
+> - **Career Goals**: [if any - e.g., engineer, doctor, undecided]
+>
+> #### Preferences
+> - **Example Style**: [Many real-world examples / Abstract concepts / Mix]
+> - **Question Format**: [Multiple choice / Short answer / Open discussion]
+
+*Fictional, made for this example.* Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.
+
+**Sample count**
+
+| Field | Value |
+|---|---|
+| `number` | 5 |
+
+*Fictional, made for this example.* Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.
+
 **Takes**
 
 - `data_description`, a text (`DataDescription`): A specification of the synthetic data to be produced, including its purpose, structure, and characteristics.

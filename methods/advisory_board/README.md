@@ -6,6 +6,24 @@ Read a business problem told in plain words, consult five to ten expert advisory
 
 `github.com/Pipelex/pipelex-cookbook/advisory_board@v0.19.1` · [bundle.mthds](bundle.mthds) · [presentation.mthds](presentation.mthds)
 
+## The sample
+
+> We're a mid-stage B2B SaaS company (50 employees, $5M ARR) facing declining customer retention. Our churn rate has increased from 8% to 15% annually over the past 6 months.
+>
+> Key challenges:
+> - Customer onboarding takes 4-6 weeks (industry average is 2-3 weeks)
+> - Support response time averages 24 hours
+> - Feature adoption is low - only 30% of customers use our advanced features
+> - Competition from 3 new entrants with better UX
+>
+> Our goal is to reduce churn to under 10% within 6 months while maintaining growth targets.
+> We have a budget of $500K and need to prioritize initiatives that will have the biggest impact.
+>
+> Current team: 8 engineers, 4 sales, 3 marketing, 2 customer success, 5 operations.
+> Key stakeholders: CEO, VP Product, VP Sales, Head of Customer Success.
+
+*Fictional, made for this example.* Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.
+
 **Takes** `user_input`, a text (`Text`).
 
 **Returns** a `MarkdownReport`: A report in markdown format.

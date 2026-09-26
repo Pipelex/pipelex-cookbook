@@ -6,6 +6,12 @@ Read a Gantt chart image and return every task with its start and end dates, and
 
 `github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.19.1` · [bundle.mthds](bundle.mthds) · [sample chart](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_gantt/gantt_tree_house.png)
 
+## The sample
+
+![sample chart](../../assets/extract_gantt/gantt_tree_house.png)
+
+*Fictional, made for this example.* Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.
+
 **Takes** `gantt_chart_image`, an image (`GanttChartImage`): A gantt chart detailing a project timeline.
 
 **Returns** a `GanttChart`: A gantt chart transcript fully detailing the contents of the chart.
