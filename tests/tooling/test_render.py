@@ -480,7 +480,7 @@ class TestRender:
             ("date", "a date"),
             ("integer", "an integer"),
             ("list[text]", "a list of texts"),
-            ("list[GanttTaskDetails]", "a list of `GanttTaskDetails`"),
+            ("list[PositionReview]", "a list of `PositionReview`"),
             ("Invoice", "an `Invoice`"),
             ("Milestone", "a `Milestone`"),
             ("text or integer", "text or an integer"),

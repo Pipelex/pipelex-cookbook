@@ -5,79 +5,80 @@ import pytest
 from scripts.contract import Contract, ContractField, ContractInput, ContractOutput, project_contract, schema_type
 from scripts.exceptions import CookbookLayoutError
 
-# A verdict of `POST /v1/validate`, cut down to what the projection reads, in the shape production answered for extract_gantt.
-GANTT_VERDICT: dict[str, Any] = {
+# A verdict of `POST /v1/validate`, cut down to what the projection reads, in the shape production answers, for the fixture cookbook's widget
+# extraction: its main pipe beside another pipe, an optional list field and a required text field.
+WIDGETS_VERDICT: dict[str, Any] = {
     "is_valid": True,
     "pipe_io_contracts": {
-        "gantt.extract_gantt_by_steps": {
+        "widgets.extract_widgets": {
             "inputs": {
-                "gantt_chart_image": {
-                    "concept_ref": "gantt.GanttChartImage",
+                "catalogue": {
+                    "concept_ref": "widgets.CataloguePage",
                     "presence": "plain",
                     "multiplicity": "single",
                     "item_count": None,
-                    "json_schema": {"description": "A gantt chart detailing a project timeline", "type": "object"},
+                    "json_schema": {"description": "A page of a widget catalogue", "type": "object"},
                 }
             },
             "output": {
-                "concept_ref": "gantt.GanttChart",
+                "concept_ref": "widgets.WidgetList",
                 "multiplicity": "single",
                 "item_count": None,
                 "optional": False,
                 "json_schema": {
-                    "description": "A gantt chart transcript fully detailing the contents of the chart",
+                    "description": "Every widget on the page",
                     "properties": {
-                        "tasks": {
-                            "anyOf": [{"items": {"$ref": "#/$defs/gantt__GanttTaskDetails"}, "type": "array"}, {"type": "null"}],
+                        "widgets": {
+                            "anyOf": [{"items": {"$ref": "#/$defs/widgets__Widget"}, "type": "array"}, {"type": "null"}],
                             "default": None,
-                            "description": "The list of tasks in the gantt chart",
+                            "description": "The widgets, in page order",
                         },
-                        "title": {"type": "string", "description": "The chart's title"},
+                        "title": {"type": "string", "description": "The page's title"},
                     },
                     "required": ["title"],
                     "type": "object",
                 },
             },
         },
-        "gantt.extract_gantt_timescale": {"inputs": {}, "output": {"concept_ref": "gantt.GanttTimescaleDescription", "multiplicity": "single"}},
+        "widgets.read_page_number": {"inputs": {}, "output": {"concept_ref": "widgets.PageNumber", "multiplicity": "single"}},
     },
-    "input_form": {"gantt.extract_gantt_by_steps": {"fields": [{"kind": "image", "name": "gantt_chart_image"}]}},
+    "input_form": {"widgets.extract_widgets": {"fields": [{"kind": "image", "name": "catalogue"}]}},
 }
 
 
 class TestContract:
     def test_the_main_pipe_is_projected_from_the_verdict(self):
-        contract = project_contract(verdict=GANTT_VERDICT, main_pipe="extract_gantt_by_steps")
+        contract = project_contract(verdict=WIDGETS_VERDICT, main_pipe="extract_widgets")
         assert contract == Contract(
-            pipe="gantt.extract_gantt_by_steps",
+            pipe="widgets.extract_widgets",
             inputs=[
                 ContractInput(
-                    name="gantt_chart_image",
-                    concept="gantt.GanttChartImage",
+                    name="catalogue",
+                    concept="widgets.CataloguePage",
                     kind="image",
-                    description="A gantt chart detailing a project timeline",
+                    description="A page of a widget catalogue",
                     multiplicity="single",
                     required=True,
                 )
             ],
             output=ContractOutput(
-                concept="gantt.GanttChart",
-                description="A gantt chart transcript fully detailing the contents of the chart",
+                concept="widgets.WidgetList",
+                description="Every widget on the page",
                 multiplicity="single",
                 fields=[
-                    ContractField(name="tasks", type="list[GanttTaskDetails]", description="The list of tasks in the gantt chart", required=False),
-                    ContractField(name="title", type="text", description="The chart's title", required=True),
+                    ContractField(name="widgets", type="list[Widget]", description="The widgets, in page order", required=False),
+                    ContractField(name="title", type="text", description="The page's title", required=True),
                 ],
             ),
         )
 
     def test_a_snapshot_round_trips_through_its_json(self):
-        contract = project_contract(verdict=GANTT_VERDICT, main_pipe="extract_gantt_by_steps")
+        contract = project_contract(verdict=WIDGETS_VERDICT, main_pipe="extract_widgets")
         assert Contract.model_validate_json(contract.to_json()) == contract
 
     def test_a_main_pipe_missing_from_the_verdict_is_refused(self):
         with pytest.raises(CookbookLayoutError, match="matches 0 of the validated pipes"):
-            project_contract(verdict=GANTT_VERDICT, main_pipe="extract_gantt_directly")
+            project_contract(verdict=WIDGETS_VERDICT, main_pipe="extract_widgets_directly")
 
     @pytest.mark.parametrize(
         ("schema", "expected"),

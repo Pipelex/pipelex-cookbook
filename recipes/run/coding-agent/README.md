@@ -1,6 +1,6 @@
 # A run in your coding agent, followed later by its id
 
-A run does not need anyone to wait for it. In Claude Code or Codex with the Pipelex plugin, you ask for a run in a sentence: `/pipelex-run` checks the method at its address, starts the run and gives you its id at once. The run carries on server-side, and from any later session, in any directory, the id alone is enough for your agent to tell you how the run is going, show you its results and save them. This recipe does it with the cookbook's [research report](../../../methods/research_report/) method. It drafts a report from three angles out of the model's own knowledge, without searching any source, so what it returns is a first draft to check rather than verified research.
+A run does not need anyone to wait for it. In Claude Code or Codex with the Pipelex plugin, you ask for a run in a sentence: `/pipelex-run` checks the method at its address, starts the run and gives you its id at once. The run carries on server-side, and from any later session, in any directory, the id alone is enough for your agent to tell you how the run is going, show you its results and save them. This recipe does it with the cookbook's [research report](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/research_report) method. It drafts a report from three angles out of the model's own knowledge, without searching any source, so what it returns is a first draft to check rather than verified research.
 
 It shows what the agent does with a published method:
 

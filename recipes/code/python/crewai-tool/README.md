@@ -4,7 +4,7 @@ An agent framework is good at deciding what to do next and poor at doing one thi
 
 The crew has two agents:
 
-- **The analyst** calls `draft_research_brief`, a CrewAI tool that runs the cookbook's [research report](../../../../methods/research_report/) method by its address and returns the brief as JSON: an executive summary, key findings and open questions, validated by the `ResearchBrief` model generated from the method.
+- **The analyst** calls `draft_research_brief`, a CrewAI tool that runs the cookbook's [research report](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/research_report) method by its address and returns the brief as JSON: an executive summary, key findings and open questions, validated by the `ResearchBrief` model generated from the method.
 - **The editor** turns the brief into a one-page memo for a decision-maker. The method drafts from its model's own knowledge and searches no source, so the editor lists the claims to verify before anyone relies on them.
 
 ## What it needs

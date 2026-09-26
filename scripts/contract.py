@@ -27,7 +27,7 @@ class ContractInput(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     name: str
-    concept: str = Field(description="The concept the input expects, domain-qualified, such as `gantt.GanttChartImage`")
+    concept: str = Field(description="The concept the input expects, domain-qualified, such as `nda_review.NdaPlaybook`")
     kind: str | None = Field(default=None, description="The input form's kind for the input, such as `image`, when the form names one")
     description: str | None = None
     multiplicity: str = Field(description="`single`, `variable` or `fixed`")
@@ -85,7 +85,7 @@ def load_contract(path: Path) -> Contract:
 
 
 def short_concept(concept: str) -> str:
-    """The concept's name without its domain: `gantt.GanttChart` becomes `GanttChart`."""
+    """The concept's name without its domain: `nda_review.NdaReview` becomes `NdaReview`."""
     return concept.rsplit(".", maxsplit=1)[-1]
 
 
