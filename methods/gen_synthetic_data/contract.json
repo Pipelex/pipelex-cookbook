@@ -1,0 +1,43 @@
+{
+  "pipe": "synthetic_data_generation.generate_synthetic_records",
+  "inputs": [
+    {
+      "name": "data_description",
+      "concept": "synthetic_data_generation.DataDescription",
+      "kind": "prose",
+      "description": "A description of the records wanted: what they are for, the fields each carries and the values they take, any rule deciding a value, and the mix of cases the batch must cover",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    },
+    {
+      "name": "nb_samples",
+      "concept": "synthetic_data_generation.RecordCount",
+      "kind": "number",
+      "description": "How many records to generate",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    }
+  ],
+  "output": {
+    "concept": "synthetic_data_generation.DataRecord",
+    "description": "One synthetic record: the case it was written to cover, then its fields by name and value, in the order the description gives them",
+    "multiplicity": "variable",
+    "item_count": null,
+    "fields": [
+      {
+        "name": "case",
+        "type": "text",
+        "description": "The case the record was written to cover",
+        "required": true
+      },
+      {
+        "name": "fields",
+        "type": "list[RecordField]",
+        "description": "The record's fields, by name and value, in the order the description gives them",
+        "required": true
+      }
+    ]
+  }
+}

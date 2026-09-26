@@ -68,6 +68,30 @@ license = "MIT"
 license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
 attribution = "Evotis S.A.S"
 
+[methods.gen_synthetic_data]
+title = "Synthetic test tickets for a support triage"
+pitch = "Read a description of the records a team needs and return a batch of realistic, varied synthetic records, each with the case it covers and its fields as the description gives them: here, customer service tickets, every one of them invented, with the queue and the priority the triage should give each, to test a change to the routing without a single real customer's message."
+app_dir = "test-data-app"
+yours_dir = "test-data"
+yours_change = "also return the batch as CSV, one column per field, ready to import into the helpdesk's sandbox"
+
+[methods.gen_synthetic_data.samples.data_description]
+label = "sample description"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
+[methods.gen_synthetic_data.samples.nb_samples]
+label = "sample count"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
+[methods.gen_synthetic_data.output]
+item_label = "Ticket"
+
 [methods.review_nda]
 title = "NDA review against a playbook"
 pitch = "Read a counterparty's NDA and the company's NDA playbook, and return a first-pass review with one row per playbook position, giving the clause that deals with it, whether it is acceptable, to negotiate or to refuse, and the playbook's fallback wording, then a verdict and a short note for the lawyer who signs off."

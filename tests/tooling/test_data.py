@@ -184,6 +184,32 @@ RIGHT_OUTPUTS: dict[str, JsonValue] = {
         "letting_status": "Can be let",
         "no_new_lease_from": "2034-01-01",
     },
+    "gen_synthetic_data": {
+        "items": [
+            {
+                "case": "A customer whose new kettle gave off a burning smell the first time it was used asks whether it is safe to keep using it.",
+                "fields": [
+                    {"name": "channel", "value": "contact form"},
+                    {"name": "customer_name", "value": "Ada Example"},
+                    {"name": "order_number", "value": "C40718263"},
+                    {"name": "message", "value": "My new kettle smelled of burning the first time I used it. Is it safe?"},
+                    {"name": "queue", "value": "Warranty and repairs"},
+                    {"name": "priority", "value": "urgent"},
+                ],
+            },
+            {
+                "case": "A customer writing from a phone, annoyed, whose order is a week late and who gives no order number.",
+                "fields": [
+                    {"name": "channel", "value": "email"},
+                    {"name": "customer_name", "value": "Ben Example"},
+                    {"name": "order_number", "value": ""},
+                    {"name": "message", "value": "ordered a toaster 8 days ago still nothing, where is it"},
+                    {"name": "queue", "value": "Orders and delivery"},
+                    {"name": "priority", "value": "high"},
+                ],
+            },
+        ],
+    },
     "review_nda": {
         "verdict": "Sign after negotiating",
         "note_for_counsel": "A mutual NDA on a published standard; the confidentiality period needs our fallback wording.",
