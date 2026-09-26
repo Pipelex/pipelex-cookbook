@@ -21,7 +21,7 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 from pydantic import BaseModel, ConfigDict, Field, JsonValue
 
-from scripts.contract import Contract, ContractField, ContractInput, short_concept
+from scripts.contract import TYPE_BRANCH_SEPARATOR, Contract, ContractField, ContractInput, short_concept, type_branches
 from scripts.cookbook import INPUTS_FILE, METHODS_DIR, RAW_BASE_URL, SNIPPETS_DIR, Cookbook, MethodPackage
 from scripts.exceptions import CookbookLayoutError
 from scripts.library import LIBRARY_METHODS_DIR
@@ -505,16 +505,22 @@ def _described(subject: str, *, description: str | None) -> str:
 
 def type_phrase(type_expression: str) -> str:
     """Phrase a contract type expression for a reader: `list[GanttTaskDetails]` becomes "a list of `GanttTaskDetails`"."""
+    branches = type_branches(type_expression)
+    if len(branches) > 1:
+        return TYPE_BRANCH_SEPARATOR.join(type_phrase(branch) for branch in branches)
     if type_expression.startswith("list[") and type_expression.endswith("]"):
-        item_type = type_expression.removeprefix("list[").removesuffix("]")
-        scalar = _SCALAR_PHRASES.get(item_type)
-        return f"a list of {scalar[1]}" if scalar else f"a list of `{item_type}`"
+        item_types = type_branches(type_expression.removeprefix("list[").removesuffix("]"))
+        return f"a list of {TYPE_BRANCH_SEPARATOR.join(_plural_phrase(item_type) for item_type in item_types)}"
     scalar = _SCALAR_PHRASES.get(type_expression)
     if scalar:
         return scalar[0]
-    if " or " in type_expression:
-        return " or ".join(type_phrase(branch) for branch in type_expression.split(" or "))
     return _with_article(f"`{type_expression}`")
+
+
+def _plural_phrase(item_type: str) -> str:
+    """Phrase a list's item type as its items are counted: "texts", or the concept's name as it is."""
+    scalar = _SCALAR_PHRASES.get(item_type)
+    return scalar[1] if scalar else f"`{item_type}`"
 
 
 def _with_article(noun: str) -> str:

@@ -397,6 +397,9 @@ class TestRender:
             ("list[GanttTaskDetails]", "a list of `GanttTaskDetails`"),
             ("Invoice", "an `Invoice`"),
             ("Milestone", "a `Milestone`"),
+            ("text or integer", "text or an integer"),
+            ("list[text or integer]", "a list of texts or integers"),
+            ("list[text] or list[Invoice]", "a list of texts or a list of `Invoice`"),
         ],
     )
     def test_type_phrases(self, type_expression: str, expected: str):

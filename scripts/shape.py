@@ -14,14 +14,13 @@ from datetime import date, datetime
 
 from pydantic import JsonValue
 
-from scripts.contract import Contract, ContractField
+from scripts.contract import Contract, ContractField, type_branches
 
 # The key a list output's envelope carries its items under, as the runtime serialises a list.
 LIST_ENVELOPE_KEY = "items"
 _LIST_MULTIPLICITIES = frozenset({"variable", "fixed"})
 _LIST_PREFIX = "list["
 _LIST_SUFFIX = "]"
-_BRANCH_SEPARATOR = " or "
 
 
 def shape_problems(*, contract: Contract, output: JsonValue) -> list[str]:
@@ -53,7 +52,7 @@ def shape_problems(*, contract: Contract, output: JsonValue) -> list[str]:
 
 def value_matches(*, type_expression: str, value: JsonValue) -> bool:
     """Whether a value, not null, has the type a contract's type expression names."""
-    branches = _branches(type_expression)
+    branches = type_branches(type_expression)
     if len(branches) > 1:
         return any(value_matches(type_expression=branch, value=value) for branch in branches)
     if type_expression.startswith(_LIST_PREFIX) and type_expression.endswith(_LIST_SUFFIX):
@@ -77,27 +76,6 @@ def value_matches(*, type_expression: str, value: JsonValue) -> bool:
         case _:
             # `object`, and any concept's name: a concept is serialised as an object.
             return isinstance(value, dict)
-
-
-def _branches(type_expression: str) -> list[str]:
-    """The branches of a type expression, split on ` or ` outside any brackets, so that `list[text or integer]` stays one branch."""
-    branches: list[str] = []
-    depth = 0
-    start = 0
-    index = 0
-    while index < len(type_expression):
-        if depth == 0 and type_expression.startswith(_BRANCH_SEPARATOR, index):
-            branches.append(type_expression[start:index])
-            index += len(_BRANCH_SEPARATOR)
-            start = index
-            continue
-        if type_expression[index] == "[":
-            depth += 1
-        elif type_expression[index] == "]":
-            depth -= 1
-        index += 1
-    branches.append(type_expression[start:])
-    return branches
 
 
 def _object_problems(*, fields: list[ContractField], value: dict[str, JsonValue], where: str) -> list[str]:
