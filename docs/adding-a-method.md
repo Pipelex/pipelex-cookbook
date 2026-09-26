@@ -42,7 +42,7 @@ With `PIPELEX_API_KEY` set:
 
 ## 4. Check and open the pull request
 
-1. `make agent-check` and `make agent-test`: the linters, the page freshness, the lockstep versions and the tests.
+1. `make agent-check` and `make agent-test`: the linters, the page freshness, the lockstep versions and the tests. The tests hold every method to a hand-built output of its contract's shape, so add one for the new method to `RIGHT_OUTPUTS` in `tests/tooling/test_data.py`, written from the output the method returned.
 2. `make check-recipe-types`, which type-checks the page's snippet files against the SDK and the method's generated types, each in its own environment.
 3. `make check-hosted`, by hand, since CI holds no key.
 4. An entry in `CHANGELOG.md` under `## [Unreleased]`.

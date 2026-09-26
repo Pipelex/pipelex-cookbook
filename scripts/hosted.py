@@ -62,9 +62,6 @@ _ENDED_STATUS_PATTERN = re.compile(r"status\s+([A-Z_]+)")
 _FAILED_STATUS = "FAILED"
 _COMPLETED_STATUS = "COMPLETED"
 _RUNNING_STATUS = "RUNNING"
-# The answers to a start that do not say whether a run was created: the gateway gave up waiting on the server, or the server failed on its way,
-# and either may come after the server created the run.
-_UNSETTLED_START_STATUS_CODES = frozenset({502, 503, 504})
 # The answers to a read of a run's results that say nothing of the run, only that the server or the gateway failed for a moment or asked the
 # caller to slow down. The run goes on on the server whatever one read says, so the read is made again while the wait has time left.
 _TRANSIENT_READ_STATUS_CODES = frozenset({429, 500, 502, 504})
@@ -338,7 +335,8 @@ class HostedClient:
         """Send a start and read the run id it acknowledges.
 
         Once the request is sent, only a refusal from the API itself proves that no run began. An error for a request that got no answer, for a
-        gateway's failure (502, 503 or 504), or for a success whose body carries no run id says that the run may exist all the same.
+        server error (any 5xx, since the server or the gateway may fail after the run was created), or for a success whose body carries no run
+        id says that the run may exist all the same.
 
         Raises:
             HostedApiError: The API refused the start, could not be reached, or acknowledged no run id.
@@ -347,7 +345,7 @@ class HostedClient:
             url, response = self._send("POST", "/v1/start", body=body, timeout=START_TIMEOUT_SECONDS)
         except HostedApiError as exc:
             raise _may_have_started(exc) from exc
-        if response.status_code in _UNSETTLED_START_STATUS_CODES:
+        if response.is_server_error:
             raise _may_have_started(_refusal(url=url, response=response))
         if not response.is_success:
             raise _refusal(url=url, response=response)

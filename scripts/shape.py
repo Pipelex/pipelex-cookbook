@@ -10,6 +10,7 @@ A type expression is what `contract.json` records: `text`, `date`, `datetime`, `
 name, `list[<type>]`, or branches joined by ` or `. A concept is serialised as an object, whatever its fields, and its own fields are not read.
 """
 
+import re
 from datetime import date, datetime
 
 from pydantic import JsonValue
@@ -21,6 +22,10 @@ LIST_ENVELOPE_KEY = "items"
 _LIST_MULTIPLICITIES = frozenset({"variable", "fixed"})
 _LIST_PREFIX = "list["
 _LIST_SUFFIX = "]"
+# The wire forms of a contract's `date` and `datetime`: a calendar date, and one with a time of day, optional fractions and an optional offset.
+# `fromisoformat` alone reads more than these, such as `20220329` and `2022-W13-2`, which a consumer's generated types refuse.
+_DATE_WIRE_FORM = re.compile(r"\d{4}-\d{2}-\d{2}")
+_DATETIME_WIRE_FORM = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})?")
 
 
 def shape_problems(*, contract: Contract, output: JsonValue) -> list[str]:
@@ -62,9 +67,9 @@ def value_matches(*, type_expression: str, value: JsonValue) -> bool:
         case "text":
             return isinstance(value, str)
         case "date":
-            return isinstance(value, str) and _parses(value, parser=date)
+            return isinstance(value, str) and _parses(value, parser=date, wire_form=_DATE_WIRE_FORM)
         case "datetime":
-            return isinstance(value, str) and _parses(value, parser=datetime)
+            return isinstance(value, str) and _parses(value, parser=datetime, wire_form=_DATETIME_WIRE_FORM)
         case "integer":
             return isinstance(value, int) and not isinstance(value, bool)
         case "number":
@@ -107,8 +112,10 @@ def _list_items(output: JsonValue) -> list[JsonValue] | None:
     return None
 
 
-def _parses(text: str, *, parser: type[date]) -> bool:
-    """Whether `parser`, `date` or `datetime`, reads the text as an ISO 8601 value."""
+def _parses(text: str, *, parser: type[date], wire_form: re.Pattern[str]) -> bool:
+    """Whether the text has the wire form of a `date` or a `datetime`, and `parser` reads it as a real one."""
+    if wire_form.fullmatch(text) is None:
+        return False
     try:
         parser.fromisoformat(text)
     except ValueError:

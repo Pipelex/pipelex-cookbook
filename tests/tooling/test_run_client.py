@@ -310,11 +310,20 @@ class TestRunClient:
             httpx.Response(202, text="<html>accepted</html>"),
             httpx.Response(202, json=[RUN_ID]),
             httpx.Response(202, json={"state": "STARTED"}),
+            httpx.Response(500, json={"title": "Internal Server Error"}),
             httpx.Response(502, text="Bad Gateway"),
             httpx.Response(503, json={"title": "Service Unavailable"}),
             httpx.Response(504, text="Gateway Timeout"),
         ],
-        ids=["success-not-json", "success-not-an-object", "success-without-a-run-id", "bad-gateway", "unavailable", "gateway-timeout"],
+        ids=[
+            "success-not-json",
+            "success-not-an-object",
+            "success-without-a-run-id",
+            "server-error",
+            "bad-gateway",
+            "unavailable",
+            "gateway-timeout",
+        ],
     )
     def test_a_start_answered_without_a_run_id_says_the_run_may_exist(self, fake_api: FakeApi, answer: httpx.Response):
         fake_api.answer("POST", START, answer)
