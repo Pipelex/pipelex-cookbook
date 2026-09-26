@@ -34,7 +34,7 @@ import httpx
 from pydantic import BaseModel, ConfigDict, Field, JsonValue, ValidationError
 
 from scripts.contract import Contract, project_contract
-from scripts.cookbook import Cookbook, MethodPackage
+from scripts.cookbook import Cookbook, MethodPackage, replace_urls
 from scripts.exceptions import CookbookLayoutError, HostedApiError, HostedApiUnreachableError, HostedRunError, HostedRunTimeoutError
 
 API_KEY_ENV = "PIPELEX_API_KEY"
@@ -537,9 +537,11 @@ def run_address(
 
 
 def upload_local_samples(*, client: HostedClient, cookbook: Cookbook, inputs: Mapping[str, JsonValue]) -> dict[str, JsonValue]:
-    """A copy of `inputs` in which every `url` naming a raw URL into this repository names an upload of this checkout's file instead.
+    """A copy of `inputs` in which every `url` naming a raw URL into this repository, at any depth, names an upload of this checkout's file instead.
 
-    The URL may name `main` or a release tag: either way the file is taken from this checkout, so that a sample not yet on `main` runs.
+    The URL may name `main` or a release tag: either way the file is taken from this checkout, so that a sample not yet on `main` runs. The
+    `url`s are found by `replace_urls`, the walk of the inputs the snapshot's inputs hash makes too, so that the hash covers every file a run
+    is given.
 
     Each file is uploaded once, however many inputs name it. Every other value is kept as it is, a URL hosted elsewhere included.
 
@@ -548,24 +550,16 @@ def upload_local_samples(*, client: HostedClient, cookbook: Cookbook, inputs: Ma
         HostedApiError: An upload failed.
     """
     uploaded: dict[Path, str] = {}
-    return {name: _with_uploads(value, client=client, cookbook=cookbook, uploaded=uploaded) for name, value in inputs.items()}
 
-
-def _with_uploads(value: JsonValue, *, client: HostedClient, cookbook: Cookbook, uploaded: dict[Path, str]) -> JsonValue:
-    if isinstance(value, list):
-        return [_with_uploads(item, client=client, cookbook=cookbook, uploaded=uploaded) for item in value]
-    if not isinstance(value, dict):
-        return value
-    replaced: dict[str, JsonValue] = {}
-    for key, item in value.items():
-        local_path = _local_sample(cookbook=cookbook, url=item) if key == "url" and isinstance(item, str) else None
+    def upload(url: str) -> str:
+        local_path = _local_sample(cookbook=cookbook, url=url)
         if local_path is None:
-            replaced[key] = _with_uploads(item, client=client, cookbook=cookbook, uploaded=uploaded)
-            continue
+            return url
         if local_path not in uploaded:
             uploaded[local_path] = client.upload(path=local_path)
-        replaced[key] = uploaded[local_path]
-    return replaced
+        return uploaded[local_path]
+
+    return {name: replace_urls(value, upload) for name, value in inputs.items()}
 
 
 def _local_sample(*, cookbook: Cookbook, url: str) -> Path | None:

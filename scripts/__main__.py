@@ -3,7 +3,7 @@
 Offline, needing no key: `render`, `check-render`, `check-lockstep`, `check-links` (which only fetches public sample URLs), `check-recipes`, and
 `recipe-trees`, `recipe-scripts`, `recipe-packages` and `recipe-shell-scripts`, which list what the Makefile hands the SDK script, the type
 checkers and shellcheck: the recipes' code, and the page snippets `render` writes under `tests/snippets/`. `previews` renders the first-page
-preview of every document sample whose source-and-licence record is written, with no key and no network. `refresh-library` and
+preview of every PDF document sample whose source-and-licence record is written, with no key and no network. `refresh-library` and
 `check-library` need no key either: each downloads the method library's tarball at the tag `cookbook.toml` pins, the first to write
 `library.json` and the second to check that it is what that tarball holds.
 Keyed, calling production with `PIPELEX_API_KEY`: `refresh`, `check-methods`, `check-addresses`, and `snapshot <name>`, the one command here
@@ -84,12 +84,12 @@ def main(argv: list[str] | None = None) -> int:
             "and the front page's two lists, of the methods and of the library's methods"
         ),
         "previews": (
-            "Render the first-page preview of every document sample kept under assets/ whose source-and-licence record is written, "
+            "Render the first-page preview of every PDF document sample kept under assets/ whose source-and-licence record is written, "
             "beside it as <stem>.preview.png, with no key and no run"
         ),
         "check-render": (
             "Fail when a committed page, snippet file or either of the front page's lists differs from a fresh render, "
-            "when a snippet directory belongs to no method, when a sample input has no source-and-licence record or a document sample "
+            "when a snippet directory belongs to no method, when a sample input has no source-and-licence record or a PDF document sample "
             "no preview, or when a method's output snapshot is missing or out of step with its contract, its sample or its files"
         ),
         "check-lockstep": "Fail when a manifest's version is not the cookbook's",
@@ -120,7 +120,7 @@ def main(argv: list[str] | None = None) -> int:
         SNAPSHOT_COMMAND,
         help=(
             "Run one method once on production on its sample and write its output snapshot, methods/<name>/output.json, "
-            "and the previews of its document samples (needs PIPELEX_API_KEY, and spends inference credit)"
+            "and the previews of its PDF document samples (needs PIPELEX_API_KEY, and spends inference credit)"
         ),
     )
     snapshot_parser.add_argument("method", help="The method's name, its directory under methods/")

@@ -25,9 +25,14 @@ from tests.tooling.test_data import (
     drop_widgets_record,
     make_widgets_sample_a_document,
     make_widgets_sample_synthetic,
+    make_word_document_sample,
+    pdf_bytes,
     png_bytes,
     write_snapshot,
 )
+
+# What the refusal of a raw URL whose path has a `.` or `..` segment says after the path.
+DOT_SEGMENT = "has a `.` or `..` segment: a raw URL names its file by its plain path"
 
 
 class TestChecks:
@@ -120,19 +125,59 @@ class TestChecks:
         verdicts = {verdict.url: verdict for verdict in check_links(cookbook=load_cookbook(root), rendered={}, fetch_status=not_found)}
         assert verdicts[url].ok is True
 
-    def test_a_link_into_the_cookbook_climbing_out_of_the_checkout_is_broken(self, make_cookbook: MakeCookbook):
+    @pytest.mark.parametrize(
+        ("url", "note"),
+        [
+            (
+                "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/../outside.txt",
+                f"its path /Pipelex/pipelex-cookbook/main/../outside.txt {DOT_SEGMENT}",
+            ),
+            (
+                "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.1.0/assets/%2e%2e/%2e%2e/outside.txt",
+                f"its path /Pipelex/pipelex-cookbook/v0.1.0/assets/../../outside.txt {DOT_SEGMENT}",
+            ),
+            # A release published earlier is judged by its answer, but a path leading outside the checkout is broken whatever its ref.
+            ("https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.1.0//etc/hosts", "its path /etc/hosts leads outside this checkout"),
+        ],
+        ids=["dot-dot", "encoded-dot-dot-at-an-old-tag", "absolute-at-an-old-tag"],
+    )
+    def test_a_link_into_the_cookbook_climbing_out_of_the_checkout_is_broken(self, make_cookbook: MakeCookbook, url: str, note: str):
         root = make_cookbook()
         (root.parent / "outside.txt").write_text("not the cookbook's", encoding="utf-8")
-        url = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/../outside.txt"
-        (root / "methods" / "extract_widgets" / "inputs.json").write_text(f'{{"catalogue": {{"url": "{url}"}}}}', encoding="utf-8")
-        # Loading refuses a real sample linked outside its own `assets/<name>/`, so the link check meets this one as a made-up sample.
-        make_widgets_sample_synthetic(root)
+        page = root / "methods" / "extract_widgets" / "README.md"
 
         def found(url: str) -> int:
             return 200
 
-        verdicts = {verdict.url: verdict for verdict in check_links(cookbook=load_cookbook(root), rendered={}, fetch_status=found)}
-        assert (verdicts[url].ok, verdicts[url].note) == (False, "its path ../outside.txt leads outside this checkout")
+        verdicts = {verdict.url: verdict for verdict in check_links(cookbook=load_cookbook(root), rendered={page: url}, fetch_status=found)}
+        assert (verdicts[url].ok, verdicts[url].note) == (False, note)
+
+    @pytest.mark.parametrize(("status", "ok", "note"), [(200, True, "answers"), (404, False, "HTTP 404"), (0, False, "no answer")])
+    def test_a_link_at_a_release_published_earlier_is_judged_by_its_answer_alone(self, make_cookbook: MakeCookbook, status: int, ok: bool, note: str):
+        root = make_cookbook()
+        # The recipe names a file an earlier release held and this checkout no longer holds.
+        url = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.8.0/assets/retired_method/sample.pdf"
+        recipe = root / "recipes" / "run" / "http"
+        recipe.mkdir(parents=True)
+        (recipe / "README.md").write_text(f"Run it on the [sample]({url}).\n", encoding="utf-8")
+
+        def answering(url: str) -> int:
+            return status
+
+        verdicts = {verdict.url: verdict for verdict in check_links(cookbook=load_cookbook(root), rendered={}, fetch_status=answering)}
+        assert (verdicts[url].ok, verdicts[url].note) == (ok, note)
+
+    @pytest.mark.parametrize("ref", ["main", "v0.9.0"])
+    def test_a_link_at_main_or_the_pages_tag_needs_the_file_whatever_it_answers(self, make_cookbook: MakeCookbook, ref: str):
+        root = make_cookbook()
+        url = f"https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/{ref}/assets/extract_widgets/brochure.pdf"
+        page = root / "methods" / "extract_widgets" / "README.md"
+
+        def found(url: str) -> int:
+            return 200
+
+        verdicts = {verdict.url: verdict for verdict in check_links(cookbook=load_cookbook(root), rendered={page: url}, fetch_status=found)}
+        assert (verdicts[url].ok, verdicts[url].note) == (False, "this checkout holds no file at assets/extract_widgets/brochure.pdf")
 
     def test_a_sample_hosted_elsewhere_must_answer(self, make_cookbook: MakeCookbook):
         root = make_cookbook()
@@ -234,6 +279,8 @@ class TestSampleAndSnapshotChecks:
 
     def test_a_document_sample_kept_here_needs_its_preview(self, make_cookbook: MakeCookbook):
         root = make_cookbook(with_sample=True)
+        # A PDF is known by its header whatever its name.
+        (root / "assets" / "extract_widgets" / "catalogue.png").write_bytes(pdf_bytes(width=300, height=200))
         make_widgets_sample_a_document(root)
         problems = sample_problems(load_cookbook(root))
         assert (
@@ -253,6 +300,11 @@ class TestSampleAndSnapshotChecks:
             "under [methods.extract_widgets.samples.catalogue] in cookbook.toml"
         ) in problems
         assert not [problem for problem in problems if "preview" in problem]
+
+    def test_a_document_sample_that_is_no_pdf_is_asked_for_no_preview(self, make_cookbook: MakeCookbook):
+        root = make_cookbook()
+        make_word_document_sample(root)
+        assert [problem for problem in sample_problems(load_cookbook(root)) if "extract_widgets" in problem] == []
 
     def test_a_method_without_a_snapshot_is_a_problem(self, make_cookbook: MakeCookbook):
         root = make_cookbook(with_sample=True)

@@ -1,9 +1,10 @@
 """What a method page shows of its sample and of its output, as Markdown computed from the contract, the sample records and the snapshot.
 
-The sample is shown by the kind the contract gives each input: an image embedded, a document as its first-page preview linking to the file, prose
-as a quotation, a structure as a field and value table. The output is shown as a reader would use it: a flat structure as a field and value
-table, a list of structures as a table, Markdown text as Markdown under demoted headings, HTML embedded without its head, styles and scripts,
-and a file the output holds as an embedded image or a link. An output that renders longer than `OUTPUT_FOLD_LINES` lines is folded whole, under
+The sample is shown by the kind the contract gives each input: an image embedded, a PDF document as its first-page preview linking to the file
+and any other document as a link, prose as a quotation, a structure as a field and value table. The output is shown as a reader would use it: a
+flat structure as a field and value table, a list of structures as a table, Markdown text as Markdown under demoted headings, moved by one shift
+for the whole output so that one level of the source lands at one level of the page, HTML embedded without its head, styles and scripts, and a
+file the output holds as an embedded image or a link. An output that renders longer than `OUTPUT_FOLD_LINES` lines is folded whole, under
 a summary naming it, so that the page's contract and doors stay near its top. Two hints of `[methods.<name>.output]` in `cookbook.toml` settle
 what the contract cannot: `formats`, how a text field reads, and `item_label`, the noun naming each item of a list output.
 
@@ -54,8 +55,36 @@ _HTML_DROPPED = [
     re.compile(r"</?(?:html|body)\b[^>]*>", re.IGNORECASE),
 ]
 _HTML_HEADING = re.compile(r"<(/?)h([1-6])\b", re.IGNORECASE)
+_PRE_TAG = re.compile(r"<(/?)pre\b", re.IGNORECASE)
+# A blank line inside a `<pre>`, written at the end of the line before it, since a blank line would close the Markdown HTML block.
+_LINE_FEED = "&#10;"
 # A concept code's words: `MarkdownReport` is `Markdown` and `Report`, and `DPEReport` is `DPE` and `Report`.
 _CAMEL_WORD = re.compile(r"[A-Z]+(?=[A-Z][a-z])|[A-Z]?[a-z]+|[A-Z]+|\d+")
+
+
+class _Headings:
+    """Where the headings of texts rendered together land: the shallowest at `level`, and every other as far below it as in its text.
+
+    Without `top`, each text's own shallowest heading lands at `level`. With `top`, every text moves its headings by the one shift that brings
+    a heading of level `top` to `level`, so that texts rendered together, the fields and the items of one output, keep one level of the source
+    at one level of the page. Every text records the levels of its headings in `found`, which the headings `below` these share, and which is
+    how an output learns the `top` its texts share.
+    """
+
+    def __init__(self, level: int, *, top: int | None = None, found: list[int] | None = None) -> None:
+        self.level = level
+        self.top = top
+        self.found: list[int] = [] if found is None else found
+
+    def below(self) -> "_Headings":
+        """The headings of what sits under a heading at this level, such as each item of a list output under its label."""
+        return _Headings(self.level + 1, top=self.top, found=self.found)
+
+    def shift(self, levels: list[int]) -> int:
+        """How far a text whose headings are at these levels, one at least, moves them down; the levels are recorded in `found`."""
+        self.found.extend(levels)
+        top = self.top if self.top is not None else min(levels)
+        return max(0, self.level - top)
 
 
 class SampleView(BaseModel):
@@ -104,7 +133,7 @@ def sample_views(*, cookbook: Cookbook, package: MethodPackage, contract: Contra
                 for index, url in enumerate(urls, start=1)
             )
         elif kind in _TEXT_KINDS and (text := _text_of(content)) is not None:
-            body = _quotation(_demote_markdown(text.strip(), level=SECTION_LEVEL + 1))
+            body = _quotation(_demote_markdown(text.strip(), headings=_Headings(SECTION_LEVEL + 1)))
         elif isinstance(content, dict):
             body = _field_table(content)
         elif isinstance(content, list):
@@ -146,10 +175,21 @@ def output_summary(*, contract: Contract, hints: OutputHints) -> str:
 
 
 def output_markdown(*, contract: Contract, hints: OutputHints, output: JsonValue) -> str:
-    """An output as a reader would use it: each item of a list output under its own heading, a single output as it is."""
-    level = SECTION_LEVEL + 1
+    """An output as a reader would use it: each item of a list output under its own heading, a single output as it is.
+
+    Every text of the output moves its headings down by one shift, the one bringing the shallowest heading any of them holds below the page's,
+    so that one level of the source lands at one level of the page, in every field and every item alike: a first rendering finds that heading,
+    and the second is the one shown.
+    """
+    survey = _Headings(SECTION_LEVEL + 1)
+    _output_markdown(contract=contract, hints=hints, output=output, headings=survey)
+    shared = _Headings(SECTION_LEVEL + 1, top=min(survey.found, default=None))
+    return _output_markdown(contract=contract, hints=hints, output=output, headings=shared)
+
+
+def _output_markdown(*, contract: Contract, hints: OutputHints, output: JsonValue, headings: _Headings) -> str:
     if contract.output.multiplicity not in _LIST_MULTIPLICITIES:
-        return _value(output, hints=hints, level=level)
+        return _value(output, hints=hints, headings=headings)
     items: list[JsonValue]
     if isinstance(output, dict) and isinstance(envelope := output.get("items"), list):
         items = envelope
@@ -158,7 +198,10 @@ def output_markdown(*, contract: Contract, hints: OutputHints, output: JsonValue
     else:
         items = [output]
     label = hints.item_label or DEFAULT_ITEM_LABEL
-    return "\n\n".join(f"{'#' * level} {label} {index}\n\n{_value(item, hints=hints, level=level + 1)}" for index, item in enumerate(items, start=1))
+    return "\n\n".join(
+        f"{'#' * headings.level} {label} {index}\n\n{_value(item, hints=hints, headings=headings.below())}"
+        for index, item in enumerate(items, start=1)
+    )
 
 
 def _plural(noun: str) -> str:
@@ -236,45 +279,49 @@ def _quotation(text: str) -> str:
 # ── The output ───────────────────────────────────────────────────────
 
 
-def _value(value: JsonValue, *, hints: OutputHints, level: int) -> str:
+def _value(value: JsonValue, *, hints: OutputHints, headings: _Headings) -> str:
     """A single output, or one item of a list output."""
     if isinstance(value, dict):
         if set(value) == _TEXT_ONLY_FIELDS and isinstance(text := value.get("text"), str):
-            return _text(text, text_format=hints.formats.get("text", "markdown"), level=level)
+            return _text(text, text_format=hints.formats.get("text", "markdown"), headings=headings)
         if _is_file(value):
             return _file(value, label="output", width=None)
         if _is_html(value):
-            return _html(str(value[_HTML_FIELD]), level=level)
-        return _structure(value, hints=hints, level=level)
+            return _html(str(value[_HTML_FIELD]), headings=headings)
+        return _structure(value, hints=hints, headings=headings)
     if isinstance(value, str):
-        return _text(value, text_format="markdown", level=level)
+        return _text(value, text_format="markdown", headings=headings)
     return _code_json(value)
 
 
-def _structure(value: dict[str, JsonValue], *, hints: OutputHints, level: int) -> str:
-    """A structure: its short values in a field and value table, then each longer one under its field's name."""
+def _structure(value: dict[str, JsonValue], *, hints: OutputHints, headings: _Headings) -> str:
+    """A structure: its short values in a field and value table, then each longer one under its field's name.
+
+    A format hint names how a text reads, so a short value that is no text, such as null, a number or a boolean, goes to the table whatever
+    its field's hint says.
+    """
     rows: list[tuple[str, str]] = []
     blocks: list[str] = []
     for key, item in value.items():
         text_format = hints.formats.get(key)
-        if _is_short(item) and text_format in {None, "text"}:
+        if _is_short(item) and (text_format in {None, "text"} or not isinstance(item, str)):
             rows.append((key, _cell(item)))
         elif isinstance(item, str):
-            blocks.append(f"**`{key}`**\n\n{_text(item, text_format=text_format or 'text', level=level)}")
+            blocks.append(f"**`{key}`**\n\n{_text(item, text_format=text_format or 'text', headings=headings)}")
         elif isinstance(item, list):
-            blocks.append(f"**`{key}`**\n\n{_list(item, hints=hints, level=level)}")
+            blocks.append(f"**`{key}`**\n\n{_list(item, hints=hints, headings=headings)}")
         elif isinstance(item, dict):
             if _is_file(item):
                 blocks.append(f"**`{key}`**\n\n{_file(item, label=key, width=None)}")
             elif _is_html(item):
-                blocks.append(f"**`{key}`**\n\n{_html(str(item[_HTML_FIELD]), level=level)}")
+                blocks.append(f"**`{key}`**\n\n{_html(str(item[_HTML_FIELD]), headings=headings)}")
             else:
-                blocks.append(f"**`{key}`**\n\n{_structure(item, hints=hints, level=level)}")
+                blocks.append(f"**`{key}`**\n\n{_structure(item, hints=hints, headings=headings)}")
     parts = ([_table(["Field", "Value"], [[f"`{key}`", cell] for key, cell in rows])] if rows else []) + blocks
     return "\n\n".join(parts)
 
 
-def _list(items: list[JsonValue], *, hints: OutputHints, level: int) -> str:
+def _list(items: list[JsonValue], *, hints: OutputHints, headings: _Headings) -> str:
     """A list: none, bullets for texts and numbers, a table for structures, and each item in turn otherwise."""
     if not items:
         return "None."
@@ -286,21 +333,21 @@ def _list(items: list[JsonValue], *, hints: OutputHints, level: int) -> str:
         for structure in structures:
             columns.extend(key for key in structure if key not in columns)
         return _table([f"`{column}`" for column in columns], [[_cell(structure.get(column)) for column in columns] for structure in structures])
-    return "\n\n".join(_value(item, hints=hints, level=level) for item in items)
+    return "\n\n".join(_value(item, hints=hints, headings=headings) for item in items)
 
 
-def _text(text: str, *, text_format: TextFormat, level: int) -> str:
+def _text(text: str, *, text_format: TextFormat, headings: _Headings) -> str:
     match text_format:
         case "markdown":
-            return _demote_markdown(text.strip(), level=level)
+            return _demote_markdown(text.strip(), headings=headings)
         case "html":
-            return _html(text, level=level)
+            return _html(text, headings=headings)
         case "text":
             return text.strip()
 
 
-def _demote_markdown(text: str, *, level: int) -> str:
-    """Move every heading down so that the text's highest one sits at `level`, and none goes below `######`; code blocks are left alone."""
+def _demote_markdown(text: str, *, headings: _Headings) -> str:
+    """Move every heading down as `headings` says, none going below `######`; code blocks are left alone."""
     lines = text.split("\n")
     in_fence = False
     heading_levels: list[int] = []
@@ -311,7 +358,7 @@ def _demote_markdown(text: str, *, level: int) -> str:
             heading_levels.append(len(match.group(1)))
     if not heading_levels:
         return text
-    shift = max(0, level - min(heading_levels))
+    shift = headings.shift(heading_levels)
     demoted: list[str] = []
     in_fence = False
     for line in lines:
@@ -326,20 +373,30 @@ def _demote_markdown(text: str, *, level: int) -> str:
     return "\n".join(demoted)
 
 
-def _html(text: str, *, level: int) -> str:
+def _html(text: str, *, headings: _Headings) -> str:
     """Embed HTML without its head, styles and scripts, its headings moved down as Markdown's are, as one block the page renders whole.
 
-    Every line is left-trimmed and blank lines are dropped, since a blank line would close the HTML block and an indented line after it would
-    read as code.
+    A blank line would close the Markdown HTML block, after which an indented line would read as code, so a blank line is dropped, and inside
+    a `<pre>`, whose blank lines are its content, it becomes a line feed's character reference at the end of the line before it. Every line
+    keeps its indentation, which a `<pre>` or a `<code>` shows, and loses only its trailing whitespace.
     """
     body = text
     for pattern in _HTML_DROPPED:
         body = pattern.sub("", body)
     heading_levels = [int(match.group(2)) for match in _HTML_HEADING.finditer(body) if not match.group(1)]
     if heading_levels:
-        shift = max(0, level - min(heading_levels))
+        shift = headings.shift(heading_levels)
         body = _HTML_HEADING.sub(lambda match: f"<{match.group(1)}h{min(MAX_HEADING_LEVEL, int(match.group(2)) + shift)}", body)
-    lines = [line.strip() for line in body.split("\n") if line.strip()]
+    lines: list[str] = []
+    pre_depth = 0
+    for raw_line in body.split("\n"):
+        line = raw_line.rstrip()
+        if line:
+            lines.append(line)
+        elif pre_depth:
+            # A `<pre>` opened on an earlier line, which is therefore there to carry the blank line.
+            lines[-1] += _LINE_FEED
+        pre_depth = max(0, pre_depth + sum(-1 if closing else 1 for closing in _PRE_TAG.findall(line)))
     return "<div>\n" + "\n".join(lines) + "\n</div>"
 
 

@@ -20,12 +20,14 @@ from scripts.snapshot import (
     files_digest,
     fit_image,
     inputs_digest,
+    is_pdf,
     leftover_links,
     load_snapshot,
     preview_path,
     read_snapshot,
     render_preview,
     rewrite_output,
+    sample_files,
     storage_references,
     unrecorded_documents,
     write_previews,
@@ -36,18 +38,14 @@ from tests.tooling.test_data import (
     MakeCookbook,
     drop_widgets_record,
     make_widgets_sample_a_document,
+    make_word_document_sample,
+    pdf_bytes,
     png_bytes,
     write_snapshot,
 )
 
 RECEIPT_URI = "pipelex-storage://org_1/runs/run_1/outputs/2325fcfe.png"
 RECEIPT_LINK = "https://bucket.s3.amazonaws.com/org_1/runs/run_1/outputs/2325fcfe.png?X-Amz-Credential=AKIA%2F&X-Amz-Signature=abc123"
-
-
-def _pdf_bytes(*, width: int, height: int) -> bytes:
-    buffer = io.BytesIO()
-    Image.new("RGB", (width, height), "white").save(buffer, format="PDF")
-    return buffer.getvalue()
 
 
 def _package(root: Path, name: str) -> MethodPackage:
@@ -73,6 +71,21 @@ class TestDigests:
         package = _package(root, "extract_widgets")
         before = inputs_digest(cookbook=cookbook, package=package)
         (root / WIDGETS_SAMPLE_PATH).write_bytes(png_bytes(width=41, height=30))
+        assert inputs_digest(cookbook=cookbook, package=package) != before
+
+    def test_the_inputs_digest_covers_a_local_file_nested_in_a_structured_input(self, make_cookbook: MakeCookbook):
+        root = make_cookbook(with_sample=True)
+        url = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/count_words/glossary.png"
+        brief = {"title": "The fox", "attachments": [{"label": "Glossary", "image": {"url": url}}]}
+        (root / "methods" / "count_words" / "inputs.json").write_text(json.dumps({"text": {"concept": "words.Brief", "content": brief}}))
+        glossary = root / "assets" / "count_words" / "glossary.png"
+        glossary.parent.mkdir(parents=True)
+        glossary.write_bytes(png_bytes(width=10, height=10))
+        cookbook = load_cookbook(root)
+        package = _package(root, "count_words")
+        assert sample_files(cookbook=cookbook, package=package) == [glossary]
+        before = inputs_digest(cookbook=cookbook, package=package)
+        glossary.write_bytes(png_bytes(width=11, height=10))
         assert inputs_digest(cookbook=cookbook, package=package) != before
 
     def test_the_bundle_digest_changes_with_a_bundle(self, make_cookbook: MakeCookbook):
@@ -192,6 +205,13 @@ class TestOutputFiles:
         assert image.size == (1600, 500)
         assert image.format == "PNG"
 
+    def test_an_animated_image_is_kept_whole_since_downscaling_would_keep_one_frame(self):
+        frames = [Image.new("RGB", (3200, 100), colour) for colour in ("red", "blue")]
+        buffer = io.BytesIO()
+        frames[0].save(buffer, format="GIF", save_all=True, append_images=frames[1:], duration=100, loop=0)
+        animated = buffer.getvalue()
+        assert fit_image(animated, content_type="image/gif") == (animated, False)
+
     def test_a_small_image_and_a_non_image_are_kept_as_they_are(self):
         small = png_bytes(width=1600, height=900)
         assert fit_image(small, content_type="image/png") == (small, False)
@@ -201,7 +221,7 @@ class TestOutputFiles:
 class TestPreviews:
     def test_a_preview_is_the_first_page_rendered_at_its_long_side(self, tmp_path: Path):
         document = tmp_path / "deck.pdf"
-        document.write_bytes(_pdf_bytes(width=300, height=200))
+        document.write_bytes(pdf_bytes(width=300, height=200))
         image = Image.open(io.BytesIO(render_preview(document)))
         assert image.format == "PNG"
         assert max(image.size) == PREVIEW_LONG_SIDE
@@ -218,7 +238,7 @@ class TestPreviews:
         package = _package(root, "extract_widgets")
         assert document_samples(cookbook=load_cookbook(root), package=package) == []
 
-        (root / WIDGETS_SAMPLE_PATH).write_bytes(_pdf_bytes(width=300, height=200))
+        (root / WIDGETS_SAMPLE_PATH).write_bytes(pdf_bytes(width=300, height=200))
         make_widgets_sample_a_document(root)
         cookbook = load_cookbook(root)
         package = _package(root, "extract_widgets")
@@ -229,9 +249,35 @@ class TestPreviews:
         # A preview already holding what the rendering gives is left as it is.
         assert write_previews(cookbook=cookbook, package=package) == []
 
+    @pytest.mark.parametrize(
+        ("name", "data", "expected"),
+        [
+            ("deck.pdf", b"anything", True),
+            ("deck.bin", b"%PDF-1.7 and the rest", True),
+            ("letter.docx", b"PK\x03\x04 a Word document", False),
+            ("scan.png", png_bytes(width=4, height=4), False),
+        ],
+    )
+    def test_a_pdf_is_known_by_its_extension_or_its_header(self, tmp_path: Path, name: str, data: bytes, expected: bool):
+        path = tmp_path / name
+        path.write_bytes(data)
+        assert is_pdf(path) is expected
+
+    def test_a_document_sample_that_is_no_pdf_gets_no_preview(self, make_cookbook: MakeCookbook):
+        root = make_cookbook()
+        make_word_document_sample(root)
+        cookbook = load_cookbook(root)
+        package = _package(root, "extract_widgets")
+        assert document_samples(cookbook=cookbook, package=package) == []
+        assert write_previews(cookbook=cookbook, package=package) == []
+        assert not (root / "assets" / "extract_widgets" / "catalogue.preview.png").exists()
+        # Nor is it named as waiting for its record to get one.
+        drop_widgets_record(root)
+        assert unrecorded_documents(cookbook=load_cookbook(root), package=_package(root, "extract_widgets")) == []
+
     def test_a_document_sample_without_its_record_never_gets_a_preview(self, make_cookbook: MakeCookbook):
         root = make_cookbook(with_sample=True)
-        (root / WIDGETS_SAMPLE_PATH).write_bytes(_pdf_bytes(width=300, height=200))
+        (root / WIDGETS_SAMPLE_PATH).write_bytes(pdf_bytes(width=300, height=200))
         make_widgets_sample_a_document(root)
         drop_widgets_record(root)
         cookbook = load_cookbook(root)

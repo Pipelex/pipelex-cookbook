@@ -6,7 +6,7 @@ from pydantic import JsonValue
 from scripts.contract import Contract, ContractInput, ContractOutput
 from scripts.cookbook import OutputHints, load_cookbook
 from scripts.views import OUTPUT_FOLD_LINES, day_phrase, duration_phrase, output_markdown, output_summary, sample_views
-from tests.tooling.test_data import WIDGETS_CONTRACT, WORDS_CONTRACT, MakeCookbook
+from tests.tooling.test_data import WIDGETS_CONTRACT, WORDS_CONTRACT, MakeCookbook, make_word_document_sample
 
 
 def _contract(*, multiplicity: str = "single") -> Contract:
@@ -70,7 +70,24 @@ class TestOutputView:
         article = output_markdown(contract=_contract(), hints=hints, output={"seo_title": "Capybaras", "content": "# Meet the capybara\n\nHi."})
         assert article == "| Field | Value |\n|---|---|\n| `seo_title` | Capybaras |\n\n**`content`**\n\n### Meet the capybara\n\nHi."
         newsletter = output_markdown(contract=_contract(), hints=hints, output={"text": "<!-- Summary -->\n<h2>Weekly</h2>\n\n   <p>News</p>"})
-        assert newsletter == "<div>\n<!-- Summary -->\n<h3>Weekly</h3>\n<p>News</p>\n</div>"
+        assert newsletter == "<div>\n<!-- Summary -->\n<h3>Weekly</h3>\n   <p>News</p>\n</div>"
+
+    def test_a_short_value_that_is_no_text_goes_to_the_table_whatever_its_fields_hint(self):
+        hints = OutputHints(formats={"summary": "markdown", "score": "html", "approved": "markdown", "notes": "markdown"})
+        output: JsonValue = {"summary": "## Verdict\n\nSound.", "score": 7, "approved": False, "notes": None}
+        assert output_markdown(contract=_contract(), hints=hints, output=output) == (
+            "| Field | Value |\n|---|---|\n| `score` | 7 |\n| `approved` | no |\n| `notes` |   |\n\n**`summary`**\n\n### Verdict\n\nSound."
+        )
+
+    def test_html_keeps_its_indentation_and_the_blank_lines_of_a_pre(self):
+        page = (
+            "<h2>Code</h2>\n<pre><code>def area(width, height):\n\n    return width * height\n\n\nprint(area(2, 3))\n</code></pre>\n\n"
+            "<ul>\n  <li>Indented</li>\n</ul>\n   \n<pre>last</pre>"
+        )
+        assert output_markdown(contract=_contract(), hints=OutputHints(formats={"text": "html"}), output={"text": page}) == (
+            "<div>\n<h3>Code</h3>\n<pre><code>def area(width, height):&#10;\n    return width * height&#10;&#10;\nprint(area(2, 3))\n</code></pre>\n"
+            "<ul>\n  <li>Indented</li>\n</ul>\n<pre>last</pre>\n</div>"
+        )
 
     def test_html_is_embedded_without_its_head_styles_and_scripts(self):
         report = (
@@ -84,6 +101,19 @@ class TestOutputView:
         output: JsonValue = {"items": [{"text": "# First page"}, {"text": "Second page"}]}
         markdown = output_markdown(contract=_contract(multiplicity="variable"), hints=OutputHints(item_label="Page"), output=output)
         assert markdown == "### Page 1\n\n#### First page\n\n### Page 2\n\nSecond page"
+
+    def test_the_items_of_a_list_output_share_one_heading_shift(self):
+        output: JsonValue = {"items": [{"text": "# The article\n\n## Introduction"}, {"text": "## Industry response\n\n### Banks"}]}
+        markdown = output_markdown(contract=_contract(multiplicity="variable"), hints=OutputHints(item_label="Page"), output=output)
+        # A `##` of the source lands at one level of the page, whichever page holds it.
+        assert markdown == ("### Page 1\n\n#### The article\n\n##### Introduction\n\n### Page 2\n\n##### Industry response\n\n###### Banks")
+
+    def test_the_fields_of_one_output_share_one_heading_shift_markdown_and_html_alike(self):
+        hints = OutputHints(formats={"body": "markdown", "sidebar": "html"})
+        output: JsonValue = {"body": "## Findings\n\nText.", "sidebar": "<h3>Sources</h3>"}
+        assert output_markdown(contract=_contract(), hints=hints, output=output) == (
+            "**`body`**\n\n### Findings\n\nText.\n\n**`sidebar`**\n\n<div>\n<h4>Sources</h4>\n</div>"
+        )
 
     def test_a_copied_image_is_embedded_and_shown_in_a_table_cell(self):
         receipt: JsonValue = {"url": "output/items-0-receipt.png", "mime_type": "image/png", "caption": "Receipt"}
@@ -132,6 +162,15 @@ class TestSampleView:
             '<a href="../../assets/extract_widgets/catalogue.png">'
             '<img src="../../assets/extract_widgets/catalogue.preview.png" alt="sample catalogue" width="480"></a>'
         )
+
+    def test_a_document_sample_that_is_no_pdf_is_linked(self, make_cookbook: MakeCookbook):
+        root = make_cookbook()
+        make_word_document_sample(root)
+        cookbook = load_cookbook(root)
+        [package] = [package for package in cookbook.packages if package.name == "extract_widgets"]
+        assert package.contract is not None
+        [view] = sample_views(cookbook=cookbook, package=package, contract=package.contract)
+        assert view.body == "[sample catalogue](../../assets/extract_widgets/catalogue.docx)"
 
     def test_prose_is_quoted_and_a_structure_is_a_table(self, make_cookbook: MakeCookbook):
         root = make_cookbook(with_sample=True)

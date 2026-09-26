@@ -64,7 +64,7 @@ make install                  - Create local virtualenv & install all dependenci
 make update                   - Upgrade dependencies via uv
 
 make render                   - Write every methods/<name>/README.md from its package and cookbook.toml, and its snippet files under tests/snippets/<name>/
-make previews                 - Render the first-page preview of every recorded document sample, beside it under assets/ (no key, no run)
+make previews                 - Render the first-page preview of every recorded PDF document sample, beside it under assets/ (no key, no run)
 make check-render             - Fail when a committed method page or snippet file differs from a fresh render, or a snippet directory belongs to no method,
                                 or when a sample lacks its record or its preview, or an output snapshot is missing or out of step
 make check-lockstep           - Fail when a method manifest's version is not the cookbook's
@@ -243,9 +243,9 @@ render: env
 	$(call PRINT_TITLE,"Rendering every method page and its snippet files")
 	$(VENV_PYTHON) -m scripts render
 
-# No key, no network and no run: the preview of every document sample whose source-and-licence record is written.
+# No key, no network and no run: the preview of every PDF document sample whose source-and-licence record is written.
 previews: env
-	$(call PRINT_TITLE,"Rendering the preview of every recorded document sample")
+	$(call PRINT_TITLE,"Rendering the preview of every recorded PDF document sample")
 	$(VENV_PYTHON) -m scripts previews
 
 check-render: env

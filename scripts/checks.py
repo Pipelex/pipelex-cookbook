@@ -1,8 +1,9 @@
 """The checks that need no API key, run on every pull request: the pages are fresh, the manifests are in lockstep, and every sample link answers.
 
 Freshness covers every file `make render` writes, the pages' snippet files included, and a snippet directory left behind by a method that is gone.
-It also covers what a page shows that no render can write: every sample input has its source-and-licence record, every document sample kept in
-this repository its preview, and every method its output snapshot, taken from the sample as it is and holding every file it names and no other.
+It also covers what a page shows that no render can write: every sample input has its source-and-licence record, every PDF document sample kept
+in this repository its preview, and every method its output snapshot, taken from the sample as it is and holding every file it names and no
+other.
 A snapshot whose bundles changed since is only reported as stale, so a prompt tweak does not force a paid run.
 The links are read from the packages' inputs, from the pages and from the recipes' own files.
 """
@@ -14,7 +15,7 @@ from pathlib import Path
 import httpx
 from pydantic import BaseModel, ConfigDict, JsonValue
 
-from scripts.cookbook import COOKBOOK_FILE, INPUTS_FILE, SNIPPETS_DIR, Cookbook, MethodPackage
+from scripts.cookbook import COOKBOOK_FILE, INPUTS_FILE, SNIPPETS_DIR, Cookbook, MethodPackage, nested_urls
 from scripts.exceptions import CookbookLayoutError
 from scripts.recipes import recipe_files
 from scripts.shape import shape_problems
@@ -76,9 +77,11 @@ def orphan_snippet_dirs(cookbook: Cookbook) -> list[Path]:
 
 
 def sample_problems(cookbook: Cookbook) -> list[str]:
-    """Every sample input without its source-and-licence record, and every recorded document sample kept in this repository without its preview.
+    """Every sample input without its source-and-licence record, and every recorded PDF document sample kept in this repository without its
+    preview.
 
-    A document sample without its record is reported for the record alone: it gets no preview until the record is written.
+    A document sample without its record is reported for the record alone: it gets no preview until the record is written. A document that is
+    not a PDF, such as an image or a Word file, gets no preview at all, since only a PDF can be rendered: the page links it.
     """
     problems: list[str] = []
     for package in cookbook.packages:
@@ -211,7 +214,7 @@ def collect_urls(*, cookbook: Cookbook, rendered: dict[Path, str]) -> dict[str, 
     found: dict[str, list[str]] = {}
     for package in cookbook.packages:
         inputs_file = f"{package.directory.relative_to(cookbook.root)}/{INPUTS_FILE}"
-        for url in _urls_in_json(package.inputs):
+        for url in nested_urls(package.inputs):
             found.setdefault(url, []).append(inputs_file)
     texts = dict(rendered)
     for recipe_file in recipe_files(cookbook.root):
@@ -230,9 +233,11 @@ def collect_urls(*, cookbook: Cookbook, rendered: dict[Path, str]) -> dict[str, 
 def check_links(*, cookbook: Cookbook, rendered: dict[Path, str], fetch_status: Callable[[str], int]) -> list[LinkVerdict]:
     """Check every sample URL, and every raw URL on the pages and in the recipes.
 
-    A URL into the cookbook itself must name a file this checkout holds, whichever ref it names, `main` or a release tag, as one path segment.
-    When it answers 404, it is reported as not published rather than as broken: a file added since the last release is on neither `main` nor
-    that release's tag, and the next release both publishes it and re-renders every page at its own tag. Any other URL must answer.
+    A URL into the cookbook itself at a ref that moves with this checkout, `main` or the tag every page names, must name a file this checkout
+    holds. When it answers 404, it is reported as not published rather than as broken: a file added since the last release is on neither
+    `main` nor that release's tag, and the next release both publishes it and re-renders every page at its own tag. A URL into the cookbook at
+    any other tag names a release already published, whose files this checkout may no longer hold, so it must answer, as any other URL must.
+    Whatever its ref, a URL into the cookbook whose path has a `.` or `..` segment or leads outside this checkout is broken.
 
     Args:
         cookbook: The cookbook.
@@ -244,7 +249,8 @@ def check_links(*, cookbook: Cookbook, rendered: dict[Path, str], fetch_status: 
         status = fetch_status(url)
         answered = 200 <= status < 300
         try:
-            local_file = cookbook.local_file_of(url)
+            ref = cookbook.ref_of(url)
+            local_file = cookbook.local_file_of(url) if ref is not None and cookbook.follows_checkout(ref) else None
         except CookbookLayoutError as exc:
             verdicts.append(LinkVerdict(url=url, found_in=found_in, ok=False, note=str(exc)))
             continue
@@ -266,7 +272,7 @@ def check_links(*, cookbook: Cookbook, rendered: dict[Path, str], fetch_status: 
         elif answered:
             verdicts.append(LinkVerdict(url=url, found_in=found_in, ok=True, note="answers"))
         else:
-            verdicts.append(LinkVerdict(url=url, found_in=found_in, ok=False, note=f"HTTP {status}"))
+            verdicts.append(LinkVerdict(url=url, found_in=found_in, ok=False, note=f"HTTP {status}" if status else "no answer"))
     return verdicts
 
 
@@ -286,17 +292,3 @@ def http_status(url: str) -> int:
             return status
     except (httpx.HTTPError, httpx.InvalidURL):
         return 0
-
-
-def _urls_in_json(value: JsonValue) -> list[str]:
-    urls: list[str] = []
-    if isinstance(value, dict):
-        for key, item in value.items():
-            if key == "url" and isinstance(item, str):
-                urls.append(item)
-            else:
-                urls.extend(_urls_in_json(item))
-    elif isinstance(value, list):
-        for item in value:
-            urls.extend(_urls_in_json(item))
-    return urls

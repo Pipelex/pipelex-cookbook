@@ -9,7 +9,8 @@ A file the output holds, such as a generated image, is copied into `methods/<nam
 and the output's references to it, the durable `pipelex-storage://` URI and the presigned link beside it, become the copy's path relative to the
 package. The run id, the cost and every storage URI stay out of the repository: the writer prints them instead.
 
-A document sample kept under `assets/` gets a first-page preview beside it, `<stem>.preview.png`, which the page shows linking to the file.
+A PDF document sample kept under `assets/` gets a first-page preview beside it, `<stem>.preview.png`, which the page shows linking to the file;
+a document that is not a PDF, such as an image or a Word file, cannot be rendered, so the page links it and nothing asks for its preview.
 """
 
 import hashlib
@@ -17,6 +18,7 @@ import html
 import io
 import json
 import mimetypes
+import os
 import re
 import shutil
 import tempfile
@@ -30,10 +32,11 @@ import pypdfium2
 from PIL import Image
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, JsonValue, ValidationError, model_validator
 
-from scripts.cookbook import INPUTS_FILE, Cookbook, MethodPackage, file_urls, input_content
-from scripts.exceptions import CookbookLayoutError, SnapshotError
+from scripts.contract import Contract
+from scripts.cookbook import INPUTS_FILE, Cookbook, MethodPackage, file_urls, input_content, nested_urls
+from scripts.exceptions import CookbookLayoutError, HostedApiError, SnapshotError
 from scripts.hosted import STORAGE_SCHEME, HostedClient, HostedRun, RunRoute, download, run_package, validate_package
-from scripts.shape import shape_problems
+from scripts.shape import LIST_MULTIPLICITIES, list_items, shape_problems
 
 SNAPSHOT_FILE = "output.json"
 # The directory beside the package holding the files the output names, which exists only when there are such files.
@@ -42,11 +45,14 @@ OUTPUT_DIR = "output"
 PRODUCTION_URL = "https://api.pipelex.com"
 # An image the output holds is downscaled to this length on its long side, so that one snapshot does not weigh down the repository.
 MAX_IMAGE_SIDE = 1600
-# A document sample's preview, `<stem>.preview.png` beside the sample, rendered at this length on its long side.
+# A PDF document sample's preview, `<stem>.preview.png` beside the sample, rendered at this length on its long side.
 PREVIEW_SUFFIX = ".preview.png"
 PREVIEW_LONG_SIDE = 1200
-# The input kind the contract gives a document, whose sample kept under `assets/` gets a preview.
+# The input kind the contract gives a document, whose sample kept under `assets/` gets a preview when it is a PDF.
 DOCUMENT_KIND = "document"
+# How a PDF is known: by its extension, or by the header every PDF opens with.
+_PDF_SUFFIX = ".pdf"
+_PDF_HEADER = b"%PDF-"
 # The most a file of the output may weigh when it is fetched, before any downscaling.
 MAX_FILE_BYTES = 50 * 1024 * 1024
 _DEFAULT_CONTENT_TYPE = "application/octet-stream"
@@ -60,6 +66,9 @@ _IDENTIFIER = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 _EXTENSIONS = {"image/jpeg": ".jpg", "text/plain": ".txt"}
 _DEFAULT_EXTENSION = ".bin"
 _JPEG_QUALITY = 90
+# The directory the writer builds a new snapshot in, inside the package so that each rename swapping it in stays on one filesystem.
+_WORK_PREFIX = ".snapshot-"
+_PREVIOUS_OUTPUT = "previous-output"
 
 
 class SnapshotRoute(StrEnum):
@@ -185,17 +194,19 @@ def bundle_digest(*, cookbook: Cookbook, package: MethodPackage) -> str:
 
 
 def sample_files(*, cookbook: Cookbook, package: MethodPackage) -> list[Path]:
-    """The local files the sample names: every file its `inputs.json` links by a raw URL into this repository, in input order.
+    """The local files the sample names: every file its `inputs.json` links by a raw URL into this repository, at any depth, in input order.
+
+    The files are those a run uploads from this checkout, read by the same walk of the inputs (`nested_urls`), so that the hash covers every
+    file the run is given, a file nested in a structured input included.
 
     Raises:
         CookbookLayoutError: A URL into this repository names a file this checkout does not hold.
     """
     found: list[Path] = []
-    for value in package.inputs.values():
-        for url in file_urls(input_content(value)):
-            path = _sample_file(cookbook=cookbook, package=package, url=url)
-            if path is not None and path not in found:
-                found.append(path)
+    for url in nested_urls(package.inputs):
+        path = _sample_file(cookbook=cookbook, package=package, url=url)
+        if path is not None and path not in found:
+            found.append(path)
     return found
 
 
@@ -231,10 +242,10 @@ def preview_path(sample: Path) -> Path:
 
 
 def document_samples(*, cookbook: Cookbook, package: MethodPackage) -> list[Path]:
-    """The local files of the inputs the contract calls documents and whose source-and-licence record is written: those the page previews.
+    """The local PDF files of the inputs the contract calls documents and whose source-and-licence record is written: those the page previews.
 
     A document without its record never gets a preview, since its provenance is not settled: it may hold a real person's data, which the
-    page must not show.
+    page must not show. A document that is not a PDF gets none either, since only a PDF can be rendered.
 
     Raises:
         CookbookLayoutError: A URL into this repository names a file this checkout does not hold.
@@ -243,7 +254,7 @@ def document_samples(*, cookbook: Cookbook, package: MethodPackage) -> list[Path
 
 
 def unrecorded_documents(*, cookbook: Cookbook, package: MethodPackage) -> list[Path]:
-    """The local document samples without their source-and-licence record, which get no preview until it is written.
+    """The local PDF document samples without their source-and-licence record, which get no preview until it is written.
 
     Raises:
         CookbookLayoutError: A URL into this repository names a file this checkout does not hold.
@@ -252,7 +263,7 @@ def unrecorded_documents(*, cookbook: Cookbook, package: MethodPackage) -> list[
 
 
 def _local_documents(*, cookbook: Cookbook, package: MethodPackage) -> list[tuple[str, Path]]:
-    """Each input the contract calls a document with the local file of its sample, for every file it names in this repository."""
+    """Each input the contract calls a document with the local file of its sample, for every PDF it names in this repository."""
     contract = package.contract
     if contract is None:
         return []
@@ -263,9 +274,17 @@ def _local_documents(*, cookbook: Cookbook, package: MethodPackage) -> list[tupl
             continue
         for url in file_urls(input_content(value)):
             path = _sample_file(cookbook=cookbook, package=package, url=url)
-            if path is not None:
+            if path is not None and is_pdf(path):
                 found.append((input_name, path))
     return found
+
+
+def is_pdf(path: Path) -> bool:
+    """Whether a file is a PDF, the one kind of document a preview can be rendered from: by its `.pdf` extension, or by the PDF header."""
+    if path.suffix.lower() == _PDF_SUFFIX:
+        return True
+    with path.open("rb") as document:
+        return document.read(len(_PDF_HEADER)) == _PDF_HEADER
 
 
 def render_preview(document: Path) -> bytes:
@@ -459,7 +478,8 @@ def fit_image(data: bytes, *, content_type: str | None) -> tuple[bytes, bool]:
     """Downscale an image longer than `MAX_IMAGE_SIDE` on its long side, keeping its format and its proportions.
 
     Returns:
-        The bytes to copy, and whether they were downscaled. Anything that is not an image Pillow reads is returned as it is.
+        The bytes to copy, and whether they were downscaled. Anything that is not an image Pillow reads is returned as it is, and so is an
+        animated image, such as an animated GIF or WebP, whose downscaling would keep only its first frame.
     """
     if not (content_type or "").lower().startswith("image/"):
         return data, False
@@ -467,6 +487,8 @@ def fit_image(data: bytes, *, content_type: str | None) -> tuple[bytes, bool]:
         image = Image.open(io.BytesIO(data))
         image.load()
     except (OSError, Image.DecompressionBombError):
+        return data, False
+    if getattr(image, "is_animated", False):
         return data, False
     width, height = image.size
     if max(width, height) <= MAX_IMAGE_SIDE:
@@ -500,16 +522,20 @@ def take_snapshot(*, client: HostedClient, cookbook: Cookbook, package: MethodPa
     """Run a method once on production on its sample and write its output snapshot. The run spends inference credit.
 
     Everything that can fail for free is done first: the client must be production's, the package must validate and its validation must give
-    the committed contract, and every document sample's preview is rendered. Then the method runs from the package's files, the output must
-    have its contract's shape, each file it holds is fetched through the storage resolve route, downscaled when it is a large image, and copied
-    into `output/`, which is replaced as a whole, and every reference to it is rewritten; nothing is written while a storage reference or a
-    signed link is left.
+    the committed contract, and every PDF document sample's preview is rendered. Then the method runs from the package's files, the output
+    must have its contract's shape and hold something to show, each file it holds is fetched through the storage resolve route, downscaled
+    when it is a large image, and copied into a new `output/`, and every reference to it is rewritten; nothing is written while a storage
+    reference or a signed link is left. The new `output/` and `output.json` are built complete beside the package's before either replaces
+    its predecessor, so a failure at any point leaves the previous snapshot whole.
+
+    Once the run completed, it is paid for, so every error raised after it names the run, its cost, and the route reading its output again.
 
     Raises:
         SnapshotError: The client is not production's, the package does not validate or its contract is stale, the output does not have its
-            contract's shape, a file could not be resolved, or a reference or a signed link is left in the output.
+            contract's shape or holds nothing, a file could not be resolved or fetched, a reference or a signed link is left in the output,
+            or the snapshot could not be written.
         CookbookLayoutError: The sample names a file this checkout does not hold, or a document sample cannot be previewed.
-        HostedApiError: A call to production failed.
+        HostedApiError: A call to production failed before the run completed.
         HostedRunError: The run ended without a result.
     """
     package_dir = package.directory.relative_to(cookbook.root)
@@ -534,18 +560,83 @@ def take_snapshot(*, client: HostedClient, cookbook: Cookbook, package: MethodPa
     run = run_package(client=client, cookbook=cookbook, package=package)
     problems = shape_problems(contract=contract, output=run.main_stuff)
     if problems:
-        msg = f"{package_dir}: the output of {run.summary()} does not have its contract's shape, so no snapshot was written:\n- " + "\n- ".join(
-            problems
+        msg = (
+            f"{package_dir}: the output of {run.summary()} does not have its contract's shape, so no snapshot was written:\n- "
+            + "\n- ".join(problems)
+            + f"\n{_read_again(run)}"
         )
         raise SnapshotError(msg)
+    if _holds_nothing(contract=contract, output=run.main_stuff):
+        msg = (
+            f"{package_dir}: the output of {run.summary()} holds nothing to show, and an example that shows nothing is no example, "
+            f"so no snapshot was written. {_read_again(run)}"
+        )
+        raise SnapshotError(msg)
+    try:
+        snapshot = _write_snapshot(
+            client=client,
+            package=package,
+            package_dir=package_dir,
+            contract=contract,
+            run=run,
+            bundle_sha256=bundle_sha256,
+            inputs_sha256=inputs_sha256,
+        )
+    except (HostedApiError, ValidationError, OSError) as exc:
+        msg = (
+            f"{package_dir}: {run.summary()} completed, but its snapshot was not written, and the previous one is left whole: {exc}. "
+            f"{_read_again(run)}"
+        )
+        raise SnapshotError(msg) from exc
+    return TakenSnapshot(snapshot=snapshot, run=run, previews=previews)
 
-    with tempfile.TemporaryDirectory() as staging_name:
-        staging = Path(staging_name)
-        replacements, entries = _fetch_files(client=client, output=run.main_stuff, staging=staging, run=run)
+
+def _holds_nothing(*, contract: Contract, output: JsonValue) -> bool:
+    """Whether an output of its contract's shape holds nothing a page could show: a list output with no item, or an object with no field."""
+    if contract.output.multiplicity in LIST_MULTIPLICITIES:
+        return list_items(output) == []
+    return output == {}
+
+
+def _read_again(run: HostedRun) -> str:
+    """What an error raised once a run completed says of it: that its output is paid for, and how to read it again by the run's id."""
+    return f"The output is paid for: GET /v1/runs/{run.run_id}/results reads it again"
+
+
+def _write_snapshot(
+    *,
+    client: HostedClient,
+    package: MethodPackage,
+    package_dir: Path,
+    contract: Contract,
+    run: HostedRun,
+    bundle_sha256: str,
+    inputs_sha256: str,
+) -> OutputSnapshot:
+    """Fetch the files a completed run's output holds, and write its snapshot in place of the package's previous one.
+
+    The new `output/` and `output.json` are built in a directory of their own inside the package, then swapped in by renames, so that a
+    failure while they are built, or while they are swapped in, leaves the previous snapshot whole.
+
+    Raises:
+        SnapshotError: A file could not be resolved, or a reference or a signed link is left in the output.
+        HostedApiError: A file could not be resolved or fetched.
+        ValidationError: The run's times or route do not make a snapshot.
+        OSError: A file could not be written.
+    """
+    work = Path(tempfile.mkdtemp(prefix=_WORK_PREFIX, dir=package.directory))
+    try:
+        new_output_dir = work / OUTPUT_DIR
+        new_output_dir.mkdir()
+        replacements, entries = _fetch_files(client=client, output=run.main_stuff, staging=new_output_dir, run=run)
         output = rewrite_output(run.main_stuff, replacements=replacements)
         leftovers = leftover_links(output)
         if leftovers:
-            msg = f"{package_dir}: the output of {run.summary()} still holds links that must not reach the repository:\n- " + "\n- ".join(leftovers)
+            msg = (
+                f"{package_dir}: the output of {run.summary()} still holds links that must not reach the repository:\n- "
+                + "\n- ".join(leftovers)
+                + f"\n{_read_again(run)}"
+            )
             raise SnapshotError(msg)
         snapshot = OutputSnapshot(
             pipe=contract.pipe,
@@ -563,15 +654,43 @@ def take_snapshot(*, client: HostedClient, cookbook: Cookbook, package: MethodPa
             output=output,
             files=entries,
         )
-        output_dir = package.directory / OUTPUT_DIR
+        (work / SNAPSHOT_FILE).write_text(snapshot.to_json(), encoding="utf-8")
+        if not entries:
+            new_output_dir.rmdir()
+        _swap_in(package=package, work=work)
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+    return snapshot
+
+
+def _swap_in(*, package: MethodPackage, work: Path) -> None:
+    """Replace the package's `output/` and `output.json` with those `work` holds, complete, putting the previous `output/` back on a failure.
+
+    The package loses its `output/` when `work` holds none, since a snapshot replaces `output/` as a whole. Each rename is atomic, and the
+    previous `output/` is moved aside into `work`, so that a rename failing midway undoes those made before it.
+
+    Raises:
+        OSError: A rename failed; the previous snapshot is in place again.
+    """
+    output_dir = package.directory / OUTPUT_DIR
+    new_output_dir = work / OUTPUT_DIR
+    previous_output_dir = work / _PREVIOUS_OUTPUT
+    moved_previous = False
+    moved_new = False
+    try:
         if output_dir.exists():
-            shutil.rmtree(output_dir)
-        if entries:
-            output_dir.mkdir()
-            for relative in entries:
-                shutil.copyfile(staging / PurePosixPath(relative).name, package.directory / relative)
-        snapshot_path(package).write_text(snapshot.to_json(), encoding="utf-8")
-    return TakenSnapshot(snapshot=snapshot, run=run, previews=previews)
+            os.replace(output_dir, previous_output_dir)
+            moved_previous = True
+        if new_output_dir.exists():
+            os.replace(new_output_dir, output_dir)
+            moved_new = True
+        os.replace(work / SNAPSHOT_FILE, snapshot_path(package))
+    except OSError:
+        if moved_new:
+            os.replace(output_dir, new_output_dir)
+        if moved_previous:
+            os.replace(previous_output_dir, output_dir)
+        raise
 
 
 def _fetch_files(*, client: HostedClient, output: JsonValue, staging: Path, run: HostedRun) -> tuple[dict[str, str], dict[str, SnapshotFile]]:
@@ -591,7 +710,7 @@ def _fetch_files(*, client: HostedClient, output: JsonValue, staging: Path, run:
         item = resolved.get(reference.uri)
         if item is None or item.url is None:
             reason = item.error.detail if item is not None and item.error is not None else "no link was resolved for it"
-            msg = f"the file the output holds at {reference.found_at}, from {run.summary()}, cannot be fetched: {reason}"
+            msg = f"the file the output holds at {reference.found_at}, from {run.summary()}, cannot be fetched: {reason}. {_read_again(run)}"
             raise SnapshotError(msg)
         content_type = item.content_type or mimetypes.guess_type(reference.uri.removeprefix(STORAGE_SCHEME))[0] or _DEFAULT_CONTENT_TYPE
         data, resized = fit_image(download(item.url, max_bytes=MAX_FILE_BYTES), content_type=content_type)

@@ -19,7 +19,7 @@ from scripts.contract import Contract, ContractField, type_branches
 
 # The key a list output's envelope carries its items under, as the runtime serialises a list.
 LIST_ENVELOPE_KEY = "items"
-_LIST_MULTIPLICITIES = frozenset({"variable", "fixed"})
+LIST_MULTIPLICITIES = frozenset({"variable", "fixed"})
 _LIST_PREFIX = "list["
 _LIST_SUFFIX = "]"
 # The wire forms of a contract's `date` and `datetime`: a calendar date, and one with a time of day, optional fractions and an optional offset.
@@ -36,11 +36,11 @@ def shape_problems(*, contract: Contract, output: JsonValue) -> list[str]:
         output: The run's main output, as the results relay it.
     """
     declared = contract.output
-    if declared.multiplicity not in _LIST_MULTIPLICITIES:
+    if declared.multiplicity not in LIST_MULTIPLICITIES:
         if not isinstance(output, dict):
             return [f"the output is {_kind(output)}, where `{declared.concept}` is one object"]
         return _object_problems(fields=declared.fields, value=output, where="the output")
-    items = _list_items(output)
+    items = list_items(output)
     if items is None:
         return [f"the output is {_kind(output)}, where a list of `{declared.concept}` is a list or an object holding it under `{LIST_ENVELOPE_KEY}`"]
     problems: list[str] = []
@@ -102,7 +102,7 @@ def _object_problems(*, fields: list[ContractField], value: dict[str, JsonValue]
     return problems
 
 
-def _list_items(output: JsonValue) -> list[JsonValue] | None:
+def list_items(output: JsonValue) -> list[JsonValue] | None:
     """The items of a list output, given bare or in its envelope, or None when the output is neither."""
     if isinstance(output, list):
         return output

@@ -1,6 +1,7 @@
 """Constants for the cookbook tooling's tests: the fixture cookbook's editorial file, bundles, contract and output snapshots, and outputs."""
 
 import io
+import json
 from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
@@ -31,6 +32,9 @@ LIBRARY_TAG = "v0.4.0"
 WIDGETS_SAMPLE_URL = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_widgets/catalogue.png"
 # Where the fixture's widget catalogue sample is written, from the cookbook's root, and where its record says it was copied from.
 WIDGETS_SAMPLE_PATH = "assets/extract_widgets/catalogue.png"
+# The same sample as a Word document, which no preview can be rendered from.
+WIDGETS_WORD_SAMPLE_URL = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_widgets/catalogue.docx"
+WIDGETS_WORD_SAMPLE_PATH = "assets/extract_widgets/catalogue.docx"
 WIDGETS_SOURCE = "https://widgets.example.org/catalogue.png"
 
 COOKBOOK_TOML = f"""address = "{FIXTURE_ADDRESS}"
@@ -194,6 +198,17 @@ def make_widgets_sample_a_document(root: Path) -> None:
     (root / "methods" / "extract_widgets" / "contract.json").write_text(contract.to_json(), encoding="utf-8")
 
 
+def make_word_document_sample(root: Path) -> None:
+    """Make the fixture's widget sample a Word document kept under `assets/`, which its contract calls a document and its record describes."""
+    sample_path = root / WIDGETS_WORD_SAMPLE_PATH
+    sample_path.parent.mkdir(parents=True, exist_ok=True)
+    # A Word file is a zip archive: its header, and its name, are what tell it from a PDF.
+    sample_path.write_bytes(b"PK\x03\x04 a Word document")
+    inputs = {"catalogue": {"concept": "widgets.CataloguePage", "content": {"url": WIDGETS_WORD_SAMPLE_URL}}}
+    (root / "methods" / "extract_widgets" / "inputs.json").write_text(json.dumps(inputs, indent=2), encoding="utf-8")
+    make_widgets_sample_a_document(root)
+
+
 def add_words_synthetic_record(root: Path) -> None:
     """Give the fixture's inline text sample the record of one written for the example."""
     with (root / "cookbook.toml").open("a", encoding="utf-8") as cookbook_file:
@@ -246,4 +261,11 @@ def png_bytes(*, width: int, height: int, colour: str = "white") -> bytes:
     """A plain PNG image of the given size."""
     buffer = io.BytesIO()
     Image.new("RGB", (width, height), colour).save(buffer, format="PNG")
+    return buffer.getvalue()
+
+
+def pdf_bytes(*, width: int, height: int) -> bytes:
+    """A one-page PDF of the given size, blank."""
+    buffer = io.BytesIO()
+    Image.new("RGB", (width, height), "white").save(buffer, format="PDF")
     return buffer.getvalue()
