@@ -49,3 +49,7 @@ class HostedRunTimeoutError(HostedRunError):
 
     It goes on on the server, and its results can be read later by its id.
     """
+
+
+class SnapshotError(CookbookError):
+    """An output snapshot was not written: the run was refused before it started, or its output cannot be committed as it is."""

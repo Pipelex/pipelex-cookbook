@@ -1,6 +1,6 @@
 # A method over HTTP: start, poll, results
 
-Any tool that makes HTTP calls can run a method, with no SDK: one call starts the run and answers at once with its id, a second reads how the run is going, and a third reads its results. This recipe makes those three calls with `curl` in a small shell script, to read a French energy performance diagnostic with the cookbook's [DPE extraction](../../../methods/extract_dpe/) method. The same three calls are how n8n, Zapier or any tool that makes HTTP calls reaches a method.
+Any tool that makes HTTP calls can run a method, with no SDK: one call starts the run and answers at once with its id, a second reads how the run is going, and a third reads its results. This recipe makes those three calls with `curl` in a small shell script, to read a French energy performance diagnostic with the cookbook's [DPE extraction](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/extract_dpe) method. The same three calls are how n8n, Zapier or any tool that makes HTTP calls reaches a method.
 
 It shows the run lifecycle as the hosted API serves it:
 

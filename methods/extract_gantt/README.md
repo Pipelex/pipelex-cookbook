@@ -6,6 +6,43 @@ Read a Gantt chart image and return every task with its start and end dates, and
 
 `github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.19.1` · [bundle.mthds](bundle.mthds) · [sample chart](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_gantt/gantt_tree_house.png)
 
+## The sample
+
+![sample chart](../../assets/extract_gantt/gantt_tree_house.png)
+
+*Fictional, made for this example.* Licence: [MIT](https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE). Credit: Evotis S.A.S.
+
+## What you get
+
+Run on production on 26 September 2026, from the package's files, in 35 seconds. This is what it returned:
+
+**`tasks`**
+
+| `name` | `start_date` | `end_date` |
+|---|---|---|
+| Planning & Design | 2025-09-01 | 2025-09-08 |
+| Resource Gathering | 2025-09-05 | 2025-09-10 |
+| Site Preparation | 2025-09-07 | 2025-09-10 |
+| Foundation & Supports | 2025-09-11 | 2025-09-15 |
+| Platform Construction | 2025-09-15 | 2025-09-18 |
+| Frame & Walls Construction | 2025-09-19 | 2025-09-25 |
+| Roofing Installation | 2025-09-24 | 2025-09-29 |
+| Windows & Doors Installation | 2025-09-26 | 2025-09-29 |
+| Ladder Installation | 2025-09-29 | 2025-10-01 |
+| Interior Setup | 2025-10-01 | 2025-10-06 |
+| Inspections & Adjustments | 2025-10-05 | 2025-10-09 |
+| Celebration Preparation | 2025-10-08 | 2025-10-11 |
+
+**`milestones`**
+
+| `name` | `milestone_date` |
+|---|---|
+| Blueprint | 2025-09-08 |
+| Foundation | 2025-09-15 |
+| Structure | 2025-09-29 |
+| Interior | 2025-10-06 |
+| Celebration | 2025-10-11 |
+
 **Takes** `gantt_chart_image`, an image (`GanttChartImage`): A gantt chart detailing a project timeline.
 
 **Returns** a `GanttChart`: A gantt chart transcript fully detailing the contents of the chart.

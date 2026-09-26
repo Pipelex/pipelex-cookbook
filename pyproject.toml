@@ -13,7 +13,9 @@ dependencies = [
   "httpx>=0.28.1",
   "jinja2>=3.1.6",
   "mthds>=0.8.1",
+  "pillow>=11.0.0",
   "pydantic>=2.13.2",
+  "pypdfium2>=4.30.0",
 ]
 
 [project.optional-dependencies]
@@ -57,6 +59,11 @@ plugins = ["pydantic.mypy"]
 python_version = "3.11"
 warn_return_any = true
 warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+# pypdfium2, which renders a document sample's preview, ships no type information.
+module = ["pypdfium2"]
+ignore_missing_imports = true
 
 [tool.pyright]
 venvPath = "."

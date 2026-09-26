@@ -1,6 +1,10 @@
 """The checks that need no API key, run on every pull request: the pages are fresh, the manifests are in lockstep, and every sample link answers.
 
 Freshness covers every file `make render` writes, the pages' snippet files included, and a snippet directory left behind by a method that is gone.
+It also covers what a page shows that no render can write: every sample input has its source-and-licence record, every PDF document sample kept
+in this repository its preview, and every method its output snapshot, taken from the sample as it is and holding every file it names and no
+other.
+A snapshot whose bundles changed since is only reported as stale, so a prompt tweak does not force a paid run.
 The links are read from the packages' inputs, from the pages and from the recipes' own files.
 """
 
@@ -11,9 +15,21 @@ from pathlib import Path
 import httpx
 from pydantic import BaseModel, ConfigDict, JsonValue
 
-from scripts.cookbook import INPUTS_FILE, SNIPPETS_DIR, Cookbook
+from scripts.cookbook import COOKBOOK_FILE, INPUTS_FILE, SNIPPETS_DIR, Cookbook, MethodPackage, nested_urls
 from scripts.exceptions import CookbookLayoutError
 from scripts.recipes import recipe_files
+from scripts.shape import shape_problems
+from scripts.snapshot import (
+    OUTPUT_DIR,
+    SNAPSHOT_FILE,
+    OutputSnapshot,
+    bundle_digest,
+    document_samples,
+    inputs_digest,
+    preview_path,
+    read_snapshot,
+    sha256_of,
+)
 
 _RAW_URL_PATTERN = re.compile(r"https://raw\.githubusercontent\.com/[^\s)\"'`<>]+")
 _SENTENCE_PUNCTUATION = ".,;:!?"
@@ -60,6 +76,124 @@ def orphan_snippet_dirs(cookbook: Cookbook) -> list[Path]:
     )
 
 
+def sample_problems(cookbook: Cookbook) -> list[str]:
+    """Every sample input without its source-and-licence record, and every recorded PDF document sample kept in this repository without its
+    preview.
+
+    A document sample without its record is reported for the record alone: it gets no preview until the record is written. A document that is
+    not a PDF, such as an image or a Word file, gets no preview at all, since only a PDF can be rendered: the page links it.
+    """
+    problems: list[str] = []
+    for package in cookbook.packages:
+        package_dir = package.directory.relative_to(cookbook.root)
+        for input_name in package.inputs:
+            if input_name not in package.editorial.samples:
+                problems.append(
+                    f"{package_dir}: the sample input `{input_name}` has no source-and-licence record "
+                    f"under [methods.{package.name}.samples.{input_name}] in {COOKBOOK_FILE}"
+                )
+        try:
+            documents = document_samples(cookbook=cookbook, package=package)
+        except CookbookLayoutError as exc:
+            problems.append(str(exc))
+            continue
+        for document in documents:
+            if not preview_path(document).is_file():
+                problems.append(
+                    f"{package_dir}: the document sample {document.relative_to(cookbook.root)} has no preview, "
+                    f"{preview_path(document).relative_to(cookbook.root)}; `make previews` renders it, with no key and no run"
+                )
+    return problems
+
+
+def snapshot_problems(cookbook: Cookbook) -> list[str]:
+    """What is wrong with each method's output snapshot: missing, from another pipe or concept, from another sample, or its files out of step."""
+    problems: list[str] = []
+    for package in cookbook.packages:
+        package_dir = package.directory.relative_to(cookbook.root)
+        try:
+            snapshot = read_snapshot(package)
+        except CookbookLayoutError as exc:
+            problems.append(str(exc))
+            continue
+        if snapshot is None:
+            problems.append(f"{package_dir} has no {SNAPSHOT_FILE}: `make snapshot METHOD={package.name}` takes it, with one paid run on production")
+            continue
+        problems.extend(
+            f"{package_dir}/{SNAPSHOT_FILE} {problem}" for problem in _snapshot_problems(cookbook=cookbook, package=package, snapshot=snapshot)
+        )
+    return problems
+
+
+def stale_snapshots(cookbook: Cookbook) -> list[str]:
+    """The snapshots taken from other bundles than the package's, which still show the method's output but no longer its current version's."""
+    stale: list[str] = []
+    for package in cookbook.packages:
+        try:
+            snapshot = read_snapshot(package)
+        except CookbookLayoutError:
+            continue
+        if snapshot is not None and snapshot.run.bundle_sha256 != bundle_digest(cookbook=cookbook, package=package):
+            stale.append(
+                f"{package.directory.relative_to(cookbook.root)}/{SNAPSHOT_FILE} was taken from other bundles than the package's: "
+                f"whoever changes what the method returns takes a new one with `make snapshot METHOD={package.name}`"
+            )
+    return stale
+
+
+def _snapshot_problems(*, cookbook: Cookbook, package: MethodPackage, snapshot: OutputSnapshot) -> list[str]:
+    problems: list[str] = []
+    contract = package.contract
+    if contract is not None:
+        if snapshot.pipe != contract.pipe:
+            problems.append(f"was taken from the pipe `{snapshot.pipe}`, and contract.json names `{contract.pipe}`")
+        if snapshot.concept != contract.output.concept:
+            problems.append(f"holds a `{snapshot.concept}`, and contract.json says the method returns a `{contract.output.concept}`")
+        problems.extend(f"does not have its contract's shape: {problem}" for problem in shape_problems(contract=contract, output=snapshot.output))
+    try:
+        current_inputs = inputs_digest(cookbook=cookbook, package=package)
+    except CookbookLayoutError as exc:
+        problems.append(f"cannot be held to its sample: {exc}")
+    else:
+        if snapshot.run.inputs_sha256 != current_inputs:
+            problems.append(
+                "was taken from another sample than inputs.json and the assets it names: the page would show one input beside another's output"
+            )
+    output_dir = package.directory / OUTPUT_DIR
+    for relative, entry in snapshot.files.items():
+        path = package.directory / relative
+        if not relative.startswith(f"{OUTPUT_DIR}/") or path.resolve().parent != output_dir.resolve():
+            problems.append(f"names the file {relative}, which is not directly under {OUTPUT_DIR}/")
+        elif not path.is_file():
+            problems.append(f"names the file {relative}, which does not exist")
+        elif sha256_of(path.read_bytes()) != entry.sha256:
+            problems.append(f"names the file {relative}, whose contents changed since the snapshot")
+    for referenced in sorted(_output_paths(snapshot.output) - set(snapshot.files)):
+        problems.append(f"holds the path {referenced}, which its `files` does not list")
+    if output_dir.is_dir():
+        for path in sorted(output_dir.rglob("*")):
+            relative = path.relative_to(package.directory).as_posix()
+            # A hidden file, such as the `.DS_Store` Finder writes, is never a copy the writer made, whose names never open with a dot.
+            if path.is_file() and not path.name.startswith(".") and relative not in snapshot.files:
+                problems.append(f"does not name {relative}, which {OUTPUT_DIR}/ holds: `make snapshot` replaces {OUTPUT_DIR}/ as a whole")
+    return problems
+
+
+def _output_paths(value: JsonValue) -> set[str]:
+    """Every string of the output that is a path under `output/`, where the writer put a copied file's path."""
+    found: set[str] = set()
+    if isinstance(value, str):
+        if value.startswith(f"{OUTPUT_DIR}/"):
+            found.add(value)
+    elif isinstance(value, list):
+        for item in value:
+            found |= _output_paths(item)
+    elif isinstance(value, dict):
+        for item in value.values():
+            found |= _output_paths(item)
+    return found
+
+
 def lockstep_problems(cookbook: Cookbook) -> list[str]:
     """Every manifest's `version` must be the cookbook's own, as the library's lockstep convention asks: a manifest states the release it ships in."""
     problems: list[str] = []
@@ -81,7 +215,7 @@ def collect_urls(*, cookbook: Cookbook, rendered: dict[Path, str]) -> dict[str, 
     found: dict[str, list[str]] = {}
     for package in cookbook.packages:
         inputs_file = f"{package.directory.relative_to(cookbook.root)}/{INPUTS_FILE}"
-        for url in _urls_in_json(package.inputs):
+        for url in nested_urls(package.inputs):
             found.setdefault(url, []).append(inputs_file)
     texts = dict(rendered)
     for recipe_file in recipe_files(cookbook.root):
@@ -100,9 +234,11 @@ def collect_urls(*, cookbook: Cookbook, rendered: dict[Path, str]) -> dict[str, 
 def check_links(*, cookbook: Cookbook, rendered: dict[Path, str], fetch_status: Callable[[str], int]) -> list[LinkVerdict]:
     """Check every sample URL, and every raw URL on the pages and in the recipes.
 
-    A URL into the cookbook itself must name a file this checkout holds, whichever ref it names, `main` or a release tag, as one path segment.
-    When it answers 404, it is reported as not published rather than as broken: a file added since the last release is on neither `main` nor
-    that release's tag, and the next release both publishes it and re-renders every page at its own tag. Any other URL must answer.
+    A URL into the cookbook itself at a ref that moves with this checkout, `main` or the tag every page names, must name a file this checkout
+    holds. When it answers 404, it is reported as not published rather than as broken: a file added since the last release is on neither
+    `main` nor that release's tag, and the next release both publishes it and re-renders every page at its own tag. A URL into the cookbook at
+    any other tag names a release already published, whose files this checkout may no longer hold, so it must answer, as any other URL must.
+    Whatever its ref, a URL into the cookbook whose path has a `.` or `..` segment or leads outside this checkout is broken.
 
     Args:
         cookbook: The cookbook.
@@ -114,7 +250,8 @@ def check_links(*, cookbook: Cookbook, rendered: dict[Path, str], fetch_status: 
         status = fetch_status(url)
         answered = 200 <= status < 300
         try:
-            local_file = cookbook.local_file_of(url)
+            ref = cookbook.ref_of(url)
+            local_file = cookbook.local_file_of(url) if ref is not None and cookbook.follows_checkout(ref) else None
         except CookbookLayoutError as exc:
             verdicts.append(LinkVerdict(url=url, found_in=found_in, ok=False, note=str(exc)))
             continue
@@ -136,7 +273,7 @@ def check_links(*, cookbook: Cookbook, rendered: dict[Path, str], fetch_status: 
         elif answered:
             verdicts.append(LinkVerdict(url=url, found_in=found_in, ok=True, note="answers"))
         else:
-            verdicts.append(LinkVerdict(url=url, found_in=found_in, ok=False, note=f"HTTP {status}"))
+            verdicts.append(LinkVerdict(url=url, found_in=found_in, ok=False, note=f"HTTP {status}" if status else "no answer"))
     return verdicts
 
 
@@ -156,17 +293,3 @@ def http_status(url: str) -> int:
             return status
     except (httpx.HTTPError, httpx.InvalidURL):
         return 0
-
-
-def _urls_in_json(value: JsonValue) -> list[str]:
-    urls: list[str] = []
-    if isinstance(value, dict):
-        for key, item in value.items():
-            if key == "url" and isinstance(item, str):
-                urls.append(item)
-            else:
-                urls.extend(_urls_in_json(item))
-    elif isinstance(value, list):
-        for item in value:
-            urls.extend(_urls_in_json(item))
-    return urls

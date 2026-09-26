@@ -1,22 +1,29 @@
 """Load the cookbook: its version, its editorial fields in `cookbook.toml`, every method package under `methods/`, and the library's snapshot.
 
 A package is a directory holding a `METHODS.toml` manifest, its `.mthds` bundles, a sample `inputs.json`, and the contract snapshot
-`contract.json` that `make refresh` writes. Loading checks the package's identity: its manifest's `name` is its directory's name and its
-`address` is the cookbook's, since the runtime locates a package by that pair and never by its path. It also holds the contract snapshot to the
-package's files: the main pipe, its output concept and its multiplicity must be what the `.mthds` files declare. The method library's snapshot,
-`library.json`, must have been taken at the tag and the address `cookbook.toml` pins (`scripts/library.py`).
+`contract.json` that `make refresh` writes; the output snapshot `output.json` that `make snapshot` writes beside them is read by
+`scripts/snapshot.py`, not here. Loading checks the package's identity: its manifest's `name` is its directory's name and its `address` is the
+cookbook's, since the runtime locates a package by that pair and never by its path. It also holds the contract snapshot to the package's files:
+the main pipe, its output concept and its multiplicity must be what the `.mthds` files declare. The method library's snapshot, `library.json`,
+must have been taken at the tag and the address `cookbook.toml` pins (`scripts/library.py`).
+
+Each sample input's source and licence is a record in `cookbook.toml`, which loading validates: a record names an input the sample gives, says
+whether the input was made up, and every file a real input names lives under `assets/<name>/` in this repository. An input with no record at
+all is not refused here but by `make check-render`, so that every other command still runs while a sample's provenance is being settled.
 """
 
 import json
 import tomllib
+from collections.abc import Callable
+from datetime import date
 from pathlib import Path
-from typing import Any, cast
+from typing import Any, Literal, cast
 from urllib.parse import unquote, urlsplit
 
 from mthds.package.exceptions import ManifestError
 from mthds.package.manifest.parser import parse_methods_toml
 from mthds.package.manifest.schema import MethodsManifest
-from pydantic import BaseModel, ConfigDict, Field, JsonValue, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, JsonValue, ValidationError, model_validator
 
 from scripts.bundles import DeclaredOutput, declared_main_output
 from scripts.contract import CONTRACT_FILE, Contract, load_contract
@@ -31,8 +38,64 @@ INPUTS_FILE = "inputs.json"
 PAGE_FILE = "README.md"
 # Where `make render` writes each method's page snippets as files, in `tests/snippets/<name>/`, for the type checkers to read.
 SNIPPETS_DIR = "tests/snippets"
+# Where a sample's files live: a real input's under `assets/<name>/`, named by `inputs.json` by their raw URL on `main`.
+ASSETS_DIR = "assets"
 # Where a raw URL into a GitHub repository points: `<RAW_BASE_URL>/<owner>/<repository>/<ref>/<path>`.
 RAW_BASE_URL = "https://raw.githubusercontent.com"
+# The branch a sample links its files at, which moves with every checkout of the repository, as the tag every page names does.
+MAIN_REF = "main"
+# The key under which an input's value names a file, at any depth.
+URL_KEY = "url"
+# The path segments a raw URL never holds: a file is named by its plain path, which the checkout, the checks and GitHub all read alike.
+_DOT_SEGMENTS = frozenset({".", ".."})
+# How a text field of an output reads on the page, as the `formats` hint of `[methods.<name>.output]` names it.
+TextFormat = Literal["markdown", "html", "text"]
+
+
+class SampleRecord(BaseModel):
+    """Where one sample input comes from and under which licence it is shown, from `[methods.<name>.samples.<input>]` in `cookbook.toml`.
+
+    A made-up input has no source: it was written or rendered for the example, and the page says it is fictional. A real input names the URL it
+    was copied from and the date it was copied, and a real input that is a file lives under `assets/<name>/` (DB3 of the making-examples design).
+    """
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    label: str = Field(description="The link text of the sample, and its name on the page")
+    synthetic: bool = Field(description="Whether the input was made up for the example, which the page says")
+    source: str | None = Field(default=None, description="The URL the input was copied from; absent for a made-up input")
+    retrieved: date | None = Field(default=None, description="The date the input was copied from its source; only with a source")
+    license: str = Field(description="The licence's SPDX identifier, or a `LicenseRef-…` for one SPDX does not list")
+    license_url: str = Field(description="Where the licence's text is")
+    attribution: str = Field(description="The credit line the licence asks for")
+    changes: str | None = Field(default=None, description="What was changed from the source, which CC BY asks to say")
+
+    @model_validator(mode="after")
+    def _check_provenance(self) -> "SampleRecord":
+        if self.synthetic and self.source is not None:
+            msg = "a made-up sample (`synthetic = true`) has no `source`: it was written or rendered for the example"
+            raise ValueError(msg)
+        if not self.synthetic and self.source is None:
+            msg = "a real sample (`synthetic = false`) names the URL it was copied from in `source`"
+            raise ValueError(msg)
+        if self.source is not None and self.retrieved is None:
+            msg = "a sample copied from a `source` gives the date it was copied in `retrieved`"
+            raise ValueError(msg)
+        if self.source is None and self.retrieved is not None:
+            msg = "`retrieved` is the date a sample was copied from its `source`, and this record names none"
+            raise ValueError(msg)
+        return self
+
+
+class OutputHints(BaseModel):
+    """How the page renders a method's output where the contract alone does not say, from `[methods.<name>.output]` in `cookbook.toml`."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    formats: dict[str, TextFormat] = Field(
+        default_factory=dict, description="How a text field of the output reads: `markdown`, `html` or `text`, by field name"
+    )
+    item_label: str | None = Field(default=None, description="The noun naming each item of a list output, such as `Page`")
 
 
 class EditorialEntry(BaseModel):
@@ -42,7 +105,8 @@ class EditorialEntry(BaseModel):
 
     title: str | None = Field(default=None, description="The page's title; the manifest's display name otherwise")
     pitch: str | None = Field(default=None, description="The one-line pitch under the title; the manifest's description otherwise")
-    sample_labels: dict[str, str] = Field(default_factory=dict, description="The link text of each input's sample, by input name")
+    samples: dict[str, SampleRecord] = Field(default_factory=dict, description="Each sample input's source and licence, by input name")
+    output: OutputHints = Field(default_factory=OutputHints, description="How the page renders the output where the contract does not say")
     chatbot: str | None = Field(default=None, description="What to ask the chatbot, with `{address}` and `{samples}` placeholders")
     app_dir: str | None = Field(default=None, description="The directory the method-app initializer creates")
     yours_dir: str | None = Field(default=None, description="The directory the agent copies the method into")
@@ -117,39 +181,61 @@ class Cookbook(BaseModel):
     def address_of(self, package: MethodPackage) -> str:
         return f"{self.settings.address}/{package.name}@{self.tag}"
 
+    def follows_checkout(self, ref: str) -> bool:
+        """Whether a ref of the cookbook's repository moves with this checkout: `main`, where the samples are linked, and the tag every page
+        names, which the next release publishes from this checkout. Any other ref is a release published earlier, whose files this checkout
+        may no longer hold.
+        """
+        return ref in {MAIN_REF, self.tag}
+
+    def ref_of(self, url: str) -> str | None:
+        """The ref a raw URL into the cookbook's repository names, whether or not this checkout holds its file, or None for a URL hosted elsewhere.
+
+        Raises:
+            CookbookLayoutError: The URL points into the cookbook's repository, but its path has a `.` or `..` segment or leads outside this
+                checkout.
+        """
+        located = self._locate(url)
+        return None if located is None else located[0]
+
     def local_file_of(self, url: str) -> LocalFile | None:
         """The file of this checkout a raw URL into the cookbook's repository names, or None for a URL hosted elsewhere.
 
         The URL's path is `/<owner>/<repository>/<ref>/<file>`, where the ref is one path segment, `main` or a release tag, as the guides ask
         of every link into this repository; its query and fragment are no part of the file's path. The file's path is percent-decoded and
-        resolved under the checkout, so a path climbing out of it, with `..` or from the filesystem's root, names no file of this checkout.
+        resolved under the checkout, so a path from the filesystem's root names no file of this checkout, and a path with a `.` or `..` segment
+        is refused before it is resolved.
 
         Raises:
-            CookbookLayoutError: The URL points into the cookbook's repository, but names no file this checkout holds. The message names the
-                path the URL names rather than the URL, which the caller holds.
+            CookbookLayoutError: The URL points into the cookbook's repository, but its path has a `.` or `..` segment, leads outside this
+                checkout, or names no file this checkout holds. The message names the path the URL names rather than the URL, which the caller
+                holds.
         """
-        try:
-            parts = urlsplit(url)
-        except ValueError:
+        located = self._locate(url)
+        if located is None:
             return None
-        if f"{parts.scheme}://{parts.netloc}".lower() != RAW_BASE_URL.lower():
+        ref, relative, local_path = located
+        if not local_path.is_file():
+            msg = f"this checkout holds no file at {relative}"
+            raise CookbookLayoutError(msg)
+        return LocalFile(ref=ref, path=local_path)
+
+    def _locate(self, url: str) -> tuple[str, str, Path] | None:
+        """The ref, the path from the repository root and the resolved path in this checkout that a raw URL into the repository names, or None.
+
+        Raises:
+            CookbookLayoutError: The URL's path has a `.` or `..` segment, or leads outside this checkout.
+        """
+        named = _raw_url_file(url, repository=self.settings.repository)
+        if named is None:
             return None
-        # GitHub reads an owner's and a repository's names whatever their case.
-        repository = self.settings.repository.lower().split("/")
-        segments = parts.path.removeprefix("/").split("/")
-        if len(segments) <= len(repository) or [segment.lower() for segment in segments[: len(repository)]] != repository:
-            return None
-        ref = segments[len(repository)]
-        relative = unquote("/".join(segments[len(repository) + 1 :]))
+        ref, relative = named
         root = self.root.resolve()
         local_path = (root / relative).resolve()
         if not local_path.is_relative_to(root):
             msg = f"its path {relative} leads outside this checkout"
             raise CookbookLayoutError(msg)
-        if not local_path.is_file():
-            msg = f"this checkout holds no file at {relative}"
-            raise CookbookLayoutError(msg)
-        return LocalFile(ref=ref, path=local_path)
+        return ref, relative, local_path
 
 
 def load_cookbook(root: Path, *, read_contracts: bool = True, read_library: bool = True) -> Cookbook:
@@ -229,6 +315,8 @@ def _load_package(*, directory: Path, settings: CookbookSettings, read_contract:
         raise CookbookLayoutError(msg)
 
     inputs = _load_inputs(directory / INPUTS_FILE)
+    editorial = settings.methods.get(directory.name) or EditorialEntry()
+    _check_sample_records(directory=directory, settings=settings, editorial=editorial, inputs=inputs)
     contract_path = directory / CONTRACT_FILE
     contract = load_contract(contract_path) if read_contract and contract_path.is_file() else None
     if contract is not None:
@@ -244,8 +332,117 @@ def _load_package(*, directory: Path, settings: CookbookSettings, read_contract:
         bundle_files=bundle_files,
         inputs=inputs,
         contract=contract,
-        editorial=settings.methods.get(directory.name) or EditorialEntry(),
+        editorial=editorial,
     )
+
+
+def input_content(value: JsonValue) -> JsonValue:
+    """An input's content as code passes it: `inputs.json` may wrap a value as `{"concept": …, "content": …}`, and the content is inside.
+
+    Only a dict whose keys are exactly `concept` and `content` is that wrapper, as the runtime reads it: a structured input whose concept has a
+    field named `content` is passed whole.
+    """
+    if isinstance(value, dict) and set(value) == {"concept", "content"}:
+        return value["content"]
+    return value
+
+
+def file_urls(content: JsonValue) -> list[str]:
+    """The URLs of a file input, given as one `{"url": …}` object or as a list of them."""
+    if isinstance(content, dict):
+        url = content.get(URL_KEY)
+        return [url] if isinstance(url, str) else []
+    if isinstance(content, list):
+        return [url for item in content if isinstance(item, dict) and isinstance(url := item.get(URL_KEY), str)]
+    return []
+
+
+def replace_urls(value: JsonValue, replace: Callable[[str], str]) -> JsonValue:
+    """A copy of a value in which every text under a `url` key, at any depth, is what `replace` makes of it, and everything else is as it was.
+
+    This is the one reading of where an input names a file, as the runtime reads it: a file input's `url`, and a `url` nested anywhere in a
+    structured input. The uploads replace the files of this checkout by it, and `nested_urls` lists them by it for the inputs hash, the
+    sample records' rule and the link check, so that all four see the same files.
+    """
+    if isinstance(value, list):
+        return [replace_urls(item, replace) for item in value]
+    if isinstance(value, dict):
+        return {key: replace(item) if key == URL_KEY and isinstance(item, str) else replace_urls(item, replace) for key, item in value.items()}
+    return value
+
+
+def nested_urls(value: JsonValue) -> list[str]:
+    """Every text under a `url` key in a value, at any depth, in order, as `replace_urls` reads them."""
+    found: list[str] = []
+
+    def collect(url: str) -> str:
+        found.append(url)
+        return url
+
+    replace_urls(value, collect)
+    return found
+
+
+def _raw_url_file(url: str, *, repository: str) -> tuple[str, str] | None:
+    """The ref and the percent-decoded path from the repository root that a raw URL into `repository` names, or None for a URL hosted elsewhere.
+
+    This is the one reading of a raw URL into the cookbook's repository: `Cookbook.local_file_of` resolves the path it gives under the checkout,
+    and the sample records' check reads where a real sample lives from it before any cookbook is loaded. The URL's path is
+    `/<owner>/<repository>/<ref>/<file>`, where the ref is one path segment, and its query and fragment are no part of the file's path. A raw
+    URL whose path has a `.` or `..` segment, written plainly or percent-encoded, is refused whatever repository it names: its path would read
+    one way lexically, as the check of a sample's directory reads it, and another once resolved, as the checkout and GitHub read it.
+
+    Raises:
+        CookbookLayoutError: The raw URL's path has a `.` or `..` segment.
+    """
+    try:
+        parts = urlsplit(url)
+    except ValueError:
+        return None
+    if f"{parts.scheme}://{parts.netloc}".lower() != RAW_BASE_URL.lower():
+        return None
+    decoded_path = unquote(parts.path)
+    if any(segment in _DOT_SEGMENTS for segment in decoded_path.split("/")):
+        msg = f"its path {decoded_path} has a `.` or `..` segment: a raw URL names its file by its plain path"
+        raise CookbookLayoutError(msg)
+    # GitHub reads an owner's and a repository's names whatever their case.
+    owner_and_name = repository.lower().split("/")
+    segments = parts.path.removeprefix("/").split("/")
+    if len(segments) <= len(owner_and_name) or [segment.lower() for segment in segments[: len(owner_and_name)]] != owner_and_name:
+        return None
+    return segments[len(owner_and_name)], unquote("/".join(segments[len(owner_and_name) + 1 :]))
+
+
+def _check_sample_records(*, directory: Path, settings: CookbookSettings, editorial: EditorialEntry, inputs: dict[str, JsonValue]) -> None:
+    """Refuse a sample record naming an input the sample does not give, and a real sample naming a file, at any depth, kept anywhere but under
+    `assets/<name>/`.
+
+    Raises:
+        CookbookLayoutError: A record is out of place, or a real sample links a file by a raw URL with a `.` or `..` segment.
+    """
+    unknown = sorted(set(editorial.samples) - set(inputs))
+    if unknown:
+        msg = (
+            f"{COOKBOOK_FILE} has sample records for `{directory.name}` inputs its {INPUTS_FILE} does not give: {', '.join(unknown)}; "
+            "a record describes one input of the sample"
+        )
+        raise CookbookLayoutError(msg)
+    own_assets = f"{ASSETS_DIR}/{directory.name}/"
+    for input_name, record in editorial.samples.items():
+        if record.synthetic:
+            continue
+        for url in nested_urls(input_content(inputs[input_name])):
+            try:
+                named = _raw_url_file(url, repository=settings.repository)
+            except CookbookLayoutError as exc:
+                msg = f"the sample `{input_name}` of `{directory.name}` links {url}, and {exc}"
+                raise CookbookLayoutError(msg) from exc
+            if named is None or not named[1].startswith(own_assets):
+                msg = (
+                    f"the sample `{input_name}` of `{directory.name}` is real, so every file it names is copied under {own_assets} in this "
+                    f"repository and linked by its raw URL, never linked where it is published: {url}"
+                )
+                raise CookbookLayoutError(msg)
 
 
 def _check_contract_against_bundles(*, contract: Contract, contract_path: Path, declared: DeclaredOutput) -> None:

@@ -1,6 +1,6 @@
 # A FastAPI endpoint typed by the method it runs
 
-Your service needs to answer questions from documents: a contract, a report, a manual. This recipe is a FastAPI app with one endpoint, `POST /answers`, that runs the cookbook's [document question answering](../../../../methods/answer_from_documents/) method by its address and answers with the method's own result.
+Your service needs to answer questions from documents: a contract, a report, a manual. This recipe is a FastAPI app with one endpoint, `POST /answers`, that runs the cookbook's [document question answering](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/answer_from_documents) method by its address and answers with the method's own result.
 
 It shows how a method becomes part of an API:
 

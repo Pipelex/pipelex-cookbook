@@ -1,0 +1,101 @@
+{
+  "pipe": "gantt.extract_gantt_by_steps",
+  "concept": "gantt.GanttChart",
+  "run": {
+    "started_at": "2026-09-26T16:04:11Z",
+    "finished_at": "2026-09-26T16:04:46Z",
+    "server": "https://api.pipelex.com",
+    "route": "files",
+    "method_ref": null,
+    "commit_sha": null,
+    "bundle_sha256": "09c8121ebfeb719488f44000fc6eb23957abd6302fdd79794bef288d2dc24ed6",
+    "inputs_sha256": "7b072f41644022549fb94eb54fc6cbd5d5b60b958b530c6c9888f73839ea71d8"
+  },
+  "output": {
+    "tasks": [
+      {
+        "name": "Planning & Design",
+        "start_date": "2025-09-01",
+        "end_date": "2025-09-08"
+      },
+      {
+        "name": "Resource Gathering",
+        "start_date": "2025-09-05",
+        "end_date": "2025-09-10"
+      },
+      {
+        "name": "Site Preparation",
+        "start_date": "2025-09-07",
+        "end_date": "2025-09-10"
+      },
+      {
+        "name": "Foundation & Supports",
+        "start_date": "2025-09-11",
+        "end_date": "2025-09-15"
+      },
+      {
+        "name": "Platform Construction",
+        "start_date": "2025-09-15",
+        "end_date": "2025-09-18"
+      },
+      {
+        "name": "Frame & Walls Construction",
+        "start_date": "2025-09-19",
+        "end_date": "2025-09-25"
+      },
+      {
+        "name": "Roofing Installation",
+        "start_date": "2025-09-24",
+        "end_date": "2025-09-29"
+      },
+      {
+        "name": "Windows & Doors Installation",
+        "start_date": "2025-09-26",
+        "end_date": "2025-09-29"
+      },
+      {
+        "name": "Ladder Installation",
+        "start_date": "2025-09-29",
+        "end_date": "2025-10-01"
+      },
+      {
+        "name": "Interior Setup",
+        "start_date": "2025-10-01",
+        "end_date": "2025-10-06"
+      },
+      {
+        "name": "Inspections & Adjustments",
+        "start_date": "2025-10-05",
+        "end_date": "2025-10-09"
+      },
+      {
+        "name": "Celebration Preparation",
+        "start_date": "2025-10-08",
+        "end_date": "2025-10-11"
+      }
+    ],
+    "milestones": [
+      {
+        "name": "Blueprint",
+        "milestone_date": "2025-09-08"
+      },
+      {
+        "name": "Foundation",
+        "milestone_date": "2025-09-15"
+      },
+      {
+        "name": "Structure",
+        "milestone_date": "2025-09-29"
+      },
+      {
+        "name": "Interior",
+        "milestone_date": "2025-10-06"
+      },
+      {
+        "name": "Celebration",
+        "milestone_date": "2025-10-11"
+      }
+    ]
+  },
+  "files": {}
+}

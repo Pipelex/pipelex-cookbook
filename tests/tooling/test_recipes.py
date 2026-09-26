@@ -16,7 +16,7 @@ from scripts.recipes import (
 
 ADDRESS = "github.com/Pipelex/methods/invoice_extraction@v0.1.1"
 SCRIPT_HEADER = '# /// script\n# dependencies = ["pipelex-sdk==0.12.0"]\n# ///\n'
-DPE_ADDRESS = "github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.18.0"
+GANTT_ADDRESS = "github.com/Pipelex/pipelex-cookbook/extract_gantt@v0.18.0"
 # The files a page snippet's sidecar names, from the repository root: the `.mthds` files of its method's package.
 SNIPPET_FILES = ["methods/extract_gantt/bundle.mthds", "methods/extract_gantt/charts.mthds"]
 
@@ -284,18 +284,18 @@ def _run_recipe(root: Path, *, readme: str, script: str | None = None) -> Path:
 
 class TestRecipeAddresses:
     def test_addresses_in_a_readme_a_shell_script_and_a_json_file_are_found(self, tmp_path: Path):
-        recipe = _run_recipe(tmp_path, readme=f"Run `{ADDRESS}` on the invoice.\n", script=f'#!/bin/sh\nMETHOD_REF="{DPE_ADDRESS}"\n')
-        (recipe / "request.json").write_text(f'{{"method_ref": "{DPE_ADDRESS}"}}', encoding="utf-8")
+        recipe = _run_recipe(tmp_path, readme=f"Run `{ADDRESS}` on the invoice.\n", script=f'#!/bin/sh\nMETHOD_REF="{GANTT_ADDRESS}"\n')
+        (recipe / "request.json").write_text(f'{{"method_ref": "{GANTT_ADDRESS}"}}', encoding="utf-8")
         assert find_addresses(tmp_path) == [
             RecipeAddress(address=ADDRESS, file=recipe / "README.md"),
-            RecipeAddress(address=DPE_ADDRESS, file=recipe / "request.json"),
-            RecipeAddress(address=DPE_ADDRESS, file=recipe / "run.sh"),
+            RecipeAddress(address=GANTT_ADDRESS, file=recipe / "request.json"),
+            RecipeAddress(address=GANTT_ADDRESS, file=recipe / "run.sh"),
         ]
         assert recipe_problems(tmp_path) == []
 
     def test_an_address_closing_a_sentence_keeps_its_tag_without_the_full_stop(self, tmp_path: Path):
-        _run_recipe(tmp_path, readme=f"It runs {DPE_ADDRESS}.\n")
-        assert [found.address for found in find_addresses(tmp_path)] == [DPE_ADDRESS]
+        _run_recipe(tmp_path, readme=f"It runs {GANTT_ADDRESS}.\n")
+        assert [found.address for found in find_addresses(tmp_path)] == [GANTT_ADDRESS]
         assert recipe_problems(tmp_path) == []
 
     def test_catalog_ids_repository_links_and_other_hosts_are_not_addresses(self, tmp_path: Path):
@@ -311,7 +311,7 @@ class TestRecipeAddresses:
 
     @pytest.mark.parametrize("tag", ["main", "beta", "v0.18", "v0.18.0-rc.1"])
     def test_an_address_without_a_release_tag_is_a_problem(self, tmp_path: Path, tag: str):
-        floating = f"github.com/Pipelex/pipelex-cookbook/extract_dpe@{tag}"
+        floating = f"github.com/Pipelex/pipelex-cookbook/extract_gantt@{tag}"
         _run_recipe(tmp_path, readme=f"Run `{floating}` on the sample.\n")
         [problem] = recipe_problems(tmp_path)
         assert problem == (
@@ -331,10 +331,10 @@ class TestRecipeAddresses:
 
     def test_the_addresses_to_validate_gather_sidecars_and_files_by_recipe(self, tmp_path: Path):
         _python_recipe(tmp_path)
-        _run_recipe(tmp_path, readme=f"Run `{ADDRESS}`, or `{DPE_ADDRESS}`.\n", script=f'METHOD_REF="{DPE_ADDRESS}"\n')
+        _run_recipe(tmp_path, readme=f"Run `{ADDRESS}`, or `{GANTT_ADDRESS}`.\n", script=f'METHOD_REF="{GANTT_ADDRESS}"\n')
         assert recipe_addresses(tmp_path) == {
             ADDRESS: ["recipes/code/python/batch", "recipes/run/http"],
-            DPE_ADDRESS: ["recipes/run/http"],
+            GANTT_ADDRESS: ["recipes/run/http"],
         }
 
 

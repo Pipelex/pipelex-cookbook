@@ -1,9 +1,11 @@
 """Render every method's page, `methods/<name>/README.md`, from its package, its editorial fields and the templates, and the front page's methods.
 
 Everything a page says about its method is derived here, from committed files only: the address from the manifest and the version file, the
-samples and the code snippets' inputs from `inputs.json`, and the "Takes" and "Returns" lines from the contract snapshot. The templates under
-`templates/` hold the wording and the links, one block per door, so a change to a door is made once and every page inherits it at the next
-render.
+samples and the code snippets' inputs from `inputs.json`, each sample's source and licence from its record in `cookbook.toml`, what the method
+returned on its sample from the output snapshot `output.json` (`scripts/snapshot.py`, shown by `scripts/views.py`), and the "Takes" and
+"Returns" lines from the contract snapshot. A method with no output snapshot yet still gets its page, without "What you get", and
+`make check-render` fails on it. The templates under `templates/` hold the wording and the links, one block per door, so a change to a door is
+made once and every page inherits it at the next render.
 
 The page's TypeScript and Python snippets are also written as files, `tests/snippets/<name>/typescript/snippet.ts` and
 `tests/snippets/<name>/python/snippet.py`, from the same templates under `templates/snippets/`, so that what the page shows is what the type
@@ -22,10 +24,12 @@ from jinja2 import Environment, FileSystemLoader, StrictUndefined
 from pydantic import BaseModel, ConfigDict, Field, JsonValue
 
 from scripts.contract import TYPE_BRANCH_SEPARATOR, Contract, ContractField, ContractInput, short_concept, type_branches
-from scripts.cookbook import INPUTS_FILE, METHODS_DIR, RAW_BASE_URL, SNIPPETS_DIR, Cookbook, MethodPackage
+from scripts.cookbook import INPUTS_FILE, METHODS_DIR, RAW_BASE_URL, SNIPPETS_DIR, Cookbook, MethodPackage, file_urls, input_content
 from scripts.exceptions import CookbookLayoutError
 from scripts.library import LIBRARY_METHODS_DIR
 from scripts.recipes import GENERATED_DIR, PYTHON_TARGET, SIDECAR_FILE, TYPESCRIPT_TARGET
+from scripts.snapshot import read_snapshot
+from scripts.views import OutputView, SampleView, output_view, sample_label, sample_views
 
 PAGE_TEMPLATE = "method_page.md.j2"
 # Each file `make render` writes in a method's `tests/snippets/<name>/`, mapped to the template writing it around the page's snippet.
@@ -133,6 +137,8 @@ class PageContext(BaseModel):
     header_links: str
     samples: list[Sample]
     has_file_inputs: bool
+    sample_views: list[SampleView] = Field(description='Each input of the sample, as "The sample" shows it')
+    output: OutputView | None = Field(description="What the method returned on its sample, or None while it has no output snapshot")
     takes: list[str]
     returns: str
     returns_fields: list[str]
@@ -153,8 +159,9 @@ class PageContext(BaseModel):
 
 
 def make_environment(templates_dir: Path) -> Environment:
-    """The Jinja2 environment for Markdown pages: no escaping, strict about undefined names, and trailing newlines kept."""
-    return Environment(
+    """The Jinja2 environment for Markdown pages: no escaping, strict about undefined names, trailing newlines kept, and a `sentence` filter
+    closing a text with a full stop when it ends on a letter or a digit."""
+    environment = Environment(
         loader=FileSystemLoader(templates_dir),
         undefined=StrictUndefined,
         autoescape=False,
@@ -162,6 +169,8 @@ def make_environment(templates_dir: Path) -> Environment:
         trim_blocks=True,
         lstrip_blocks=True,
     )
+    environment.filters["sentence"] = _sentence
+    return environment
 
 
 def render_pages(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, str]:
@@ -300,6 +309,7 @@ def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageCon
         msg = f"{package.directory} has no contract snapshot yet: run `make refresh` (it needs PIPELEX_API_KEY), then `make render`"
         raise CookbookLayoutError(msg)
     editorial = package.editorial
+    snapshot = read_snapshot(package)
     address = cookbook.address_of(package)
     snippet_inputs = _snippet_inputs(package.inputs)
     samples = _samples(package=package)
@@ -328,6 +338,8 @@ def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageCon
         ),
         samples=samples,
         has_file_inputs=bool(samples),
+        sample_views=sample_views(cookbook=cookbook, package=package, contract=contract),
+        output=None if snapshot is None else output_view(contract=contract, hints=editorial.output, snapshot=snapshot),
         takes=[_input_line(contract_input) for contract_input in contract.inputs],
         returns=_described(
             _output_phrase(contract), description=None if contract.output.concept.startswith(_NATIVE_PREFIX) else contract.output.description
@@ -414,18 +426,8 @@ def _python_string(text: str) -> str:
 
 
 def _snippet_inputs(inputs: dict[str, JsonValue]) -> dict[str, JsonValue]:
-    """The inputs as code passes them: `inputs.json` may wrap a value as `{"concept": …, "content": …}`, and the code passes the content.
-
-    Only a dict whose keys are exactly `concept` and `content` is that wrapper, as the runtime reads it: a structured input whose concept has a
-    field named `content` is passed whole.
-    """
-    snippet_inputs: dict[str, JsonValue] = {}
-    for input_name, input_value in inputs.items():
-        if isinstance(input_value, dict) and set(input_value) == {"concept", "content"}:
-            snippet_inputs[input_name] = input_value["content"]
-        else:
-            snippet_inputs[input_name] = input_value
-    return snippet_inputs
+    """The inputs as code passes them: `inputs.json` may wrap a value as `{"concept": …, "content": …}`, and the code passes the content."""
+    return {input_name: input_content(input_value) for input_name, input_value in inputs.items()}
 
 
 def _python_sdk_admits(value: JsonValue) -> bool:
@@ -442,21 +444,11 @@ def _samples(*, package: MethodPackage) -> list[Sample]:
     """The files the sample inputs name, one per URL: an input holding a list of files gives each its own numbered label."""
     samples: list[Sample] = []
     for input_name, content in _snippet_inputs(package.inputs).items():
-        urls = _file_urls(content)
-        label = package.editorial.sample_labels.get(input_name) or f"sample {input_name.replace('_', ' ')}"
+        urls = file_urls(content)
+        label = sample_label(package=package, input_name=input_name)
         for index, url in enumerate(urls, start=1):
             samples.append(Sample(label=label if len(urls) == 1 else f"{label} {index}", url=url))
     return samples
-
-
-def _file_urls(content: JsonValue) -> list[str]:
-    """The URLs of a file input, given as one `{"url": …}` object or as a list of them."""
-    if isinstance(content, dict):
-        url = content.get("url")
-        return [url] if isinstance(url, str) else []
-    if isinstance(content, list):
-        return [url for item in content if isinstance(item, dict) and isinstance(url := item.get("url"), str)]
-    return []
 
 
 def _input_line(contract_input: ContractInput) -> str:

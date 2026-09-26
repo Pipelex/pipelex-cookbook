@@ -25,7 +25,7 @@ Create `methods/<name>/`, where `<name>` is snake_case and becomes the last part
   pipes = ["<the entry pipe's code>"]
   ```
 
-- **The sample**, as files under `assets/<name>/`, and **`inputs.json`** naming each file by its raw URL on `main`: `https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/<name>/<file>`. The URL answers once a release brings the file to `main`; until then `make check-links` reports it as not published, which is expected. A sample already under `assets/` keeps its place, and a public file hosted elsewhere keeps its own URL, which must answer. An input taking several files lists one `{"url": …}` per file. Text inputs are written inline.
+- **The sample**, as files under `assets/<name>/`, and **`inputs.json`** naming each file by its raw URL on `main`: `https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/<name>/<file>`. The URL answers once a release brings the file to `main`; until then `make check-links` reports it as not published, which is expected. A real sample is a public-domain or openly licensed document copied here, never linked where it is published; a made-up one is used only where privacy rules a real one out, and its page says it was made up. An input taking several files lists one `{"url": …}` per file. Text inputs are written inline.
 
 ## 2. Prove it on production
 
@@ -37,8 +37,10 @@ With `PIPELEX_API_KEY` set:
 
 ## 3. Give it its page
 
-1. Add an entry to `cookbook.toml` under `[methods.<name>]` with the title, the pitch, the sample's link text, the chatbot sentence and the "Make it yours" change. Every field is optional.
-2. `make render` writes `methods/<name>/README.md`, and the page's TypeScript and Python snippets as files under `tests/snippets/<name>/`, each reading the output through the types `make refresh` generated beside it. Read the page as a reader would, and commit everything under `tests/snippets/<name>/` with it, generated types included.
+1. Add an entry to `cookbook.toml` under `[methods.<name>]` with the title, the pitch, the chatbot sentence and the "Make it yours" change, each optional. Every input of the sample needs a record under `[methods.<name>.samples.<input>]`: its link text, whether it was made up, where it was copied from and when, its licence and the credit line ([README.md](README.md#the-sample-records) lists the fields). When the contract cannot say how the output reads, add the hints under `[methods.<name>.output]`: `formats` for a text field holding Markdown or HTML, and `item_label` for the items of a list output.
+2. `make previews` renders the first-page preview of each document sample whose record is written, with no key and no run; a sample without its record gets none.
+3. `make snapshot METHOD=<name>`, with `PIPELEX_API_KEY` set, renders those previews too, runs the method once on production on its sample and writes `methods/<name>/output.json`, and `output/` when the output holds files, which the page's "What you get" shows. It spends credit, so run it once the method returns what you want, and again whenever you change what it returns.
+4. `make render` writes `methods/<name>/README.md`, and the page's TypeScript and Python snippets as files under `tests/snippets/<name>/`, each reading the output through the types `make refresh` generated beside it. Read the page as a reader would, and commit with it the snapshot, its `output/` files, the previews beside the samples, and everything under `tests/snippets/<name>/`, generated types included.
 
 ## 4. Check and open the pull request
 

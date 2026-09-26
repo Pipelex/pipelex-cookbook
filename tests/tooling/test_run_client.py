@@ -136,6 +136,7 @@ class TestRunClient:
                     "concept": "widgets.CataloguePage",
                     "content": [{"url": WIDGETS_SAMPLE_URL}, {"url": at_a_tag}, {"url": with_a_query}, {"url": elsewhere}],
                 },
+                "brief": {"concept": "widgets.Brief", "content": {"title": "Spring", "cover": {"image": {"url": WIDGETS_SAMPLE_URL}}}},
                 "note": note,
             },
         )
@@ -145,6 +146,7 @@ class TestRunClient:
                 "concept": "widgets.CataloguePage",
                 "content": [{"url": UPLOADED_URI}, {"url": UPLOADED_URI}, {"url": UPLOADED_URI}, {"url": elsewhere}],
             },
+            "brief": {"concept": "widgets.Brief", "content": {"title": "Spring", "cover": {"image": {"url": UPLOADED_URI}}}},
             "note": note,
         }
         assert fake_api.calls() == [f"POST {UPLOAD}"]
@@ -153,7 +155,7 @@ class TestRunClient:
         cookbook = _cookbook_with_sample(make_cookbook)
         (cookbook.root.parent / "outside.txt").write_text("not the cookbook's", encoding="utf-8")
         climbing = WIDGETS_SAMPLE_URL.replace("/main/assets/extract_widgets/catalogue.png", "/main/%2E%2E/outside.txt")
-        with pytest.raises(CookbookLayoutError, match=r"its path \.\./outside\.txt leads outside this checkout"):
+        with pytest.raises(CookbookLayoutError, match=r"its path /Pipelex/pipelex-cookbook/main/\.\./outside\.txt has a `\.` or `\.\.` segment"):
             upload_local_samples(client=fake_api.client, cookbook=cookbook, inputs={"notes": {"url": climbing}})
         assert fake_api.requests == []
 

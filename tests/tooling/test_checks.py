@@ -2,12 +2,37 @@ from pathlib import Path
 
 import httpx
 import pytest
+from pydantic import JsonValue
 
 from scripts import checks
-from scripts.checks import check_links, collect_urls, http_status, lockstep_problems, orphan_snippet_dirs, stale_pages
+from scripts.checks import (
+    check_links,
+    collect_urls,
+    http_status,
+    lockstep_problems,
+    orphan_snippet_dirs,
+    sample_problems,
+    snapshot_problems,
+    stale_pages,
+    stale_snapshots,
+)
 from scripts.cookbook import load_cookbook
 from scripts.render import render_all, render_pages
-from tests.tooling.test_data import WIDGETS_SAMPLE_URL, MakeCookbook
+from tests.tooling.test_data import (
+    WIDGETS_OUTPUT,
+    WIDGETS_SAMPLE_URL,
+    MakeCookbook,
+    drop_widgets_record,
+    make_widgets_sample_a_document,
+    make_widgets_sample_synthetic,
+    make_word_document_sample,
+    pdf_bytes,
+    png_bytes,
+    write_snapshot,
+)
+
+# What the refusal of a raw URL whose path has a `.` or `..` segment says after the path.
+DOT_SEGMENT = "has a `.` or `..` segment: a raw URL names its file by its plain path"
 
 
 class TestChecks:
@@ -100,22 +125,66 @@ class TestChecks:
         verdicts = {verdict.url: verdict for verdict in check_links(cookbook=load_cookbook(root), rendered={}, fetch_status=not_found)}
         assert verdicts[url].ok is True
 
-    def test_a_link_into_the_cookbook_climbing_out_of_the_checkout_is_broken(self, make_cookbook: MakeCookbook):
+    @pytest.mark.parametrize(
+        ("url", "note"),
+        [
+            (
+                "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/../outside.txt",
+                f"its path /Pipelex/pipelex-cookbook/main/../outside.txt {DOT_SEGMENT}",
+            ),
+            (
+                "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.1.0/assets/%2e%2e/%2e%2e/outside.txt",
+                f"its path /Pipelex/pipelex-cookbook/v0.1.0/assets/../../outside.txt {DOT_SEGMENT}",
+            ),
+            # A release published earlier is judged by its answer, but a path leading outside the checkout is broken whatever its ref.
+            ("https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.1.0//etc/hosts", "its path /etc/hosts leads outside this checkout"),
+        ],
+        ids=["dot-dot", "encoded-dot-dot-at-an-old-tag", "absolute-at-an-old-tag"],
+    )
+    def test_a_link_into_the_cookbook_climbing_out_of_the_checkout_is_broken(self, make_cookbook: MakeCookbook, url: str, note: str):
         root = make_cookbook()
         (root.parent / "outside.txt").write_text("not the cookbook's", encoding="utf-8")
-        url = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/../outside.txt"
-        (root / "methods" / "extract_widgets" / "inputs.json").write_text(f'{{"catalogue": {{"url": "{url}"}}}}', encoding="utf-8")
+        page = root / "methods" / "extract_widgets" / "README.md"
 
         def found(url: str) -> int:
             return 200
 
-        verdicts = {verdict.url: verdict for verdict in check_links(cookbook=load_cookbook(root), rendered={}, fetch_status=found)}
-        assert (verdicts[url].ok, verdicts[url].note) == (False, "its path ../outside.txt leads outside this checkout")
+        verdicts = {verdict.url: verdict for verdict in check_links(cookbook=load_cookbook(root), rendered={page: url}, fetch_status=found)}
+        assert (verdicts[url].ok, verdicts[url].note) == (False, note)
+
+    @pytest.mark.parametrize(("status", "ok", "note"), [(200, True, "answers"), (404, False, "HTTP 404"), (0, False, "no answer")])
+    def test_a_link_at_a_release_published_earlier_is_judged_by_its_answer_alone(self, make_cookbook: MakeCookbook, status: int, ok: bool, note: str):
+        root = make_cookbook()
+        # The recipe names a file an earlier release held and this checkout no longer holds.
+        url = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.8.0/assets/retired_method/sample.pdf"
+        recipe = root / "recipes" / "run" / "http"
+        recipe.mkdir(parents=True)
+        (recipe / "README.md").write_text(f"Run it on the [sample]({url}).\n", encoding="utf-8")
+
+        def answering(url: str) -> int:
+            return status
+
+        verdicts = {verdict.url: verdict for verdict in check_links(cookbook=load_cookbook(root), rendered={}, fetch_status=answering)}
+        assert (verdicts[url].ok, verdicts[url].note) == (ok, note)
+
+    @pytest.mark.parametrize("ref", ["main", "v0.9.0"])
+    def test_a_link_at_main_or_the_pages_tag_needs_the_file_whatever_it_answers(self, make_cookbook: MakeCookbook, ref: str):
+        root = make_cookbook()
+        url = f"https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/{ref}/assets/extract_widgets/brochure.pdf"
+        page = root / "methods" / "extract_widgets" / "README.md"
+
+        def found(url: str) -> int:
+            return 200
+
+        verdicts = {verdict.url: verdict for verdict in check_links(cookbook=load_cookbook(root), rendered={page: url}, fetch_status=found)}
+        assert (verdicts[url].ok, verdicts[url].note) == (False, "this checkout holds no file at assets/extract_widgets/brochure.pdf")
 
     def test_a_sample_hosted_elsewhere_must_answer(self, make_cookbook: MakeCookbook):
         root = make_cookbook()
         url = "https://example.com/datasets/report.pdf"
         (root / "methods" / "extract_widgets" / "inputs.json").write_text(f'{{"catalogue": [{{"url": "{url}"}}]}}', encoding="utf-8")
+        # A real sample is copied into this repository, so a sample hosted elsewhere is one made up for the example.
+        make_widgets_sample_synthetic(root)
         cookbook = load_cookbook(root)
 
         def not_found(url: str) -> int:
@@ -137,7 +206,7 @@ class TestChecks:
 
     def test_raw_urls_in_the_recipes_files_are_collected_whatever_the_file(self, make_cookbook: MakeCookbook):
         root = make_cookbook()
-        sample = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/assets/extract_dpe/dpe_single_page.pdf"
+        sample = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/assets/extract_gantt/gantt_tree_house.png"
         invoice = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/assets/invoice_extractor/invoice_1.pdf"
         vendored = "https://raw.githubusercontent.com/some/package/main/logo.png"
         http_recipe = root / "recipes" / "run" / "http"
@@ -200,3 +269,114 @@ class TestHttpStatus:
     def test_a_url_missing_for_get_too_is_missing(self, monkeypatch: pytest.MonkeyPatch):
         _served_by(monkeypatch, {"HEAD": 404, "GET": 404})
         assert http_status("https://example.com/report.pdf") == 404
+
+
+class TestSampleAndSnapshotChecks:
+    def test_an_input_without_its_record_is_a_problem(self, make_cookbook: MakeCookbook):
+        assert sample_problems(load_cookbook(make_cookbook(with_sample=True))) == [
+            "methods/count_words: the sample input `text` has no source-and-licence record under [methods.count_words.samples.text] in cookbook.toml"
+        ]
+
+    def test_a_document_sample_kept_here_needs_its_preview(self, make_cookbook: MakeCookbook):
+        root = make_cookbook(with_sample=True)
+        # A PDF is known by its header whatever its name.
+        (root / "assets" / "extract_widgets" / "catalogue.png").write_bytes(pdf_bytes(width=300, height=200))
+        make_widgets_sample_a_document(root)
+        problems = sample_problems(load_cookbook(root))
+        assert (
+            "methods/extract_widgets: the document sample assets/extract_widgets/catalogue.png has no preview, "
+            "assets/extract_widgets/catalogue.preview.png; `make previews` renders it, with no key and no run"
+        ) in problems
+        (root / "assets" / "extract_widgets" / "catalogue.preview.png").write_bytes(b"png")
+        assert len(sample_problems(load_cookbook(root))) == 1
+
+    def test_a_document_sample_without_its_record_is_reported_for_the_record_alone(self, make_cookbook: MakeCookbook):
+        root = make_cookbook(with_sample=True)
+        make_widgets_sample_a_document(root)
+        drop_widgets_record(root)
+        problems = sample_problems(load_cookbook(root))
+        assert (
+            "methods/extract_widgets: the sample input `catalogue` has no source-and-licence record "
+            "under [methods.extract_widgets.samples.catalogue] in cookbook.toml"
+        ) in problems
+        assert not [problem for problem in problems if "preview" in problem]
+
+    def test_a_document_sample_that_is_no_pdf_is_asked_for_no_preview(self, make_cookbook: MakeCookbook):
+        root = make_cookbook()
+        make_word_document_sample(root)
+        assert [problem for problem in sample_problems(load_cookbook(root)) if "extract_widgets" in problem] == []
+
+    def test_a_method_without_a_snapshot_is_a_problem(self, make_cookbook: MakeCookbook):
+        root = make_cookbook(with_sample=True)
+        write_snapshot(root, "extract_widgets", output=WIDGETS_OUTPUT)
+        assert snapshot_problems(load_cookbook(root)) == [
+            "methods/count_words has no output.json: `make snapshot METHOD=count_words` takes it, with one paid run on production"
+        ]
+
+    def test_a_snapshot_taken_from_the_package_as_it_is_holds(self, make_cookbook: MakeCookbook):
+        root = make_cookbook(with_sample=True)
+        write_snapshot(root, "count_words", output={"text": "Four words."})
+        write_snapshot(root, "extract_widgets", output=WIDGETS_OUTPUT, files={"output/photo.png": (png_bytes(width=4, height=4), "image/png")})
+        cookbook = load_cookbook(root)
+        assert snapshot_problems(cookbook) == []
+        assert stale_snapshots(cookbook) == []
+
+    def test_a_snapshot_of_another_pipe_or_concept_is_a_problem(self, make_cookbook: MakeCookbook):
+        root = make_cookbook(with_sample=True)
+        write_snapshot(root, "extract_widgets", output=WIDGETS_OUTPUT)
+        path = root / "methods" / "extract_widgets" / "output.json"
+        path.write_text(path.read_text(encoding="utf-8").replace('"widgets.WidgetList"', '"widgets.Widget"'), encoding="utf-8")
+        problems = [problem for problem in snapshot_problems(load_cookbook(root)) if problem.startswith("methods/extract_widgets")]
+        assert problems == [
+            "methods/extract_widgets/output.json holds a `widgets.Widget`, and contract.json says the method returns a `widgets.WidgetList`"
+        ]
+
+    def test_a_snapshot_of_another_sample_is_a_problem_and_of_other_bundles_only_stale(self, make_cookbook: MakeCookbook):
+        root = make_cookbook(with_sample=True)
+        write_snapshot(root, "extract_widgets", output=WIDGETS_OUTPUT)
+        bundle = root / "methods" / "extract_widgets" / "bundle.mthds"
+        bundle.write_text(bundle.read_text(encoding="utf-8") + "\n# A prompt tweak.\n", encoding="utf-8")
+        cookbook = load_cookbook(root)
+        assert [problem for problem in snapshot_problems(cookbook) if problem.startswith("methods/extract_widgets")] == []
+        assert stale_snapshots(cookbook) == [
+            "methods/extract_widgets/output.json was taken from other bundles than the package's: "
+            "whoever changes what the method returns takes a new one with `make snapshot METHOD=extract_widgets`"
+        ]
+
+        (root / "assets" / "extract_widgets" / "catalogue.png").write_bytes(png_bytes(width=41, height=30))
+        problems = [problem for problem in snapshot_problems(load_cookbook(root)) if problem.startswith("methods/extract_widgets")]
+        assert problems == [
+            "methods/extract_widgets/output.json was taken from another sample than inputs.json and the assets it names: "
+            "the page would show one input beside another's output"
+        ]
+
+    def test_the_snapshots_files_must_be_those_it_names(self, make_cookbook: MakeCookbook):
+        root = make_cookbook(with_sample=True)
+        output: JsonValue = {"widgets": [{"name": "Sprocket", "photo": {"url": "output/widgets-0-photo.png"}}]}
+        files = {"output/widgets-0-photo.png": (png_bytes(width=4, height=4), "image/png"), "output/extra.png": (b"x", "image/png")}
+        write_snapshot(root, "extract_widgets", output=output, files=files)
+        package_dir = root / "methods" / "extract_widgets"
+        assert [problem for problem in snapshot_problems(load_cookbook(root)) if problem.startswith("methods/extract_widgets")] == []
+
+        (package_dir / "output" / "widgets-0-photo.png").write_bytes(b"edited")
+        (package_dir / "output" / "extra.png").unlink()
+        (package_dir / "output" / "stray.png").write_bytes(b"stray")
+        # What Finder leaves behind is no stray copy.
+        (package_dir / "output" / ".DS_Store").write_bytes(b"finder")
+        path = package_dir / "output.json"
+        path.write_text(
+            path.read_text(encoding="utf-8").replace('"url": "output/widgets-0-photo.png"', '"url": "output/unlisted.png"'), encoding="utf-8"
+        )
+        problems = [problem for problem in snapshot_problems(load_cookbook(root)) if problem.startswith("methods/extract_widgets")]
+        assert problems == [
+            "methods/extract_widgets/output.json names the file output/widgets-0-photo.png, whose contents changed since the snapshot",
+            "methods/extract_widgets/output.json names the file output/extra.png, which does not exist",
+            "methods/extract_widgets/output.json holds the path output/unlisted.png, which its `files` does not list",
+            "methods/extract_widgets/output.json does not name output/stray.png, which output/ holds: `make snapshot` replaces output/ as a whole",
+        ]
+
+    def test_a_snapshot_that_does_not_load_is_a_problem(self, make_cookbook: MakeCookbook):
+        root = make_cookbook(with_sample=True)
+        (root / "methods" / "count_words" / "output.json").write_text("{not json", encoding="utf-8")
+        [problem, _] = snapshot_problems(load_cookbook(root))
+        assert "not an output snapshot; take it again with `make snapshot METHOD=count_words`" in problem
