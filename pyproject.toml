@@ -168,10 +168,12 @@ typeCheckingMode = "strict"
 
 [tool.pytest]
 minversion = "9.0"
-addopts = ["--import-mode=importlib", "-ra"]
+# The smoke check spends inference credit, so it is deselected here and selected only by `make check-smoke`.
+addopts = ["--import-mode=importlib", "-ra", "-m", "not smoke"]
 xfail_strict = true
 markers = [
   "codex_disabled: tests that should not run in Codex, whose sandbox has no network",
+  "smoke: runs a method on production, spending inference credit; deselected unless `make check-smoke` selects it",
 ]
 
 [tool.ruff]
