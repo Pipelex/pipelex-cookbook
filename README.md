@@ -29,7 +29,7 @@
 
 <!--
 Adapted from the onboarding source's front-door and api-key assemblies, last re-read against the rendered files at
-Pipelex/.github@3a26491 (onboarding/rendered/front-door.md and onboarding/rendered/api-key.md). Every command, and every
+Pipelex/.github@75123c4 (onboarding/rendered/front-door.md and onboarding/rendered/api-key.md). Every command, and every
 sentence on setting up a door, is a block's own words, so a change lands in the blocks first and is then carried here; where
 a sentence of the blocks says "it" for the agent of the sentence before, which this page does not carry, the agent is named.
 This page's own are the headings, the sentences sending a reader to a method's page, the two lists `make render` writes between
