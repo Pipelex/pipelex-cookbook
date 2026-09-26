@@ -1,0 +1,13 @@
+[package]
+name = "write_release_post"
+display_name = "Release Post in the Company's Voice"
+address = "github.com/Pipelex/pipelex-cookbook"
+version = "0.19.1"
+description = "Turn a release's engineering notes into the customer-facing blog post the company's style guide asks for: the title, slug, meta description, excerpt, category and tags the CMS takes, the body in Markdown, and what the post leaves out for the manager to check."
+authors = ["Evotis S.A.S"]
+license = "MIT"
+mthds_version = ">=1.0.0"
+main_pipe = "write_release_post"
+
+[exports.release_post]
+pipes = ["write_release_post"]

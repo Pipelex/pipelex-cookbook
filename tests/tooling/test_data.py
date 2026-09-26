@@ -225,6 +225,23 @@ RIGHT_OUTPUTS: dict[str, JsonValue] = {
             },
         ],
     },
+    "write_release_post": {
+        "title": "Save your methods to your Pipelex catalog",
+        "slug": "save-methods-pipelex-catalog",
+        "meta_description": "Save a method from your coding agent to your organization's catalog, and pull it back to edit it.",
+        "excerpt": "The Pipelex plugin now saves your methods to your organization's catalog and pulls them back.",
+        "category": "Product updates",
+        "tags": ["Pipelex plugin", "Catalog", "Methods"],
+        "body": (
+            "Pipelex plugin 0.7.0 lets you save the method you are working on to your organization's catalog.\n\n"
+            "## Save a method to your catalog\n\nWe save only when you ask.\n\n"
+            "## Get the update\n\nUpdate the Pipelex plugin in your coding agent to get these changes."
+        ),
+        "left_out": [
+            {"note": "The file that links a directory to its saved method", "why": "Rule 3: the link files the tools write for the reader"},
+            {"note": "The retry behavior of a save after a network fault", "why": "Rule 3: retry and idempotency logic"},
+        ],
+    },
 }
 
 # Contracts written by hand, each with an output of the right shape, so that the shape check's tests over every method also cover the shapes no

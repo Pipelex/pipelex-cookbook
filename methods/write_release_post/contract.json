@@ -1,0 +1,79 @@
+{
+  "pipe": "release_post.write_release_post",
+  "inputs": [
+    {
+      "name": "release_notes",
+      "concept": "release_post.ReleaseNotes",
+      "kind": "prose",
+      "description": "The notes of one release as engineering writes them, for developers: every change of the release, with the mechanics behind it",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    },
+    {
+      "name": "style_guide",
+      "concept": "release_post.StyleGuide",
+      "kind": "prose",
+      "description": "The company's written style guide for release posts: who reads them, what goes in and what stays out, the voice, the structure of a post and the fields the blog's CMS takes",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    }
+  ],
+  "output": {
+    "concept": "release_post.ReleasePost",
+    "description": "A release post ready to paste into the blog's CMS, with what it leaves out of the release notes for the manager to check before publishing",
+    "multiplicity": "single",
+    "item_count": null,
+    "fields": [
+      {
+        "name": "title",
+        "type": "text",
+        "description": "The post's title",
+        "required": true
+      },
+      {
+        "name": "slug",
+        "type": "text",
+        "description": "The post's URL slug",
+        "required": true
+      },
+      {
+        "name": "meta_description",
+        "type": "text",
+        "description": "The description search engines show under the title",
+        "required": true
+      },
+      {
+        "name": "excerpt",
+        "type": "text",
+        "description": "The short summary shown on the blog's index page and in the newsletter",
+        "required": true
+      },
+      {
+        "name": "category",
+        "type": "text",
+        "description": "The post's category",
+        "required": true
+      },
+      {
+        "name": "tags",
+        "type": "list[text]",
+        "description": "The post's tags",
+        "required": true
+      },
+      {
+        "name": "body",
+        "type": "text",
+        "description": "The body of the post in Markdown, as the CMS takes it",
+        "required": true
+      },
+      {
+        "name": "left_out",
+        "type": "list[LeftOutNote]",
+        "description": "What the post leaves out of the release notes, each with the style guide's rule that leaves it out",
+        "required": true
+      }
+    ]
+  }
+}

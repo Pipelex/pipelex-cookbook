@@ -97,3 +97,30 @@ synthetic = true
 license = "MIT"
 license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
 attribution = "Evotis S.A.S"
+
+[methods.write_release_post]
+title = "Release post in the company's voice"
+pitch = "Read a release's engineering notes and the company's style guide for release posts, and return the customer-facing blog post a product marketing manager pastes into the CMS: the title, slug, meta description, excerpt, category and tags, each held to the guide's limits, the body in Markdown written to the guide's rules, and what the post leaves out of the notes, with the rule that leaves it out, to check before publishing."
+app_dir = "release-post-app"
+yours_dir = "release-post"
+yours_change = "add a social post of at most 280 characters announcing the release in the style guide's voice, beside the blog post"
+
+[methods.write_release_post.samples.release_notes]
+label = "sample release notes"
+synthetic = false
+source = "https://github.com/Pipelex/pipelex-plugins/blob/82d4d97eab0b76bd219bee218b442959da46034c/CHANGELOG.md"
+retrieved = 2026-09-26
+license = "Apache-2.0"
+license_url = "https://github.com/Pipelex/pipelex-plugins/blob/82d4d97eab0b76bd219bee218b442959da46034c/LICENSE"
+attribution = "Pipelex plugin release notes, version 0.7.0, from github.com/Pipelex/pipelex-plugins, under the Apache License 2.0."
+changes = "The 0.7.0 entry cut out of the changelog and given as text in the sample inputs; nothing in it was changed."
+
+[methods.write_release_post.samples.style_guide]
+label = "sample style guide"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
+[methods.write_release_post.output]
+formats = { body = "markdown" }
