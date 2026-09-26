@@ -100,6 +100,18 @@ class TestChecks:
         verdicts = {verdict.url: verdict for verdict in check_links(cookbook=load_cookbook(root), rendered={}, fetch_status=not_found)}
         assert verdicts[url].ok is True
 
+    def test_a_link_into_the_cookbook_climbing_out_of_the_checkout_is_broken(self, make_cookbook: MakeCookbook):
+        root = make_cookbook()
+        (root.parent / "outside.txt").write_text("not the cookbook's", encoding="utf-8")
+        url = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/../outside.txt"
+        (root / "methods" / "extract_widgets" / "inputs.json").write_text(f'{{"catalogue": {{"url": "{url}"}}}}', encoding="utf-8")
+
+        def found(url: str) -> int:
+            return 200
+
+        verdicts = {verdict.url: verdict for verdict in check_links(cookbook=load_cookbook(root), rendered={}, fetch_status=found)}
+        assert (verdicts[url].ok, verdicts[url].note) == (False, "its path ../outside.txt leads outside this checkout")
+
     def test_a_sample_hosted_elsewhere_must_answer(self, make_cookbook: MakeCookbook):
         root = make_cookbook()
         url = "https://example.com/datasets/report.pdf"

@@ -12,14 +12,27 @@ class CookbookLayoutError(CookbookError):
 class HostedApiError(CookbookError):
     """The hosted Pipelex API could not be reached, refused a call, or answered in a way the tooling cannot read.
 
-    When it answered, `status_code` is the HTTP status and `problem` the problem details its body carried (`type`, `title`, `detail`,
-    `error_type`), empty when the body was not one.
+    When it answered, `status_code` is the HTTP status, `problem` the problem details its body carried (`type`, `title`, `detail`,
+    `error_type`), empty when the body was not one, and `retry_after_seconds` the wait its `Retry-After` header asked for, None when it named
+    none.
     """
 
-    def __init__(self, message: str, *, status_code: int | None = None, problem: dict[str, Any] | None = None) -> None:
+    def __init__(
+        self,
+        message: str,
+        *,
+        status_code: int | None = None,
+        problem: dict[str, Any] | None = None,
+        retry_after_seconds: int | None = None,
+    ) -> None:
         super().__init__(message)
         self.status_code = status_code
         self.problem: dict[str, Any] = problem or {}
+        self.retry_after_seconds = retry_after_seconds
+
+
+class HostedApiUnreachableError(HostedApiError):
+    """No answer came from the hosted Pipelex API: the connection failed or timed out, so the call may or may not have reached the server."""
 
 
 class HostedRunError(CookbookError):
@@ -32,4 +45,7 @@ class HostedRunError(CookbookError):
 
 
 class HostedRunTimeoutError(HostedRunError):
-    """A run on production was still going when the wait ran out. It goes on on the server, and its results can be read later by its id."""
+    """A run on production was still going, or its results could not be read, when the wait ran out.
+
+    It goes on on the server, and its results can be read later by its id.
+    """

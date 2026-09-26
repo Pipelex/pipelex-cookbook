@@ -11,6 +11,7 @@ import json
 import tomllib
 from pathlib import Path
 from typing import Any, cast
+from urllib.parse import unquote, urlsplit
 
 from mthds.package.exceptions import ManifestError
 from mthds.package.manifest.parser import parse_methods_toml
@@ -30,6 +31,8 @@ INPUTS_FILE = "inputs.json"
 PAGE_FILE = "README.md"
 # Where `make render` writes each method's page snippets as files, in `tests/snippets/<name>/`, for the type checkers to read.
 SNIPPETS_DIR = "tests/snippets"
+# Where a raw URL into a GitHub repository points: `<RAW_BASE_URL>/<owner>/<repository>/<ref>/<path>`.
+RAW_BASE_URL = "https://raw.githubusercontent.com"
 
 
 class EditorialEntry(BaseModel):
@@ -86,6 +89,15 @@ class MethodPackage(BaseModel):
         return [self.directory / bundle_file for bundle_file in self.bundle_files]
 
 
+class LocalFile(BaseModel):
+    """A file of this checkout that a raw URL into the cookbook's repository names."""
+
+    model_config = ConfigDict(frozen=True)
+
+    ref: str = Field(description="The ref the URL names the file at: `main` or a release tag")
+    path: Path = Field(description="The file in this checkout, resolved")
+
+
 class Cookbook(BaseModel):
     """The whole cookbook as the renderer and the checks see it."""
 
@@ -104,6 +116,40 @@ class Cookbook(BaseModel):
 
     def address_of(self, package: MethodPackage) -> str:
         return f"{self.settings.address}/{package.name}@{self.tag}"
+
+    def local_file_of(self, url: str) -> LocalFile | None:
+        """The file of this checkout a raw URL into the cookbook's repository names, or None for a URL hosted elsewhere.
+
+        The URL's path is `/<owner>/<repository>/<ref>/<file>`, where the ref is one path segment, `main` or a release tag, as the guides ask
+        of every link into this repository; its query and fragment are no part of the file's path. The file's path is percent-decoded and
+        resolved under the checkout, so a path climbing out of it, with `..` or from the filesystem's root, names no file of this checkout.
+
+        Raises:
+            CookbookLayoutError: The URL points into the cookbook's repository, but names no file this checkout holds. The message names the
+                path the URL names rather than the URL, which the caller holds.
+        """
+        try:
+            parts = urlsplit(url)
+        except ValueError:
+            return None
+        if f"{parts.scheme}://{parts.netloc}".lower() != RAW_BASE_URL.lower():
+            return None
+        # GitHub reads an owner's and a repository's names whatever their case.
+        repository = self.settings.repository.lower().split("/")
+        segments = parts.path.removeprefix("/").split("/")
+        if len(segments) <= len(repository) or [segment.lower() for segment in segments[: len(repository)]] != repository:
+            return None
+        ref = segments[len(repository)]
+        relative = unquote("/".join(segments[len(repository) + 1 :]))
+        root = self.root.resolve()
+        local_path = (root / relative).resolve()
+        if not local_path.is_relative_to(root):
+            msg = f"its path {relative} leads outside this checkout"
+            raise CookbookLayoutError(msg)
+        if not local_path.is_file():
+            msg = f"this checkout holds no file at {relative}"
+            raise CookbookLayoutError(msg)
+        return LocalFile(ref=ref, path=local_path)
 
 
 def load_cookbook(root: Path, *, read_contracts: bool = True, read_library: bool = True) -> Cookbook:

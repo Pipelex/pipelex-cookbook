@@ -137,6 +137,11 @@ class TestShape:
             ("Employee", {"full_name": "Alex Martin"}, "Alex Martin"),
             ("HtmlContent", {"inner_html": "<p>…</p>"}, ["<p>…</p>"]),
             ("text or integer", 3, 3.5),
+            # A list whose items have branches keeps its branches inside its brackets, as `schema_type` writes it.
+            ("list[text or integer]", ["a", 3], ["a", 3.5]),
+            ("list[text] or integer", ["a"], [3]),
+            ("list[text] or list[integer]", [3], ["a", 3]),
+            ("list[list[text or integer]]", [["a", 3]], [["a", 3.5]]),
         ],
     )
     def test_each_type_expression_takes_its_own_values_only(self, type_expression: str, right: JsonValue, wrong: JsonValue):

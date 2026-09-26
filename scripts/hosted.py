@@ -6,11 +6,13 @@ the page's tag (`make check-addresses`). Validation is `POST /v1/validate`, and 
 
 A run spends inference credit, so only a deliberate command starts one. `run_package` starts a run from a package's `.mthds` files and its
 `inputs.json` (`POST /v1/start` with `mthds_contents`, the bundle's `main_pipe` naming the pipe), and `run_address` from an address (`method_ref`,
-which the API fetches at its tag). Both first replace every raw URL into this repository that the inputs name, at whatever ref, with an upload of
-the file this checkout holds (`POST /v1/upload`), so that a sample not yet on `main` runs. Then they wait on `GET /v1/runs/{id}/results`, which
-answers 202 or 503 with a `Retry-After` while the run goes on, 409 when it ended without a result and 200 with its output, and read when the run
-started and finished from `GET /v1/runs/{id}/status`. `HostedClient.resolve_storage_urls` turns the `pipelex-storage://` references an output
-holds into fresh links (`POST /v1/resolve-storage-url/bulk`), and `download` fetches such a link without the key.
+which the API fetches at its tag). Both first replace every raw URL into this repository that the inputs name, at `main` or a release tag, with
+an upload of the file this checkout holds (`POST /v1/upload`), so that a sample not yet on `main` runs. Then they wait on
+`GET /v1/runs/{id}/results`, which answers 202 or 503 with a `Retry-After` while the run goes on, 409 when it ended without a result and 200
+with its output, reading again after a read that got no answer or a passing failure (429, 500, 502 or 504), since the run is paid for and goes
+on on the server, and read when the run started and finished from `GET /v1/runs/{id}/status`. `HostedClient.resolve_storage_urls` turns the
+`pipelex-storage://` references an output holds into fresh links (`POST /v1/resolve-storage-url/bulk`), and `download` fetches such a link
+without the key.
 
 The calls are made with `httpx`. The key is read from the environment and sent only as the `Authorization` header of a call to the API; nothing
 here prints it.
@@ -26,15 +28,14 @@ from enum import StrEnum
 from pathlib import Path
 from time import monotonic, sleep
 from typing import Any, cast
-from urllib.parse import quote, unquote, urlsplit, urlunsplit
+from urllib.parse import quote, urlsplit, urlunsplit
 
 import httpx
 from pydantic import BaseModel, ConfigDict, Field, JsonValue, ValidationError
 
 from scripts.contract import Contract, project_contract
 from scripts.cookbook import Cookbook, MethodPackage
-from scripts.exceptions import CookbookLayoutError, HostedApiError, HostedRunError, HostedRunTimeoutError
-from scripts.render import RAW_BASE_URL
+from scripts.exceptions import CookbookLayoutError, HostedApiError, HostedApiUnreachableError, HostedRunError, HostedRunTimeoutError
 
 API_KEY_ENV = "PIPELEX_API_KEY"
 BASE_URL_ENV = "PIPELEX_BASE_URL"
@@ -61,6 +62,12 @@ _ENDED_STATUS_PATTERN = re.compile(r"status\s+([A-Z_]+)")
 _FAILED_STATUS = "FAILED"
 _COMPLETED_STATUS = "COMPLETED"
 _RUNNING_STATUS = "RUNNING"
+# The answers to a start that do not say whether a run was created: the gateway gave up waiting on the server, or the server failed on its way,
+# and either may come after the server created the run.
+_UNSETTLED_START_STATUS_CODES = frozenset({502, 503, 504})
+# The answers to a read of a run's results that say nothing of the run, only that the server or the gateway failed for a moment or asked the
+# caller to slow down. The run goes on on the server whatever one read says, so the read is made again while the wait has time left.
+_TRANSIENT_READ_STATUS_CODES = frozenset({429, 500, 502, 504})
 
 
 class MethodVerdict(BaseModel):
@@ -222,7 +229,7 @@ class HostedClient:
         """Start a run from bundles' contents, whose `main_pipe` names the pipe. The run spends inference credit.
 
         Raises:
-            HostedApiError: The API refused the start, or could not be reached.
+            HostedApiError: The API refused the start, could not be reached, or acknowledged no run id.
         """
         return self._start({"mthds_contents": mthds_contents, "inputs": dict(inputs)})
 
@@ -230,7 +237,7 @@ class HostedClient:
         """Start a run of a published method by its address, whose manifest's `main_pipe` names the pipe. The run spends inference credit.
 
         Raises:
-            HostedApiError: The API refused the start, or could not be reached.
+            HostedApiError: The API refused the start, could not be reached, or acknowledged no run id.
         """
         return self._start({"method_ref": method_ref, "inputs": dict(inputs)})
 
@@ -297,7 +304,8 @@ class HostedClient:
 
         A reference the API refuses, being malformed or another organization's, is a verdict carrying `error` rather than an exception, and the
         caller decides what it means. A link expires about fifteen minutes after it is resolved, so references are resolved right before their
-        files are fetched.
+        files are fetched. An answer holding links is never repeated in an error, since each link carries its signature: an error names the
+        references instead.
 
         Raises:
             HostedApiError: A request failed as a whole, or its answer does not hold one verdict per reference, in order.
@@ -312,27 +320,45 @@ class HostedClient:
             try:
                 verdicts = [ResolvedStorageUrl.model_validate(item) for item in cast("list[Any]", items)] if isinstance(items, list) else []
             except ValidationError as exc:
-                msg = f"{url} answered with an item that is not a verdict on a reference: {exc}"
-                raise HostedApiError(msg) from exc
-            if [verdict.uri for verdict in verdicts] != batch:
-                msg = f"{url} did not answer one verdict per reference, in the order they were sent: {_excerpt(response)}"
+                # The validation's own message quotes the item, link included, so only where and why it failed are named.
+                problems = "; ".join(f"{'.'.join(str(part) for part in error['loc'])}: {error['msg']}" for error in exc.errors(include_input=False))
+                msg = f"{url} answered with an item that is not a verdict on a reference: {problems}"
+                raise HostedApiError(msg) from None
+            answered = [verdict.uri for verdict in verdicts]
+            if answered != batch:
+                msg = (
+                    f"{url} did not answer one verdict per reference, in the order they were sent: "
+                    f"it was sent {', '.join(batch)} and answered on {', '.join(answered) or 'none'}"
+                )
                 raise HostedApiError(msg)
             resolved.extend(verdicts)
         return resolved
 
     def _start(self, body: Mapping[str, Any]) -> RunStart:
+        """Send a start and read the run id it acknowledges.
+
+        Once the request is sent, only a refusal from the API itself proves that no run began. An error for a request that got no answer, for a
+        gateway's failure (502, 503 or 504), or for a success whose body carries no run id says that the run may exist all the same.
+
+        Raises:
+            HostedApiError: The API refused the start, could not be reached, or acknowledged no run id.
+        """
         try:
             url, response = self._send("POST", "/v1/start", body=body, timeout=START_TIMEOUT_SECONDS)
         except HostedApiError as exc:
-            msg = f"{exc}. The API may have started the run before the connection failed: look for it in the console before starting another"
-            raise HostedApiError(msg) from exc
+            raise _may_have_started(exc) from exc
+        if response.status_code in _UNSETTLED_START_STATUS_CODES:
+            raise _may_have_started(_refusal(url=url, response=response))
         if not response.is_success:
             raise _refusal(url=url, response=response)
-        ack = _json_object(url=url, response=response)
+        try:
+            ack = _json_object(url=url, response=response)
+        except HostedApiError as exc:
+            raise _may_have_started(exc) from exc
         run_id = ack.get("pipeline_run_id")
         if not isinstance(run_id, str) or not run_id:
             msg = f"{url} answered HTTP {response.status_code} without a run id: {_excerpt(response)}"
-            raise HostedApiError(msg)
+            raise _may_have_started(HostedApiError(msg))
         provenance = ack.get("method_provenance")
         commit_sha = cast("dict[str, Any]", provenance).get("commit_sha") if isinstance(provenance, dict) else None
         return RunStart(run_id=run_id, commit_sha=commit_sha if isinstance(commit_sha, str) else None)
@@ -353,7 +379,7 @@ class HostedClient:
         """Make one call to the API and return its URL, for the errors to name, with its answer, whatever its status.
 
         Raises:
-            HostedApiError: No answer came.
+            HostedApiUnreachableError: No answer came.
         """
         url = f"{self._base_url}{path}"
         try:
@@ -361,7 +387,7 @@ class HostedClient:
                 return url, http.request(method, url, json=dict(body) if body is not None else None, headers=self._headers)
         except httpx.TransportError as exc:
             msg = f"{url} could not be reached: {exc}"
-            raise HostedApiError(msg) from exc
+            raise HostedApiUnreachableError(msg) from exc
 
 
 def client_from_env() -> HostedClient:
@@ -476,7 +502,8 @@ def run_package(*, client: HostedClient, cookbook: Cookbook, package: MethodPack
     Raises:
         CookbookLayoutError: The sample names a file of this repository that this checkout does not hold.
         HostedApiError: A call was refused or got no answer.
-        HostedRunError: The run ended without a result, or, as `HostedRunTimeoutError`, was still going when `timeout_seconds` ran out.
+        HostedRunError: The run ended without a result, or, as `HostedRunTimeoutError`, was still going, or could not be read, when
+            `timeout_seconds` ran out.
     """
     inputs = upload_local_samples(client=client, cookbook=cookbook, inputs=package.inputs)
     contents = [bundle_path.read_text(encoding="utf-8") for bundle_path in package.bundle_paths()]
@@ -500,7 +527,8 @@ def run_address(
     Raises:
         CookbookLayoutError: The inputs name a file of this repository that this checkout does not hold.
         HostedApiError: A call was refused or got no answer, such as a start at an address that does not resolve.
-        HostedRunError: The run ended without a result, or, as `HostedRunTimeoutError`, was still going when `timeout_seconds` ran out.
+        HostedRunError: The run ended without a result, or, as `HostedRunTimeoutError`, was still going, or could not be read, when
+            `timeout_seconds` ran out.
     """
     prepared = upload_local_samples(client=client, cookbook=cookbook, inputs=inputs)
     started_at = datetime.now(UTC)
@@ -511,7 +539,9 @@ def run_address(
 
 
 def upload_local_samples(*, client: HostedClient, cookbook: Cookbook, inputs: Mapping[str, JsonValue]) -> dict[str, JsonValue]:
-    """A copy of `inputs` in which every `url` naming a raw URL into this repository, at any ref, names an upload of this checkout's file instead.
+    """A copy of `inputs` in which every `url` naming a raw URL into this repository names an upload of this checkout's file instead.
+
+    The URL may name `main` or a release tag: either way the file is taken from this checkout, so that a sample not yet on `main` runs.
 
     Each file is uploaded once, however many inputs name it. Every other value is kept as it is, a URL hosted elsewhere included.
 
@@ -541,21 +571,17 @@ def _with_uploads(value: JsonValue, *, client: HostedClient, cookbook: Cookbook,
 
 
 def _local_sample(*, cookbook: Cookbook, url: str) -> Path | None:
-    """The file of this checkout a raw URL into this repository names, whatever its ref, or None for a URL hosted elsewhere.
+    """The file of this checkout a raw URL into this repository names, at `main` or a release tag, or None for a URL hosted elsewhere.
 
     Raises:
-        CookbookLayoutError: The URL points into this repository, but this checkout holds no such file.
+        CookbookLayoutError: The URL points into this repository, but names no file this checkout holds.
     """
-    own_prefix = f"{RAW_BASE_URL}/{cookbook.settings.repository}/"
-    if not url.lower().startswith(own_prefix.lower()):
-        return None
-    relative = unquote(url[len(own_prefix) :].partition("/")[2])
-    root = cookbook.root.resolve()
-    local_path = (root / relative).resolve()
-    if not local_path.is_relative_to(root) or not local_path.is_file():
-        msg = f"the sample {url} points into this repository, but this checkout holds no file at {relative}"
-        raise CookbookLayoutError(msg)
-    return local_path
+    try:
+        local_file = cookbook.local_file_of(url)
+    except CookbookLayoutError as exc:
+        msg = f"the sample {url} points into this repository, but {exc}"
+        raise CookbookLayoutError(msg) from exc
+    return local_file.path if local_file is not None else None
 
 
 def _wait_for_run(
@@ -591,29 +617,53 @@ def _wait_for_run(
 def _await_results(*, client: HostedClient, run_id: str, timeout_seconds: float) -> ResultsReady:
     """Read a run's results until it ends, waiting between two reads what the API's `Retry-After` asks, and never less than the poll interval.
 
+    A read that got no answer, or whose answer says only that the server or the gateway failed for a moment (429, 500, 502 or 504), is made
+    again after the same wait while time remains, since the run is paid for and goes on on the server whatever one read says. Every error but
+    the run's own end names the run and says how to read its output later.
+
     Raises:
         HostedRunError: The run ended without a result.
-        HostedRunTimeoutError: The run was still going when `timeout_seconds` ran out.
-        HostedApiError: A read was refused or got no answer.
+        HostedRunTimeoutError: The run was still going, or its results could not be read, when `timeout_seconds` ran out.
+        HostedApiError: A read was refused otherwise, such as for a run the API does not know.
     """
     deadline = monotonic() + timeout_seconds
     while True:
-        state = client.read_results(run_id=run_id)
-        match state:
-            case ResultsReady():
-                return state
-            case ResultsFailed():
-                msg = f"run {run_id} ended {state.status} without a result: {state.message}"
-                raise HostedRunError(msg, run_id=run_id, status=state.status)
-            case ResultsPending():
-                remaining = deadline - monotonic()
-                if remaining <= 0:
-                    msg = (
-                        f"run {run_id} was still going after {timeout_seconds:.0f} s. It goes on on the server, "
-                        f"and GET /v1/runs/{run_id}/results reads its output once it ends"
-                    )
-                    raise HostedRunTimeoutError(msg, run_id=run_id, status=_RUNNING_STATUS)
-                sleep(min(max(POLL_INTERVAL_SECONDS, state.retry_after_seconds or 0), remaining))
+        unread: HostedApiError | None = None
+        try:
+            state = client.read_results(run_id=run_id)
+        except HostedApiError as exc:
+            if not _is_transient(exc):
+                msg = f"run {run_id} started, but a read of its results failed: {exc}. {_goes_on(run_id)}"
+                raise HostedApiError(msg, status_code=exc.status_code, problem=exc.problem) from exc
+            unread = exc
+            retry_after = exc.retry_after_seconds
+        else:
+            match state:
+                case ResultsReady():
+                    return state
+                case ResultsFailed():
+                    msg = f"run {run_id} ended {state.status} without a result: {state.message}"
+                    raise HostedRunError(msg, run_id=run_id, status=state.status)
+                case ResultsPending():
+                    retry_after = state.retry_after_seconds
+        remaining = deadline - monotonic()
+        if remaining <= 0:
+            if unread is None:
+                msg = f"run {run_id} was still going after {timeout_seconds:.0f} s. {_goes_on(run_id)}"
+            else:
+                msg = f"run {run_id} had no readable result after {timeout_seconds:.0f} s, its last read failing: {unread}. {_goes_on(run_id)}"
+            raise HostedRunTimeoutError(msg, run_id=run_id, status=_RUNNING_STATUS)
+        sleep(min(max(POLL_INTERVAL_SECONDS, retry_after or 0), remaining))
+
+
+def _is_transient(error: HostedApiError) -> bool:
+    """Whether a failed read of a run's results says nothing of the run: no answer came, or the server or the gateway failed for a moment."""
+    return isinstance(error, HostedApiUnreachableError) or error.status_code in _TRANSIENT_READ_STATUS_CODES
+
+
+def _goes_on(run_id: str) -> str:
+    """What an error raised once a run started says of it: that it goes on on the server, and how to read its output later by its id."""
+    return f"It goes on on the server, and GET /v1/runs/{run_id}/results reads its output once it ends"
 
 
 def download(url: str, *, max_bytes: int, transport: httpx.BaseTransport | None = None) -> bytes:
@@ -626,7 +676,12 @@ def download(url: str, *, max_bytes: int, transport: httpx.BaseTransport | None 
         HostedApiError: The link is not HTTPS, could not be fetched, answered anything but 200, or holds more than `max_bytes`.
     """
     shown = _without_query(url)
-    if urlsplit(url).scheme != "https":
+    try:
+        scheme = urlsplit(url).scheme
+    except ValueError:
+        # A link too malformed to split, such as one with an unclosed bracket in its host, is no HTTPS link either.
+        scheme = ""
+    if scheme != "https":
         msg = f"{shown} is not an HTTPS link, and a resolved storage link always is"
         raise HostedApiError(msg)
     try:
@@ -655,7 +710,13 @@ def download(url: str, *, max_bytes: int, transport: httpx.BaseTransport | None 
 
 def _refusal(*, url: str, response: httpx.Response) -> HostedApiError:
     msg = f"{url} answered HTTP {response.status_code}: {_excerpt(response)}"
-    return HostedApiError(msg, status_code=response.status_code, problem=_problem_details(response))
+    return HostedApiError(msg, status_code=response.status_code, problem=_problem_details(response), retry_after_seconds=_retry_after(response))
+
+
+def _may_have_started(error: HostedApiError) -> HostedApiError:
+    """The error of a start whose request was sent but whose answer names no run, warning that the run may exist and spend credit all the same."""
+    msg = f"{error}. The API may have started the run all the same: look for it in the console before starting another"
+    return HostedApiError(msg, status_code=error.status_code, problem=error.problem, retry_after_seconds=error.retry_after_seconds)
 
 
 def _json_object(*, url: str, response: httpx.Response) -> dict[str, Any]:

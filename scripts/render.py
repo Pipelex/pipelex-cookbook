@@ -22,7 +22,7 @@ from jinja2 import Environment, FileSystemLoader, StrictUndefined
 from pydantic import BaseModel, ConfigDict, Field, JsonValue
 
 from scripts.contract import Contract, ContractField, ContractInput, short_concept
-from scripts.cookbook import INPUTS_FILE, METHODS_DIR, SNIPPETS_DIR, Cookbook, MethodPackage
+from scripts.cookbook import INPUTS_FILE, METHODS_DIR, RAW_BASE_URL, SNIPPETS_DIR, Cookbook, MethodPackage
 from scripts.exceptions import CookbookLayoutError
 from scripts.library import LIBRARY_METHODS_DIR
 from scripts.recipes import GENERATED_DIR, PYTHON_TARGET, SIDECAR_FILE, TYPESCRIPT_TARGET
@@ -45,7 +45,6 @@ FRONT_REGION_END = "<!-- END methods -->"
 LIBRARY_REGION_TEMPLATE = "library_region.md.j2"
 LIBRARY_REGION_BEGIN = "<!-- BEGIN library, written by `make render` from library.json: never edit this region by hand -->"
 LIBRARY_REGION_END = "<!-- END library -->"
-RAW_BASE_URL = "https://raw.githubusercontent.com"
 GITHUB_BASE_URL = "https://github.com"
 DEFAULT_CHATBOT_WITH_SAMPLES = "Run {address} on {samples}"
 DEFAULT_CHATBOT_WITHOUT_SAMPLES = "Run {address} with the sample inputs in {inputs_url}"
