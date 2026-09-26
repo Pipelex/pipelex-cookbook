@@ -5,6 +5,13 @@
 ### Added
 
 - **`make check-smoke`**: runs every method once on production, on its sample and from its files, and fails when a method does not validate, its run ends without a result, or its output is not of the shape its `contract.json` declares; it never compares content. `METHOD=<name>` narrows it to one method, `ROUTE=address` runs each page's address at its tag instead, and a sample linked into this repository is uploaded from the checkout, so a sample not yet on `main` runs. It needs `PIPELEX_API_KEY`, prints each run's id, cost and duration, and spends inference credit, unlike every other check, so `make test`, `make agent-test`, `make check-hosted` and CI never run it.
+- **A method page shows its sample and what it returned**: each page now opens, under its header, with "The sample", the input the method runs on shown by its kind (an image embedded, a document as its first-page preview, prose quoted, a structure as a table) with its source and licence, then "What you get", the output of one production run on that sample rendered as a reader would use it, with the run's date and duration, before the "Takes" and "Returns" lines and the doors.
+- **The output snapshot, `output.json`**: `make snapshot METHOD=<name>` runs a method once on production on its sample, spending inference credit, and commits what it returned beside the package, the files it holds under `methods/<name>/output/` with every storage reference and presigned link rewritten to the copies. `make check-render` fails on a method without one, on one whose pipe, concept or shape no longer matches its contract, whose sample changed since, or whose files are out of step, and warns when only its bundles changed.
+- **Output hints**: `[methods.<name>.output]` in `cookbook.toml` says how the page shows an output where its contract cannot, with `formats` naming a text field that holds Markdown or HTML, and `item_label` naming the items of a list output.
+
+### Changed
+
+- **Every sample input has a source-and-licence record (Breaking)**: `[methods.<name>.samples.<input>]` in `cookbook.toml` replaces `sample_labels`, giving the sample's link text, whether it was made up, where a real one was copied from and when, its licence, its credit line and what was changed. A real sample that is a file must be copied under `assets/<name>/`, a document sample kept there needs a first-page preview beside it, and `make check-render` fails on an input without a record.
 
 ### Removed
 

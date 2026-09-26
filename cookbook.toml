@@ -1,6 +1,11 @@
 # The cookbook's editorial fields, read by `make render` to write each method's page, methods/<name>/README.md.
-# Everything else a page says comes from the package itself: its manifest, its inputs.json and its contract.json.
-# Every field of a method's entry is optional, and a method with no entry still gets a page from its manifest.
+# Everything else a page says comes from the package itself: its manifest, its inputs.json, its contract.json and its output.json.
+# Every field of a method's entry is optional, and a method with no entry still gets a page from its manifest, except its sample records:
+# each input of the sample has one under [methods.<name>.samples.<input>], with its link text, whether it was made up (`synthetic`), where it
+# was copied from and when (`source` and `retrieved`, for a real input only), its licence (`license`, `license_url`), its credit line
+# (`attribution`) and what was changed from the source (`changes`, optional), and `make check-render` fails on an input without one.
+# [methods.<name>.output] holds the two optional hints on how the page shows the output: `formats`, how a text field reads (markdown, html or
+# text), and `item_label`, the noun naming each item of a list output. docs/README.md says more.
 
 # The address every cookbook manifest carries: the runtime locates a package by this address and the manifest's name.
 address = "github.com/Pipelex/pipelex-cookbook"
