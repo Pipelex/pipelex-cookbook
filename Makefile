@@ -78,6 +78,8 @@ make check-methods            - Validate every method on production from its fil
 make check-addresses          - Validate every page's address at its tag, every address a recipe names, and every library method the front page lists, on production (needs PIPELEX_API_KEY)
 make check-codegen-live       - Check that every recipe's and page snippet's types come from what its sidecar names as it is today (needs PIPELEX_API_KEY)
 make check-hosted             - Every check that calls production, run by hand before each PR and at each release (needs PIPELEX_API_KEY)
+make check-smoke              - Run every method once on production on its sample and check its output's shape: SPENDS CREDIT (needs PIPELEX_API_KEY;
+                                METHOD=<name> runs one method, ROUTE=address runs each page's address at its tag)
 
 make format                   - format with ruff and plxt
 make lint                     - lint with ruff and plxt
@@ -134,7 +136,7 @@ export HELP
 	run-all-tests \
 	check c cc agent-check agent-test \
 	render check-render check-lockstep check-links check-library check-recipes check-codegen check-recipe-types check-cookbook \
-	refresh refresh-library check-methods check-addresses check-codegen-live check-hosted \
+	refresh refresh-library check-methods check-addresses check-codegen-live check-hosted check-smoke \
 	merge-check-ruff-lint merge-check-ruff-format merge-check-plxt-format merge-check-plxt-lint merge-check-mypy merge-check-pyright \
 	li check-unused-imports fix-unused-imports check-uv check-TODOs
 
@@ -209,6 +211,8 @@ update: env-verbose
 # sample URLs and needs no key, and refresh-library and check-library download the method library's public tarball at the pinned tag.
 # refresh, check-methods, check-addresses, check-codegen-live and check-hosted call
 # production with PIPELEX_API_KEY and spend no inference; CI holds no key, so they are run by hand.
+# check-smoke is the one target that spends inference credit: it runs every method once on production, through
+# tests/smoke/, whose `smoke` marker pytest's addopts deselect everywhere else, and which skip unless COOKBOOK_SMOKE=1.
 #
 # A code recipe's generated types come from scripts/sdk/recipe_codegen.py, which runs beside
 # pipelex-sdk in an environment of its own (`uv run --script`), so that the trees are written and
@@ -284,7 +288,7 @@ refresh-library: env
 	$(VENV_PYTHON) -m scripts refresh-library
 
 refresh: env
-	$(call PRINT_TITLE,"Refreshing the snapshot of the library, every contract from production, and then the pages and every generated tree")
+	$(call PRINT_TITLE,"Refreshing the library snapshot and the contracts and pages and types")
 	$(VENV_PYTHON) -m scripts refresh-library
 	$(VENV_PYTHON) -m scripts refresh
 	$(VENV_PYTHON) -m scripts render
@@ -304,6 +308,11 @@ check-codegen-live: env
 
 check-hosted: check-methods check-addresses check-codegen-live
 	@echo "> done: check-hosted"
+
+# METHOD narrows the runs to one method (or several, separated by commas), and ROUTE=address runs each page's address at its tag.
+check-smoke: env
+	$(call PRINT_TITLE,"Running every method once on production: this spends credit")
+	COOKBOOK_SMOKE=1 COOKBOOK_SMOKE_METHOD="$(METHOD)" COOKBOOK_SMOKE_ROUTE="$(ROUTE)" $(VENV_PYTEST) tests/smoke -m smoke -s -p no:sugar -o log_level=WARNING
 
 ##############################################################################################
 ############################      Cleaning                        ############################
@@ -344,7 +353,7 @@ cleanall: cleanderived cleanenv
 codex-tests: env
 	$(call PRINT_TITLE,"Unit testing for Codex")
 	@echo "• Running unit tests for Codex (excluding codex_disabled)"
-	$(VENV_PYTEST) --exitfirst --quiet -m "not codex_disabled" || [ $$? = 5 ]
+	$(VENV_PYTEST) --exitfirst --quiet -m "not codex_disabled and not smoke" || [ $$? = 5 ]
 
 gha-tests: env
 	$(call PRINT_TITLE,"Unit testing for github actions")

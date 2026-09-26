@@ -15,6 +15,8 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from scripts.exceptions import CookbookLayoutError
 
 CONTRACT_FILE = "contract.json"
+# How a type expression joins the branches of a union, as `schema_type` writes it.
+TYPE_BRANCH_SEPARATOR = " or "
 # How a JSON schema refers to one of its own definitions.
 _DEFS_PREFIX = "#/$defs/"
 
@@ -192,7 +194,7 @@ def schema_type(schema: Mapping[str, Any]) -> str:
         non_null = [branch for branch in branches if branch.get("type") != "null"]
         if len(non_null) == 1:
             return schema_type(non_null[0])
-        return " or ".join(schema_type(branch) for branch in non_null) or "any"
+        return TYPE_BRANCH_SEPARATOR.join(schema_type(branch) for branch in non_null) or "any"
     reference = schema.get("$ref")
     if isinstance(reference, str):
         definition_name = reference.rsplit("/", maxsplit=1)[-1]
@@ -221,6 +223,27 @@ def schema_type(schema: Mapping[str, Any]) -> str:
             return "object"
         case _:
             return "any"
+
+
+def type_branches(type_expression: str) -> list[str]:
+    """The branches of a type expression's union, split on ` or ` outside any brackets, so that `list[text or integer]` stays one branch."""
+    branches: list[str] = []
+    depth = 0
+    start = 0
+    index = 0
+    while index < len(type_expression):
+        if depth == 0 and type_expression.startswith(TYPE_BRANCH_SEPARATOR, index):
+            branches.append(type_expression[start:index])
+            index += len(TYPE_BRANCH_SEPARATOR)
+            start = index
+            continue
+        if type_expression[index] == "[":
+            depth += 1
+        elif type_expression[index] == "]":
+            depth -= 1
+        index += 1
+    branches.append(type_expression[start:])
+    return branches
 
 
 def _optional_str(value: object) -> str | None:

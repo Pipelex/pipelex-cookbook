@@ -50,6 +50,6 @@ These recipes make a method your own from your coding agent, with the [Pipelex p
 | Recipe | What it shows | Method |
 |---|---|---|
 | [Copy a method, change it, and make it yours](yours/copy-and-change/) | A published method copied at its tag, changed with `/pipelex-edit`, proven on its sample, saved to your catalog with `/pipelex-catalog`, and your chatbot, your code and your app pointed at its new id | [Document question answering](../methods/answer_from_documents/) |
-| [A method designed from a sentence and proven by a lab](yours/design-from-a-sentence/) | `/pipelex-design` turning one sentence into a runnable method, and `/pipelex-lab` proving it against answer keys, on test documents with planted facts, within a budget | A CV and job-offer match, designed in the recipe |
+| [A method designed from a sentence and proven by a lab](yours/design-from-a-sentence/) | `/pipelex-design` turning one sentence into a runnable method, and `/pipelex-lab` proving it on test documents written for the purpose, within a budget | A CV and job-offer match, designed in the recipe |
 
 To add one, read [docs/adding-a-recipe.md](../docs/adding-a-recipe.md).

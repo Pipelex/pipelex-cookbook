@@ -1,5 +1,5 @@
 # The cookbook's editorial fields, read by `make render` to write each method's page, methods/<name>/README.md.
-# Everything else a page says comes from the package itself: its manifest, its inputs.json, its key.md and its contract.json.
+# Everything else a page says comes from the package itself: its manifest, its inputs.json and its contract.json.
 # Every field of a method's entry is optional, and a method with no entry still gets a page from its manifest.
 
 # The address every cookbook manifest carries: the runtime locates a package by this address and the manifest's name.

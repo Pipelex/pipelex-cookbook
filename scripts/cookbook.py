@@ -1,7 +1,7 @@
 """Load the cookbook: its version, its editorial fields in `cookbook.toml`, every method package under `methods/`, and the library's snapshot.
 
-A package is a directory holding a `METHODS.toml` manifest, its `.mthds` bundles, a sample `inputs.json`, an answer key `key.md`, and the contract
-snapshot `contract.json` that `make refresh` writes. Loading checks the package's identity: its manifest's `name` is its directory's name and its
+A package is a directory holding a `METHODS.toml` manifest, its `.mthds` bundles, a sample `inputs.json`, and the contract snapshot
+`contract.json` that `make refresh` writes. Loading checks the package's identity: its manifest's `name` is its directory's name and its
 `address` is the cookbook's, since the runtime locates a package by that pair and never by its path. It also holds the contract snapshot to the
 package's files: the main pipe, its output concept and its multiplicity must be what the `.mthds` files declare. The method library's snapshot,
 `library.json`, must have been taken at the tag and the address `cookbook.toml` pins (`scripts/library.py`).
@@ -11,6 +11,7 @@ import json
 import tomllib
 from pathlib import Path
 from typing import Any, cast
+from urllib.parse import unquote, urlsplit
 
 from mthds.package.exceptions import ManifestError
 from mthds.package.manifest.parser import parse_methods_toml
@@ -20,7 +21,6 @@ from pydantic import BaseModel, ConfigDict, Field, JsonValue, ValidationError
 from scripts.bundles import DeclaredOutput, declared_main_output
 from scripts.contract import CONTRACT_FILE, Contract, load_contract
 from scripts.exceptions import CookbookLayoutError
-from scripts.key import AnswerKey, parse_key
 from scripts.library import LibrarySettings, LibrarySnapshot, load_library
 
 COOKBOOK_FILE = "cookbook.toml"
@@ -28,10 +28,11 @@ PYPROJECT_FILE = "pyproject.toml"
 METHODS_DIR = "methods"
 MANIFEST_FILE = "METHODS.toml"
 INPUTS_FILE = "inputs.json"
-KEY_FILE = "key.md"
 PAGE_FILE = "README.md"
 # Where `make render` writes each method's page snippets as files, in `tests/snippets/<name>/`, for the type checkers to read.
 SNIPPETS_DIR = "tests/snippets"
+# Where a raw URL into a GitHub repository points: `<RAW_BASE_URL>/<owner>/<repository>/<ref>/<path>`.
+RAW_BASE_URL = "https://raw.githubusercontent.com"
 
 
 class EditorialEntry(BaseModel):
@@ -68,7 +69,6 @@ class MethodPackage(BaseModel):
     manifest: MethodsManifest
     bundle_files: list[str] = Field(description="The package's `.mthds` files, relative to its directory, sorted")
     inputs: dict[str, JsonValue] = Field(description="The sample inputs of `inputs.json`")
-    key: AnswerKey
     contract: Contract | None = Field(description="The committed contract snapshot, or None before the first `make refresh`")
     editorial: EditorialEntry
 
@@ -89,6 +89,15 @@ class MethodPackage(BaseModel):
         return [self.directory / bundle_file for bundle_file in self.bundle_files]
 
 
+class LocalFile(BaseModel):
+    """A file of this checkout that a raw URL into the cookbook's repository names."""
+
+    model_config = ConfigDict(frozen=True)
+
+    ref: str = Field(description="The ref the URL names the file at: `main` or a release tag")
+    path: Path = Field(description="The file in this checkout, resolved")
+
+
 class Cookbook(BaseModel):
     """The whole cookbook as the renderer and the checks see it."""
 
@@ -107,6 +116,40 @@ class Cookbook(BaseModel):
 
     def address_of(self, package: MethodPackage) -> str:
         return f"{self.settings.address}/{package.name}@{self.tag}"
+
+    def local_file_of(self, url: str) -> LocalFile | None:
+        """The file of this checkout a raw URL into the cookbook's repository names, or None for a URL hosted elsewhere.
+
+        The URL's path is `/<owner>/<repository>/<ref>/<file>`, where the ref is one path segment, `main` or a release tag, as the guides ask
+        of every link into this repository; its query and fragment are no part of the file's path. The file's path is percent-decoded and
+        resolved under the checkout, so a path climbing out of it, with `..` or from the filesystem's root, names no file of this checkout.
+
+        Raises:
+            CookbookLayoutError: The URL points into the cookbook's repository, but names no file this checkout holds. The message names the
+                path the URL names rather than the URL, which the caller holds.
+        """
+        try:
+            parts = urlsplit(url)
+        except ValueError:
+            return None
+        if f"{parts.scheme}://{parts.netloc}".lower() != RAW_BASE_URL.lower():
+            return None
+        # GitHub reads an owner's and a repository's names whatever their case.
+        repository = self.settings.repository.lower().split("/")
+        segments = parts.path.removeprefix("/").split("/")
+        if len(segments) <= len(repository) or [segment.lower() for segment in segments[: len(repository)]] != repository:
+            return None
+        ref = segments[len(repository)]
+        relative = unquote("/".join(segments[len(repository) + 1 :]))
+        root = self.root.resolve()
+        local_path = (root / relative).resolve()
+        if not local_path.is_relative_to(root):
+            msg = f"its path {relative} leads outside this checkout"
+            raise CookbookLayoutError(msg)
+        if not local_path.is_file():
+            msg = f"this checkout holds no file at {relative}"
+            raise CookbookLayoutError(msg)
+        return LocalFile(ref=ref, path=local_path)
 
 
 def load_cookbook(root: Path, *, read_contracts: bool = True, read_library: bool = True) -> Cookbook:
@@ -186,11 +229,6 @@ def _load_package(*, directory: Path, settings: CookbookSettings, read_contract:
         raise CookbookLayoutError(msg)
 
     inputs = _load_inputs(directory / INPUTS_FILE)
-    key_path = directory / KEY_FILE
-    if not key_path.is_file():
-        msg = f"{directory} holds no {KEY_FILE}: every cookbook method carries an answer key for its sample"
-        raise CookbookLayoutError(msg)
-    key = parse_key(key_path.read_text(encoding="utf-8"), source=str(key_path))
     contract_path = directory / CONTRACT_FILE
     contract = load_contract(contract_path) if read_contract and contract_path.is_file() else None
     if contract is not None:
@@ -205,7 +243,6 @@ def _load_package(*, directory: Path, settings: CookbookSettings, read_contract:
         manifest=manifest,
         bundle_files=bundle_files,
         inputs=inputs,
-        key=key,
         contract=contract,
         editorial=settings.methods.get(directory.name) or EditorialEntry(),
     )

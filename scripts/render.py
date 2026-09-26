@@ -1,9 +1,9 @@
 """Render every method's page, `methods/<name>/README.md`, from its package, its editorial fields and the templates, and the front page's methods.
 
 Everything a page says about its method is derived here, from committed files only: the address from the manifest and the version file, the
-samples and the code snippets' inputs from `inputs.json`, and the "Takes" and "Returns" lines from the contract snapshot; the answer key is
-not shown on the page. The templates under `templates/` hold the wording and the links, one block per door, so a change to a door is made
-once and every page inherits it at the next render.
+samples and the code snippets' inputs from `inputs.json`, and the "Takes" and "Returns" lines from the contract snapshot. The templates under
+`templates/` hold the wording and the links, one block per door, so a change to a door is made once and every page inherits it at the next
+render.
 
 The page's TypeScript and Python snippets are also written as files, `tests/snippets/<name>/typescript/snippet.ts` and
 `tests/snippets/<name>/python/snippet.py`, from the same templates under `templates/snippets/`, so that what the page shows is what the type
@@ -21,8 +21,8 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 from pydantic import BaseModel, ConfigDict, Field, JsonValue
 
-from scripts.contract import Contract, ContractField, ContractInput, short_concept
-from scripts.cookbook import INPUTS_FILE, METHODS_DIR, SNIPPETS_DIR, Cookbook, MethodPackage
+from scripts.contract import TYPE_BRANCH_SEPARATOR, Contract, ContractField, ContractInput, short_concept, type_branches
+from scripts.cookbook import INPUTS_FILE, METHODS_DIR, RAW_BASE_URL, SNIPPETS_DIR, Cookbook, MethodPackage
 from scripts.exceptions import CookbookLayoutError
 from scripts.library import LIBRARY_METHODS_DIR
 from scripts.recipes import GENERATED_DIR, PYTHON_TARGET, SIDECAR_FILE, TYPESCRIPT_TARGET
@@ -45,7 +45,6 @@ FRONT_REGION_END = "<!-- END methods -->"
 LIBRARY_REGION_TEMPLATE = "library_region.md.j2"
 LIBRARY_REGION_BEGIN = "<!-- BEGIN library, written by `make render` from library.json: never edit this region by hand -->"
 LIBRARY_REGION_END = "<!-- END library -->"
-RAW_BASE_URL = "https://raw.githubusercontent.com"
 GITHUB_BASE_URL = "https://github.com"
 DEFAULT_CHATBOT_WITH_SAMPLES = "Run {address} on {samples}"
 DEFAULT_CHATBOT_WITHOUT_SAMPLES = "Run {address} with the sample inputs in {inputs_url}"
@@ -506,16 +505,22 @@ def _described(subject: str, *, description: str | None) -> str:
 
 def type_phrase(type_expression: str) -> str:
     """Phrase a contract type expression for a reader: `list[GanttTaskDetails]` becomes "a list of `GanttTaskDetails`"."""
+    branches = type_branches(type_expression)
+    if len(branches) > 1:
+        return TYPE_BRANCH_SEPARATOR.join(type_phrase(branch) for branch in branches)
     if type_expression.startswith("list[") and type_expression.endswith("]"):
-        item_type = type_expression.removeprefix("list[").removesuffix("]")
-        scalar = _SCALAR_PHRASES.get(item_type)
-        return f"a list of {scalar[1]}" if scalar else f"a list of `{item_type}`"
+        item_types = type_branches(type_expression.removeprefix("list[").removesuffix("]"))
+        return f"a list of {TYPE_BRANCH_SEPARATOR.join(_plural_phrase(item_type) for item_type in item_types)}"
     scalar = _SCALAR_PHRASES.get(type_expression)
     if scalar:
         return scalar[0]
-    if " or " in type_expression:
-        return " or ".join(type_phrase(branch) for branch in type_expression.split(" or "))
     return _with_article(f"`{type_expression}`")
+
+
+def _plural_phrase(item_type: str) -> str:
+    """Phrase a list's item type as its items are counted: "texts", or the concept's name as it is."""
+    scalar = _SCALAR_PHRASES.get(item_type)
+    return scalar[1] if scalar else f"`{item_type}`"
 
 
 def _with_article(noun: str) -> str:

@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- **`make check-smoke`**: runs every method once on production, on its sample and from its files, and fails when a method does not validate, its run ends without a result, or its output is not of the shape its `contract.json` declares; it never compares content. `METHOD=<name>` narrows it to one method, `ROUTE=address` runs each page's address at its tag instead, and a sample linked into this repository is uploaded from the checkout, so a sample not yet on `main` runs. It needs `PIPELEX_API_KEY`, prints each run's id, cost and duration, and spends inference credit, unlike every other check, so `make test`, `make agent-test`, `make check-hosted` and CI never run it.
+
+### Removed
+
+- **The answer keys**: no package carries a `key.md` any more, and loading the cookbook no longer asks for one. `docs/adding-a-method.md` proves a new method by reading its output as the person who would use it and by `make check-smoke`, rather than by scoring a run against a key.
+
 ## [v0.19.1] - 2026-09-25
 
 ### Changed

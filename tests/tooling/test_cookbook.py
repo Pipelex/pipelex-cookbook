@@ -1,8 +1,11 @@
 import pytest
 
-from scripts.cookbook import load_cookbook
+from scripts.cookbook import Cookbook, LocalFile, load_cookbook
 from scripts.exceptions import CookbookLayoutError
-from tests.tooling.test_data import MakeCookbook
+from tests.tooling.test_data import WIDGETS_SAMPLE_URL, MakeCookbook
+
+RAW_REPOSITORY_URL = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook"
+SAMPLE_PATH = "assets/extract_widgets/catalogue.png"
 
 
 class TestCookbookLoading:
@@ -41,12 +44,6 @@ class TestCookbookLoading:
         with pytest.raises(CookbookLayoutError, match="your_dir"):
             load_cookbook(root)
 
-    def test_a_package_without_an_answer_key_is_refused(self, make_cookbook: MakeCookbook):
-        root = make_cookbook()
-        (root / "methods" / "count_words" / "key.md").unlink()
-        with pytest.raises(CookbookLayoutError, match="holds no key.md"):
-            load_cookbook(root)
-
     def test_a_broken_contract_snapshot_is_refused_unless_contracts_are_left_unread(self, make_cookbook: MakeCookbook):
         root = make_cookbook()
         (root / "methods" / "count_words" / "contract.json").write_text("{not json", encoding="utf-8")
@@ -54,3 +51,62 @@ class TestCookbookLoading:
             load_cookbook(root)
         cookbook = load_cookbook(root, read_contracts=False)
         assert [package.contract for package in cookbook.packages] == [None, None]
+
+
+class TestLocalFiles:
+    @staticmethod
+    def _cookbook_with_sample(make_cookbook: MakeCookbook) -> Cookbook:
+        root = make_cookbook()
+        sample = root / SAMPLE_PATH
+        sample.parent.mkdir(parents=True)
+        sample.write_bytes(b"png")
+        return load_cookbook(root)
+
+    @pytest.mark.parametrize(
+        ("url", "ref"),
+        [
+            (WIDGETS_SAMPLE_URL, "main"),
+            (f"{RAW_REPOSITORY_URL}/v0.9.0/{SAMPLE_PATH}", "v0.9.0"),
+            (f"{WIDGETS_SAMPLE_URL}?raw=true#page", "main"),
+            (f"https://RAW.githubusercontent.com/pipelex/Pipelex-Cookbook/main/{SAMPLE_PATH}", "main"),
+            (f"{RAW_REPOSITORY_URL}/main/assets/extract_widgets/%63atalogue.png", "main"),
+        ],
+        ids=["main", "tag", "query-and-fragment", "any-case", "percent-encoded"],
+    )
+    def test_a_raw_url_into_the_repository_names_the_checkout_file_at_its_ref(self, make_cookbook: MakeCookbook, url: str, ref: str):
+        cookbook = self._cookbook_with_sample(make_cookbook)
+        assert cookbook.local_file_of(url) == LocalFile(ref=ref, path=(cookbook.root / SAMPLE_PATH).resolve())
+
+    @pytest.mark.parametrize(
+        "url",
+        [
+            "https://example.org/assets/extract_widgets/catalogue.png",
+            f"https://raw.githubusercontent.com/Pipelex/methods/main/{SAMPLE_PATH}",
+            f"http://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/{SAMPLE_PATH}",
+            RAW_REPOSITORY_URL,
+            "https://[bad/assets",
+        ],
+        ids=["another-host", "another-repository", "plain-http", "no-ref", "malformed"],
+    )
+    def test_a_url_hosted_elsewhere_names_no_local_file(self, make_cookbook: MakeCookbook, url: str):
+        assert self._cookbook_with_sample(make_cookbook).local_file_of(url) is None
+
+    @pytest.mark.parametrize(
+        ("url", "problem"),
+        [
+            (f"{RAW_REPOSITORY_URL}/main/assets/extract_widgets/missing.png", "this checkout holds no file at assets/extract_widgets/missing.png"),
+            # The ref is one path segment, so a branch named with a slash leaves the rest of its name in the file's path.
+            (f"{RAW_REPOSITORY_URL}/refs/heads/main/{SAMPLE_PATH}", f"this checkout holds no file at heads/main/{SAMPLE_PATH}"),
+            (f"{RAW_REPOSITORY_URL}/main/../outside.txt", "its path ../outside.txt leads outside this checkout"),
+            (f"{RAW_REPOSITORY_URL}/main/assets/%2E%2E/%2E%2E/outside.txt", "its path assets/../../outside.txt leads outside this checkout"),
+            (f"{RAW_REPOSITORY_URL}/main//etc/hosts", "its path /etc/hosts leads outside this checkout"),
+        ],
+        ids=["missing", "slashed-ref", "dot-dot", "encoded-dot-dot", "absolute"],
+    )
+    def test_a_raw_url_into_the_repository_naming_no_checkout_file_is_refused(self, make_cookbook: MakeCookbook, url: str, problem: str):
+        cookbook = self._cookbook_with_sample(make_cookbook)
+        # A file beside the checkout, which a path climbing out of it would reach.
+        (cookbook.root.parent / "outside.txt").write_text("not the cookbook's", encoding="utf-8")
+        with pytest.raises(CookbookLayoutError) as raised:
+            cookbook.local_file_of(url)
+        assert str(raised.value) == problem

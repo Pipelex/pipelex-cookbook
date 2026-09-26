@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 
 from scripts.contract import Contract
+from tests.tooling.fake_api import FakeApi
 from tests.tooling.test_data import (
     COOKBOOK_TOML,
     FIXTURE_ADDRESS,
@@ -17,11 +18,9 @@ from tests.tooling.test_data import (
     LIBRARY_SNAPSHOT,
     WIDGETS_BUNDLE,
     WIDGETS_CONTRACT,
-    WIDGETS_KEY,
     WIDGETS_SAMPLE_URL,
     WORDS_BUNDLE,
     WORDS_CONTRACT,
-    WORDS_KEY,
     MakeCookbook,
 )
 
@@ -52,7 +51,6 @@ def write_package(
     manifest: str,
     bundle: str,
     inputs: dict[str, object],
-    key: str,
     contract: Contract | None,
 ) -> Path:
     package_dir = root / "methods" / name
@@ -60,7 +58,6 @@ def write_package(
     (package_dir / "METHODS.toml").write_text(manifest, encoding="utf-8")
     (package_dir / "bundle.mthds").write_text(bundle, encoding="utf-8")
     (package_dir / "inputs.json").write_text(json.dumps(inputs, indent=2), encoding="utf-8")
-    (package_dir / "key.md").write_text(key, encoding="utf-8")
     if contract is not None:
         (package_dir / "contract.json").write_text(contract.to_json(), encoding="utf-8")
     return package_dir
@@ -69,6 +66,12 @@ def write_package(
 @pytest.fixture
 def templates_dir() -> Path:
     return REPO_ROOT / "templates"
+
+
+@pytest.fixture
+def fake_api() -> FakeApi:
+    """A stand-in for production, with no answer queued yet: its `client` sends every call to it rather than to the network."""
+    return FakeApi()
 
 
 @pytest.fixture
@@ -97,7 +100,6 @@ def make_cookbook(tmp_path: Path) -> MakeCookbook:
             ),
             bundle=WIDGETS_BUNDLE,
             inputs={"catalogue": {"concept": "widgets.CataloguePage", "content": {"url": WIDGETS_SAMPLE_URL}}},
-            key=WIDGETS_KEY,
             contract=WIDGETS_CONTRACT,
         )
         write_package(
@@ -112,7 +114,6 @@ def make_cookbook(tmp_path: Path) -> MakeCookbook:
             ),
             bundle=WORDS_BUNDLE,
             inputs={"text": "The quick brown fox"},
-            key=WORDS_KEY,
             contract=WORDS_CONTRACT,
         )
         return root

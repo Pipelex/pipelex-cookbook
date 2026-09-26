@@ -22,6 +22,7 @@ dev = [
   "pipelex-tools>=0.3.2",
   "pyright>=1.1.411",
   "pytest>=9.0.1",
+  "pytest-mock>=3.14.0",
   "pytest-sugar>=1.0.0",
   "pytest-xdist>= 3.6.1",
   "ruff==0.16.4",
@@ -167,10 +168,12 @@ typeCheckingMode = "strict"
 
 [tool.pytest]
 minversion = "9.0"
-addopts = ["--import-mode=importlib", "-ra"]
+# The smoke check spends inference credit, so it is deselected here and selected only by `make check-smoke`.
+addopts = ["--import-mode=importlib", "-ra", "-m", "not smoke"]
 xfail_strict = true
 markers = [
   "codex_disabled: tests that should not run in Codex, whose sandbox has no network",
+  "smoke: runs a method on production, spending inference credit; deselected unless `make check-smoke` selects it",
 ]
 
 [tool.ruff]

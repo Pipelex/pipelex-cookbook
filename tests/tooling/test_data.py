@@ -1,7 +1,9 @@
-"""Constants for the cookbook tooling's tests: the fixture cookbook's editorial file, answer keys and contract snapshots."""
+"""Constants for the cookbook tooling's tests: the fixture cookbook's editorial file, bundles and contract snapshots, and hand-built outputs."""
 
 from collections.abc import Callable
 from pathlib import Path
+
+from pydantic import JsonValue
 
 from scripts.contract import Contract, ContractField, ContractInput, ContractOutput
 from scripts.library import LibraryMethod, LibrarySnapshot
@@ -54,36 +56,6 @@ type = "PipeLLM"
 inputs = { text = "Text" }
 output = "Text"
 prompt = "Count the words of @text."
-"""
-
-WIDGETS_KEY = """# Key: catalogue
-
-Inputs: one catalogue page listing three widgets.
-
-## Planted facts
-F1. The page lists three widgets: Sprocket, Flange and Gasket.
-
-## Must
-M1. `widgets` holds three widgets: Sprocket, Flange and Gasket.
-M2. Each widget's `colour` is the colour printed beside it,
-in any wording.
-
-## Must not
-N1. A widget listed twice.
-
-## Pass bar
-Every Must and Must not line.
-"""
-
-WORDS_KEY = """# Key: fox
-
-Inputs: one sentence of four words.
-
-## Must
-M1. The output says the text has four words.
-
-## Pass bar
-Every Must line.
 """
 
 WIDGETS_CONTRACT = Contract(
@@ -149,3 +121,82 @@ LIBRARY_SNAPSHOT = LibrarySnapshot(
 )
 
 MakeCookbook = Callable[..., Path]
+
+# An output of the right shape for each method under methods/, written by hand from its contract.json, for the shape check's tests. Each is
+# made up and short: the shape check reads the shape, never the content.
+RIGHT_OUTPUTS: dict[str, JsonValue] = {
+    "advisory_board": {"text": "# Strategic report\n\n## Consensus\n\nShorten onboarding before adding features."},
+    "answer_from_documents": {
+        "status": "answered",
+        "answer": "Three of the report's sources are its own.",
+        "explanation": "The references appendix attributes three entries to the publisher of the report.",
+        "supporting_passages": [
+            {
+                "document_identifier": "report.pdf",
+                "page_number": 21,
+                "quote": "Washington, D.C.: Example Research Center.",
+                "relevance_reasoning": "The entry names the report's own publisher.",
+            }
+        ],
+        "contradictions_noted": [],
+        "caveats": "Only the appendix was counted.",
+        "confidence": "high",
+    },
+    "blog_article_generator": {
+        "seo_title": "Capybaras, the calmest animals on the riverbank",
+        "meta_description": "Why capybaras get along with everyone.",
+        "content": "# Capybaras\n\nCapybaras are the largest rodents in the world.",
+    },
+    "discord_newsletter": {"text": "<html><body><h1>This week on the server</h1></body></html>"},
+    "extract_dpe": {
+        "address": "12 rue de l'Exemple, 75011 Paris",
+        "date_of_issue": "2024-05-02",
+        "date_of_expiration": "2034-05-01",
+        "energy_efficiency_class": "D",
+        "per_year_per_m2_consumption": 230.0,
+        "co2_emission_class": "B",
+        "per_year_per_m2_co2_emissions": 9,
+        "yearly_energy_costs_min": 900.0,
+        "yearly_energy_costs_max": 1200.0,
+    },
+    "extract_gantt": {
+        "tasks": [{"name": "Foundations", "start_date": "2026-03-02", "end_date": "2026-03-13"}],
+        "milestones": [{"name": "Roof on", "milestone_date": "2026-04-10"}],
+    },
+    "extract_generic": {"items": [{"text": "# Page 1\n\nThe first page."}, {"text": "# Page 2\n\nThe second page."}]},
+    "extract_slides": {"text": "## Slide 1: Welcome\n\nA title slide with the company logo."},
+    "gen_expense_data": {
+        "items": [
+            {
+                "employee": {"employee_id": "E-001", "full_name": "Alex Martin", "email": "alex@example.com", "department": "Sales"},
+                "expenses_with_receipts": [
+                    {
+                        "expense": {"amount": 42.5, "currency": "EUR"},
+                        "receipt": {"url": "pipelex-storage://org_1/results/receipt.png"},
+                        "scenario": {"label": "legitimate"},
+                    }
+                ],
+                "html_report": {"inner_html": "<h1>Expenses</h1>", "css_class": "report"},
+            }
+        ]
+    },
+    "gen_synthetic_data": {
+        "items": [
+            {
+                "student_name": "Sam Lee",
+                "current_performance": "Average",
+                "learns_best_with": "Visual examples",
+                "pace": "Normal",
+                "complexity": "Balanced",
+                "strengths": "Geometry",
+                "needs_help_with": "Fractions",
+                "prior_knowledge": "Basic algebra",
+                "hobbies_interests": "Football",
+                "career_goals": "Architect",
+                "example_style": "Real-world problems",
+                "question_format": "Multiple choice",
+            }
+        ]
+    },
+    "research_report": {"text": "# Research Report\n\n## Question\n\nWhat is the question?\n\n---\nGenerated by Pipelex"},
+}

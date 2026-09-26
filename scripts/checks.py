@@ -7,14 +7,13 @@ The links are read from the packages' inputs, from the pages and from the recipe
 import re
 from collections.abc import Callable
 from pathlib import Path
-from urllib.parse import unquote
 
 import httpx
 from pydantic import BaseModel, ConfigDict, JsonValue
 
 from scripts.cookbook import INPUTS_FILE, SNIPPETS_DIR, Cookbook
+from scripts.exceptions import CookbookLayoutError
 from scripts.recipes import recipe_files
-from scripts.render import RAW_BASE_URL
 
 _RAW_URL_PATTERN = re.compile(r"https://raw\.githubusercontent\.com/[^\s)\"'`<>]+")
 _SENTENCE_PUNCTUATION = ".,;:!?"
@@ -101,9 +100,9 @@ def collect_urls(*, cookbook: Cookbook, rendered: dict[Path, str]) -> dict[str, 
 def check_links(*, cookbook: Cookbook, rendered: dict[Path, str], fetch_status: Callable[[str], int]) -> list[LinkVerdict]:
     """Check every sample URL, and every raw URL on the pages and in the recipes.
 
-    A URL into the cookbook itself must name a file this checkout holds, whichever ref it names. When it answers 404, it is reported as not
-    published rather than as broken: a file added since the last release is on neither `main` nor that release's tag, and the next release both
-    publishes it and re-renders every page at its own tag. Any other URL must answer.
+    A URL into the cookbook itself must name a file this checkout holds, whichever ref it names, `main` or a release tag, as one path segment.
+    When it answers 404, it is reported as not published rather than as broken: a file added since the last release is on neither `main` nor
+    that release's tag, and the next release both publishes it and re-renders every page at its own tag. Any other URL must answer.
 
     Args:
         cookbook: The cookbook.
@@ -111,16 +110,16 @@ def check_links(*, cookbook: Cookbook, rendered: dict[Path, str], fetch_status: 
         fetch_status: Fetches a URL and returns its HTTP status, following redirects.
     """
     verdicts: list[LinkVerdict] = []
-    own_prefix = f"{RAW_BASE_URL}/{cookbook.settings.repository}/".lower()
     for url, found_in in collect_urls(cookbook=cookbook, rendered=rendered).items():
         status = fetch_status(url)
         answered = 200 <= status < 300
-        if url.lower().startswith(own_prefix):
-            ref, _, url_path = url[len(own_prefix) :].partition("/")
-            local_path = unquote(url_path)
-            if not (cookbook.root / local_path).is_file():
-                verdicts.append(LinkVerdict(url=url, found_in=found_in, ok=False, note=f"no file at {local_path} in this checkout"))
-            elif answered:
+        try:
+            local_file = cookbook.local_file_of(url)
+        except CookbookLayoutError as exc:
+            verdicts.append(LinkVerdict(url=url, found_in=found_in, ok=False, note=str(exc)))
+            continue
+        if local_file is not None:
+            if answered:
                 verdicts.append(LinkVerdict(url=url, found_in=found_in, ok=True, note="answers"))
             elif status != _NOT_FOUND:
                 # Only a 404 means the ref does not hold the file yet; any other failure is a failure.
@@ -131,7 +130,7 @@ def check_links(*, cookbook: Cookbook, rendered: dict[Path, str], fetch_status: 
                         url=url,
                         found_in=found_in,
                         ok=True,
-                        note=f"not published at {ref} (HTTP {status}); the file is in this checkout, and the next release publishes it",
+                        note=f"not published at {local_file.ref} (HTTP {status}); the file is in this checkout, and the next release publishes it",
                     )
                 )
         elif answered:
