@@ -206,7 +206,7 @@ class TestChecks:
 
     def test_raw_urls_in_the_recipes_files_are_collected_whatever_the_file(self, make_cookbook: MakeCookbook):
         root = make_cookbook()
-        sample = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/assets/extract_gantt/gantt_tree_house.png"
+        sample = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/assets/extract_proof_of_purchase/restaurant_invoice.pdf"
         invoice = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/assets/invoice_extractor/invoice_1.pdf"
         vendored = "https://raw.githubusercontent.com/some/package/main/logo.png"
         http_recipe = root / "recipes" / "run" / "http"

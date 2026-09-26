@@ -6,16 +6,26 @@ from pydantic import JsonValue
 
 from scripts.contract import Contract, ContractField, ContractOutput, load_contract
 from scripts.shape import shape_problems, value_matches
-from tests.tooling.test_data import RIGHT_OUTPUTS, WORDS_CONTRACT
+from tests.tooling.test_data import RIGHT_OUTPUTS, SHAPE_FIXTURES, WORDS_CONTRACT
 
 METHODS_DIR = Path(__file__).resolve().parents[2] / "methods"
 # Every method the cookbook holds, so that a method added without an output in RIGHT_OUTPUTS fails the first test below.
 METHOD_NAMES = sorted(directory.name for directory in METHODS_DIR.iterdir() if (directory / "contract.json").is_file())
+# The cases the tests over every method run on: each method, then each hand-written fixture covering a shape no method declares today.
+CASE_NAMES = METHOD_NAMES + sorted(SHAPE_FIXTURES)
 _LIST_MULTIPLICITIES = ("variable", "fixed")
 
 
 def _contract(name: str) -> Contract:
+    if name in SHAPE_FIXTURES:
+        return SHAPE_FIXTURES[name][0]
     return load_contract(METHODS_DIR / name / "contract.json")
+
+
+def _right_output(name: str) -> JsonValue:
+    if name in SHAPE_FIXTURES:
+        return SHAPE_FIXTURES[name][1]
+    return RIGHT_OUTPUTS[name]
 
 
 def _is_list(contract: Contract) -> bool:
@@ -53,53 +63,53 @@ class TestShape:
     def test_every_method_has_a_hand_built_output(self):
         assert sorted(RIGHT_OUTPUTS) == METHOD_NAMES
 
-    @pytest.mark.parametrize("name", METHOD_NAMES)
+    @pytest.mark.parametrize("name", CASE_NAMES)
     def test_a_right_output_has_no_problem(self, name: str):
-        assert shape_problems(contract=_contract(name), output=RIGHT_OUTPUTS[name]) == []
+        assert shape_problems(contract=_contract(name), output=_right_output(name)) == []
 
-    @pytest.mark.parametrize("name", METHOD_NAMES)
+    @pytest.mark.parametrize("name", CASE_NAMES)
     def test_a_value_of_the_wrong_type_is_named_with_its_field(self, name: str):
         contract = _contract(name)
         for contract_field in contract.output.fields:
-            output = copy.deepcopy(RIGHT_OUTPUTS[name])
+            output = copy.deepcopy(_right_output(name))
             _first_object(contract=contract, output=output)[contract_field.name] = _wrong_value(contract_field.type)
             [problem] = shape_problems(contract=contract, output=output)
             assert problem.startswith(f"`{contract_field.name}` of {_where(contract)} is ")
             assert problem.endswith(f", where the contract declares `{contract_field.type}`")
 
-    @pytest.mark.parametrize("name", METHOD_NAMES)
+    @pytest.mark.parametrize("name", CASE_NAMES)
     def test_a_required_field_missing_or_null_is_named_and_an_optional_one_is_not(self, name: str):
         contract = _contract(name)
         for contract_field in contract.output.fields:
             expected = [f"{_where(contract)} has no `{contract_field.name}`, which the contract requires"] if contract_field.required else []
-            missing = copy.deepcopy(RIGHT_OUTPUTS[name])
+            missing = copy.deepcopy(_right_output(name))
             del _first_object(contract=contract, output=missing)[contract_field.name]
-            null = copy.deepcopy(RIGHT_OUTPUTS[name])
+            null = copy.deepcopy(_right_output(name))
             _first_object(contract=contract, output=null)[contract_field.name] = None
             assert shape_problems(contract=contract, output=missing) == expected
             assert shape_problems(contract=contract, output=null) == expected
 
-    @pytest.mark.parametrize("name", METHOD_NAMES)
+    @pytest.mark.parametrize("name", CASE_NAMES)
     def test_a_key_the_contract_does_not_name_is_named(self, name: str):
         contract = _contract(name)
-        output = copy.deepcopy(RIGHT_OUTPUTS[name])
+        output = copy.deepcopy(_right_output(name))
         _first_object(contract=contract, output=output)["surprise"] = "not in the contract"
         assert shape_problems(contract=contract, output=output) == [f"{_where(contract)} has a key `surprise` the contract does not name"]
 
-    @pytest.mark.parametrize("name", METHOD_NAMES)
+    @pytest.mark.parametrize("name", CASE_NAMES)
     def test_an_output_in_the_wrong_envelope_is_one_problem(self, name: str):
         contract = _contract(name)
         concept = contract.output.concept
-        output = RIGHT_OUTPUTS[name]
+        output = _right_output(name)
         if _is_list(contract):
             expected = f"the output is an object, where a list of `{concept}` is a list or an object holding it under `items`"
             assert shape_problems(contract=contract, output=_first_object(contract=contract, output=output)) == [expected]
         else:
             assert shape_problems(contract=contract, output=[output]) == [f"the output is a list, where `{concept}` is one object"]
 
-    @pytest.mark.parametrize("name", [name for name in METHOD_NAMES if _is_list(_contract(name))])
+    @pytest.mark.parametrize("name", [name for name in CASE_NAMES if _is_list(_contract(name))])
     def test_a_list_output_is_read_bare_as_in_its_envelope(self, name: str):
-        output = RIGHT_OUTPUTS[name]
+        output = _right_output(name)
         assert isinstance(output, dict)
         assert shape_problems(contract=_contract(name), output=output["items"]) == []
 

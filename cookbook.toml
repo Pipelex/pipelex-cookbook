@@ -19,69 +19,6 @@ address = "github.com/Pipelex/methods"
 repository = "Pipelex/methods"
 tag = "v0.1.2"
 
-[methods.extract_gantt]
-title = "Gantt chart extraction"
-pitch = "Read a Gantt chart image and return every task with its start and end dates, and every milestone with its date."
-chatbot = "Run {address} on {samples}"
-app_dir = "gantt-app"
-yours_dir = "gantt"
-yours_change = "add each task's owner to what it extracts"
-
-[methods.extract_gantt.samples.gantt_chart_image]
-label = "sample chart"
-synthetic = true
-license = "MIT"
-license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
-attribution = "Evotis S.A.S"
-
-[methods.extract_slides]
-title = "Slide deck extraction"
-pitch = "Read a slide deck in PDF and return one Markdown text giving each slide its title, its text and a description of its layout and charts."
-chatbot = "Run {address} on {samples}"
-app_dir = "slides-app"
-yours_dir = "slides"
-yours_change = "add the speaker's key message for each slide to what it extracts"
-
-[methods.extract_slides.samples.document]
-label = "sample deck"
-synthetic = true
-license = "MIT"
-license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
-attribution = "Evotis S.A.S"
-
-[methods.extract_generic]
-title = "Generic document extraction"
-pitch = "Read any document and return each page as Markdown, including the text that only appears inside its images and diagrams."
-chatbot = "Run {address} on {samples}"
-app_dir = "extract-app"
-yours_dir = "extract"
-yours_change = "turn the tables it finds into CSV alongside the Markdown"
-
-[methods.extract_generic.samples.document]
-label = "sample article"
-synthetic = true
-license = "MIT"
-license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
-attribution = "Evotis S.A.S"
-
-[methods.extract_generic.output]
-item_label = "Page"
-
-[methods.advisory_board]
-title = "Advisory board consultation"
-pitch = "Read a business problem told in plain words, consult five to ten expert advisory boards on it, and return one strategic report in Markdown with their consensus, the choices they disagree on, a phased roadmap, risks, resources and success metrics."
-chatbot = "Run {address} on this problem: \"We're a B2B SaaS company with $5M ARR whose annual churn rose from 8% to 15%. How do we get it under 10% within six months on a $500K budget?\""
-app_dir = "advisory-app"
-yours_dir = "advisory-board"
-yours_change = "replace the sixteen boards it can consult with the teams of your own company"
-
-[methods.advisory_board.samples.user_input]
-label = "sample problem"
-synthetic = true
-license = "MIT"
-license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
-attribution = "Evotis S.A.S"
-
 [methods.blog_article_generator]
 title = "Blog article generation"
 pitch = "Read a topic, an audience, a tone and a length, and return an SEO-optimized blog article in Markdown with its SEO title and meta description."
@@ -99,21 +36,6 @@ attribution = "Evotis S.A.S"
 
 [methods.blog_article_generator.output]
 formats = { content = "markdown" }
-
-[methods.research_report]
-title = "Research report"
-pitch = "Read a research question and return a Markdown report with an executive summary, key findings and open questions, drafted from three angles out of the model's own knowledge without searching any source, so it is a first draft to check rather than verified research."
-chatbot = "Run {address} on the question: what are the most promising approaches to improving battery energy density for electric vehicles?"
-app_dir = "research-app"
-yours_dir = "research"
-yours_change = "research five angles instead of three"
-
-[methods.research_report.samples.question]
-label = "sample question"
-synthetic = true
-license = "MIT"
-license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
-attribution = "Evotis S.A.S"
 
 [methods.review_nda]
 title = "NDA review against a playbook"

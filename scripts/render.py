@@ -504,7 +504,7 @@ def _described(subject: str, *, description: str | None) -> str:
 
 
 def type_phrase(type_expression: str) -> str:
-    """Phrase a contract type expression for a reader: `list[GanttTaskDetails]` becomes "a list of `GanttTaskDetails`"."""
+    """Phrase a contract type expression for a reader: `list[PositionReview]` becomes "a list of `PositionReview`"."""
     branches = type_branches(type_expression)
     if len(branches) > 1:
         return TYPE_BRANCH_SEPARATOR.join(type_phrase(branch) for branch in branches)

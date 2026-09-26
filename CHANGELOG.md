@@ -23,6 +23,7 @@
 ### Removed
 
 - **The methods whose samples are reworked (Breaking)**: `answer_from_documents`, `discord_newsletter`, `extract_dpe`, `gen_expense_data` and `gen_synthetic_data` leave the cookbook with their packages, samples, pages and snippets, and will come back reworked as new examples. Their addresses at `v0.19.1` and earlier tags keep working, and the recipes built on them keep running them at `v0.18.0`, linking their pages at that release; an address without a tag no longer resolves.
+- **The methods short of the example bar (Breaking)**: `advisory_board`, `extract_generic` and `research_report` leave the cookbook for good, and `extract_gantt` and `extract_slides` leave it to come back reworked as new examples, each with its package, sample, page and snippets, except the chart `extract_gantt` ran on, which stays under `assets/extract_gantt/` for the upload-grant recipe to send. Their addresses at `v0.19.1` and earlier tags keep working, and the recipes built on `research_report` and `extract_gantt` keep running them at `v0.18.0`, linking their pages at that release; an address without a tag no longer resolves.
 - **The answer keys**: no package carries a `key.md` any more, and loading the cookbook no longer asks for one.
 
 ## [v0.19.1] - 2026-09-25
