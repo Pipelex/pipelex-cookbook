@@ -2,7 +2,7 @@
 
 Thank you for sharing what you built. The cookbook holds worked examples of AI methods, written in MTHDS and run with Pipelex, that others can read, run and adapt, and it takes three kinds of contribution:
 
-- **A method**: a package under `methods/<name>/` that anyone can run by address on the hosted API, with a sample to try it on and an answer key saying what a right result holds.
+- **A method**: a package under `methods/<name>/` that anyone can run by address on the hosted API, with a sample to try it on and a generated page showing every way to use it.
 - **A recipe**: one way of using a method, under `recipes/<door>/<name>/`, shown on a real case.
 - **A fix** to a page's template, to a recipe, or to a tutorial lesson.
 
@@ -11,13 +11,13 @@ The runtime itself lives in [Pipelex/pipelex](https://github.com/Pipelex/pipelex
 ## Set up
 
 1. Fork and clone this repository, then run `make install`, which installs the cookbook's tooling with `uv`. `make check-cookbook` also needs Node.js 22 with npm, and shellcheck, to type-check the recipes.
-2. Copy `.env.example` to `.env` and put a `PIPELEX_API_KEY` in it, created in your console at [app.pipelex.com](https://app.pipelex.com). Only the checks that validate on production read it, and none of them spends inference.
+2. Copy `.env.example` to `.env` and put a `PIPELEX_API_KEY` in it, created in your console at [app.pipelex.com](https://app.pipelex.com). The checks that validate on production read it, and none of them spends inference; `make check-smoke`, which runs every method once on its sample, reads it too and spends credit.
 
 [`docs/README.md`](docs/README.md) explains how the cookbook works: the packages, the generated pages, the recipes and every check.
 
 ## Add a method or a recipe
 
-- **A method**: follow [`docs/adding-a-method.md`](docs/adding-a-method.md). It takes you through the package, the answer key written before the first run, the proof on production, the page, and the checks.
+- **A method**: follow [`docs/adding-a-method.md`](docs/adding-a-method.md). It takes you through the package, the proof on production, the page, and the checks.
 - **A recipe**: follow [`docs/adding-a-recipe.md`](docs/adding-a-recipe.md).
 
 **Generated files are never edited by hand**: a method's `README.md`, everything under `tests/snippets/<name>/`, a recipe's `generated/` tree, the two lists of methods on the front page, and `library.json`, the snapshot the library's list is written from. Change their sources, then run `make render`, `make refresh` when a method's contract or a recipe's address changes, or `make refresh-library` when the library's pinned tag moves.

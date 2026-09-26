@@ -1,6 +1,6 @@
 # Adding a method
 
-A cookbook method is a package that anyone can run by address on the hosted API, with a sample, an answer key, and a generated page. [README.md](README.md) explains each part; this is the order to do it in.
+A cookbook method is a package that anyone can run by address on the hosted API, with a sample and a generated page. [README.md](README.md) explains each part; this is the order to do it in.
 
 ## 1. Make the package
 
@@ -27,26 +27,20 @@ Create `methods/<name>/`, where `<name>` is snake_case and becomes the last part
 
 - **The sample**, as files under `assets/<name>/`, and **`inputs.json`** naming each file by its raw URL on `main`: `https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/<name>/<file>`. The URL answers once a release brings the file to `main`; until then `make check-links` reports it as not published, which is expected. A sample already under `assets/` keeps its place, and a public file hosted elsewhere keeps its own URL, which must answer. An input taking several files lists one `{"url": …}` per file. Text inputs are written inline.
 
-## 2. Write the answer key, before the first run
-
-`methods/<name>/key.md` lists what a right answer on the sample holds, in the format of the Pipelex lab skill (`/pipelex-lab`): `# Key: <case>`, an `Inputs:` line, then `## Planted facts`, `## Must`, `## Must not`, `## Also acceptable` and `## Pass bar`, every line labelled (`F1.`, `M1.`, `N1.`, `A1.`). One checkable fact per line, naming the output field it reads.
-
-Write it from the sample, before the method runs on it, so that the run is scored against it rather than the key fitted to the run.
-
-## 3. Prove it on production
+## 2. Prove it on production
 
 With `PIPELEX_API_KEY` set:
 
 1. `make refresh` validates every package on production from its files and writes each `contract.json`, then renders, which writes the page and the sidecars of its snippets' generated trees, then generates those trees' types from the package's files. A package that is not valid prints the verdict and keeps its old snapshot, and the refresh stops before rendering. Run `make refresh` again whenever a bundle changes, since `make check-codegen-live` compares the snippets' types with what the package's files make.
-2. Run the method once on its sample, from its files, for instance with `/pipelex-run` on the package directory or through the Pipelex MCP. A run spends inference, so it is started by hand, once.
-3. Score the output against the key. When the pass bar is not met, fix the method, not the key, and run it again.
+2. `make check-smoke METHOD=<name>` validates the package, runs it once on production from its files on its sample, checks that its output has the shape its contract declares, and prints the run's id, its cost and its duration. A run spends inference credit, so it is started by hand, once for each change worth proving.
+3. Read the output as the person who would use it reads it, fetching it by the run's id, for instance with `/pipelex-run`: could they hand it on, file it or load it into another system as it stands? When they could not, change the method and run it again.
 
-## 4. Give it its page
+## 3. Give it its page
 
 1. Add an entry to `cookbook.toml` under `[methods.<name>]` with the title, the pitch, the sample's link text, the chatbot sentence and the "Make it yours" change. Every field is optional.
 2. `make render` writes `methods/<name>/README.md`, and the page's TypeScript and Python snippets as files under `tests/snippets/<name>/`, each reading the output through the types `make refresh` generated beside it. Read the page as a reader would, and commit everything under `tests/snippets/<name>/` with it, generated types included.
 
-## 5. Check and open the pull request
+## 4. Check and open the pull request
 
 1. `make agent-check` and `make agent-test`: the linters, the page freshness, the lockstep versions and the tests.
 2. `make check-recipe-types`, which type-checks the page's snippet files against the SDK and the method's generated types, each in its own environment.
