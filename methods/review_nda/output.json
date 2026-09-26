@@ -1,0 +1,119 @@
+{
+  "pipe": "nda_review.review_nda_against_playbook",
+  "concept": "nda_review.NdaReview",
+  "run": {
+    "started_at": "2026-09-26T20:52:50Z",
+    "finished_at": "2026-09-26T20:53:19Z",
+    "server": "https://api.pipelex.com",
+    "route": "files",
+    "method_ref": null,
+    "commit_sha": null,
+    "bundle_sha256": "e9cd7ad479913638b7dfff49b245e33ad8e5edaea897474b42ec3cd4f3cd1cf3",
+    "inputs_sha256": "c9c2b3e374ada3976705e1dcad131240c36dcbb30ea2ba3019f92116ebc0837b"
+  },
+  "output": {
+    "verdict": "Escalate to counsel",
+    "note_for_counsel": "This is a mutual Common Paper NDA on the counterparty’s paper, governed by Delaware law and with a terminable agreement term. It cannot be signed because the Cover Page adds a non-solicitation obligation, which the playbook requires deleting; the selected perpetual confidentiality term also must be changed to five years from the Effective Date, with trade-secret protection lasting only while the information remains a trade secret under applicable law.",
+    "positions": [
+      {
+        "position": "Mutuality",
+        "clause": "Standard Terms §1 (Introduction)",
+        "the_draft_says": "The MNDA \"allows each party\" to disclose information in connection with the Purpose, and defines each party as a \"Disclosing Party\" when it discloses and a \"Receiving Party\" when it receives.",
+        "assessment": "acceptable",
+        "fallback": null
+      },
+      {
+        "position": "Purpose",
+        "clause": "Cover Page, Purpose",
+        "the_draft_says": "The Purpose is \"Evaluating whether to enter into a business relationship with the other party.\" Standard Terms §2 limits use of Confidential Information \"solely for the Purpose.\"",
+        "assessment": "acceptable",
+        "fallback": null
+      },
+      {
+        "position": "Definition of Confidential Information",
+        "clause": "Standard Terms §1 (Introduction)",
+        "the_draft_says": "It defines Confidential Information as information the Disclosing Party identifies as “confidential”, “proprietary”, or the like, or that “should be reasonably understood as confidential or proprietary due to its nature and the circumstances of its disclosure.”",
+        "assessment": "acceptable",
+        "fallback": null
+      },
+      {
+        "position": "Standard exclusions",
+        "clause": "Standard Terms §3 (Exceptions)",
+        "the_draft_says": "The Receiving Party's obligations do not apply to information it can demonstrate \"is or becomes publicly available through no fault of the Receiving Party,\" was rightfully known or possessed before receipt without restrictions, was obtained from a third party without restrictions, or was independently developed without using or referencing the Confidential Information.",
+        "assessment": "acceptable",
+        "fallback": null
+      },
+      {
+        "position": "Sharing with representatives",
+        "clause": "Standard Terms §2(b)",
+        "the_draft_says": "The Receiving Party may disclose Confidential Information to \"its employees, agents, advisors, contractors and other representatives having a reasonable need to know for the Purpose,\" if they are bound by confidentiality obligations \"no less protective\" than the MNDA; the Receiving Party \"remains responsible for their compliance.\"",
+        "assessment": "acceptable",
+        "fallback": null
+      },
+      {
+        "position": "Disclosures required by law",
+        "clause": "Standard Terms §4, Disclosures Required by Law",
+        "the_draft_says": "The Receiving Party may disclose Confidential Information \"to the extent required by law, regulation or regulatory authority, subpoena or court order,\" provided that, \"to the extent legally permitted,\" it gives reasonable advance notice and reasonably cooperates at the Disclosing Party's expense to obtain confidential treatment.",
+        "assessment": "acceptable",
+        "fallback": null
+      },
+      {
+        "position": "Agreement term",
+        "clause": "Cover Page, MNDA Term; Standard Terms §5 (Term and Termination)",
+        "the_draft_says": "The MNDA \"Continues until terminated in accordance with the terms of the MNDA.\" Either party may terminate it \"for any or no reason upon written notice to the other party.\"",
+        "assessment": "acceptable",
+        "fallback": null
+      },
+      {
+        "position": "Confidentiality period",
+        "clause": "Cover Page, Term of Confidentiality",
+        "the_draft_says": "The Cover Page selects \"In perpetuity\" for the Term of Confidentiality. Standard Terms §5 provides that confidentiality obligations survive for that selected term.",
+        "assessment": "negotiate",
+        "fallback": "Five years from the Effective Date, but in the case of trade secrets until the information is no longer a trade secret under applicable law."
+      },
+      {
+        "position": "Return or destruction",
+        "clause": "Standard Terms §6, Return or Destruction of Confidential Information",
+        "the_draft_says": "Upon expiration, termination, or earlier request, the Receiving Party must \"cease using\" and, after written request, \"destroy all Confidential Information... or return it\" and confirm compliance if asked. It may retain information under \"standard backup or record retention policies\" or as required by law, while the MNDA continues to apply to retained information.",
+        "assessment": "acceptable",
+        "fallback": null
+      },
+      {
+        "position": "Remedies",
+        "clause": "Standard Terms §10, Equitable Relief",
+        "the_draft_says": "A breach “may cause irreparable harm for which monetary damages are an insufficient remedy,” and the Disclosing Party “is entitled to seek appropriate equitable relief, including an injunction, in addition to its other remedies.”",
+        "assessment": "acceptable",
+        "fallback": null
+      },
+      {
+        "position": "Governing law and courts",
+        "clause": "Cover Page, Governing Law & Jurisdiction; Standard Terms §9 (Governing Law and Jurisdiction)",
+        "the_draft_says": "The Cover Page specifies \"Governing Law: Delaware\" and \"Jurisdiction: courts located in New Castle County, Delaware.\" Standard Terms §9 requires proceedings to be brought in the federal or state courts located in that jurisdiction.",
+        "assessment": "acceptable",
+        "fallback": null
+      },
+      {
+        "position": "Non-solicitation, non-competition and exclusivity",
+        "clause": "Cover Page, MNDA Modifications",
+        "the_draft_says": "It includes a non-solicitation obligation: for the MNDA Term and twelve months afterward, neither party may \"directly or indirectly solicit for employment\" certain employees of the other party.",
+        "assessment": "refuse",
+        "fallback": "delete the clause."
+      },
+      {
+        "position": "Assignment",
+        "clause": "Standard Terms §11 (General)",
+        "the_draft_says": "“Neither party may assign this MNDA without the prior written consent of the other party,” except that either party may assign it “in connection with a merger, reorganization, acquisition or other transfer of all or substantially all its assets or voting securities.”",
+        "assessment": "acceptable",
+        "fallback": null
+      },
+      {
+        "position": "No licence, no warranty, no obligation to proceed",
+        "clause": "Standard Terms §§7, 8 and 11",
+        "the_draft_says": "It provides that disclosure “grants no license” under the Disclosing Party’s rights; all Confidential Information is provided “AS IS” and “WITHOUT WARRANTIES”; and “Neither party has an obligation under this MNDA to disclose Confidential Information to the other or proceed with any proposed transaction.”",
+        "assessment": "acceptable",
+        "fallback": null
+      }
+    ]
+  },
+  "files": {}
+}

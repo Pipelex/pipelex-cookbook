@@ -61,7 +61,7 @@ Setup is never repeated on a page. Adding the Pipelex MCP, installing the plugin
 | `samples.<input>` | The source-and-licence record of each sample input, by input name (see [the sample records](#the-sample-records)) | None: `make check-render` fails on an input without one |
 | `output.formats` | How a text field of the output reads on the page, `markdown`, `html` or `text`, by field name | Markdown for an output that is one text, plain text for a text field of a structure |
 | `output.item_label` | The noun naming each item of a list output, such as `Page` | `Item` |
-| `chatbot` | What to ask the chatbot, with `{address}`, `{samples}` and `{inputs_url}` placeholders | "Run {address} on {samples}", or on the sample inputs file when no input is a file |
+| `chatbot` | What to ask the chatbot, with `{address}`, `{samples}` and `{inputs_url}` placeholders | "Run {address} on {samples}", adding the sample inputs file for the inputs that are not files, or on the sample inputs file alone when no input is a file |
 | `app_dir` | The directory the method-app initializer creates | The name, dashed, with `-app` |
 | `yours_dir` | The directory the agent copies the method into | The name |
 | `yours_change` | The change "Make it yours" asks for | "adapt what it does to my case" |

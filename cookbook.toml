@@ -114,3 +114,27 @@ synthetic = true
 license = "MIT"
 license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
 attribution = "Evotis S.A.S"
+
+[methods.review_nda]
+title = "NDA review against a playbook"
+pitch = "Read a counterparty's NDA and the company's NDA playbook, and return a first-pass review with one row per playbook position, giving the clause that deals with it, whether it is acceptable, to negotiate or to refuse, and the playbook's fallback wording, then a verdict and a short note for the lawyer who signs off."
+app_dir = "nda-review-app"
+yours_dir = "nda-review"
+yours_change = "add a short email to the counterparty asking for the changes the rows to negotiate or refuse call for"
+
+[methods.review_nda.samples.nda]
+label = "sample NDA"
+synthetic = false
+source = "https://github.com/CommonPaper/Mutual-NDA/tree/2a3068b6c0ab6015c440f541d5b215bc3ac2f4cb"
+retrieved = 2026-09-26
+license = "CC-BY-4.0"
+license_url = "https://creativecommons.org/licenses/by/4.0/"
+attribution = "Common Paper Mutual Non-Disclosure Agreement (Version 1.0) free to use under CC BY 4.0."
+changes = "Laid out as a three-page PDF, with the Cover Page completed for this example as a counterparty's draft and left unsigned; the Standard Terms are unchanged."
+
+[methods.review_nda.samples.playbook]
+label = "sample playbook"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"

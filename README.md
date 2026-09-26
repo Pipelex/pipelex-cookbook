@@ -111,6 +111,7 @@ Each of these methods runs on the hosted Pipelex API by its address, through eve
 - **[Generic document extraction](methods/extract_generic/)**: Read any document and return each page as Markdown, including the text that only appears inside its images and diagrams.
 - **[Slide deck extraction](methods/extract_slides/)**: Read a slide deck in PDF and return one Markdown text giving each slide its title, its text and a description of its layout and charts.
 - **[Research report](methods/research_report/)**: Read a research question and return a Markdown report with an executive summary, key findings and open questions, drafted from three angles out of the model's own knowledge without searching any source, so it is a first draft to check rather than verified research.
+- **[NDA review against a playbook](methods/review_nda/)**: Read a counterparty's NDA and the company's NDA playbook, and return a first-pass review with one row per playbook position, giving the clause that deals with it, whether it is acceptable, to negotiate or to refuse, and the playbook's fallback wording, then a verdict and a short note for the lawyer who signs off.
 
 <!-- END methods -->
 

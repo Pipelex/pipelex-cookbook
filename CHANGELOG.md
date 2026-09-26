@@ -9,10 +9,15 @@
 - **The output snapshot, `output.json`**: `make snapshot METHOD=<name>` runs a method once on production on its sample, spending inference credit, and commits what it returned beside the package, the files it holds under `methods/<name>/output/` with every storage reference and presigned link rewritten to the copies. `make check-render` fails on a method without one, on one whose pipe, concept or shape no longer matches its contract, whose sample changed since, or whose files are out of step, and warns when only its bundles changed.
 - **`make previews`**: renders the first-page preview of every document sample under `assets/` whose source-and-licence record is written, with no key, no network and no run; a sample without its record never gets one.
 - **Output hints**: `[methods.<name>.output]` in `cookbook.toml` says how the page shows an output where its contract cannot, with `formats` naming a text field that holds Markdown or HTML, and `item_label` naming the items of a list output.
+- **`review_nda`, an NDA review against a playbook**: reads a counterparty's NDA and the company's NDA playbook and returns one row per playbook position, with the clause that deals with it, whether it is acceptable, to negotiate or to refuse, and the playbook's fallback wording, then a verdict and a note for the lawyer who signs off. Its sample is Common Paper's Mutual NDA, under CC BY 4.0, with a playbook written for the example.
 
 ### Changed
 
 - **Every sample input has a source-and-licence record (Breaking)**: `[methods.<name>.samples.<input>]` in `cookbook.toml` replaces `sample_labels`, giving the sample's link text, whether it was made up, where a real one was copied from and when, its licence, its credit line and what was changed. A real sample that is a file must be copied under `assets/<name>/`, a recorded document sample kept there needs a first-page preview beside it, and `make check-render` fails on an input without a record.
+
+### Fixed
+
+- **The chatbot sentence of a method with inputs that are not files**: when a method takes files and other inputs, its page's default chatbot sentence links the files and sends the chatbot to the sample inputs file for the rest, where it used to name the files alone.
 
 ### Removed
 

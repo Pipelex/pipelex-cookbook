@@ -1,6 +1,6 @@
 # >>> pipelex-codegen-stamp >>>
 # crate_fingerprint: 5dace19fcb800f0ef31eb2a7c89447c33d8ff9da002d3d052082b93a77ec93ef
-# engine_version: 0.64.0
+# engine_version: 0.65.0
 # projection: types / python-pydantic
 # options: {}
 # content_hash: 851d1b768c089a94be893f66ba5325d6dc27f5c73124ea353c4f5486a97954f2

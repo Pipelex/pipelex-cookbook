@@ -2,7 +2,7 @@
 
 lock_version = 1
 crate_fingerprint = "4e6afba12116df0e529461f2a31b0ce18029ac6063d45eadbcd7927a22168be5"
-engine_version = "0.64.0"
+engine_version = "0.65.0"
 
 [[artifacts]]
 path = "models.py"
