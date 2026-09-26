@@ -37,6 +37,20 @@ attribution = "Evotis S.A.S"
 [methods.blog_article_generator.output]
 formats = { content = "markdown" }
 
+[methods.extract_dpe]
+title = "DPE record for a letting agency"
+pitch = "Read a French energy performance diagnostic (DPE) and return the record a letting agency files for the flat: the ADEME number and the dates, both classes with their figures, the estimated yearly energy costs with the date their prices refer to, and what the class means for letting the flat under the agency's letting rules."
+app_dir = "dpe-app"
+yours_dir = "dpe"
+yours_change = "add a short note to the owner saying what the class means for letting the flat and by when to plan the works"
+
+[methods.extract_dpe.samples.document]
+label = "sample DPE"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
 [methods.review_nda]
 title = "NDA review against a playbook"
 pitch = "Read a counterparty's NDA and the company's NDA playbook, and return a first-pass review with one row per playbook position, giving the clause that deals with it, whether it is acceptable, to negotiate or to refuse, and the playbook's fallback wording, then a verdict and a short note for the lawyer who signs off."

@@ -1,0 +1,9 @@
+# codegen.lock — generated artifact set (Pipelex codegen). Do not edit by hand.
+
+lock_version = 1
+crate_fingerprint = "a92d3bae902af313c653181194bafc3bebecdda241827476380643d288e6de9c"
+engine_version = "0.65.0"
+
+[[artifacts]]
+path = "models.py"
+content_hash = "9ccee19d6225c85afd1369c07210e14da2638f8fbe6c247b665fed7944a91cae"

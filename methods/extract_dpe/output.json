@@ -1,0 +1,30 @@
+{
+  "pipe": "dpe.extract_dpe",
+  "concept": "dpe.DpeRecord",
+  "run": {
+    "started_at": "2026-09-26T22:16:29Z",
+    "finished_at": "2026-09-26T22:16:53Z",
+    "server": "https://api.pipelex.com",
+    "route": "files",
+    "method_ref": null,
+    "commit_sha": null,
+    "bundle_sha256": "ab3eb327ca7ff9dbc4a85298197525e6a4bdac0c49e9ad41afc28a62f6dd8c4c",
+    "inputs_sha256": "dc8aa7b8332c81d2b579337497a06a75ba34f5ea4555a48aaf367249719d3a03"
+  },
+  "output": {
+    "address": "18 rue des Exemples, 69003 LYON 3EME (Étage 3 ; Porte gauche ; N° de lot : 27)",
+    "dpe_number": "2669E0000000X",
+    "date_of_issue": "2026-06-18",
+    "date_of_expiration": "2036-06-17",
+    "energy_efficiency_class": "F",
+    "per_year_per_m2_consumption": 342,
+    "co2_emission_class": "E",
+    "per_year_per_m2_co2_emissions": 61,
+    "yearly_energy_costs_min": 1380,
+    "yearly_energy_costs_max": 1870,
+    "energy_prices_as_of": "2025-01-01",
+    "letting_status": "Can be let, rent frozen",
+    "no_new_lease_from": "2028-01-01"
+  },
+  "files": {}
+}

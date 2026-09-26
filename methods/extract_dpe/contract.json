@@ -1,0 +1,100 @@
+{
+  "pipe": "dpe.extract_dpe",
+  "inputs": [
+    {
+      "name": "document",
+      "concept": "dpe.DpeDocument",
+      "kind": "document",
+      "description": "A French energy performance diagnostic (DPE) of a dwelling, as a PDF",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    }
+  ],
+  "output": {
+    "concept": "dpe.DpeRecord",
+    "description": "The record a letting agency files for a DPE: the figures its listing and property software need, and what the class means for letting the dwelling",
+    "multiplicity": "single",
+    "item_count": null,
+    "fields": [
+      {
+        "name": "address",
+        "type": "text",
+        "description": "The address of the dwelling the diagnostic is about, with its floor, door and lot number when the DPE gives them",
+        "required": true
+      },
+      {
+        "name": "dpe_number",
+        "type": "text",
+        "description": "The DPE's number in the ADEME register, by which it can be checked",
+        "required": true
+      },
+      {
+        "name": "date_of_issue",
+        "type": "date",
+        "description": "The date the DPE was drawn up",
+        "required": true
+      },
+      {
+        "name": "date_of_expiration",
+        "type": "date",
+        "description": "The date the DPE is valid until",
+        "required": true
+      },
+      {
+        "name": "energy_efficiency_class",
+        "type": "text",
+        "description": "The dwelling's DPE class, the one the energy and climate label gives it",
+        "required": true
+      },
+      {
+        "name": "per_year_per_m2_consumption",
+        "type": "integer",
+        "description": "Primary energy consumption, in kWh per m² per year",
+        "required": true
+      },
+      {
+        "name": "co2_emission_class",
+        "type": "text",
+        "description": "The greenhouse gas emission class, read on the CO₂ emissions scale",
+        "required": true
+      },
+      {
+        "name": "per_year_per_m2_co2_emissions",
+        "type": "integer",
+        "description": "Greenhouse gas emissions, in kg of CO₂ per m² per year",
+        "required": true
+      },
+      {
+        "name": "yearly_energy_costs_min",
+        "type": "integer",
+        "description": "The low end of the estimated yearly energy costs, in euros",
+        "required": true
+      },
+      {
+        "name": "yearly_energy_costs_max",
+        "type": "integer",
+        "description": "The high end of the estimated yearly energy costs, in euros",
+        "required": true
+      },
+      {
+        "name": "energy_prices_as_of",
+        "type": "date",
+        "description": "The date the energy prices of the cost estimate are indexed to",
+        "required": false
+      },
+      {
+        "name": "letting_status",
+        "type": "text",
+        "description": "Whether the dwelling can be let under its DPE class, and whether its rent may be raised",
+        "required": true
+      },
+      {
+        "name": "no_new_lease_from",
+        "type": "date",
+        "description": "The date from which the class bars a lease signed, renewed or tacitly renewed; empty when no date bars it",
+        "required": false
+      }
+    ]
+  }
+}

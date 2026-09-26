@@ -106,6 +106,7 @@ Each method's page carries the one command, `npm create @pipelex/method-app`, th
 Each of these methods runs on the hosted Pipelex API by its address, through every door above, with nothing to install. Its page shows each door's command for it, with a sample to try it on.
 
 - **[Blog article generation](methods/blog_article_generator/)**: Read a topic, an audience, a tone and a length, and return an SEO-optimized blog article in Markdown with its SEO title and meta description.
+- **[DPE record for a letting agency](methods/extract_dpe/)**: Read a French energy performance diagnostic (DPE) and return the record a letting agency files for the flat: the ADEME number and the dates, both classes with their figures, the estimated yearly energy costs with the date their prices refer to, and what the class means for letting the flat under the agency's letting rules.
 - **[NDA review against a playbook](methods/review_nda/)**: Read a counterparty's NDA and the company's NDA playbook, and return a first-pass review with one row per playbook position, giving the clause that deals with it, whether it is acceptable, to negotiate or to refuse, and the playbook's fallback wording, then a verdict and a short note for the lawyer who signs off.
 
 <!-- END methods -->
