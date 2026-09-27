@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- **`check_schedule_update`, a schedule update checked against the baseline**: reads a contractor's schedule update, the chart its scheduling tool exports, against the company's master schedule baseline and slip tolerance, and returns what a project controls analyst loads into the master schedule and sends to the project manager: every task and milestone of the chart as a row with its status and its dates to the month, each baseline milestone compared with the update and flagged under the tolerance with the reason the update gives, and a two-sentence note on what slipped. It replaces the retired `extract_gantt`, and its sample is a fictional satellite manufacturer's schedule update made for the example, beside a baseline and tolerance written for it.
+
 ## [v0.20.1] - 2026-09-27
 
 ### Changed
