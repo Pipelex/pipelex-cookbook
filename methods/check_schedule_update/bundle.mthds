@@ -169,7 +169,7 @@ $schedule_update
 
 Here is the text an OCR engine read off the same image. It often spells a small label or date right where the image is hard to read, but it is out of order, it runs neighbouring words together and it can misread a character: use it to check how a label or a date is spelled, and the image for where each one sits.
 
-{% for page in chart_text.items %}{{ page.text_and_images.text.text | tag("ocr_text") }}{% endfor %}
+{% for page in chart_text.items %}{% if page.text_and_images.text %}{{ page.text_and_images.text.text | tag("ocr_text") }}{% endif %}{% endfor %}
 
 Read what the chart is, then transcribe it row by row, then give its callouts and every task and milestone it shows.
 
@@ -212,7 +212,7 @@ $schedule_update
 
 Here is the text an OCR engine read off the same image, out of order, with neighbouring words run together and the odd character misread:
 
-{% for page in chart_text.items %}{{ page.text_and_images.text.text | tag("ocr_text") }}{% endfor %}
+{% for page in chart_text.items %}{% if page.text_and_images.text %}{{ page.text_and_images.text.text | tag("ocr_text") }}{% endif %}{% endfor %}
 
 Here is how the chart was read, item by item, numbered, each as section | row | item | type, status | start | finish:
 
