@@ -27,8 +27,8 @@ status = { choices = [
   "complete",
   "forecast",
 ], description = "`complete` when the chart shows the item as done, `forecast` otherwise; for a task, whether its finish is done", required = true }
-start = { type = "text", description = "For a task, the month it starts, as YYYY-MM; empty for a milestone, or when the chart prints no date for it" }
-finish = { type = "text", description = "The milestone's month, or the month the task finishes, as YYYY-MM; empty when the chart prints no date for it" }
+start = { type = "text", description = "For a task, the month it starts, as YYYY-MM; empty for a milestone, or when the chart gives no date for it, printed or by where it sits on the time axis" }
+finish = { type = "text", description = "The milestone's month, or the month the task finishes, as YYYY-MM; empty when the chart gives no date for it, printed or by where it sits on the time axis" }
 
 [concept.Callout]
 description = "A box of text on a schedule chart commenting on the schedule, such as the reason for a slip"
@@ -68,8 +68,8 @@ compared_on = { choices = [
   "start",
   "finish",
 ], description = "Which date of that item the milestone is: `finish` for a milestone, the start or the finish of a task", required = true }
-printed_date = { type = "text", description = "The milestone's date exactly as the chart prints it beside its marker" }
-month = { type = "text", description = "That date as YYYY-MM; empty when the chart prints none" }
+printed_date = { type = "text", description = "The milestone's date exactly as the chart prints it beside its marker; empty when it prints none" }
+month = { type = "text", description = "That date as YYYY-MM, or where the chart prints none, the month its marker sits in on the time axis; empty when the chart gives neither" }
 reason_given = { type = "text", description = "The words of the chart's callout that give a reason for this milestone's slip, exactly as printed; empty when no callout does" }
 
 [concept.Comparison]
@@ -179,7 +179,7 @@ Then the items, row by row from the top and from left to right on each row, numb
 - Use the chart's legend for what each marker means: which one starts an activity, which one completes it, which one marks a milestone, and how an item that is done is drawn apart from a forecast one. Where the chart draws a status line, the vertical line at the date of the update, an item left of it is done and an item right of it is forecast, unless the legend says otherwise.
 - The group is the section heading an item's row sits under, and the activity is the row's own label. A heading row that carries its own bars or markers is its own activity.
 - Each marker at a single date is a milestone, with its date as its finish. A bar spanning dates is a task: its start is the date printed at the marker that starts it, and its finish the date printed at the marker that ends it. A marker that starts or ends a bar and carries a label of its own is a milestone too, beside the bar's task.
-- Take each date from the transcript, never from an item's position on the time axis, and write it as YYYY-MM, a two-digit year being in the century the time axis shows. Where the chart prints no date for an item, leave that date empty.
+- Take each date from the transcript, as printed with its marker, and write it as YYYY-MM, a two-digit year being in the century the time axis shows. Only where the chart prints no date for an item, read its month off the time axis instead: the month whose column the marker, or the end of the bar, sits in, when it sits inside one month and not on the line between two. Otherwise leave that date empty.
 - Every item is a marker or a bar the chart draws: a label with no marker or bar of its own is not an item. The coloured or patterned segments of a bar, which the legend names by kind, are part of the bar's task, not items of their own. The legend, the time axis, the acronym list and the callouts are not items either.
 
 For each callout, a box of text commenting on the schedule, give its words exactly as printed and what it points to or sits beside.
@@ -229,7 +229,7 @@ Here are the milestones of our master schedule baseline, numbered, each with the
 For each of these milestones, in this order:
 - find it on the chart itself: the same event, in the section and on the row where the chart shows it, and not another marker carrying the same name elsewhere; where the chart shows both a milestone of that name and the bar it starts or ends, take the milestone. Say where it is and why it is that one;
 - give the number of the item above that is it, or 0 when the chart does not show it, and which of that item's dates it is, the finish for a milestone, the start or the finish for a task. No item is two milestones of the baseline;
-- read its date again from the chart, looking closely at the marker: the date printed with it exactly as printed, then as YYYY-MM. Dates printed close together can run into each other, and a line can run through one: give this marker its own date, whatever the reading above says;
+- read its date again from the chart, looking closely at the marker: the date printed with it exactly as printed, then as YYYY-MM. Dates printed close together can run into each other, and a line can run through one: give this marker its own date, whatever the reading above says. Where the chart prints no date with it, leave the printed date empty and give the month whose column the marker sits in on the time axis, when it sits inside one month and not on the line between two;
 - where one of the callouts gives a reason for a slip of this milestone, quote its words exactly as printed.
 """
 
