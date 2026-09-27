@@ -245,7 +245,8 @@ steps = [
 
 # The tolerance is applied here and in the rows below, by rule rather than by a model: the slip is the number of whole months between the
 # baseline month and the month the chart gives, and the flag follows from it and from the allowance the tolerance sets for the milestone.
-# Each lookup falls back to an empty default, so that an item no baseline milestone is joins nothing.
+# Each lookup falls back to an empty default, so that an item no baseline milestone is joins nothing. Where the finder placed one baseline
+# milestone on two items, only its first placing counts, so that no milestone is compared twice.
 [pipe.join_baseline]
 type        = "PipeCompose"
 description = "Join an item of the update with the baseline milestone it is: its month on the chart, the baseline month, the slip in months, the allowance and the reason given"
@@ -254,33 +255,33 @@ output      = "Comparison"
 
 [pipe.join_baseline.construct.milestone]
 template = """
-{%- set found = (on_chart.items | selectattr('chart_item_number', 'equalto', chart_item.number) | list + [{'baseline_number': 0}]) | first -%}
+{%- set found = (on_chart.items | unique(attribute='baseline_number') | selectattr('chart_item_number', 'equalto', chart_item.number) | list + [{'baseline_number': 0}]) | first -%}
 {%- set b = (milestones.items | selectattr('number', 'equalto', found.baseline_number) | list + [{'milestone': ''}]) | first -%}
 {{- b.milestone -}}
 """
 
 [pipe.join_baseline.construct.compared_on]
 template = """
-{%- set found = (on_chart.items | selectattr('chart_item_number', 'equalto', chart_item.number) | list + [{'compared_on': 'finish'}]) | first -%}
+{%- set found = (on_chart.items | unique(attribute='baseline_number') | selectattr('chart_item_number', 'equalto', chart_item.number) | list + [{'compared_on': 'finish'}]) | first -%}
 {{- found.compared_on -}}
 """
 
 [pipe.join_baseline.construct.month]
 template = """
-{%- set found = (on_chart.items | selectattr('chart_item_number', 'equalto', chart_item.number) | list + [{'month': ''}]) | first -%}
+{%- set found = (on_chart.items | unique(attribute='baseline_number') | selectattr('chart_item_number', 'equalto', chart_item.number) | list + [{'month': ''}]) | first -%}
 {{- found.month or '' -}}
 """
 
 [pipe.join_baseline.construct.baseline]
 template = """
-{%- set found = (on_chart.items | selectattr('chart_item_number', 'equalto', chart_item.number) | list + [{'baseline_number': 0, 'month': ''}]) | first -%}
+{%- set found = (on_chart.items | unique(attribute='baseline_number') | selectattr('chart_item_number', 'equalto', chart_item.number) | list + [{'baseline_number': 0, 'month': ''}]) | first -%}
 {%- set b = (milestones.items | selectattr('number', 'equalto', found.baseline_number) | list + [{'due': ''}]) | first -%}
 {{- b.due if found.month else '' -}}
 """
 
 [pipe.join_baseline.construct.slip_months]
 template = """
-{%- set found = (on_chart.items | selectattr('chart_item_number', 'equalto', chart_item.number) | list + [{'baseline_number': 0, 'month': ''}]) | first -%}
+{%- set found = (on_chart.items | unique(attribute='baseline_number') | selectattr('chart_item_number', 'equalto', chart_item.number) | list + [{'baseline_number': 0, 'month': ''}]) | first -%}
 {%- set b = (milestones.items | selectattr('number', 'equalto', found.baseline_number) | list + [{'due': ''}]) | first -%}
 {%- set d = found.month or '' -%}
 {{- ((d[:4] | int) * 12 + (d[5:7] | int)) - ((b.due[:4] | int) * 12 + (b.due[5:7] | int)) if d and b.due else 0 -}}
@@ -288,14 +289,14 @@ template = """
 
 [pipe.join_baseline.construct.slip_allowed_months]
 template = """
-{%- set found = (on_chart.items | selectattr('chart_item_number', 'equalto', chart_item.number) | list + [{'baseline_number': 0}]) | first -%}
+{%- set found = (on_chart.items | unique(attribute='baseline_number') | selectattr('chart_item_number', 'equalto', chart_item.number) | list + [{'baseline_number': 0}]) | first -%}
 {%- set b = (milestones.items | selectattr('number', 'equalto', found.baseline_number) | list + [{'slip_allowed_months': 0}]) | first -%}
 {{- b.slip_allowed_months -}}
 """
 
 [pipe.join_baseline.construct.reason_given]
 template = """
-{%- set found = (on_chart.items | selectattr('chart_item_number', 'equalto', chart_item.number) | list + [{'reason_given': ''}]) | first -%}
+{%- set found = (on_chart.items | unique(attribute='baseline_number') | selectattr('chart_item_number', 'equalto', chart_item.number) | list + [{'reason_given': ''}]) | first -%}
 {{- found.reason_given or '' -}}
 """
 
@@ -367,14 +368,16 @@ start    = { template = "{{ chart_item.start or '' }}" }
 finish   = { template = "{{ chart_item.finish or '' }}" }
 flag     = "no baseline"
 
-# A baseline milestone is missing from the update when the chart does not show it with a date, and also when an earlier milestone of the
-# baseline already took the item it would be, since the item's row can be compared with one milestone only.
+# A baseline milestone is missing from the update when the chart does not show it with a date, when the item the finder named is none of
+# the chart's items, and also when an earlier milestone of the baseline already took the item it would be, since the item's row can be
+# compared with one milestone only. These are exactly the cases in which no row of the update is compared with the milestone, so that a
+# milestone is always either among the rows or flagged here, never in neither.
 [pipe.check_baseline_milestone]
 type                = "PipeCondition"
 description         = "Keep a baseline milestone the update does not show as a flagged row; a milestone the update shows is already among its rows"
-inputs              = { milestone = "BaselineMilestone", on_chart = "MilestoneOnChart[]" }
+inputs              = { milestone = "BaselineMilestone", on_chart = "MilestoneOnChart[]", reading = "ScheduleReading" }
 output              = "ScheduleRow?"
-expression_template = "{%- set found = (on_chart.items | selectattr('baseline_number', 'equalto', milestone.number) | list + [{'chart_item_number': 0, 'month': ''}]) | first -%}{%- set first_taker = (on_chart.items | selectattr('chart_item_number', 'equalto', found.chart_item_number) | list + [{'baseline_number': milestone.number}]) | first -%}{%- if found.chart_item_number and found.month and first_taker.baseline_number == milestone.number -%}shown{%- else -%}missing{%- endif -%}"
+expression_template = "{%- set placings = on_chart.items | unique(attribute='baseline_number') | list -%}{%- set found = (placings | selectattr('baseline_number', 'equalto', milestone.number) | list + [{'chart_item_number': 0, 'month': ''}]) | first -%}{%- set first_taker = (placings | selectattr('chart_item_number', 'equalto', found.chart_item_number) | list + [{'baseline_number': milestone.number}]) | first -%}{%- if found.chart_item_number in (reading.items | map(attribute='number') | list) and found.month and first_taker.baseline_number == milestone.number -%}shown{%- else -%}missing{%- endif -%}"
 default_outcome     = "continue"
 
 [pipe.check_baseline_milestone.outcomes]
