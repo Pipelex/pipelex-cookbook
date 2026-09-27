@@ -93,7 +93,7 @@ description = "One row for the master schedule: a task or milestone of the updat
 [concept.ScheduleRow.structure]
 group = { type = "text", description = "The section of the update the row comes from, or the heading the baseline lists a missing milestone under", required = true }
 activity = { type = "text", description = "The row of the update the item sits on" }
-item = { type = "text", description = "The task or milestone, as the update names it", required = true }
+item = { type = "text", description = "The task or milestone: as the baseline names it when the baseline holds it, so that it matches the master schedule, and otherwise as the update names it", required = true }
 type = { choices = [
   "task",
   "milestone",
