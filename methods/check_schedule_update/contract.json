@@ -1,0 +1,55 @@
+{
+  "pipe": "schedule_check.check_schedule_update",
+  "inputs": [
+    {
+      "name": "schedule_update",
+      "concept": "schedule_check.ScheduleUpdate",
+      "kind": "image",
+      "description": "A contractor's schedule update: the chart its scheduling tool exports, as an image, with a time axis, rows of bars and milestones, and a legend",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    },
+    {
+      "name": "baseline",
+      "concept": "schedule_check.Baseline",
+      "kind": "prose",
+      "description": "The master schedule baseline an update is held to: the month each milestone is due, and the tolerance, the rules deciding which slips are flagged",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    }
+  ],
+  "output": {
+    "concept": "schedule_check.ScheduleCheck",
+    "description": "A contractor's schedule update checked against the baseline: a note for the project manager, then the update's tasks and milestones as rows",
+    "multiplicity": "single",
+    "item_count": null,
+    "fields": [
+      {
+        "name": "update",
+        "type": "text",
+        "description": "What the update is: its schedule and the date of its status line",
+        "required": true
+      },
+      {
+        "name": "note_for_project_manager",
+        "type": "text",
+        "description": "Two sentences for the project manager: the milestones that slipped beyond tolerance, by how much and why, then what slipped within it",
+        "required": true
+      },
+      {
+        "name": "rows",
+        "type": "list[ScheduleRow]",
+        "description": "Every task and milestone the update shows, in its order, each compared with the baseline where the baseline holds it",
+        "required": true
+      },
+      {
+        "name": "missing_from_update",
+        "type": "list[ScheduleRow]",
+        "description": "The baseline milestones the update no longer shows, each flagged; empty when it shows them all",
+        "required": false
+      }
+    ]
+  }
+}

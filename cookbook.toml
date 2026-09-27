@@ -43,6 +43,27 @@ license = "MIT"
 license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
 attribution = "Evotis S.A.S"
 
+[methods.check_schedule_update]
+title = "Schedule update checked against the baseline"
+pitch = "Read a contractor's schedule update, the chart its scheduling tool exports, against the company's master schedule baseline and slip tolerance, and return what a project controls analyst loads into the master schedule and sends to the project manager: every task and milestone of the chart as a row with its status and its dates to the month, each baseline milestone compared with the update and flagged under the tolerance with the reason the update gives, and a two-sentence note on what slipped."
+app_dir = "schedule-check-app"
+yours_dir = "schedule-check"
+yours_change = "also return the rows as CSV in the columns the master schedule's scheduling tool imports"
+
+[methods.check_schedule_update.samples.schedule_update]
+label = "sample schedule update"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
+[methods.check_schedule_update.samples.baseline]
+label = "sample baseline and tolerance"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
 [methods.discord_newsletter]
 title = "Weekly newsletter for a Discord community"
 pitch = "Read a week of a community's Discord channels and return the members' newsletter in the team's fixed format, as HTML ready for the email tool: the week in a few lines, the new members welcomed, a section for each channel in the server's order with each conversation given as its outcome, and the news of each local hub, in English whatever language a message was written in."

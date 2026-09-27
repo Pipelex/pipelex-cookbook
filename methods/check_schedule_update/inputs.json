@@ -1,0 +1,14 @@
+{
+  "schedule_update": {
+    "concept": "schedule_check.ScheduleUpdate",
+    "content": {
+      "url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/check_schedule_update/summary_schedule_update.png"
+    }
+  },
+  "baseline": {
+    "concept": "schedule_check.Baseline",
+    "content": {
+      "text": "Master schedule baseline and slip tolerance: written for a Pipelex example, not any real company's. The programme, its manufacturer and every date are fictional.\n\nWe hold one master schedule for the SERIN-2 satellite programme. The manufacturer's monthly summary schedule update is read against the baseline below, the one agreed at the last rebaseline, and every slip beyond our tolerance goes to the project manager the same day.\n\nBaseline\n\nThe month each milestone is due in the master schedule, named as the manufacturer's summary schedule names it.\n\nProgramme milestones\n- PDR: March 2025\n- CDR: September 2025\n- PSR: July 2027\n- Ship: August 2027\n- Launch: September 2027\n- IOA: November 2027\n\nPayload\n- Reflectors delivered: April 2026\n- Transponders delivered: September 2026\n- Payload module complete: October 2026\n\nSpacecraft bus\n- Structure delivered: January 2026\n- Propulsion integrated: May 2026\n- FSW v2.0: November 2026\n\nAssembly, integration and test\n- Payload mated to bus: November 2026\n- Start environmental test: March 2027\n\nTolerance\n\n1. Dates are compared to the month, as the summary schedule prints them: \"6/26\" is June 2026. A slip is the number of whole months between the baseline month and the month the update gives.\n2. A milestone the update shows as complete is compared on the month it was completed; any other milestone on the month the update now forecasts.\n3. Flag a milestone that slips by more than one month.\n4. Flag any slip of Ship or Launch, even of one month.\n5. A milestone forecast earlier than its baseline is early, and is not flagged.\n6. Flag a baseline milestone the update no longer shows, as missing from the update.\n7. Every other task and milestone the update shows is carried into the master schedule as it stands, with no baseline to compare it with.\n8. Where the update gives a reason for a slip, as a callout on the chart, quote it with the flag.\n"
+    }
+  }
+}
