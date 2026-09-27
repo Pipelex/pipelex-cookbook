@@ -2,7 +2,7 @@
 name = "extract_dpe"
 display_name = "DPE Record for a Letting Agency"
 address = "github.com/Pipelex/pipelex-cookbook"
-version = "0.20.1"
+version = "0.20.2"
 description = "Read a French energy performance diagnostic (DPE) into the record a letting agency files: the address, the ADEME number, the dates, both classes with their figures, the yearly energy costs with their price date, and what the class means for letting the dwelling under the agency's letting procedure."
 authors = ["Evotis S.A.S"]
 license = "MIT"

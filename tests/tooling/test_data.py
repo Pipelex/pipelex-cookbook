@@ -183,6 +183,56 @@ RIGHT_OUTPUTS: dict[str, JsonValue] = {
         "caveats": "The answer holds only for a fixed average; the guidelines are not binding.",
         "confidence": "high",
     },
+    "check_schedule_update": {
+        "update": "SERIN-2 Communications Satellite · Summary Schedule · Monthly Update No. 20 — status August 2026",
+        "note_for_project_manager": (
+            "Two milestones are beyond tolerance: Launch, due 2027-09 in the baseline, is 1 month late, with the update stating "
+            "“Launch slot moved to follow the later shipment.”; and Reflectors delivered, due 2026-04, is 2 months late. "
+            "Within tolerance, CDR, due 2025-09 in the baseline, is 1 month late."
+        ),
+        "rows": [
+            {
+                "group": "Key Milestones",
+                "activity": "Programme Reviews",
+                "item": "CDR",
+                "type": "milestone",
+                "status": "complete",
+                "start": "",
+                "finish": "2025-10",
+                "baseline": "2025-09",
+                "slip_months": 1,
+                "flag": "within tolerance",
+                "reason_given": None,
+            },
+            {
+                "group": "Key Milestones",
+                "activity": "Launch And In-Orbit Test",
+                "item": "Launch",
+                "type": "milestone",
+                "status": "forecast",
+                "start": "",
+                "finish": "2027-10",
+                "baseline": "2027-09",
+                "slip_months": 1,
+                "flag": "beyond tolerance",
+                "reason_given": "Launch slot moved to follow the later shipment.",
+            },
+            {
+                "group": "Payload",
+                "activity": "Antenna Reflectors",
+                "item": "Antenna Reflectors",
+                "type": "task",
+                "status": "complete",
+                "start": "2025-11",
+                "finish": "2026-06",
+                "baseline": None,
+                "slip_months": None,
+                "flag": "no baseline",
+                "reason_given": None,
+            },
+        ],
+        "missing_from_update": [],
+    },
     "discord_newsletter": {
         "text": (
             "<h2>☀️ Weekly Summary</h2>\n<p>Two new members joined, and the finishing thread settled on thinner coats in a cold workshop.</p>"

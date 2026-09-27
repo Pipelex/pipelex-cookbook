@@ -12,7 +12,7 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.1",
+            method_ref="github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.2",
             inputs={
                 "briefing": {
                     "url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/qualify_bid/advanced_digital_skills_info_day.pdf",

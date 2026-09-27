@@ -12,7 +12,7 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.1",
+            method_ref="github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.2",
             inputs={
                 "data_description": {
                     "text": "Test tickets for our customer service triage. Written for a Pipelex example: the shop is not a real one, and every customer must be invented.\n\nWe are the customer service team of an online shop selling small kitchen appliances (kettles, toasters, coffee machines, blenders and hand mixers) in France, Belgium and Switzerland. Customers write to us by email or through the contact form on the site, in French or in English.\n\nEach ticket gives the channel (email or contact form), the customer's name, the language, the order number when the customer gives one (the letter C and eight digits), the subject line, the message as the customer wrote it, and the queue and the priority our triage should give it.\n\nThe queues are Orders and delivery, Returns and refunds, Product help, Warranty and repairs, Billing, and Other. A ticket is urgent when the customer reports a safety problem (smoke, a burning smell, an electric shock) or a payment taken twice, high when a delivery is more than five days late or a refund is overdue, and normal otherwise.\n\nMake them read like the messages we actually get: some two lines long and annoyed, some long and polite, a few with typos or written on a phone, one that asks two things at once, one that gives no order number. Cover every queue at least once.\n",
