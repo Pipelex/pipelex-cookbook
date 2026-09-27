@@ -29,7 +29,7 @@ from pydantic import BaseModel, Field, HttpUrl, ValidationError
 
 from generated.answer_from_documents.models import DocumentAnswer
 
-METHOD_REF = "github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.18.0"
+METHOD_REF = "github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.20.0"
 MAX_DOCUMENTS = 10
 
 
