@@ -61,16 +61,16 @@ Read a contractor's schedule update, the chart its scheduling tool exports, agai
 
 ## What you get
 
-Run on production on 27 September 2026, from the package's files, in 55 seconds. This is what it returned:
+Run on production on 27 September 2026, from the package's files, in 1 minute 2 seconds. This is what it returned:
 
 | Field | Value |
 |---|---|
-| `update` | SERIN-2 Communications Satellite · Summary Schedule · Monthly Update No. 20 — status August 2026 |
+| `update` | SERIN-2 Communications Satellite — Summary Schedule — Monthly Update No. 20; status August 2026 |
 
 **`note_for_project_manager`**
 
-Five milestones are beyond tolerance: Ship, due 2027-08 in the baseline, is 1 month late; Launch, due 2027-09 in the baseline, is 1 month late, with the update stating “Launch slot moved to follow the later shipment.”; Reflectors delivered, due 2026-04 in the baseline, is 2 months late, with the update stating “Reflector delivery slipped: the supplier re-laid both reflector shells after a cure defect.”; Payload module complete, due 2026-10 in the baseline, is 2 months late; and Payload mated to bus, due 2026-11 in the baseline, is 2 months late.  
-Within tolerance, CDR, due 2025-09 in the baseline, PSR, due 2027-07 in the baseline, IOA, due 2027-11 in the baseline, Transponders delivered, due 2026-09 in the baseline, and Start environmental test, due 2027-03 in the baseline, are each 1 month late.
+Five milestones are beyond tolerance: Ship, due 2027-08 in the baseline, is 1 month late; Launch, due 2027-09, is 1 month late, with the update stating “Launch slot moved to follow the later shipment.”; Reflectors delivered, due 2026-04, is 2 months late, with the update stating “Reflector delivery slipped: the supplier re-laid both reflector shells after a cure defect.”; Payload module complete, due 2026-10, is 2 months late; and Payload mated to bus, due 2026-11, is 2 months late; no milestones are missing from the update.  
+Within tolerance, CDR, due 2025-09, is 1 month late; PSR, due 2027-07, is 1 month late; IOA, due 2027-11, is 1 month late; Transponders delivered, due 2026-09, is 1 month late; and Start environmental test, due 2027-03, is 1 month late.
 
 **`rows`**
 
