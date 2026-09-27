@@ -20,7 +20,7 @@
       {
         "name": "address",
         "type": "text",
-        "description": "The address of the dwelling the diagnostic is about, with its floor, door and lot number when the DPE gives them",
+        "description": "The address of the dwelling the diagnostic is about, on one line, with its postcode and town, and its floor, door and lot number when the DPE gives them",
         "required": true
       },
       {
@@ -86,13 +86,13 @@
       {
         "name": "letting_status",
         "type": "text",
-        "description": "Whether the dwelling can be let under its DPE class, and whether its rent may be raised",
+        "description": "What the class means for letting on mainland France's calendar: the standard met, or the date that bars a new or renewed lease and whether the rent is frozen; overseas, the calendar to check",
         "required": true
       },
       {
         "name": "no_new_lease_from",
         "type": "date",
-        "description": "The date from which the class bars a lease signed, renewed or tacitly renewed; empty when no date bars it",
+        "description": "The date from which the class bars a lease signed, renewed or tacitly renewed, on mainland France's calendar; empty when no date bars it, or when the dwelling is overseas",
         "required": false
       }
     ]

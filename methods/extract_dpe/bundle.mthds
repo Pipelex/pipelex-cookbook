@@ -12,10 +12,11 @@ description = "One page of a DPE transcribed into Markdown, with what its drawin
 refines     = "Text"
 
 [concept.DpeReading]
-description = "What a DPE says about the dwelling: its address, its register number and dates, its two classes with their figures, and its yearly energy cost estimate"
+description = "What a DPE says about the dwelling: its address and postcode, register number, dates, both classes with their figures, and yearly energy costs"
 
 [concept.DpeReading.structure]
-address = { type = "text", description = "The address of the dwelling the diagnostic is about, with its floor, door and lot number when the DPE gives them; not the owner's or the diagnostician's address", required = true }
+address = { type = "text", description = "The whole address of the dwelling the diagnostic is about, on one line: street, postcode and town, with its floor, door and lot number when the DPE gives them; not the owner's or the diagnostician's address", required = true }
+postcode = { type = "text", description = "The postcode of the dwelling's address, again on its own: its five digits as the DPE prints them, without spaces", required = true }
 dpe_number = { type = "text", description = "The DPE's number in the ADEME register (\"N° ADEME\"), by which it can be checked", required = true }
 date_of_issue = { type = "date", description = "The date the DPE was drawn up (\"Établi le\")", required = true }
 date_of_expiration = { type = "date", description = "The date the DPE is valid until (\"Valable jusqu'au\")", required = true }
@@ -44,21 +45,23 @@ yearly_energy_costs_max = { type = "integer", description = "The high end of the
 energy_prices_as_of = { type = "date", description = "The date the energy prices of the cost estimate are indexed to, which an advert quotes beside the cost range" }
 
 [concept.LettingStatus]
-description = "What the dwelling's DPE class means for letting it, under the agency's letting procedure"
+description = "What the dwelling's DPE class means for letting it under the agency's procedure, each status with its date so that it holds on any day"
 
 [concept.LettingStatus.structure]
 letting_status = { choices = [
-  "Can be let",
-  "Can be let, rent frozen",
-  "Cannot be let on a new lease",
-], description = "Whether the dwelling can be let under its DPE class, and whether its rent may be raised", required = true }
-no_new_lease_from = { type = "date", description = "The date from which the class no longer meets the energy standard a dwelling must meet to be let on a lease signed, renewed or tacitly renewed; empty when no date bars the class" }
+  "Meets the energy standard for letting",
+  "No new or renewed lease from 1 January 2034",
+  "Rent frozen; no new or renewed lease from 1 January 2028",
+  "Rent frozen; no new or renewed lease since 1 January 2025",
+  "Mainland calendar does not apply; check the overseas calendar",
+], description = "What the class means for letting on mainland France's calendar: the standard met, or the date that bars a new or renewed lease and whether the rent is frozen; overseas, the calendar to check", required = true }
+no_new_lease_from = { type = "date", description = "The date from which the class no longer meets the energy standard a dwelling must meet to be let on a lease signed, renewed or tacitly renewed, on mainland France's calendar; empty when no date bars the class, or when the dwelling is overseas" }
 
 [concept.DpeRecord]
 description = "The record a letting agency files for a DPE: the figures its listing and property software need, and what the class means for letting the dwelling"
 
 [concept.DpeRecord.structure]
-address = { type = "text", description = "The address of the dwelling the diagnostic is about, with its floor, door and lot number when the DPE gives them", required = true }
+address = { type = "text", description = "The address of the dwelling the diagnostic is about, on one line, with its postcode and town, and its floor, door and lot number when the DPE gives them", required = true }
 dpe_number = { type = "text", description = "The DPE's number in the ADEME register, by which it can be checked", required = true }
 date_of_issue = { type = "date", description = "The date the DPE was drawn up", required = true }
 date_of_expiration = { type = "date", description = "The date the DPE is valid until", required = true }
@@ -86,11 +89,13 @@ yearly_energy_costs_min = { type = "integer", description = "The low end of the 
 yearly_energy_costs_max = { type = "integer", description = "The high end of the estimated yearly energy costs, in euros", required = true }
 energy_prices_as_of = { type = "date", description = "The date the energy prices of the cost estimate are indexed to" }
 letting_status = { choices = [
-  "Can be let",
-  "Can be let, rent frozen",
-  "Cannot be let on a new lease",
-], description = "Whether the dwelling can be let under its DPE class, and whether its rent may be raised", required = true }
-no_new_lease_from = { type = "date", description = "The date from which the class bars a lease signed, renewed or tacitly renewed; empty when no date bars it" }
+  "Meets the energy standard for letting",
+  "No new or renewed lease from 1 January 2034",
+  "Rent frozen; no new or renewed lease from 1 January 2028",
+  "Rent frozen; no new or renewed lease since 1 January 2025",
+  "Mainland calendar does not apply; check the overseas calendar",
+], description = "What the class means for letting on mainland France's calendar: the standard met, or the date that bars a new or renewed lease and whether the rent is frozen; overseas, the calendar to check", required = true }
+no_new_lease_from = { type = "date", description = "The date from which the class bars a lease signed, renewed or tacitly renewed, on mainland France's calendar; empty when no date bars it, or when the dwelling is overseas" }
 
 [pipe.extract_dpe]
 type = "PipeSequence"
@@ -107,7 +112,7 @@ steps = [
 
 [pipe.extract_pages]
 type            = "PipeExtract"
-description     = "Extract the text of each page of the DPE, with an image of the whole page"
+description     = "Extract each page of the DPE: its text layer, empty on a scanned page, and an image of the whole page"
 inputs          = { document = "DpeDocument" }
 output          = "Page[]"
 max_page_images = 0
@@ -116,7 +121,7 @@ page_views_dpi  = 150
 
 [pipe.transcribe_page]
 type = "PipeLLM"
-description = "Transcribe one page of the DPE into Markdown, writing out in words what its class scales and boxed figures show"
+description = "Transcribe one page of the DPE into Markdown from its image and its text layer, when it has one, writing out in words what its class scales and boxed figures show"
 inputs = { "page.page_view" = "Image", page = "Page" }
 output = "PageTranscript"
 model = "$vision"
@@ -125,11 +130,11 @@ Here is the image of one page of a French energy performance diagnostic (diagnos
 
 $page.page_view
 
-Here is the text extracted from the same page. It may be incomplete or out of order, and it misses what the page draws rather than writes:
+Here is the text of the same page's text layer. It is empty when the page has none, as on a scanned DPE, and otherwise it may be incomplete or out of order, and it misses what the page draws rather than writes:
 
-{{ page.text_and_images.text.text|tag("extracted_text") }}
+@page.text_and_images
 
-Transcribe the page into Markdown, reading the image and using the extracted text to get the words and figures right. Keep every figure with its unit, and every date, number and identifier exactly as the page prints it.
+Transcribe the page into Markdown, reading the image and using the text layer, when there is one, to get the words and figures right. When the text layer is empty, the image is what you read, every word and figure of it. Keep every figure with its unit, and every date, number and identifier exactly as the page prints it.
 
 Much of a DPE is drawn rather than written. For each class scale from A to G on the page, name the scale as the page names it, say in words which class it gives this dwelling, the one the scale marks out, and give the figures shown with that class, with their units. Write out any other figure the page shows in a drawing or a box.
 
@@ -138,7 +143,7 @@ Output only the Markdown.
 
 [pipe.read_dpe]
 type = "PipeLLM"
-description = "Read the DPE's address, register number, dates, classes, figures and cost estimate from its transcribed pages"
+description = "Read the DPE's address and postcode, register number, dates, classes, figures and cost estimate from its transcribed pages"
 inputs = { page_transcripts = "PageTranscript[]" }
 output = "DpeReading"
 prompt = """
@@ -147,7 +152,8 @@ Here is a French energy performance diagnostic (DPE), transcribed page by page:
 @page_transcripts
 
 Read the diagnostic's record from it:
-- the address of the dwelling the diagnostic is about, with its floor, door and lot number when the DPE gives them, and not the address of the owner or of the diagnostician;
+- the address of the dwelling the diagnostic is about, whole and on one line: its street, postcode and town, with its floor, door and lot number when the DPE gives them, and not the address of the owner or of the diagnostician;
+- the postcode of that address again, on its own, its five digits as printed;
 - the DPE's number in the ADEME register, the date it was drawn up and the date it is valid until;
 - the class the energy and climate label gives the dwelling, with its primary energy consumption in kWh per m² per year;
 - the class the greenhouse gas emissions scale gives it, with its emissions in kg of CO₂ per m² per year, not the dwelling's yearly total;
@@ -158,57 +164,69 @@ Take each value as the DPE gives it.
 
 # The agency's letting procedure: the calendar of the Climat et Résilience law for mainland France, as service-public.gouv.fr gave it on
 # 2026-09-27. A dwelling must meet an energy standard to be let on a lease signed, renewed or tacitly renewed: class G is barred since
-# 1 January 2025, class F from 1 January 2028 and class E from 1 January 2034. The rent of a dwelling rated F or G may not be raised.
+# 1 January 2025, class F from 1 January 2028 and class E from 1 January 2034; the rent of a dwelling rated F or G may not be raised,
+# since 24 August 2022. The method has no clock, so each status names its date and holds on any day. A dwelling overseas, whose postcode
+# starts with 971 to 976, follows a calendar of its own, which has not been checked here: it gets no mainland date, only a status saying
+# to check the overseas calendar. The procedure is applied here, by rule, to the postcode and the class the reading gives.
 [pipe.apply_letting_procedure]
-type            = "PipeCondition"
-description     = "Apply the agency's letting procedure, the calendar for mainland France, to the DPE class: what the class allows, and from which date it bars a new lease"
-inputs          = { dpe_reading = "DpeReading" }
-output          = "LettingStatus"
-expression      = "dpe_reading.energy_efficiency_class"
-default_outcome = "fail"
+type                = "PipeCondition"
+description         = "Apply the agency's letting procedure: overseas, point to the overseas calendar; in mainland France, what the class allows and the date that bars a new or renewed lease"
+inputs              = { dpe_reading = "DpeReading" }
+output              = "LettingStatus"
+expression_template = "{% if (dpe_reading.postcode | default('', true))[:3] in ['971', '972', '973', '974', '975', '976'] %}overseas{% else %}{{ dpe_reading.energy_efficiency_class | default('') }}{% endif %}"
+default_outcome     = "fail"
 
 [pipe.apply_letting_procedure.outcomes]
-A = "letting_class_a_to_d"
-B = "letting_class_a_to_d"
-C = "letting_class_a_to_d"
-D = "letting_class_a_to_d"
-E = "letting_class_e"
-F = "letting_class_f"
-G = "letting_class_g"
+overseas = "letting_overseas"
+A        = "letting_class_a_to_d"
+B        = "letting_class_a_to_d"
+C        = "letting_class_a_to_d"
+D        = "letting_class_a_to_d"
+E        = "letting_class_e"
+F        = "letting_class_f"
+G        = "letting_class_g"
+
+[pipe.letting_overseas]
+type        = "PipeCompose"
+description = "Overseas, postcodes 971 to 976: the mainland calendar does not apply, so the status says to check the overseas calendar, with no date"
+output      = "LettingStatus"
+
+[pipe.letting_overseas.construct]
+letting_status = "Mainland calendar does not apply; check the overseas calendar"
 
 [pipe.letting_class_a_to_d]
 type        = "PipeCompose"
-description = "Classes A to D: the dwelling can be let, and no date bars its class"
+description = "Classes A to D: the dwelling meets the energy standard for letting at every date of the calendar"
 output      = "LettingStatus"
 
 [pipe.letting_class_a_to_d.construct]
-letting_status = "Can be let"
+letting_status = "Meets the energy standard for letting"
 
 [pipe.letting_class_e]
 type        = "PipeCompose"
-description = "Class E: the dwelling can be let, and no new lease may be signed from 1 January 2034"
+description = "Class E: no new or renewed lease from 1 January 2034"
 output      = "LettingStatus"
 
 [pipe.letting_class_e.construct]
-letting_status    = "Can be let"
+letting_status    = "No new or renewed lease from 1 January 2034"
 no_new_lease_from = "2034-01-01"
 
 [pipe.letting_class_f]
 type        = "PipeCompose"
-description = "Class F: the dwelling can be let but its rent may not be raised, and no new lease may be signed from 1 January 2028"
+description = "Class F: the rent may not be raised, and no new or renewed lease from 1 January 2028"
 output      = "LettingStatus"
 
 [pipe.letting_class_f.construct]
-letting_status    = "Can be let, rent frozen"
+letting_status    = "Rent frozen; no new or renewed lease from 1 January 2028"
 no_new_lease_from = "2028-01-01"
 
 [pipe.letting_class_g]
 type        = "PipeCompose"
-description = "Class G: no new lease may be signed since 1 January 2025"
+description = "Class G: the rent may not be raised, and no new or renewed lease since 1 January 2025"
 output      = "LettingStatus"
 
 [pipe.letting_class_g.construct]
-letting_status    = "Cannot be let on a new lease"
+letting_status    = "Rent frozen; no new or renewed lease since 1 January 2025"
 no_new_lease_from = "2025-01-01"
 
 [pipe.assemble_record]

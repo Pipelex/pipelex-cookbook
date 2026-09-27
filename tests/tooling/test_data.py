@@ -203,7 +203,7 @@ RIGHT_OUTPUTS: dict[str, JsonValue] = {
         "yearly_energy_costs_min": 1120,
         "yearly_energy_costs_max": 1540,
         "energy_prices_as_of": "2025-01-01",
-        "letting_status": "Can be let",
+        "letting_status": "No new or renewed lease from 1 January 2034",
         "no_new_lease_from": "2034-01-01",
     },
     "gen_expense_data": {

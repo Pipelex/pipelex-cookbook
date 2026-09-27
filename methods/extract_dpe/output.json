@@ -2,13 +2,13 @@
   "pipe": "dpe.extract_dpe",
   "concept": "dpe.DpeRecord",
   "run": {
-    "started_at": "2026-09-26T22:16:29Z",
-    "finished_at": "2026-09-26T22:16:53Z",
+    "started_at": "2026-09-27T03:06:31Z",
+    "finished_at": "2026-09-27T03:06:55Z",
     "server": "https://api.pipelex.com",
     "route": "files",
     "method_ref": null,
     "commit_sha": null,
-    "bundle_sha256": "ab3eb327ca7ff9dbc4a85298197525e6a4bdac0c49e9ad41afc28a62f6dd8c4c",
+    "bundle_sha256": "063755308f6fee46f932e246cb67b07504172cd1121fce00b7617718efe12772",
     "inputs_sha256": "dc8aa7b8332c81d2b579337497a06a75ba34f5ea4555a48aaf367249719d3a03"
   },
   "output": {
@@ -23,7 +23,7 @@
     "yearly_energy_costs_min": 1380,
     "yearly_energy_costs_max": 1870,
     "energy_prices_as_of": "2025-01-01",
-    "letting_status": "Can be let, rent frozen",
+    "letting_status": "Rent frozen; no new or renewed lease from 1 January 2028",
     "no_new_lease_from": "2028-01-01"
   },
   "files": {}

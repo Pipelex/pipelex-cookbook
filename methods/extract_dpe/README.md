@@ -14,7 +14,7 @@ Read a French energy performance diagnostic (DPE) and return the record a lettin
 
 ## What you get
 
-Run on production on 26 September 2026, from the package's files, in 24 seconds. This is what it returned:
+Run on production on 27 September 2026, from the package's files, in 24 seconds. This is what it returned:
 
 | Field | Value |
 |---|---|
@@ -29,14 +29,14 @@ Run on production on 26 September 2026, from the package's files, in 24 seconds.
 | `yearly_energy_costs_min` | 1380 |
 | `yearly_energy_costs_max` | 1870 |
 | `energy_prices_as_of` | 2025-01-01 |
-| `letting_status` | Can be let, rent frozen |
+| `letting_status` | Rent frozen; no new or renewed lease from 1 January 2028 |
 | `no_new_lease_from` | 2028-01-01 |
 
 **Takes** `document`, a document (`DpeDocument`): A French energy performance diagnostic (DPE) of a dwelling, as a PDF.
 
 **Returns** a `DpeRecord`: The record a letting agency files for a DPE: the figures its listing and property software need, and what the class means for letting the dwelling.
 
-- `address`, text: The address of the dwelling the diagnostic is about, with its floor, door and lot number when the DPE gives them.
+- `address`, text: The address of the dwelling the diagnostic is about, on one line, with its postcode and town, and its floor, door and lot number when the DPE gives them.
 - `dpe_number`, text: The DPE's number in the ADEME register, by which it can be checked.
 - `date_of_issue`, a date: The date the DPE was drawn up.
 - `date_of_expiration`, a date: The date the DPE is valid until.
@@ -47,8 +47,8 @@ Run on production on 26 September 2026, from the package's files, in 24 seconds.
 - `yearly_energy_costs_min`, an integer: The low end of the estimated yearly energy costs, in euros.
 - `yearly_energy_costs_max`, an integer: The high end of the estimated yearly energy costs, in euros.
 - `energy_prices_as_of`, a date: The date the energy prices of the cost estimate are indexed to.
-- `letting_status`, text: Whether the dwelling can be let under its DPE class, and whether its rent may be raised.
-- `no_new_lease_from`, a date: The date from which the class bars a lease signed, renewed or tacitly renewed; empty when no date bars it.
+- `letting_status`, text: What the class means for letting on mainland France's calendar: the standard met, or the date that bars a new or renewed lease and whether the rent is frozen; overseas, the calendar to check.
+- `no_new_lease_from`, a date: The date from which the class bars a lease signed, renewed or tacitly renewed, on mainland France's calendar; empty when no date bars it, or when the dwelling is overseas.
 
 ## Try it in your chatbot
 
