@@ -11,7 +11,7 @@ It shows the steps of an upload:
 ## What it needs
 
 - [Node.js](https://nodejs.org/) 22.12 or later.
-- A Pipelex API key in `PIPELEX_API_KEY`, from [app.pipelex.com](https://app.pipelex.com). Each chart is one run on the hosted API and spends credit.
+- A Pipelex API key in `PIPELEX_API_KEY`, from [app.pipelex.com](https://app.pipelex.com). Each diagnostic is one run on the hosted API and spends credit.
 
 ## Run it
 
