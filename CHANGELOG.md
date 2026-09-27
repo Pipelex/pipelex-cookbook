@@ -1,10 +1,10 @@
 # Changelog
 
-## [Unreleased]
+## [v0.20.1] - 2026-09-27
 
 ### Changed
 
-- **The recipes run the reworked and new methods at `v0.20.0`**: the HTTP, deployed-app and upload-grant recipes run `extract_dpe` on its synthetic DPE, so no recipe shows a real dwelling's address any more; the FastAPI and coding-agent recipes run `answer_from_documents` on its AI Act sample; the weekly digest runs `discord_newsletter`, reads its output as `HtmlNewsletter` and gives each reply the first line of the message it answers; the CrewAI recipe gives its crew `review_nda` holding the company's playbook, and takes an NDA's link in place of a question; the durable-run recipe starts `write_release_post` on its sample or on two files; and the Next.js server-action recipe runs `gen_synthetic_data` from a description and a record count bounded from 1 to 20, rendering the records as a table. The second-tab and CSV batch recipes link their samples at `v0.20.0`, and the copy-and-change recipe still copies `answer_from_documents` at `v0.18.0`.
+- **The recipes run the reworked and new methods at `v0.20.0`**: the HTTP, deployed-app and upload-grant recipes run `extract_dpe` on its synthetic DPE, so no recipe shows a real dwelling's address any more; the FastAPI and coding-agent recipes run `answer_from_documents` on its AI Act sample; the weekly digest runs `discord_newsletter`, reads its output as `HtmlNewsletter` and gives each reply the first line of the message it answers; the CrewAI recipe gives its crew `review_nda` holding the company's playbook, takes an NDA's link in place of a question, and writes a memo whose verdict, wording to propose and note for counsel are copied from the typed review around the editor's explanation; the durable-run recipe starts `write_release_post` on its sample or on two files; and the Next.js server-action recipe runs `gen_synthetic_data` from a description and a record count bounded from 1 to 20, rendering the records as a table. The second-tab and CSV batch recipes link their samples at `v0.20.0`, and the copy-and-change recipe still copies `answer_from_documents` at `v0.18.0`.
 
 ### Removed
 

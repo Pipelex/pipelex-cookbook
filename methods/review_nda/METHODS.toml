@@ -2,7 +2,7 @@
 name = "review_nda"
 display_name = "NDA Review Against a Playbook"
 address = "github.com/Pipelex/pipelex-cookbook"
-version = "0.20.0"
+version = "0.20.1"
 description = "Review a counterparty's NDA against the company's NDA playbook: one row per playbook position with the clause found, the assessment and the fallback wording, a verdict and a note for counsel."
 authors = ["Evotis S.A.S"]
 license = "MIT"
