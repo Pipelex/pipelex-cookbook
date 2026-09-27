@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 from pydantic import JsonValue
 
+from scripts.contract import ContractInput
 from scripts.cookbook import load_cookbook
 from scripts.exceptions import CookbookLayoutError
 from scripts.recipes import find_trees, recipe_problems
@@ -133,6 +134,14 @@ class TestRender:
         root = make_cookbook()
         page = render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir)[root / "methods" / "count_words" / "README.md"]
         assert "## The sample\n\n> The quick brown fox\n\n**Takes**" in page
+
+    def test_a_date_input_is_named_a_date(self, make_cookbook: MakeCookbook, templates_dir: Path):
+        root = make_cookbook()
+        date_input = ContractInput(name="written_on", concept="native.Date", kind="object", multiplicity="single", required=False)
+        contract = WORDS_CONTRACT.model_copy(update={"inputs": [*WORDS_CONTRACT.inputs, date_input]})
+        (root / "methods" / "count_words" / "contract.json").write_text(contract.to_json(), encoding="utf-8")
+        page = render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir)[root / "methods" / "count_words" / "README.md"]
+        assert "- `written_on`, a date (`Date`), optional." in page
 
     def test_several_inputs_are_each_named(self, make_cookbook: MakeCookbook, templates_dir: Path):
         root = make_cookbook()

@@ -89,7 +89,7 @@ Deadline, Budget and Evaluation are met; Eligibility is not stated, and Required
 
 - `briefing`, a document (`BriefingDeck`): A funder's or buyer's briefing deck for a call for funding or a tender, as a PDF.
 - `criteria`, a text (`BidCriteria`): The company's bid criteria: who it is, each criterion and what meets it, and its rules for the recommendation and the questions.
-- `briefing_date`, an object (`Date`), optional.
+- `briefing_date`, a date (`Date`), optional.
 
 **Returns** a `BidSheet`: A go/no-go sheet for a briefing: the opportunity, a recommendation by the company's rule, a row per criterion, and the questions.
 
