@@ -26,10 +26,10 @@ import httpx
 from pipelex_sdk.client import PipelexAPIClient
 from pydantic import BaseModel, TypeAdapter
 
-from generated.discord_newsletter.models import Attachment, DiscordChannelUpdate, DiscordMessage, Embed, Text
+from generated.discord_newsletter.models import Attachment, DiscordChannelUpdate, DiscordMessage, Embed, HtmlNewsletter
 
-METHOD_REF = "github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.18.0"
-SAMPLE_INPUTS_URL = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/methods/discord_newsletter/inputs.json"
+METHOD_REF = "github.com/Pipelex/pipelex-cookbook/discord_newsletter@v0.20.0"
+SAMPLE_INPUTS_URL = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/methods/discord_newsletter/inputs.json"
 DISCORD_API = "https://discord.com/api/v10"
 DAYS = 7
 TOO_MANY_REQUESTS = 429
@@ -52,6 +52,13 @@ class DiscordEmbed(BaseModel):
     type: str | None = None
 
 
+class DiscordReferencedMessage(BaseModel):
+    """The message a reply answers, which Discord hands with the reply."""
+
+    content: str
+    author: DiscordAuthor
+
+
 class DiscordApiMessage(BaseModel):
     id: str
     timestamp: datetime
@@ -59,6 +66,7 @@ class DiscordApiMessage(BaseModel):
     author: DiscordAuthor
     attachments: list[DiscordAttachment] = []
     embeds: list[DiscordEmbed] = []
+    referenced_message: DiscordReferencedMessage | None = None
 
 
 class DiscordChannel(BaseModel):
@@ -74,6 +82,23 @@ class RateLimited(BaseModel):
 
 
 MESSAGES = TypeAdapter(list[DiscordApiMessage])
+
+
+def author_name(author: DiscordAuthor) -> str:
+    return author.global_name or author.username
+
+
+def message_text(message: DiscordApiMessage) -> str:
+    """The message's text, and for a reply the first line of the message it answers.
+
+    The method reads a message that quotes an earlier one as a reply to it, and summarises a message with its replies as one
+    conversation, so a reply carries what it answers, as the method's sample week gives it.
+    """
+    answered = message.referenced_message
+    if answered is None:
+        return message.content
+    first_line = next((line for line in answered.content.splitlines() if line.strip()), "(a message with no text)")
+    return f"{message.content}\n\nIn reply to {author_name(answered.author)}'s message:\n{first_line}"
 
 
 async def discord_get(http: httpx.AsyncClient, path: str, *, params: dict[str, str | int] | None = None) -> httpx.Response:
@@ -108,8 +133,8 @@ async def fetch_channel_update(http: httpx.AsyncClient, channel_id: str, *, posi
         position=position,
         messages=[
             DiscordMessage(
-                author=message.author.global_name or message.author.username,
-                content=message.content,
+                author=author_name(message.author),
+                content=message_text(message),
                 attachments=[Attachment(name=attachment.filename, url=attachment.url) for attachment in message.attachments],
                 embeds=[Embed(title=embed.title or "", description=embed.description or "", type=embed.type or "") for embed in message.embeds],
                 link=f"https://discord.com/channels/{channel.guild_id}/{channel.id}/{message.id}",
@@ -144,8 +169,8 @@ async def write_newsletter(updates: list[DiscordChannelUpdate]) -> str:
             },
         )
     print(f"newsletter written by run {results.pipeline_run_id}", file=sys.stderr)
-    # The method's HtmlNewsletter concept declares no fields of its own, so its content is a text holding the HTML.
-    return Text.model_validate(results.main_stuff).text
+    # The method's HtmlNewsletter refines Text: its content is a text holding the HTML.
+    return HtmlNewsletter.model_validate(results.main_stuff).text
 
 
 async def post(html: str, *, webhook_url: str) -> None:
