@@ -49,7 +49,7 @@ These recipes make a method your own from your coding agent, with the [Pipelex p
 
 | Recipe | What it shows | Method |
 |---|---|---|
-| [Copy a method, change it, and make it yours](yours/copy-and-change/) | A published method copied at its tag, changed with `/pipelex-edit`, proven on its sample, saved to your catalog with `/pipelex-catalog`, and your chatbot, your code and your app pointed at its new id | [Document question answering](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/answer_from_documents), at the cookbook's `v0.18.0` release |
+| [Copy a method, change it, and make it yours](yours/copy-and-change/) | A published method copied at its tag, changed with `/pipelex-edit`, proven on its sample, saved to your catalog with `/pipelex-catalog`, and your chatbot, your code and your app pointed at its new id | [Document question answering](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.0/methods/answer_from_documents), at the cookbook's `v0.20.0` release |
 | [A method designed from a sentence and proven by a lab](yours/design-from-a-sentence/) | `/pipelex-design` turning one sentence into a runnable method, and `/pipelex-lab` proving it on test documents written for the purpose, within a budget | A CV and job-offer match, designed in the recipe |
 
 To add one, read [docs/adding-a-recipe.md](../docs/adding-a-recipe.md).
