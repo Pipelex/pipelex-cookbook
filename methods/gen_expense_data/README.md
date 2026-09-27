@@ -29,7 +29,7 @@ Read a brief giving a company's expense policy and the test batch it wants, and 
 
 ## What you get
 
-Run on production on 27 September 2026, from the package's files, in 1 minute 10 seconds. This is what it returned:
+Run on production on 27 September 2026, from the package's files, in 1 minute 4 seconds. This is what it returned:
 
 ### Report 1
 
@@ -37,9 +37,9 @@ Run on production on 27 September 2026, from the package's files, in 1 minute 10
 
 | Field | Value |
 |---|---|
-| `employee_id` | EMP-26041 |
-| `full_name` | Élodie Vasseur |
-| `email` | elodie.vasseur@example.com |
+| `employee_id` | EC-2026-0147 |
+| `full_name` | Naïma Belkacem |
+| `email` | naima.belkacem@example.com |
 | `department` | Business Development |
 | `job_title` | Senior Sales Engineer |
 
@@ -47,25 +47,25 @@ Run on production on 27 September 2026, from the package's files, in 1 minute 10
 
 | `claim_id` | `expense_date` | `merchant` | `category` | `amount` | `business_purpose` | `receipt` | `expected_verdict` |
 |---|---|---|---|---|---|---|---|
-| EXP-20260903-00583 | 2026-09-03 | Hôtel des Verrières Claires, Paris | Hotel | EUR 138.40 | Caldris Processus — Asterion Retrofit project | <a href="output/0-claims-0-receipt.png"><img src="output/0-claims-0-receipt.png" alt="file" width="160"></a> | Compliant |
-| EXP-20260912-66851 | 2026-09-12 | Taxi Rhône Azur, Villeurbanne | Taxi | EUR 46.80 | Valcrête Systèmes Silex-4 commissioning review to Lyon Part-Dieu | <a href="output/0-claims-1-receipt.png"><img src="output/0-claims-1-receipt.png" alt="file" width="160"></a> | Breaks rule 4: Saturday taxi with no manager's prior approval mentioned |
-| EXP-20260924-33105 | 2026-09-24 | Le Jardin des Sondes, Grenoble | Client Meals | EUR 207.60 | Ormevia Énergies — Hélianthe Controls proposal dinner, 3 attendees | <a href="output/0-claims-2-receipt.png"><img src="output/0-claims-2-receipt.png" alt="file" width="160"></a> | Breaks rule 1: client meal EUR 69.20 per person exceeds EUR 60 limit |
+| EXP-20260903-08617 | 2026-09-03 | Rail des Deux Vallées, Lyon | Train travel | EUR 74.60 | Atelier Sereine – Alpilles Heat-Recovery requirements meeting | <a href="output/0-claims-0-receipt.png"><img src="output/0-claims-0-receipt.png" alt="file" width="160"></a> | Compliant |
+| EXP-20260912-39421 | 2026-09-12 | Taxis Quenelle Horizon, Lyon | Taxi | EUR 38.40 | Noroît Processus — Calandre Controls commissioning review transport | <a href="output/0-claims-1-receipt.png"><img src="output/0-claims-1-receipt.png" alt="file" width="160"></a> | Breaks rule 4: Saturday taxi with no manager's prior approval mentioned |
+| EXP-20260922-87717 | 2026-09-22 | La Table du Rivage Ambré, Annecy | Client meal | EUR 268.00 | Noroît Processus — Calandre Controls design review dinner, 4 attendees | <a href="output/0-claims-2-receipt.png"><img src="output/0-claims-2-receipt.png" alt="file" width="160"></a> | Breaks rule 1: client meal EUR 67.00 per person exceeds EUR 60.00 limit |
 
 **`expense_report`**
 
 <div>
 <h4>Expense report</h4>
-<p><strong>Élodie Vasseur</strong>, Senior Sales Engineer, Business Development<br>
-Employee EMP-26041, elodie.vasseur@example.com</p>
+<p><strong>Naïma Belkacem</strong>, Senior Sales Engineer, Business Development<br>
+Employee EC-2026-0147, naima.belkacem@example.com</p>
 <table>
 <thead>
 <tr><th>Claim</th><th>Date</th><th>Merchant</th><th>Category</th><th>Business purpose</th><th>Amount</th><th>Receipt</th></tr>
 </thead>
 <tbody>
-<tr><td>EXP-20260903-00583</td><td>2026-09-03</td><td>Hôtel des Verrières Claires, Paris</td><td>Hotel</td><td>Caldris Processus — Asterion Retrofit project</td><td>EUR 138.40</td><td><img src="output/0-claims-0-receipt.png" alt="Receipt" width="60"></td></tr>
-<tr><td>EXP-20260912-66851</td><td>2026-09-12</td><td>Taxi Rhône Azur, Villeurbanne</td><td>Taxi</td><td>Valcrête Systèmes Silex-4 commissioning review to Lyon Part-Dieu</td><td>EUR 46.80</td><td><img src="output/0-claims-1-receipt.png" alt="Receipt" width="60"></td></tr>
-<tr><td>EXP-20260924-33105</td><td>2026-09-24</td><td>Le Jardin des Sondes, Grenoble</td><td>Client Meals</td><td>Ormevia Énergies — Hélianthe Controls proposal dinner, 3 attendees</td><td>EUR 207.60</td><td><img src="output/0-claims-2-receipt.png" alt="Receipt" width="60"></td></tr>
-<tr><td colspan="5"><strong>Total</strong></td><td><strong>EUR 392.80</strong></td><td></td></tr>
+<tr><td>EXP-20260903-08617</td><td>2026-09-03</td><td>Rail des Deux Vallées, Lyon</td><td>Train travel</td><td>Atelier Sereine – Alpilles Heat-Recovery requirements meeting</td><td>EUR 74.60</td><td><img src="output/0-claims-0-receipt.png" alt="Receipt" width="60"></td></tr>
+<tr><td>EXP-20260912-39421</td><td>2026-09-12</td><td>Taxis Quenelle Horizon, Lyon</td><td>Taxi</td><td>Noroît Processus — Calandre Controls commissioning review transport</td><td>EUR 38.40</td><td><img src="output/0-claims-1-receipt.png" alt="Receipt" width="60"></td></tr>
+<tr><td>EXP-20260922-87717</td><td>2026-09-22</td><td>La Table du Rivage Ambré, Annecy</td><td>Client meal</td><td>Noroît Processus — Calandre Controls design review dinner, 4 attendees</td><td>EUR 268.00</td><td><img src="output/0-claims-2-receipt.png" alt="Receipt" width="60"></td></tr>
+<tr><td colspan="5"><strong>Total</strong></td><td><strong>EUR 381.00</strong></td><td></td></tr>
 </tbody>
 </table>
 </div>
@@ -76,35 +76,35 @@ Employee EMP-26041, elodie.vasseur@example.com</p>
 
 | Field | Value |
 |---|---|
-| `employee_id` | EMP-26087 |
-| `full_name` | Nadir Benali |
-| `email` | nadir.benali@example.com |
-| `department` | Engineering Delivery |
+| `employee_id` | EC-2026-0213 |
+| `full_name` | Lucas Vannier |
+| `email` | lucas.vannier@example.com |
+| `department` | Project Engineering |
 | `job_title` | Project Engineer |
 
 **`claims`**
 
 | `claim_id` | `expense_date` | `merchant` | `category` | `amount` | `business_purpose` | `receipt` | `expected_verdict` |
 |---|---|---|---|---|---|---|---|
-| EXP-20260908-49857 | 2026-09-08 | Comptoir du Maillet Doux, Lyon | Working Meals | EUR 61.20 | Quartz-Ligne design review lunch — 3 employees | <a href="output/1-claims-0-receipt.png"><img src="output/1-claims-0-receipt.png" alt="file" width="160"></a> | Compliant |
-| EXP-20260918-60051 | 2026-09-18 | Billetterie Ferroviaire des Deux Rives, Lyon | Train | EUR 74.90 | Solo travel: Brumelac Industrie, Nacelle-7 sensor-layout workshop | <a href="output/1-claims-1-receipt.png"><img src="output/1-claims-1-receipt.png" alt="file" width="160"></a> | Compliant |
-| EXP-20260929-20862 | 2026-09-29 | Guichet Rail des Balmes, Lyon | Train | EUR 52.70 | work | <a href="output/1-claims-2-receipt.png"><img src="output/1-claims-2-receipt.png" alt="file" width="160"></a> | Breaks rule 6: purpose says only "work" and names no client or project |
+| EXP-20260908-39793 | 2026-09-08 | Comptoir des Canuts Clairs, Lyon | Working meal | EUR 61.80 | Orme-27 office design workshop — 3 people: Lucas Vannier, Camille Roux, Nils Bernard | <a href="output/1-claims-0-receipt.png"><img src="output/1-claims-0-receipt.png" alt="file" width="160"></a> | Compliant |
+| EXP-20260917-67181 | 2026-09-17 | Papeterie du Compas Vert, Lyon | Office supplies | EUR 47.35 | work | <a href="output/1-claims-1-receipt.png"><img src="output/1-claims-1-receipt.png" alt="file" width="160"></a> | Breaks rule 6: purpose says only "work" and names no client or project |
+| EXP-20260929-41860 | 2026-09-29 | Hôtel des Volcans Paisibles, Clermont-Ferrand | Hotel | EUR 96.40 | Mécalume Études — Sillage-4 test-bench project | <a href="output/1-claims-2-receipt.png"><img src="output/1-claims-2-receipt.png" alt="file" width="160"></a> | Compliant |
 
 **`expense_report`**
 
 <div>
 <h4>Expense report</h4>
-<p><strong>Nadir Benali</strong>, Project Engineer, Engineering Delivery<br>
-Employee EMP-26087, nadir.benali@example.com</p>
+<p><strong>Lucas Vannier</strong>, Project Engineer, Project Engineering<br>
+Employee EC-2026-0213, lucas.vannier@example.com</p>
 <table>
 <thead>
 <tr><th>Claim</th><th>Date</th><th>Merchant</th><th>Category</th><th>Business purpose</th><th>Amount</th><th>Receipt</th></tr>
 </thead>
 <tbody>
-<tr><td>EXP-20260908-49857</td><td>2026-09-08</td><td>Comptoir du Maillet Doux, Lyon</td><td>Working Meals</td><td>Quartz-Ligne design review lunch — 3 employees</td><td>EUR 61.20</td><td><img src="output/1-claims-0-receipt.png" alt="Receipt" width="60"></td></tr>
-<tr><td>EXP-20260918-60051</td><td>2026-09-18</td><td>Billetterie Ferroviaire des Deux Rives, Lyon</td><td>Train</td><td>Solo travel: Brumelac Industrie, Nacelle-7 sensor-layout workshop</td><td>EUR 74.90</td><td><img src="output/1-claims-1-receipt.png" alt="Receipt" width="60"></td></tr>
-<tr><td>EXP-20260929-20862</td><td>2026-09-29</td><td>Guichet Rail des Balmes, Lyon</td><td>Train</td><td>work</td><td>EUR 52.70</td><td><img src="output/1-claims-2-receipt.png" alt="Receipt" width="60"></td></tr>
-<tr><td colspan="5"><strong>Total</strong></td><td><strong>EUR 188.80</strong></td><td></td></tr>
+<tr><td>EXP-20260908-39793</td><td>2026-09-08</td><td>Comptoir des Canuts Clairs, Lyon</td><td>Working meal</td><td>Orme-27 office design workshop — 3 people: Lucas Vannier, Camille Roux, Nils Bernard</td><td>EUR 61.80</td><td><img src="output/1-claims-0-receipt.png" alt="Receipt" width="60"></td></tr>
+<tr><td>EXP-20260917-67181</td><td>2026-09-17</td><td>Papeterie du Compas Vert, Lyon</td><td>Office supplies</td><td>work</td><td>EUR 47.35</td><td><img src="output/1-claims-1-receipt.png" alt="Receipt" width="60"></td></tr>
+<tr><td>EXP-20260929-41860</td><td>2026-09-29</td><td>Hôtel des Volcans Paisibles, Clermont-Ferrand</td><td>Hotel</td><td>Mécalume Études — Sillage-4 test-bench project</td><td>EUR 96.40</td><td><img src="output/1-claims-2-receipt.png" alt="Receipt" width="60"></td></tr>
+<tr><td colspan="5"><strong>Total</strong></td><td><strong>EUR 205.55</strong></td><td></td></tr>
 </tbody>
 </table>
 </div>

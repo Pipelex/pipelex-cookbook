@@ -2,35 +2,35 @@
   "pipe": "expense_data_generation.generate_expense_test_batch",
   "concept": "expense_data_generation.ExpenseReport",
   "run": {
-    "started_at": "2026-09-27T01:43:06Z",
-    "finished_at": "2026-09-27T01:44:16Z",
+    "started_at": "2026-09-27T03:10:06Z",
+    "finished_at": "2026-09-27T03:11:10Z",
     "server": "https://api.pipelex.com",
     "route": "files",
     "method_ref": null,
     "commit_sha": null,
-    "bundle_sha256": "3ea43ce2045efff60ac6be6c333919307967d1c35c647062e2f3ba79a2c1f882",
+    "bundle_sha256": "2b77ae40da83716f39f155eeedac6f5cc09b89a3c0d5153fe1519b70324a5431",
     "inputs_sha256": "d5574c5c62b4d89f872e5e65e7a1d4347ce847ad2c60a32ca334bf9891b26e55"
   },
   "output": [
     {
       "employee": {
-        "employee_id": "EMP-26041",
-        "full_name": "Élodie Vasseur",
-        "email": "elodie.vasseur@example.com",
+        "employee_id": "EC-2026-0147",
+        "full_name": "Naïma Belkacem",
+        "email": "naima.belkacem@example.com",
         "department": "Business Development",
         "job_title": "Senior Sales Engineer"
       },
       "claims": [
         {
-          "claim_id": "EXP-20260903-00583",
+          "claim_id": "EXP-20260903-08617",
           "expense_date": "2026-09-03",
-          "merchant": "Hôtel des Verrières Claires, Paris",
-          "category": "Hotel",
-          "amount": "EUR 138.40",
-          "business_purpose": "Caldris Processus — Asterion Retrofit project",
+          "merchant": "Rail des Deux Vallées, Lyon",
+          "category": "Train travel",
+          "amount": "EUR 74.60",
+          "business_purpose": "Atelier Sereine – Alpilles Heat-Recovery requirements meeting",
           "receipt": {
             "url": "output/0-claims-0-receipt.png",
-            "source_prompt": "A realistic smartphone photo of a fictional receipt made as test data for an expense audit, from Hôtel des Verrières Claires, in Paris, printed in French. A cream A4 hotel invoice photographed flat on a dark blue desk mat in cool morning light, from directly above; the lower-right corner is folded and there is a faint coffee ring beside the total. The whole receipt is in the frame and in focus, and every line of it is sharp and legible. It reads exactly as follows, line by line, with nothing added or left out, down to its last line, which says that it is fictional:\n\nHÔTEL DES VERRIÈRES CLAIRES\n17 rue des Verrières Claires\n75013 Paris\nTél. 01 99 00 00 17\nSIRET 000 000 000 00000\nTVA intracommunautaire FR00000000000\n--------------------------------------\n03/09/2026   08:12\nFacture n° FV-260903-4817\nChambre 314\nSéjour : 1 nuit\nClient : Élodie V.\nArrivée : 03/09/2026 — Départ : 04/09/2026\n--------------------------------------\n1 x Chambre standard            126,80\n1 x Petit-déjeuner               11,60\n--------------------------------------\nTotal TTC                   138,40 EUR\nTVA 10 %                         12,58\n--------------------------------------\nCarte Visa •••• 4186\nMerci de votre séjour.\nÀ bientôt.\n*** REÇU FICTIF — DONNÉES DE TEST ***",
+            "source_prompt": "A realistic smartphone photo of a fictional receipt made as test data for an expense audit, from Rail des Deux Vallées, in Lyon, printed in French. French e-ticket printed on white A4 paper, photographed flat on a grey fabric seat in daylight from directly above; the lower-right corner is folded and a faint coffee ring sits outside the fare details. The whole receipt is in the frame and in focus, and every line of it is sharp and legible. It reads exactly as follows, line by line, with nothing added or left out, down to its last line, which says that it is fictional:\n\nRAIL DES DEUX VALLÉES\n18 rue des Tisserands\n69003 Lyon\nTél. 04 65 71 01 12\nSIRET 000 000 000 00000\nTVA intracommunautaire FR00 000000000\n--------------------------------------\n03/09/2026   07:18\nBillet électronique n° RDV-63847192\nVoyageur : Naïma\nLyon Part-Dieu → Grenoble\nAller-retour\nClasse : 2e classe\nTarif loisir\nDossier : K7M4Q8\n--------------------------------------\n1 x Billet aller-retour 2e classe Lyon-Grenoble     74,60\n--------------------------------------\nTotal TTC                    74,60 EUR\nTVA 10 %                          6,78\n--------------------------------------\nCarte bancaire 4827\nConservez ce billet pendant votre voyage.\nMerci de votre confiance.\n*** REÇU FICTIF — DONNÉES DE TEST ***",
             "source_negative_prompt": null,
             "caption": null,
             "mime_type": "image/png",
@@ -41,15 +41,15 @@
           "expected_verdict": "Compliant"
         },
         {
-          "claim_id": "EXP-20260912-66851",
+          "claim_id": "EXP-20260912-39421",
           "expense_date": "2026-09-12",
-          "merchant": "Taxi Rhône Azur, Villeurbanne",
+          "merchant": "Taxis Quenelle Horizon, Lyon",
           "category": "Taxi",
-          "amount": "EUR 46.80",
-          "business_purpose": "Valcrête Systèmes Silex-4 commissioning review to Lyon Part-Dieu",
+          "amount": "EUR 38.40",
+          "business_purpose": "Noroît Processus — Calandre Controls commissioning review transport",
           "receipt": {
             "url": "output/0-claims-1-receipt.png",
-            "source_prompt": "A realistic smartphone photo of a fictional receipt made as test data for an expense audit, from Taxi Rhône Azur, in Villeurbanne, printed in French. A narrow thermal taxi receipt held at the top edge by one hand inside a car, photographed in warm streetlamp light at a slight left tilt; it has a sharp centre crease and a smudged printer line near the fare. The whole receipt is in the frame and in focus, and every line of it is sharp and legible. It reads exactly as follows, line by line, with nothing added or left out, down to its last line, which says that it is fictional:\n\nTAXI RHÔNE AZUR\n42 avenue du Fil d’Argent\n69100 Villeurbanne\nTél. 04 65 71 00 42\nSIRET 000 000 000 00000\nTVA intracommunautaire FR00 000000000\n--------------------------------------\n12/09/2026   19:24\nTicket n° 728419\nCourse : site client → Lyon Part-Dieu\nChauffeur : Marc\n--------------------------------------\n1 x COURSE TAXI                  46,80\n--------------------------------------\nTOTAL TTC                    46,80 EUR\nTVA 10 %                          4,25\n--------------------------------------\nCARTE  •••• 4186\nMerci de votre confiance\nBonne soirée\n*** REÇU FICTIF — DONNÉES DE TEST ***",
+            "source_prompt": "A realistic smartphone photo of a fictional receipt made as test data for an expense audit, from Taxis Quenelle Horizon, in Lyon, printed in French. Narrow French thermal taxi receipt held in the employee's left hand beside the vehicle door, photographed under overcast morning light at a slight tilt; the paper has a sharp horizontal crease and a smudged blue stamp. The whole receipt is in the frame and in focus, and every line of it is sharp and legible. It reads exactly as follows, line by line, with nothing added or left out, down to its last line, which says that it is fictional:\n\nTAXIS QUENELLE HORIZON\n7 montée des Verriers\n69009 Lyon\nTél. 04 65 71 02 24\nSIRET 000 000 000 00000\nTVA intracommunautaire FR00 000000000\n--------------------------------------\n12/09/2026   09:18\nTicket n° TX-68427\nCourse : secteur Part-Dieu → Noroît Processus\nChauffeur : Luc\n--------------------------------------\n1 x FORFAIT COURSE TAXI          38,40\n--------------------------------------\nTOTAL TTC                    38,40 EUR\nTVA 10 %                          3,49\n--------------------------------------\nCarte bancaire 4827\nMerci de votre confiance\nBon déplacement\n*** REÇU FICTIF — DONNÉES DE TEST ***",
             "source_negative_prompt": null,
             "caption": null,
             "mime_type": "image/png",
@@ -60,15 +60,15 @@
           "expected_verdict": "Breaks rule 4: Saturday taxi with no manager's prior approval mentioned"
         },
         {
-          "claim_id": "EXP-20260924-33105",
-          "expense_date": "2026-09-24",
-          "merchant": "Le Jardin des Sondes, Grenoble",
-          "category": "Client Meals",
-          "amount": "EUR 207.60",
-          "business_purpose": "Ormevia Énergies — Hélianthe Controls proposal dinner, 3 attendees",
+          "claim_id": "EXP-20260922-87717",
+          "expense_date": "2026-09-22",
+          "merchant": "La Table du Rivage Ambré, Annecy",
+          "category": "Client meal",
+          "amount": "EUR 268.00",
+          "business_purpose": "Noroît Processus — Calandre Controls design review dinner, 4 attendees",
           "receipt": {
             "url": "output/0-claims-2-receipt.png",
-            "source_prompt": "A realistic smartphone photo of a fictional receipt made as test data for an expense audit, from Le Jardin des Sondes, in Grenoble, printed in French. A long white restaurant till receipt laid diagonally on a pale wooden table under soft pendant light, photographed from the upper right; the top edge is curled and a small sauce stain marks the blank margin. The whole receipt is in the frame and in focus, and every line of it is sharp and legible. It reads exactly as follows, line by line, with nothing added or left out, down to its last line, which says that it is fictional:\n\nLE JARDIN DES SONDES\n8 passage des Sondes\n38000 Grenoble\nTél. 04 65 71 00 08\nSIRET 000 000 000 00000\nTVA intracommunautaire FR00 000000000\n--------------------------------------\n24/09/2026   20:41\nTicket n° 48372\nTable 14 — 3 couverts\nService : Lise\n--------------------------------------\n3 x Menu dîner                  174,00\n1 x Eau pétillante 75 cl          9,60\n3 x Café expresso                24,00\n--------------------------------------\nTOTAL TTC                   207,60 EUR\nTVA 10 %                         18,87\n--------------------------------------\nCarte professionnelle •••• 4186\nMerci de votre visite\nÀ bientôt\n*** REÇU FICTIF — DONNÉES DE TEST ***",
+            "source_prompt": "A realistic smartphone photo of a fictional receipt made as test data for an expense audit, from La Table du Rivage Ambré, in Annecy, printed in French. Itemised French restaurant till receipt on cream thermal paper, photographed on a dark walnut table under warm pendant light from an oblique angle; one edge is curled and there is a small sauce stain near the blank footer. The whole receipt is in the frame and in focus, and every line of it is sharp and legible. It reads exactly as follows, line by line, with nothing added or left out, down to its last line, which says that it is fictional:\n\nLA TABLE DU RIVAGE AMBRÉ\n42 passage des Aulnes\n74000 Annecy\nTél. 04 65 71 03 36\nSIRET 000 000 000 00000\nTVA intracommunautaire FR00000000000\n--------------------------------------\n22/09/2026   20:46\nTicket n° 58371\nTable 14 — 4 couverts\nService : Lila\n--------------------------------------\n4 x Menu Rivage                 220,00\n4 x Boisson fraîche sans alcool     24,00\n4 x Café expresso                16,00\n2 x Eau minérale 75 cl            8,00\n--------------------------------------\nTOTAL TTC                   268,00 EUR\nTVA 10 %                         24,36\n--------------------------------------\nCarte bancaire 4827\nMerci de votre visite\nÀ bientôt\n*** REÇU FICTIF — DONNÉES DE TEST ***",
             "source_negative_prompt": null,
             "caption": null,
             "mime_type": "image/png",
@@ -76,33 +76,33 @@
             "height": 1024,
             "filename": null
           },
-          "expected_verdict": "Breaks rule 1: client meal EUR 69.20 per person exceeds EUR 60 limit"
+          "expected_verdict": "Breaks rule 1: client meal EUR 67.00 per person exceeds EUR 60.00 limit"
         }
       ],
       "expense_report": {
-        "inner_html": "<h1>Expense report</h1>\n<p><strong>Élodie Vasseur</strong>, Senior Sales Engineer, Business Development<br>\nEmployee EMP-26041, elodie.vasseur@example.com</p>\n<table>\n<thead>\n<tr><th>Claim</th><th>Date</th><th>Merchant</th><th>Category</th><th>Business purpose</th><th>Amount</th><th>Receipt</th></tr>\n</thead>\n<tbody>\n<tr><td>EXP-20260903-00583</td><td>2026-09-03</td><td>Hôtel des Verrières Claires, Paris</td><td>Hotel</td><td>Caldris Processus — Asterion Retrofit project</td><td>EUR 138.40</td><td><img src=\"output/0-claims-0-receipt.png\" alt=\"Receipt\" width=\"60\"></td></tr>\n<tr><td>EXP-20260912-66851</td><td>2026-09-12</td><td>Taxi Rhône Azur, Villeurbanne</td><td>Taxi</td><td>Valcrête Systèmes Silex-4 commissioning review to Lyon Part-Dieu</td><td>EUR 46.80</td><td><img src=\"output/0-claims-1-receipt.png\" alt=\"Receipt\" width=\"60\"></td></tr>\n<tr><td>EXP-20260924-33105</td><td>2026-09-24</td><td>Le Jardin des Sondes, Grenoble</td><td>Client Meals</td><td>Ormevia Énergies — Hélianthe Controls proposal dinner, 3 attendees</td><td>EUR 207.60</td><td><img src=\"output/0-claims-2-receipt.png\" alt=\"Receipt\" width=\"60\"></td></tr>\n<tr><td colspan=\"5\"><strong>Total</strong></td><td><strong>EUR 392.80</strong></td><td></td></tr>\n</tbody>\n</table>",
+        "inner_html": "<h1>Expense report</h1>\n<p><strong>Naïma Belkacem</strong>, Senior Sales Engineer, Business Development<br>\nEmployee EC-2026-0147, naima.belkacem@example.com</p>\n<table>\n<thead>\n<tr><th>Claim</th><th>Date</th><th>Merchant</th><th>Category</th><th>Business purpose</th><th>Amount</th><th>Receipt</th></tr>\n</thead>\n<tbody>\n<tr><td>EXP-20260903-08617</td><td>2026-09-03</td><td>Rail des Deux Vallées, Lyon</td><td>Train travel</td><td>Atelier Sereine – Alpilles Heat-Recovery requirements meeting</td><td>EUR 74.60</td><td><img src=\"output/0-claims-0-receipt.png\" alt=\"Receipt\" width=\"60\"></td></tr>\n<tr><td>EXP-20260912-39421</td><td>2026-09-12</td><td>Taxis Quenelle Horizon, Lyon</td><td>Taxi</td><td>Noroît Processus — Calandre Controls commissioning review transport</td><td>EUR 38.40</td><td><img src=\"output/0-claims-1-receipt.png\" alt=\"Receipt\" width=\"60\"></td></tr>\n<tr><td>EXP-20260922-87717</td><td>2026-09-22</td><td>La Table du Rivage Ambré, Annecy</td><td>Client meal</td><td>Noroît Processus — Calandre Controls design review dinner, 4 attendees</td><td>EUR 268.00</td><td><img src=\"output/0-claims-2-receipt.png\" alt=\"Receipt\" width=\"60\"></td></tr>\n<tr><td colspan=\"5\"><strong>Total</strong></td><td><strong>EUR 381.00</strong></td><td></td></tr>\n</tbody>\n</table>",
         "css_class": null
       }
     },
     {
       "employee": {
-        "employee_id": "EMP-26087",
-        "full_name": "Nadir Benali",
-        "email": "nadir.benali@example.com",
-        "department": "Engineering Delivery",
+        "employee_id": "EC-2026-0213",
+        "full_name": "Lucas Vannier",
+        "email": "lucas.vannier@example.com",
+        "department": "Project Engineering",
         "job_title": "Project Engineer"
       },
       "claims": [
         {
-          "claim_id": "EXP-20260908-49857",
+          "claim_id": "EXP-20260908-39793",
           "expense_date": "2026-09-08",
-          "merchant": "Comptoir du Maillet Doux, Lyon",
-          "category": "Working Meals",
-          "amount": "EUR 61.20",
-          "business_purpose": "Quartz-Ligne design review lunch — 3 employees",
+          "merchant": "Comptoir des Canuts Clairs, Lyon",
+          "category": "Working meal",
+          "amount": "EUR 61.80",
+          "business_purpose": "Orme-27 office design workshop — 3 people: Lucas Vannier, Camille Roux, Nils Bernard",
           "receipt": {
             "url": "output/1-claims-0-receipt.png",
-            "source_prompt": "A realistic smartphone photo of a fictional receipt made as test data for an expense audit, from Comptoir du Maillet Doux, in Lyon, printed in French. A small thermal café receipt placed on an open squared notebook under bright office window light, photographed straight down; it has one horizontal fold and a pale grease spot near the merchant header. The whole receipt is in the frame and in focus, and every line of it is sharp and legible. It reads exactly as follows, line by line, with nothing added or left out, down to its last line, which says that it is fictional:\n\nCOMPTOIR DU MAILLET DOUX\n31 rue du Maillet Doux\n69007 Lyon\nTél. 04 65 71 00 31\nSIRET 000 000 000 00000\nTVA intracommunautaire FR00 000000000\n--------------------------------------\n08/09/2026   12:36\nTicket n° 4827\nTable 14 — 3 couverts\nService : Inès\n--------------------------------------\n3 x Formule déjeuner             56,70\n3 x Eau pétillante 33 cl          4,50\n--------------------------------------\nTOTAL TTC                    61,20 EUR\nTVA 10 %                          5,56\n--------------------------------------\nCB **** 7032\nMerci de votre visite\nÀ bientôt\n*** REÇU FICTIF — DONNÉES DE TEST ***",
+            "source_prompt": "A realistic smartphone photo of a fictional receipt made as test data for an expense audit, from Comptoir des Canuts Clairs, in Lyon, printed in French. Long French thermal till receipt photographed on a blue project folder beneath cool office ceiling light, square to the camera; the top is lightly crumpled and a pale highlighter mark crosses an internal order number. The whole receipt is in the frame and in focus, and every line of it is sharp and legible. It reads exactly as follows, line by line, with nothing added or left out, down to its last line, which says that it is fictional:\n\nCOMPTOIR DES CANUTS CLAIRS\n63 avenue des Églantines\n69007 Lyon\nTél. 04 65 71 04 48\nSIRET : 000 000 000 00000\nRCS Lyon : 000 000 000\nTVA intracommunautaire : FR00 000000000\n--------------------------------------\n08/09/2026   12:43\nTicket n° 482731\nTable 14 — 3 couverts\nService : Midi\nCaissier : Émile\n--------------------------------------\n3 x Formule déjeuner             56,70\n1 x Eau minérale plate 50 cl      2,10\n2 x Café expresso                 3,00\n--------------------------------------\nTotal TTC                    61,80 EUR\nTVA 10 %                          5,62\n--------------------------------------\nCarte bancaire **** 7315\nMerci de votre visite\nÀ bientôt\n*** REÇU FICTIF — DONNÉES DE TEST ***",
             "source_negative_prompt": null,
             "caption": null,
             "mime_type": "image/png",
@@ -113,34 +113,15 @@
           "expected_verdict": "Compliant"
         },
         {
-          "claim_id": "EXP-20260918-60051",
-          "expense_date": "2026-09-18",
-          "merchant": "Billetterie Ferroviaire des Deux Rives, Lyon",
-          "category": "Train",
-          "amount": "EUR 74.90",
-          "business_purpose": "Solo travel: Brumelac Industrie, Nacelle-7 sensor-layout workshop",
-          "receipt": {
-            "url": "output/1-claims-1-receipt.png",
-            "source_prompt": "A realistic smartphone photo of a fictional receipt made as test data for an expense audit, from Billetterie Ferroviaire des Deux Rives, in Lyon, printed in French. A laser-printed rail ticket and payment slip photographed on a grey fabric train seat in diffuse daylight, at a low oblique angle; the ticket has a dog-eared corner and a faint vertical crease. The whole receipt is in the frame and in focus, and every line of it is sharp and legible. It reads exactly as follows, line by line, with nothing added or left out, down to its last line, which says that it is fictional:\n\nBILLETTERIE FERROVIAIRE DES DEUX RIVES\n6 cours des Deux Rives\n69003 Lyon\nTél. 04 65 71 00 06\nSIRET 000 000 000 00000\nRCS Lyon 000 000 000\nN° TVA intracommunautaire FR00 000000000\n--------------------------------------\n18/09/2026   07:42\nBillet n° BR-5817-2649\nAller-retour Lyon – Chambéry\nVoyageur : Nadir\n2e classe\nTarif standard\nDossier : X7M4Q9\n--------------------------------------\n1 x BILLET A/R LYON-CHAMBERY 2E CL     74,90\n--------------------------------------\nTOTAL TTC                    74,90 EUR\nTVA 10 %                          6,81\n--------------------------------------\nCarte professionnelle •••• 7032\nBon voyage\nConservez ce billet jusqu’à la fin du trajet\n*** REÇU FICTIF — DONNÉES DE TEST ***",
-            "source_negative_prompt": null,
-            "caption": null,
-            "mime_type": "image/png",
-            "width": 640,
-            "height": 1024,
-            "filename": null
-          },
-          "expected_verdict": "Compliant"
-        },
-        {
-          "claim_id": "EXP-20260929-20862",
-          "expense_date": "2026-09-29",
-          "merchant": "Guichet Rail des Balmes, Lyon",
-          "category": "Train",
-          "amount": "EUR 52.70",
+          "claim_id": "EXP-20260917-67181",
+          "expense_date": "2026-09-17",
+          "merchant": "Papeterie du Compas Vert, Lyon",
+          "category": "Office supplies",
+          "amount": "EUR 47.35",
           "business_purpose": "work",
           "receipt": {
-            "url": "output/1-claims-2-receipt.png",
-            "source_prompt": "A realistic smartphone photo of a fictional receipt made as test data for an expense audit, from Guichet Rail des Balmes, in Lyon, printed in French. A glossy counter-issued ticket held by two fingertips over a black backpack in fluorescent station light, photographed at a steep angle; it has a bent upper edge and a light blue ink streak across the reverse showing through. The whole receipt is in the frame and in focus, and every line of it is sharp and legible. It reads exactly as follows, line by line, with nothing added or left out, down to its last line, which says that it is fictional:\n\nGUICHET RAIL DES BALMES\n25 place des Balmes Neuves\n69008 Lyon\nTél. 04 65 71 00 25\nSIRET 000 000 000 00000\nTVA intracommunautaire FR 00 000000000\n--------------------------------------\n29/09/2026   08:12\nBillet n° RB-742918\nAller-retour Lyon–Valence\nClasse : 2e\nVoyageur : Nadir\n--------------------------------------\n1 x A/R LYON–VALENCE 2E CL.      52,70\n--------------------------------------\nTotal TTC                    52,70 EUR\nTVA 10 %                          4,79\n--------------------------------------\nCarte entreprise •••• 7032\nMerci de votre visite.\nBon voyage.\n*** REÇU FICTIF — DONNÉES DE TEST ***",
+            "url": "output/1-claims-1-receipt.png",
+            "source_prompt": "A realistic smartphone photo of a fictional receipt made as test data for an expense audit, from Papeterie du Compas Vert, in Lyon, printed in French. Detailed French shop receipt on bright white thermal paper, photographed beside a keyboard on a pale laminate desk in late-afternoon window light; the image is slightly rotated clockwise, with a small tear at the top and no stains. The whole receipt is in the frame and in focus, and every line of it is sharp and legible. It reads exactly as follows, line by line, with nothing added or left out, down to its last line, which says that it is fictional:\n\nPAPETERIE DU COMPAS VERT\n91 rue de la Verrière\n69003 Lyon\nTél. 04 65 71 05 60\nSIRET : 000 000 000 00000\nN° TVA intracommunautaire : FR00 000000000\n--------------------------------------\n17/09/2026   17:26\nTicket n° 4827-1936\nCaisse : Anaïs\n--------------------------------------\n2 x Bloc calcul A3               17,50\n1 x Intercalaires repositionnables      5,95\n4 x Stylo technique noir          9,80\n1 x Marqueurs tableau blanc - pochette     14,10\n--------------------------------------\nTOTAL TTC                    47,35 EUR\nTVA 20 %                          7,89\n--------------------------------------\nCarte bancaire 7315\nMerci de votre visite\nÀ bientôt\n*** REÇU FICTIF — DONNÉES DE TEST ***",
             "source_negative_prompt": null,
             "caption": null,
             "mime_type": "image/png",
@@ -149,37 +130,56 @@
             "filename": null
           },
           "expected_verdict": "Breaks rule 6: purpose says only \"work\" and names no client or project"
+        },
+        {
+          "claim_id": "EXP-20260929-41860",
+          "expense_date": "2026-09-29",
+          "merchant": "Hôtel des Volcans Paisibles, Clermont-Ferrand",
+          "category": "Hotel",
+          "amount": "EUR 96.40",
+          "business_purpose": "Mécalume Études — Sillage-4 test-bench project",
+          "receipt": {
+            "url": "output/1-claims-2-receipt.png",
+            "source_prompt": "A realistic smartphone photo of a fictional receipt made as test data for an expense audit, from Hôtel des Volcans Paisibles, in Clermont-Ferrand, printed in French. French hotel invoice printed on A5 letterhead, photographed on a bedside table under a warm lamp from the upper left; the sheet has a vertical fold, a faint suitcase scuff along the bottom edge, and all totals remain clear. The whole receipt is in the frame and in focus, and every line of it is sharp and legible. It reads exactly as follows, line by line, with nothing added or left out, down to its last line, which says that it is fictional:\n\nHÔTEL DES VOLCANS PAISIBLES\n26 boulevard des Forges\n63000 Clermont-Ferrand\nTél. 04 65 71 06 72\nSIRET 000 000 000 00000\nTVA intracommunautaire FR00 000000000\n--------------------------------------\n29/09/2026   07:42\nFacture n° HV-260929-4817\nChambre 214\nSéjour : 1 nuit\nPetit-déjeuner inclus\nClient : L. Vannier\n--------------------------------------\n1 x Forfait chambre simple avec petit-déjeuner     96,40\n--------------------------------------\nTotal TTC                    96,40 EUR\nTVA 10 %                          8,76\n--------------------------------------\nCarte bancaire **** 7315\nMerci de votre visite.\nÀ bientôt.\n*** REÇU FICTIF — DONNÉES DE TEST ***",
+            "source_negative_prompt": null,
+            "caption": null,
+            "mime_type": "image/png",
+            "width": 640,
+            "height": 1024,
+            "filename": null
+          },
+          "expected_verdict": "Compliant"
         }
       ],
       "expense_report": {
-        "inner_html": "<h1>Expense report</h1>\n<p><strong>Nadir Benali</strong>, Project Engineer, Engineering Delivery<br>\nEmployee EMP-26087, nadir.benali@example.com</p>\n<table>\n<thead>\n<tr><th>Claim</th><th>Date</th><th>Merchant</th><th>Category</th><th>Business purpose</th><th>Amount</th><th>Receipt</th></tr>\n</thead>\n<tbody>\n<tr><td>EXP-20260908-49857</td><td>2026-09-08</td><td>Comptoir du Maillet Doux, Lyon</td><td>Working Meals</td><td>Quartz-Ligne design review lunch — 3 employees</td><td>EUR 61.20</td><td><img src=\"output/1-claims-0-receipt.png\" alt=\"Receipt\" width=\"60\"></td></tr>\n<tr><td>EXP-20260918-60051</td><td>2026-09-18</td><td>Billetterie Ferroviaire des Deux Rives, Lyon</td><td>Train</td><td>Solo travel: Brumelac Industrie, Nacelle-7 sensor-layout workshop</td><td>EUR 74.90</td><td><img src=\"output/1-claims-1-receipt.png\" alt=\"Receipt\" width=\"60\"></td></tr>\n<tr><td>EXP-20260929-20862</td><td>2026-09-29</td><td>Guichet Rail des Balmes, Lyon</td><td>Train</td><td>work</td><td>EUR 52.70</td><td><img src=\"output/1-claims-2-receipt.png\" alt=\"Receipt\" width=\"60\"></td></tr>\n<tr><td colspan=\"5\"><strong>Total</strong></td><td><strong>EUR 188.80</strong></td><td></td></tr>\n</tbody>\n</table>",
+        "inner_html": "<h1>Expense report</h1>\n<p><strong>Lucas Vannier</strong>, Project Engineer, Project Engineering<br>\nEmployee EC-2026-0213, lucas.vannier@example.com</p>\n<table>\n<thead>\n<tr><th>Claim</th><th>Date</th><th>Merchant</th><th>Category</th><th>Business purpose</th><th>Amount</th><th>Receipt</th></tr>\n</thead>\n<tbody>\n<tr><td>EXP-20260908-39793</td><td>2026-09-08</td><td>Comptoir des Canuts Clairs, Lyon</td><td>Working meal</td><td>Orme-27 office design workshop — 3 people: Lucas Vannier, Camille Roux, Nils Bernard</td><td>EUR 61.80</td><td><img src=\"output/1-claims-0-receipt.png\" alt=\"Receipt\" width=\"60\"></td></tr>\n<tr><td>EXP-20260917-67181</td><td>2026-09-17</td><td>Papeterie du Compas Vert, Lyon</td><td>Office supplies</td><td>work</td><td>EUR 47.35</td><td><img src=\"output/1-claims-1-receipt.png\" alt=\"Receipt\" width=\"60\"></td></tr>\n<tr><td>EXP-20260929-41860</td><td>2026-09-29</td><td>Hôtel des Volcans Paisibles, Clermont-Ferrand</td><td>Hotel</td><td>Mécalume Études — Sillage-4 test-bench project</td><td>EUR 96.40</td><td><img src=\"output/1-claims-2-receipt.png\" alt=\"Receipt\" width=\"60\"></td></tr>\n<tr><td colspan=\"5\"><strong>Total</strong></td><td><strong>EUR 205.55</strong></td><td></td></tr>\n</tbody>\n</table>",
         "css_class": null
       }
     }
   ],
   "files": {
     "output/0-claims-0-receipt.png": {
-      "sha256": "2c398e03f5b207046d7c873a64090cd4bf66715a000b71a00cc90fab4ec103fb",
+      "sha256": "11c463090a541c9c0a672e58ff3cb1ef4948870b9d0639677c941eaabee5b11f",
       "content_type": "image/png"
     },
     "output/0-claims-1-receipt.png": {
-      "sha256": "b840ea25ade20386b50475909142551f3e9909b844eb5d7643c0576ecf951233",
+      "sha256": "c9ea55d122d4205d003305a16cb3dd9077827b1918704e460ed3927c0b528da0",
       "content_type": "image/png"
     },
     "output/0-claims-2-receipt.png": {
-      "sha256": "6b96bb9b0847a8a4dcb8ea36b222ce02ec2f1d8fc9ac7022ad04ef5ab3af4c2a",
+      "sha256": "ca9ece3f9da7afc4efb22aee8b36d3c8913ed3ca3a048e12241842c1d48b0d0d",
       "content_type": "image/png"
     },
     "output/1-claims-0-receipt.png": {
-      "sha256": "4eeaa26bfe163623ed1a4f1a19da56a83d2ff083accf307b03c85dc0f0733f79",
+      "sha256": "9667188cf0a51b05bdfccd3e19c79309300546efa96511463399dac7a88fa470",
       "content_type": "image/png"
     },
     "output/1-claims-1-receipt.png": {
-      "sha256": "49dcfff809426d32c7e0eac8df1d3b869d28dd69db37210c6168904c47daae2b",
+      "sha256": "4093532e8e23f2223eeb4daca004f989ba562e7b6618f76746e93fcb3ddf1dcf",
       "content_type": "image/png"
     },
     "output/1-claims-2-receipt.png": {
-      "sha256": "98b31b22a8b2bab0e1e59084a9f1ef949ef6776e1bbb9a85a5fc059479b73ab7",
+      "sha256": "d0d76feb911c2d176453baaa28e1bb38d75ab9fe45e9e309b8c772c92ab783f5",
       "content_type": "image/png"
     }
   }

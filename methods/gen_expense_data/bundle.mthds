@@ -59,7 +59,7 @@ merchant_address = { type = "text", description = "The merchant's invented stree
 merchant_phone   = { type = "text", description = "The merchant's invented phone number", required = true }
 category         = { type = "text", description = "The claim's category, as an expense tool lists it", required = true }
 situation        = { type = "text", description = "What the expense was: the occasion, who took part and how many people, the client or project it was for, and what was bought", required = true }
-amount           = { type = "number", description = "The total the receipt comes to, in the batch's currency", required = true }
+amount           = { type = "number", description = "The total the receipt comes to, tax included, in the batch's currency", required = true }
 photo            = { type = "text", description = "What the receipt looks like, such as a till receipt on thermal paper or a printed invoice, and how it is photographed: the surface or the hand holding it, the light, the angle, and any fold, crease or stain", required = true }
 
 [concept.EmployeePlan]
@@ -93,7 +93,7 @@ unit_price = { type = "number", description = "The price of one", required = tru
 description = "What a receipt prints, and the business purpose the employee writes on the claim, before the receipt's figures are worked out"
 
 [concept.ReceiptDraft.structure]
-working            = { type = "text", description = "How the receipt and the claim give the planned outcome: the lines chosen, each quantity times its unit price, added up to the planned amount, and what the business purpose says or leaves out", required = true }
+working            = { type = "text", description = "How the receipt and the claim give the planned outcome: the tax, the amount the lines add up to so that the total is the planned amount, each quantity times its unit price, and what the business purpose says or leaves out", required = true }
 merchant_lines     = { type = "list", item_type = "text", description = "The lines printed under the merchant's name at the top of the receipt, without the name: its street address, its postcode and town, its phone number, and the registration numbers a receipt of its country prints", required = true }
 sale_lines         = { type = "list", item_type = "text", description = "What the receipt prints about the sale, without its date and time, which are printed above them, such as the ticket or invoice number, the table and covers, the room and nights, the journey and class, or the cashier", required = true }
 time               = { type = "text", description = "The time of the sale, as HH:MM", required = true }
@@ -103,7 +103,7 @@ subtotal_label     = { type = "text", description = "The label of the subtotal b
 tax_label          = { type = "text", description = "The label of the tax line, in the receipt's language, with the tax's name and its rate but not its amount", required = true }
 tax_rate           = { type = "number", description = "The tax rate, in percent", required = true }
 total_label        = { type = "text", description = "The label of the total, in the receipt's language", required = true }
-payment_line       = { type = "text", description = "How the sale was paid, as the receipt prints it, such as the employee's card and its last four digits", required = true }
+payment_line       = { type = "text", description = "How the sale was paid, as the receipt prints it, such as a generic card label, never a card network's name, and the card's last four digits", required = true }
 closing_lines      = { type = "list", item_type = "text", description = "The receipt's last lines, such as a thank-you", required = true }
 business_purpose   = { type = "text", description = "The business purpose the employee types on the claim, in a short line", required = true }
 
@@ -223,7 +223,7 @@ Plan the batch: the employees the brief asks for, each with the claims it asks f
   - `expense_date`: a day from the calendar, the claims spread across the period. Where a rule depends on the day of the week, read the day from the calendar, never from memory.
   - `merchant_name`, `merchant_city`, `merchant_address` and `merchant_phone`: a merchant invented for this claim, of a kind this expense is made at, with a name that reads like a real local business and belongs to none, in a town or city that fits the employee's work, at an invented street address with the town's postcode, and with a phone number in a range reserved for fiction. No two claims of the batch share a merchant, a street, a street number or a phone number.
   - `category`, and the `situation` the employee knows: the occasion, who took part and how many people, the client or the project, and what was bought.
-  - `amount`: the total the receipt comes to. Where a rule sets a limit, keep a claim that keeps the rule well under it and put a claim that breaks it clearly over it, working out a limit stated per person or per night from the people and the nights. Make the amounts differ from one claim to the next, as real amounts do.
+  - `amount`: the total the receipt comes to, tax included. Where a rule sets a limit, keep a claim that keeps the rule well under it and put a claim that breaks it clearly over it, working out a limit stated per person or per night from the people and the nights. Make the amounts differ from one claim to the next, as real amounts do.
   - `photo`: what the receipt looks like, such as a till receipt on thermal paper, a printed invoice or a ticket, and how it is photographed, different for each claim: the surface it lies on or the hand holding it, the light, the angle, and any fold, crease or stain.
 """
 
@@ -277,13 +277,13 @@ It is dated {{ claim_plan.expense_date.isoformat() }}, a {{ claim_plan.expense_d
 
 The receipt is printed in {{ setting.receipt_language }}, and its amounts are in {{ setting.currency }}.
 
-- `working`: first, how the receipt and the claim give the planned outcome: the lines you choose, each quantity times its unit price, added up to the planned amount exactly; then what the business purpose says, or leaves out where the planned outcome breaks a rule about what a claim says.
+- `working`: first, how the receipt and the claim give the planned outcome. The planned amount is the receipt's total, tax included. Say the sales tax the country applies to this kind of purchase, its rate, and whether the receipt's prices include it; then the amount the lines add up to: the planned amount when the prices include the tax, and otherwise the amount before tax, the planned amount divided by one plus the tax rate and rounded to the cent, so that the tax worked out on the lines brings the total to the planned amount. Then the lines you choose, each quantity times its unit price, added up to that amount exactly; then what the business purpose says, or leaves out where the planned outcome breaks a rule about what a claim says.
 - `merchant_lines`: the lines printed under the merchant's name, which is printed above them and not repeated: its street address and its postcode and town, and its phone number, as planned, and the registration numbers a receipt of its country prints. Write the registration numbers, and them alone, with zeros for their digits, so that none is a real business's number. Every other number on the receipt has ordinary, varied digits: the ticket or invoice number, the times and the prices; and a person the receipt names, such as the server, the driver or the passenger, appears by a first name alone or by an initial and a surname, never by a full name.
 - `sale_lines`: what a receipt of this kind prints about the sale, without its date and time, which are printed above them, such as the ticket or invoice number, the table and the number of covers, the room and the nights, the journey and the class, or the cashier.
 - `time`: the time of the sale, as HH:MM, at an hour that fits the purchase.
-- `lines`: what was bought, as the merchant's till prints it, one line per item with its quantity and unit price. The lines add up exactly to the planned amount, and show what the situation says was bought and nothing that would break a rule the claim is planned to keep.
-- `prices_include_tax`, `subtotal_label`, `tax_label`, `tax_rate` and `total_label`: the sales tax the country applies to this kind of purchase, and how its receipts print it. The labels are words only: each amount is worked out from the lines and printed beside its label.
-- `payment_line`: how it was paid: with the employee's card, printed as the card's type and its last four digits, {{ employee_plan.card_digits }}, without the holder's name, unless the situation says otherwise.
+- `lines`: what was bought, as the merchant's till prints it, one line per item with its quantity and unit price. The lines add up exactly to the amount worked out above: the planned amount when the prices include the tax, the amount before tax when they do not. They show what the situation says was bought and nothing that would break a rule the claim is planned to keep.
+- `prices_include_tax`, `subtotal_label`, `tax_label`, `tax_rate` and `total_label`: the sales tax worked out above, and how the country's receipts print it. The labels are words only: each amount is worked out from the lines and printed beside its label.
+- `payment_line`: how it was paid: with the employee's card, printed as a generic card label in the receipt's language, such as "Carte bancaire" or "Card", never the name of a card network, followed by its last four digits, {{ employee_plan.card_digits }}, without the holder's name, unless the situation says otherwise.
 - `closing_lines`: the receipt's last lines, such as a thank-you.
 - `business_purpose`: what the employee types in the expense tool's purpose field, in {{ setting.claim_language }} whatever the language of the receipt: a short line, in the few words an employee uses, never a sentence of explanation. Where the planned outcome breaks a rule about what a claim says, write it to break that rule and only that one, as a real employee's claim would; otherwise make it say everything the policy asks a claim to say, and nothing more.
 """
@@ -302,7 +302,7 @@ amount     = { template = "{{ '%.2f' % (receipt_line.quantity * receipt_line.uni
 
 [pipe.total_receipt]
 type        = "PipeCompose"
-description = "Work out the receipt's subtotal, tax and total from its lines' amounts"
+description = "Work out the receipt's subtotal, tax and total from its lines' amounts: the total is their sum when the prices include the tax, and their sum plus the tax otherwise"
 inputs      = { receipt_draft = "ReceiptDraft", priced_lines = "PricedLine[]" }
 output      = "ReceiptTotal"
 
@@ -423,7 +423,7 @@ Employee {{ employee_plan.employee.employee_id }}, {{ employee_plan.employee.ema
 </thead>
 <tbody>
 {% for claim in claims %}
-<tr><td>{{ claim.claim_id }}</td><td>{{ claim.expense_date.isoformat() }}</td><td>{{ claim.merchant }}</td><td>{{ claim.category }}</td><td>{{ claim.business_purpose }}</td><td>{{ claim.amount }}</td><td><img src="{{ claim.receipt.url }}" alt="Receipt" width="60"></td></tr>
+<tr><td>{{ claim.claim_id }}</td><td>{{ claim.expense_date.isoformat() }}</td><td>{{ claim.merchant }}</td><td>{{ claim.category }}</td><td>{{ claim.business_purpose }}</td><td>{{ claim.amount }}</td><td><img src="{{ claim.receipt.public_url or claim.receipt.url }}" alt="Receipt" width="60"></td></tr>
 {% endfor %}
 <tr><td colspan="5"><strong>Total</strong></td><td><strong>{{ setting.currency }} {{ '%.2f' % (claims | map(attribute='amount') | map('replace', setting.currency ~ ' ', '') | map('float') | list | sum) }}</strong></td><td></td></tr>
 </tbody>
