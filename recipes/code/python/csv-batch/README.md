@@ -20,7 +20,7 @@ export PIPELEX_API_KEY=…
 uv run batch.py invoices.csv --output results.csv --concurrency 4
 ```
 
-`invoices.csv` holds two sample invoices from the cookbook's `assets/`, linked at the release tag `v0.18.0`. Point the script at your own CSV: it reads the `invoice_url` column, refusing a CSV that has none, and each URL must be one the hosted API can fetch, such as a public link or a presigned URL.
+`invoices.csv` holds two sample invoices from the cookbook's `assets/`, linked at the release tag `v0.20.0`. Point the script at your own CSV: it reads the `invoice_url` column, refusing a CSV that has none, and each URL must be one the hosted API can fetch, such as a public link or a presigned URL.
 
 ## What you get
 
