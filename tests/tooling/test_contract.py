@@ -1,3 +1,4 @@
+import json
 from typing import Any
 
 import pytest
@@ -71,6 +72,29 @@ class TestContract:
                 ],
             ),
         )
+
+    def test_a_list_input_records_the_kind_of_its_items_which_no_other_input_writes(self):
+        main = WIDGETS_VERDICT["pipe_io_contracts"]["widgets.extract_widgets"]
+        pages: dict[str, Any] = {"concept_ref": "native.Document", "presence": "plain", "multiplicity": "variable", "json_schema": {}}
+        verdict: dict[str, Any] = {
+            **WIDGETS_VERDICT,
+            "pipe_io_contracts": {"widgets.extract_widgets": {**main, "inputs": {**main["inputs"], "pages": pages}}},
+            "input_form": {
+                "widgets.extract_widgets": {
+                    "fields": [
+                        {"kind": "image", "name": "catalogue"},
+                        {"kind": "list", "name": "pages", "item": {"kind": "document", "concept_ref": "native.Document"}},
+                    ]
+                }
+            },
+        }
+        contract = project_contract(verdict=verdict, main_pipe="extract_widgets")
+        catalogue, pages_input = contract.inputs
+        assert (pages_input.kind, pages_input.item_kind, pages_input.sample_kind) == ("list", "document", "document")
+        assert (catalogue.item_kind, catalogue.sample_kind) == (None, "image")
+        written = json.loads(contract.to_json())
+        assert ["item_kind" in written_input for written_input in written["inputs"]] == [False, True]
+        assert Contract.model_validate_json(contract.to_json()) == contract
 
     def test_a_snapshot_round_trips_through_its_json(self):
         contract = project_contract(verdict=WIDGETS_VERDICT, main_pipe="extract_widgets")

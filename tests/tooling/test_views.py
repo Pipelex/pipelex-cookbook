@@ -6,8 +6,15 @@ from pydantic import JsonValue
 
 from scripts.contract import Contract, ContractInput, ContractOutput
 from scripts.cookbook import OutputHints, load_cookbook
+from scripts.snapshot import preview_path
 from scripts.views import OUTPUT_FOLD_LINES, day_phrase, duration_phrase, output_markdown, output_summary, sample_views
-from tests.tooling.test_data import WIDGETS_CONTRACT, WORDS_CONTRACT, MakeCookbook, make_word_document_sample
+from tests.tooling.test_data import (
+    WIDGETS_CONTRACT,
+    WORDS_CONTRACT,
+    MakeCookbook,
+    make_widgets_sample_a_list_of_documents,
+    make_word_document_sample,
+)
 
 
 def _contract(*, multiplicity: str = "single") -> Contract:
@@ -162,6 +169,21 @@ class TestSampleView:
         assert view.body == (
             '<a href="../../assets/extract_widgets/catalogue.png">'
             '<img src="../../assets/extract_widgets/catalogue.preview.png" alt="sample catalogue" width="480"></a>'
+        )
+
+    def test_each_document_of_a_list_shows_its_preview_as_a_single_document_does(self, make_cookbook: MakeCookbook):
+        root = make_cookbook()
+        for document in make_widgets_sample_a_list_of_documents(root):
+            preview_path(document).write_bytes(b"png")
+        cookbook = load_cookbook(root)
+        [package] = [package for package in cookbook.packages if package.name == "extract_widgets"]
+        assert package.contract is not None
+        [view] = sample_views(cookbook=cookbook, package=package, contract=package.contract)
+        assert view.body == (
+            '<a href="../../assets/extract_widgets/catalogue-1.pdf">'
+            '<img src="../../assets/extract_widgets/catalogue-1.preview.png" alt="sample catalogue 1" width="480"></a>\n\n'
+            '<a href="../../assets/extract_widgets/catalogue-2.pdf">'
+            '<img src="../../assets/extract_widgets/catalogue-2.preview.png" alt="sample catalogue 2" width="480"></a>'
         )
 
     def test_a_sample_whose_name_holds_a_space_a_hash_or_parentheses_is_linked_by_one_encoded_target(self, make_cookbook: MakeCookbook):

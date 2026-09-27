@@ -38,6 +38,7 @@ from tests.tooling.test_data import (
     MakeCookbook,
     drop_widgets_record,
     make_widgets_sample_a_document,
+    make_widgets_sample_a_list_of_documents,
     make_word_document_sample,
     pdf_bytes,
     png_bytes,
@@ -268,6 +269,14 @@ class TestPreviews:
         assert preview.is_file()
         # A preview already holding what the rendering gives is left as it is.
         assert write_previews(cookbook=cookbook, package=package) == []
+
+    def test_each_pdf_of_a_list_of_documents_gets_its_own_preview(self, make_cookbook: MakeCookbook):
+        root = make_cookbook()
+        documents = make_widgets_sample_a_list_of_documents(root)
+        cookbook = load_cookbook(root)
+        package = _package(root, "extract_widgets")
+        assert document_samples(cookbook=cookbook, package=package) == documents
+        assert write_previews(cookbook=cookbook, package=package) == [preview_path(document) for document in documents]
 
     @pytest.mark.parametrize(
         ("name", "data", "expected"),

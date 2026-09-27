@@ -36,6 +36,8 @@ WIDGETS_SAMPLE_PATH = "assets/extract_widgets/catalogue.png"
 WIDGETS_WORD_SAMPLE_URL = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_widgets/catalogue.docx"
 WIDGETS_WORD_SAMPLE_PATH = "assets/extract_widgets/catalogue.docx"
 WIDGETS_SOURCE = "https://widgets.example.org/catalogue.png"
+# The same sample as a list of two PDF documents, each of which gets its own preview.
+WIDGETS_PDF_SAMPLE_PATHS = ["assets/extract_widgets/catalogue-1.pdf", "assets/extract_widgets/catalogue-2.pdf"]
 
 COOKBOOK_TOML = f"""address = "{FIXTURE_ADDRESS}"
 repository = "Pipelex/pipelex-cookbook"
@@ -315,6 +317,26 @@ def make_word_document_sample(root: Path) -> None:
     inputs = {"catalogue": {"concept": "widgets.CataloguePage", "content": {"url": WIDGETS_WORD_SAMPLE_URL}}}
     (root / "methods" / "extract_widgets" / "inputs.json").write_text(json.dumps(inputs, indent=2), encoding="utf-8")
     make_widgets_sample_a_document(root)
+
+
+def make_widgets_sample_a_list_of_documents(root: Path) -> list[Path]:
+    """Make the fixture's widget sample a list of two PDF documents kept under `assets/`, which its contract calls a list whose items are
+    documents, and return their paths."""
+    paths: list[Path] = []
+    content: list[JsonValue] = []
+    for sample in WIDGETS_PDF_SAMPLE_PATHS:
+        path = root / sample
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(pdf_bytes(width=300, height=200))
+        paths.append(path)
+        content.append({"url": f"https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/{sample}"})
+    inputs = {"catalogue": {"concept": "native.Document", "content": content}}
+    (root / "methods" / "extract_widgets" / "inputs.json").write_text(json.dumps(inputs, indent=2), encoding="utf-8")
+    contract = WIDGETS_CONTRACT.model_copy(
+        update={"inputs": [ContractInput(name="catalogue", concept="native.Document", kind="list", item_kind="document", multiplicity="variable")]}
+    )
+    (root / "methods" / "extract_widgets" / "contract.json").write_text(contract.to_json(), encoding="utf-8")
+    return paths
 
 
 def add_words_synthetic_record(root: Path) -> None:

@@ -1,12 +1,13 @@
 """What a method page shows of its sample and of its output, as Markdown computed from the contract, the sample records and the snapshot.
 
 The sample is shown by the kind the contract gives each input: an image embedded, a PDF document as its first-page preview linking to the file
-and any other document as a link, prose as a quotation, a structure as a field and value table. The output is shown as a reader would use it: a
-flat structure as a field and value table, a list of structures as a table, Markdown text as Markdown under demoted headings, moved by one shift
-for the whole output so that one level of the source lands at one level of the page, HTML embedded without its head, styles and scripts, and a
-file the output holds as an embedded image or a link. An output that renders longer than `OUTPUT_FOLD_LINES` lines is folded whole, under
-a summary naming it, so that the page's contract and doors stay near its top. Two hints of `[methods.<name>.output]` in `cookbook.toml` settle
-what the contract cannot: `formats`, how a text field reads, and `item_label`, the noun naming each item of a list output.
+and any other document as a link, prose as a quotation, a structure as a field and value table. Each file of a list is shown by the kind the
+contract gives the list's items, so that each document of a list of documents is shown as a single document is. The output is shown as a reader
+would use it: a flat structure as a field and value table, a list of structures as a table, Markdown text as Markdown under demoted headings,
+moved by one shift for the whole output so that one level of the source lands at one level of the page, HTML embedded without its head, styles
+and scripts, and a file the output holds as an embedded image or a link. An output that renders longer than `OUTPUT_FOLD_LINES` lines is folded
+whole, under a summary naming it, so that the page's contract and doors stay near its top. Two hints of `[methods.<name>.output]` in
+`cookbook.toml` settle what the contract cannot: `formats`, how a text field reads, and `item_label`, the noun naming each item of a list output.
 
 The page's sentences, headings and links live in `templates/method_page.md.j2`; what is computed here is the method-specific Markdown.
 """
@@ -121,7 +122,7 @@ def sample_label(*, package: MethodPackage, input_name: str) -> str:
 
 def sample_views(*, cookbook: Cookbook, package: MethodPackage, contract: Contract) -> list[SampleView]:
     """Each input of the sample, in the order of `inputs.json`, shown by the kind the contract gives it."""
-    kinds = {contract_input.name: contract_input.kind for contract_input in contract.inputs}
+    kinds = {contract_input.name: contract_input.sample_kind for contract_input in contract.inputs}
     views: list[SampleView] = []
     for input_name, value in package.inputs.items():
         label = sample_label(package=package, input_name=input_name)

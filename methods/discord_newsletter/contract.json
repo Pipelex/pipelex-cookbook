@@ -5,6 +5,7 @@
       "name": "discord_channel_updates",
       "concept": "discord_newsletter.DiscordChannelUpdate",
       "kind": "list",
+      "item_kind": "object",
       "description": null,
       "multiplicity": "variable",
       "item_count": null,
