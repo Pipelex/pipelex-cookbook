@@ -1,19 +1,21 @@
 /**
- * Read a research report by its run id, however long ago the run started.
+ * Read a release post by its run id, however long ago the run started.
  *
- *     npm run result -- <run id>           # prints the report if the run is done, or says it is still going
- *     npm run result -- <run id> --wait    # waits up to twenty minutes for the run to end, then prints the report
+ *     npm run result -- <run id>           # prints the post if the run is done, or says it is still going
+ *     npm run result -- <run id> --wait    # waits up to twenty minutes for the run to end, then prints the post
  *
- * The report goes to stdout as Markdown, so `npm run --silent result -- <run id> > report.md` saves it.
- * PIPELEX_API_KEY must be set: a run is read with the key of the account that started it. Reading spends no credit.
+ * The post goes to stdout as Markdown, its CMS fields as front matter above its body, so
+ * `npm run --silent result -- <run id> > post.md` saves it; what the post leaves out of the release notes goes to stderr,
+ * for whoever publishes it to check the cut. PIPELEX_API_KEY must be set: a run is read with the key of the account
+ * that started it. Reading spends no credit.
  *
- * The exit status tells a scheduler what to do next: 0 with the report; 3 while the run is still going, and 4 when the
+ * The exit status tells a scheduler what to do next: 0 with the post; 3 while the run is still going, and 4 when the
  * API was out of reach or answered with a server error, both worth asking again; 1 when the run failed, and 5 when the
- * run cannot be read as asked (an unknown id, a refused key, a report the generated types do not accept), both final.
+ * run cannot be read as asked (an unknown id, a refused key, a post the generated types do not accept), both final.
  */
 import { ApiResponseError, ApiUnreachableError, PipelexApiClient, RunFailedError, RunTimeoutError } from "@pipelex/sdk";
 
-import { parseFormattedReport } from "./generated/research_report/binder";
+import { parseReleasePost } from "./generated/write_release_post/binder";
 
 const RUN_FAILED = 1;
 const STILL_RUNNING = 3;
@@ -28,9 +30,19 @@ if (!runId) {
   process.exit(2);
 }
 
-/** The report's Markdown, from a completed run's main output, typed by the method's `FormattedReport`. */
-function reportOf(mainStuff: unknown): string {
-  return parseFormattedReport(mainStuff).text;
+/**
+ * The post as Markdown, from a completed run's main output, typed by the method's `ReleasePost`: its CMS fields as
+ * front matter, each value written as a JSON string or list, which YAML reads as it is, then its body. What the post
+ * leaves out, with the style guide's rule for each, goes to stderr, so that saving stdout keeps the post alone.
+ */
+function postOf(mainStuff: unknown): string {
+  const post = parseReleasePost(mainStuff);
+  for (const { note, why } of post.left_out) {
+    console.error(`left out: ${note} (${why})`);
+  }
+  const fields = { title: post.title, slug: post.slug, meta_description: post.meta_description, excerpt: post.excerpt, category: post.category };
+  const frontMatter = [...Object.entries(fields).map(([name, value]) => `${name}: ${JSON.stringify(value)}`), `tags: ${JSON.stringify(post.tags)}`];
+  return ["---", ...frontMatter, "---", "", post.body].join("\n");
 }
 
 /** Whether asking again may read the run: the API was out of reach, or answered that it was overloaded or failing. */
@@ -47,7 +59,7 @@ async function readRun(client: PipelexApiClient, runId: string, wait: boolean): 
         timeoutMs: WAIT_TIMEOUT_MS,
         onPoll: ({ elapsedMs }) => console.error(`… still going after ${Math.round(elapsedMs / 1000)}s`),
       });
-      console.log(reportOf(results.main_stuff));
+      console.log(postOf(results.main_stuff));
       return 0;
     } catch (error) {
       if (error instanceof RunTimeoutError) {
@@ -71,7 +83,7 @@ async function readRun(client: PipelexApiClient, runId: string, wait: boolean): 
       console.error(`run ${runId} ended ${state.status}: ${state.message}`);
       return RUN_FAILED;
     case "completed":
-      console.log(reportOf(state.result.main_stuff));
+      console.log(postOf(state.result.main_stuff));
       return 0;
   }
 }
