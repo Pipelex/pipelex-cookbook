@@ -27,7 +27,9 @@ export type RecordsState = { values: FormValues } & (
 export async function generateRecords(_previous: RecordsState, form: FormData): Promise<RecordsState> {
   const values = formValues(form);
   const refused = (message: string): RecordsState => ({ values, status: "refused", message });
-  const description = values.description.trim();
+  // The browser sends a textarea's line breaks as CRLF, two characters where its maxLength counted one, so the action
+  // counts, and sends to the run, the text as the visitor typed it.
+  const description = values.description.replaceAll("\r\n", "\n").trim();
   if (!description) {
     return refused("Describe the records you want.");
   }
