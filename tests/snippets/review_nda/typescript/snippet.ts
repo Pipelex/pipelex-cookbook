@@ -2,11 +2,11 @@
 // Edit those, or templates/, and render again; never edit this file by hand.
 import { PipelexApiClient } from "@pipelex/sdk";
 
-const response = await fetch("https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/methods/review_nda/inputs.json");
+const response = await fetch("https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.1/methods/review_nda/inputs.json");
 const inputs = (await response.json()) as Record<string, unknown>;
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/review_nda@v0.20.0",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/review_nda@v0.20.1",
   inputs,
 });
 console.log(result.main_stuff);

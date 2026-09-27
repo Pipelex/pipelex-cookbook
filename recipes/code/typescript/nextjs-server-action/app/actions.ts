@@ -1,60 +1,83 @@
 "use server";
 
 import { PipelineRequestError } from "@pipelex/sdk";
-import { ZodError, z } from "zod";
+import { ZodError } from "zod";
 
-import { parseBlogArticle } from "../generated/blog_article_generator/binder";
-import { BlogArticleRequestSchema, type BlogArticle, type BlogArticleRequest } from "../generated/blog_article_generator/types";
+import { parseDataRecord, serializeDataDescription, serializeRecordCount } from "../generated/gen_synthetic_data/binder";
+import type { DataRecord } from "../generated/gen_synthetic_data/types";
+import { MAX_DESCRIPTION_LENGTH, MAX_RECORDS } from "../lib/limits";
 import { pipelexClient } from "../lib/pipelex";
 
-const METHOD_REF = "github.com/Pipelex/pipelex-cookbook/blog_article_generator@v0.18.0";
-// The generated input type bounds no text, and every request spends a run on your key: a field past this length is refused.
-const MAX_FIELD_LENGTH = 1_000;
+const METHOD_REF = "github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.0";
 
 /** What the form shows in its fields: the sample values at first, then what the visitor last sent. */
-export type FormValues = Record<keyof BlogArticleRequest, string>;
+export type FormValues = { description: string; count: string };
 
-export type ArticleState = { values: FormValues } & (
+export type RecordsState = { values: FormValues } & (
   | { status: "idle" }
-  | { status: "written"; article: BlogArticle; runId: string }
+  | { status: "generated"; records: DataRecord[]; runId: string }
   | { status: "refused"; message: string }
 );
 
 /**
- * The form's server action: validate the request against the method's own input type, run the method by its address,
- * and hand the page the article, typed by the method's output type. Every answer carries the values the visitor sent,
+ * The form's server action: check the request, send it as the method's own input types, run the method by its address,
+ * and hand the page the records, typed by the method's output type. Every answer carries the values the visitor sent,
  * since React resets a form once its action has run.
  */
-export async function writeArticle(_previous: ArticleState, form: FormData): Promise<ArticleState> {
+export async function generateRecords(_previous: RecordsState, form: FormData): Promise<RecordsState> {
   const values = formValues(form);
-  const tooLong = Object.entries(values).find(([, value]) => value.length > MAX_FIELD_LENGTH);
-  if (tooLong) {
-    return { values, status: "refused", message: `The ${tooLong[0]} field is longer than ${MAX_FIELD_LENGTH} characters.` };
+  const refused = (message: string): RecordsState => ({ values, status: "refused", message });
+  // The browser sends a textarea's line breaks as CRLF, two characters where its maxLength counted one, so the action
+  // counts, and sends to the run, the text as the visitor typed it.
+  const description = values.description.replaceAll("\r\n", "\n").trim();
+  if (!description) {
+    return refused("Describe the records you want.");
   }
-  const request = BlogArticleRequestSchema.safeParse(values);
-  if (!request.success) {
-    return { values, status: "refused", message: z.prettifyError(request.error) };
+  if (description.length > MAX_DESCRIPTION_LENGTH) {
+    return refused(`The description is longer than ${MAX_DESCRIPTION_LENGTH} characters.`);
+  }
+  const count = Number(values.count);
+  if (!Number.isInteger(count) || count < 1 || count > MAX_RECORDS) {
+    return refused(`The number of records must be a whole number from 1 to ${MAX_RECORDS}.`);
   }
   try {
     const results = await pipelexClient().startAndWaitForResult({
       method_ref: METHOD_REF,
-      inputs: { user_prompt: { concept: "blog_article_generator.BlogArticleRequest", content: request.data } },
+      inputs: {
+        data_description: { concept: "synthetic_data_generation.DataDescription", content: serializeDataDescription({ text: description }) },
+        nb_samples: { concept: "synthetic_data_generation.RecordCount", content: serializeRecordCount({ number: count }) },
+      },
     });
-    return { values, status: "written", article: parseBlogArticle(results.main_stuff), runId: results.pipeline_run_id };
+    const items = listItems(results.main_stuff);
+    if (items === undefined) {
+      return refused(`The method answered with something other than a list of records, in run ${results.pipeline_run_id}.`);
+    }
+    return { values, status: "generated", records: items.map((item) => parseDataRecord(item)), runId: results.pipeline_run_id };
   } catch (error) {
     // A refused, failed or timed-out run, or an answer the generated types do not accept: the page says why.
     if (error instanceof PipelineRequestError || error instanceof ZodError) {
-      return { values, status: "refused", message: error.message };
+      return refused(error.message);
     }
     throw error;
   }
 }
 
-/** Each field the method's input type names, as the form sent it; a missing field, or a file in its place, reads as empty. */
+/** The items of a list output: the SDK documents the envelope {"items": [...]}, while the hosted API answers a bare list today. */
+function listItems(mainStuff: unknown): unknown[] | undefined {
+  if (Array.isArray(mainStuff)) {
+    return mainStuff;
+  }
+  if (typeof mainStuff === "object" && mainStuff !== null && "items" in mainStuff && Array.isArray(mainStuff.items)) {
+    return mainStuff.items;
+  }
+  return undefined;
+}
+
+/** Each field of the form as it sent it; a missing field, or a file in its place, reads as empty. */
 function formValues(form: FormData): FormValues {
   const value = (field: keyof FormValues) => {
     const entry = form.get(field);
     return typeof entry === "string" ? entry : "";
   };
-  return { text: value("text"), topic: value("topic"), audience: value("audience"), tone: value("tone"), length: value("length") };
+  return { description: value("description"), count: value("count") };
 }

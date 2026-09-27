@@ -1,6 +1,6 @@
 # A method over HTTP: start, poll, results
 
-Any tool that makes HTTP calls can run a method, with no SDK: one call starts the run and answers at once with its id, a second reads how the run is going, and a third reads its results. This recipe makes those three calls with `curl` in a small shell script, to read a French energy performance diagnostic with the cookbook's [DPE extraction](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/extract_dpe) method. The same three calls are how n8n, Zapier or any tool that makes HTTP calls reaches a method.
+Any tool that makes HTTP calls can run a method, with no SDK: one call starts the run and answers at once with its id, a second reads how the run is going, and a third reads its results. This recipe makes those three calls with `curl` in a small shell script, to read a French energy performance diagnostic with the cookbook's [DPE extraction](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.0/methods/extract_dpe) method, which returns the record a letting agency files for it. The same three calls are how n8n, Zapier or any tool that makes HTTP calls reaches a method.
 
 It shows the run lifecycle as the hosted API serves it:
 
@@ -17,15 +17,15 @@ It shows the run lifecycle as the hosted API serves it:
 
 ```bash
 export PIPELEX_API_KEY=…
-sh run.sh https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/assets/extract_dpe/dpe_single_page.pdf > dpe.json
+sh run.sh https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/assets/extract_dpe/synthetic_dpe.pdf > dpe.json
 ```
 
-The document is the cookbook's sample DPE, linked at the release tag `v0.18.0`. Any DPE works, as long as its URL is one the hosted API can fetch, such as a public link, a presigned URL or a `pipelex-storage://` uri from an [upload grant](../../code/typescript/upload-grant/). The script prints its progress to the terminal and the method's output to `dpe.json`.
+The document is the cookbook's sample DPE, a fictional one made for the example, linked at the release tag `v0.20.0`. Any DPE works, as long as its URL is one the hosted API can fetch, such as a public link, a presigned URL or a `pipelex-storage://` uri from an [upload grant](../../code/typescript/upload-grant/). The script prints its progress to the terminal and the method's output to `dpe.json`.
 
 A run can also be started now and read later, by its id alone:
 
 ```bash
-WAIT_SECONDS=0 sh run.sh https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/assets/extract_dpe/dpe_single_page.pdf   # prints the run's id and exits with status 3
+WAIT_SECONDS=0 sh run.sh https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/assets/extract_dpe/synthetic_dpe.pdf   # prints the run's id and exits with status 3
 sh run.sh --run run_… > dpe.json   # whenever you like: waits for the run to end, then prints its output
 ```
 
@@ -37,32 +37,35 @@ The terminal shows the run's id as soon as the start answers, with the commit th
 
 ```text
 started run_…
-method github.com/Pipelex/pipelex-cookbook/extract_dpe at v0.18.0, commit 42dcaa9a5eafe62752ea8a5f7f57e5d83a2cca87
-… RUNNING after 1s
+method github.com/Pipelex/pipelex-cookbook/extract_dpe at v0.20.0, commit aeee4835f56ace0eada10dc4b2ed8780b0473111
+… RUNNING after 0s
 … RUNNING after 6s
 … RUNNING after 12s
-… RUNNING after 18s
-… RUNNING after 23s
+… RUNNING after 17s
 run run_… completed
 ```
 
-`dpe.json` holds the method's output, a `Dpe`:
+`dpe.json` holds the method's output, a `DpeRecord`:
 
 ```json
 {
-  "address": "51 rue du Roi de Sicile, 75004 PARIS - 4EME",
-  "date_of_issue": "2022-03-29",
-  "date_of_expiration": "2032-03-28",
-  "energy_efficiency_class": "G",
-  "per_year_per_m2_consumption": 560.0,
-  "co2_emission_class": "C",
-  "per_year_per_m2_co2_emissions": 18.0,
-  "yearly_energy_costs_min": 1260.0,
-  "yearly_energy_costs_max": 1750.0
+  "address": "18 rue des Exemples, 69003 LYON 3EME, Étage 3 ; Porte gauche ; N° de lot : 27",
+  "dpe_number": "2669E0000000X",
+  "date_of_issue": "2026-06-18",
+  "date_of_expiration": "2036-06-17",
+  "energy_efficiency_class": "F",
+  "per_year_per_m2_consumption": 342,
+  "co2_emission_class": "E",
+  "per_year_per_m2_co2_emissions": 61,
+  "yearly_energy_costs_min": 1380,
+  "yearly_energy_costs_max": 1870,
+  "energy_prices_as_of": "2025-01-01",
+  "letting_status": "Rent frozen; no new or renewed lease from 1 January 2028",
+  "no_new_lease_from": "2028-01-01"
 }
 ```
 
-These are the figures printed on the sample diagnostic: the address at 51 rue du Roi de Sicile, 75004 Paris; issued on 2022-03-29 and valid until 2032-03-28; energy class G at 560 kWh per m² per year; CO₂ class C at 18 kg per m² per year; and yearly energy costs between 1260 and 1750 euros.
+These are the figures printed on the sample diagnostic, whose dwelling and people are invented: the address with its floor, door and lot number; the DPE's number in the ADEME register; issued on 2026-06-18 and valid until 2036-06-17; energy class F at 342 kWh per m² per year; CO₂ class E at 61 kg per m² per year; and yearly energy costs between 1380 and 1870 euros, at the prices of 1 January 2025. The last two fields are what class F means for letting the dwelling: its rent is frozen, and from 1 January 2028 no lease on it may be signed or renewed.
 
 The exit status says what happened, in the pattern of the [durable run](../../code/typescript/durable-run/) recipe:
 
@@ -85,8 +88,8 @@ The exit status says what happened, in the pattern of the [durable run](../../co
 curl -s https://api.pipelex.com/v1/start \
   -H "Authorization: Bearer $PIPELEX_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.18.0", "inputs": {"document": {"url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/assets/extract_dpe/dpe_single_page.pdf"}}}'
-# 202 → {"pipeline_run_id": "run_…", "method_provenance": {"address": "…", "tag": "v0.18.0", "commit_sha": "…"}}
+  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.0", "inputs": {"document": {"url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/assets/extract_dpe/synthetic_dpe.pdf"}}}'
+# 202 → {"pipeline_run_id": "run_…", "method_provenance": {"address": "…", "tag": "v0.20.0", "commit_sha": "…"}}
 ```
 
 The answer comes before the method runs, with the run's id and, for a run by address, its provenance: the address, the tag, and the commit the tag resolved to. A request the API refuses gets a `4xx` status whose body says why.

@@ -1,6 +1,6 @@
 # A FastAPI endpoint typed by the method it runs
 
-Your service needs to answer questions from documents: a contract, a report, a manual. This recipe is a FastAPI app with one endpoint, `POST /answers`, that runs the cookbook's [document question answering](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/answer_from_documents) method by its address and answers with the method's own result.
+Your service needs to answer questions from documents: a contract, a report, a manual. This recipe is a FastAPI app with one endpoint, `POST /answers`, that runs the cookbook's [document question answering](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.0/methods/answer_from_documents) method by its address and answers with the method's own result.
 
 It shows how a method becomes part of an API:
 
@@ -20,19 +20,19 @@ export PIPELEX_API_KEY=…
 uv run app.py
 ```
 
-Then, from another terminal, ask the method's sample question about a Pew Research Center report:
+Then, from another terminal, ask the method's sample question, about the European Commission's guidelines on the definition of an AI system under the AI Act:
 
 ```bash
 curl -s -X POST http://127.0.0.1:8000/answers \
   -H 'Content-Type: application/json' \
-  -d '{"documents": ["https://huggingface.co/datasets/yubo2333/MMLongBench-Doc/resolve/main/documents/PH_2016.06.08_Economy-Final.pdf"], "question": "Among all 12 references in this report, how many are from its own research center?"}'
+  -d '{"documents": ["https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/assets/answer_from_documents/ai_system_definition_guidelines.pdf"], "question": "Our customer support team wants each new ticket to show an expected resolution time, computed as the average resolution time of past tickets in the same category. Is that tool an AI system under the AI Act?"}'
 ```
 
 The request takes `documents`, a list of links the hosted API can fetch, a `question`, and an optional `context` that helps read the question and is never cited. The interactive documentation at http://127.0.0.1:8000/docs lets you try it from the browser.
 
 ## What you get
 
-A JSON body with the `answer` and the `run_id` that produced it. On the sample question, `answer.status` is `answered`, `answer.answer` is `8`, and `answer.supporting_passages` quotes the report's references with their page numbers. The answer also carries its `confidence`, its `caveats` and any contradictions it noticed between documents.
+A JSON body with the `answer` and the `run_id` that produced it. On the sample question, `answer.status` is `answered`, `answer.answer` is `No`, and `answer.explanation` says why: the definition requires a system that infers how to generate its outputs, and the guidelines place systems a basic statistical rule can match outside it, naming a customer support system that predicts the mean resolution time from past data. `answer.supporting_passages` quotes those paragraphs of the guidelines with their page numbers. The answer also carries its `confidence`, `high` on the sample, its `caveats`, here that the conclusion holds only if the tool does nothing more than average and that the guidelines are not binding, and any contradictions it noticed between documents.
 
 ## Before you deploy it
 
@@ -40,6 +40,6 @@ The app has no authentication of its own, and every question it answers is a run
 
 ## How it is built
 
-- `app.py` calls the method by its address, `github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.18.0`, pinned to a release tag so the method never changes under the types.
+- `app.py` calls the method by its address, `github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.20.0`, pinned to a release tag so the method never changes under the types.
 - `generated/answer_from_documents/` holds those types: `models.py`, generated from the method at that tag, and `codegen.lock`, which vouches for it. `sources.json` records the address and the target they come from. Never edit them by hand: in the cookbook, `make refresh` regenerates them, and in your own project `/pipelex-integrate` does.
 - A long document set can take minutes to answer. An endpoint that should answer at once starts the run with `client.start(...)`, returns its id, and lets the caller fetch the result later with `client.get_run_result(...)`.

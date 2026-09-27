@@ -4,7 +4,7 @@
 
 Read a release's engineering notes and the company's style guide for release posts, and return the customer-facing blog post a product marketing manager pastes into the CMS: the title, slug, meta description, excerpt, category and tags, each held to the guide's limits, the body in Markdown written to the guide's rules, and what the post leaves out of the notes, with the rule that leaves it out, to check before publishing.
 
-`github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.0` · [bundle.mthds](bundle.mthds)
+`github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.1` · [bundle.mthds](bundle.mthds)
 
 ## The sample
 
@@ -177,7 +177,7 @@ Update the Pipelex plugin in your coding agent to get these changes; the release
 With the Pipelex MCP in ChatGPT or Claude ([add it once](https://github.com/Pipelex/pipelex-mcp)), ask:
 
 ```text
-Run github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.0 with the sample inputs in https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/methods/write_release_post/inputs.json
+Run github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.1 with the sample inputs in https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.1/methods/write_release_post/inputs.json
 ```
 
 In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pipelex-plugins), the same sentence runs through `/pipelex-run`.
@@ -186,7 +186,7 @@ In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pip
 
 Each call runs the method on the hosted API with your `PIPELEX_API_KEY` ([create one](https://app.pipelex.com)).
 
-The sample inputs are too long to write out here, so each snippet below fetches them from the method's [`inputs.json`](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/methods/write_release_post/inputs.json).
+The sample inputs are too long to write out here, so each snippet below fetches them from the method's [`inputs.json`](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.1/methods/write_release_post/inputs.json).
 
 <details>
 <summary>TypeScript</summary>
@@ -198,11 +198,11 @@ npm install @pipelex/sdk
 ```ts
 import { PipelexApiClient } from "@pipelex/sdk";
 
-const response = await fetch("https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/methods/write_release_post/inputs.json");
+const response = await fetch("https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.1/methods/write_release_post/inputs.json");
 const inputs = (await response.json()) as Record<string, unknown>;
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.0",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.1",
   inputs,
 });
 console.log(result.main_stuff);
@@ -225,10 +225,10 @@ from pipelex_sdk.client import PipelexAPIClient
 
 
 async def main() -> None:
-    inputs = httpx.get("https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/methods/write_release_post/inputs.json").json()
+    inputs = httpx.get("https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.1/methods/write_release_post/inputs.json").json()
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.0",
+            method_ref="github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.1",
             inputs=inputs,
         )
         print(result.main_stuff)
@@ -245,8 +245,8 @@ asyncio.run(main())
 The start call answers at once with the run's id, or with the reason it refused the run; the results call answers 202 while the run is going, 200 with the results once it has completed, and 409 if it failed. The snippet uses `jq` to wrap the sample inputs into the start call's body and to read the id.
 
 ```bash
-START=$(curl -sL https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/methods/write_release_post/inputs.json |
-  jq -c '{method_ref: "github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.0", inputs: .}' |
+START=$(curl -sL https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.1/methods/write_release_post/inputs.json |
+  jq -c '{method_ref: "github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.1", inputs: .}' |
   curl -s https://api.pipelex.com/v1/start \
     -H "Authorization: Bearer $PIPELEX_API_KEY" -H "Content-Type: application/json" \
     -d @-)
@@ -260,12 +260,12 @@ fi
 
 </details>
 
-In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.0`: it generates the result's types and writes one typed call.
+In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.1`: it generates the result's types and writes one typed call.
 
 ## Make it an app
 
 ```bash
-npm create @pipelex/method-app@latest release-post-app -- --method github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.0
+npm create @pipelex/method-app@latest release-post-app -- --method github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.1
 make -C release-post-app serve
 ```
 
@@ -276,7 +276,7 @@ The form and the result view come from the method's contract. `make serve` print
 Ask your agent:
 
 ```text
-Copy github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.0 into ./release-post, add a social post of at most 280 characters announcing the release in the style guide's voice, beside the blog post, prove it on the sample, and save it to my Pipelex account.
+Copy github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.1 into ./release-post, add a social post of at most 280 characters announcing the release in the style guide's voice, beside the blog post, prove it on the sample, and save it to my Pipelex account.
 ```
 
 From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
@@ -286,6 +286,6 @@ From then on every door above takes your method's id (`mt_…`) in place of the 
 With the Pipelex runtime and your own provider keys ([set it up](https://docs.pipelex.com/latest/get-started/run-it-yourself/)):
 
 ```bash
-curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/methods/write_release_post/inputs.json
-pipelex run method github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.0 --inputs inputs.json
+curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.1/methods/write_release_post/inputs.json
+pipelex run method github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.1 --inputs inputs.json
 ```

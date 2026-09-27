@@ -7,7 +7,7 @@
   },
   "scripts": {
     "extract": "tsx extract.ts",
-    "codegen:check": "node scripts/codegen-check.mjs generated/extract_gantt",
+    "codegen:check": "node scripts/codegen-check.mjs generated/extract_dpe",
     "typecheck": "tsc --noEmit",
     "check": "npm run codegen:check && npm run typecheck"
   },

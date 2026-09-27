@@ -9,7 +9,7 @@
     "dev": "next dev -H 127.0.0.1",
     "build": "next build",
     "start": "next start -H 127.0.0.1",
-    "codegen:check": "node scripts/codegen-check.mjs generated/blog_article_generator",
+    "codegen:check": "node scripts/codegen-check.mjs generated/gen_synthetic_data",
     "typecheck": "tsc --noEmit",
     "check": "npm run codegen:check && npm run typecheck"
   },

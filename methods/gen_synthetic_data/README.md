@@ -4,7 +4,7 @@
 
 Read a description of the records a team needs and return a batch of realistic, varied synthetic records, each with the case it covers and its fields as the description gives them: here, customer service tickets, every one of them invented, with the queue and the priority the triage should give each, to test a change to the routing without a single real customer's message.
 
-`github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.0` · [bundle.mthds](bundle.mthds)
+`github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.1` · [bundle.mthds](bundle.mthds)
 
 ## The sample
 
@@ -244,7 +244,7 @@ Lucien Marroway writes a quick phone-style email asking where to download the VA
 With the Pipelex MCP in ChatGPT or Claude ([add it once](https://github.com/Pipelex/pipelex-mcp)), ask:
 
 ```text
-Run github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.0 with the sample inputs in https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/methods/gen_synthetic_data/inputs.json
+Run github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.1 with the sample inputs in https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.1/methods/gen_synthetic_data/inputs.json
 ```
 
 In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pipelex-plugins), the same sentence runs through `/pipelex-run`.
@@ -265,7 +265,7 @@ import { PipelexApiClient } from "@pipelex/sdk";
 
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.0",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.1",
   inputs: {
     data_description: {
       text: "Test tickets for our customer service triage. Written for a Pipelex example: the shop is not a real one, and every customer must be invented.\n\nWe are the customer service team of an online shop selling small kitchen appliances (kettles, toasters, coffee machines, blenders and hand mixers) in France, Belgium and Switzerland. Customers write to us by email or through the contact form on the site, in French or in English.\n\nEach ticket gives the channel (email or contact form), the customer's name, the language, the order number when the customer gives one (the letter C and eight digits), the subject line, the message as the customer wrote it, and the queue and the priority our triage should give it.\n\nThe queues are Orders and delivery, Returns and refunds, Product help, Warranty and repairs, Billing, and Other. A ticket is urgent when the customer reports a safety problem (smoke, a burning smell, an electric shock) or a payment taken twice, high when a delivery is more than five days late or a refund is overdue, and normal otherwise.\n\nMake them read like the messages we actually get: some two lines long and annoyed, some long and polite, a few with typos or written on a phone, one that asks two things at once, one that gives no order number. Cover every queue at least once.\n",
@@ -296,7 +296,7 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.0",
+            method_ref="github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.1",
             inputs={
                 "data_description": {
                     "text": "Test tickets for our customer service triage. Written for a Pipelex example: the shop is not a real one, and every customer must be invented.\n\nWe are the customer service team of an online shop selling small kitchen appliances (kettles, toasters, coffee machines, blenders and hand mixers) in France, Belgium and Switzerland. Customers write to us by email or through the contact form on the site, in French or in English.\n\nEach ticket gives the channel (email or contact form), the customer's name, the language, the order number when the customer gives one (the letter C and eight digits), the subject line, the message as the customer wrote it, and the queue and the priority our triage should give it.\n\nThe queues are Orders and delivery, Returns and refunds, Product help, Warranty and repairs, Billing, and Other. A ticket is urgent when the customer reports a safety problem (smoke, a burning smell, an electric shock) or a payment taken twice, high when a delivery is more than five days late or a refund is overdue, and normal otherwise.\n\nMake them read like the messages we actually get: some two lines long and annoyed, some long and polite, a few with typos or written on a phone, one that asks two things at once, one that gives no order number. Cover every queue at least once.\n",
@@ -322,7 +322,7 @@ The start call answers at once with the run's id, or with the reason it refused 
 ```bash
 START=$(curl -s https://api.pipelex.com/v1/start \
   -H "Authorization: Bearer $PIPELEX_API_KEY" -H "Content-Type: application/json" \
-  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.0", "inputs": {"data_description": {"text": "Test tickets for our customer service triage. Written for a Pipelex example: the shop is not a real one, and every customer must be invented.\n\nWe are the customer service team of an online shop selling small kitchen appliances (kettles, toasters, coffee machines, blenders and hand mixers) in France, Belgium and Switzerland. Customers write to us by email or through the contact form on the site, in French or in English.\n\nEach ticket gives the channel (email or contact form), the customer'\''s name, the language, the order number when the customer gives one (the letter C and eight digits), the subject line, the message as the customer wrote it, and the queue and the priority our triage should give it.\n\nThe queues are Orders and delivery, Returns and refunds, Product help, Warranty and repairs, Billing, and Other. A ticket is urgent when the customer reports a safety problem (smoke, a burning smell, an electric shock) or a payment taken twice, high when a delivery is more than five days late or a refund is overdue, and normal otherwise.\n\nMake them read like the messages we actually get: some two lines long and annoyed, some long and polite, a few with typos or written on a phone, one that asks two things at once, one that gives no order number. Cover every queue at least once.\n"}, "nb_samples": {"number": 10}}}')
+  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.1", "inputs": {"data_description": {"text": "Test tickets for our customer service triage. Written for a Pipelex example: the shop is not a real one, and every customer must be invented.\n\nWe are the customer service team of an online shop selling small kitchen appliances (kettles, toasters, coffee machines, blenders and hand mixers) in France, Belgium and Switzerland. Customers write to us by email or through the contact form on the site, in French or in English.\n\nEach ticket gives the channel (email or contact form), the customer'\''s name, the language, the order number when the customer gives one (the letter C and eight digits), the subject line, the message as the customer wrote it, and the queue and the priority our triage should give it.\n\nThe queues are Orders and delivery, Returns and refunds, Product help, Warranty and repairs, Billing, and Other. A ticket is urgent when the customer reports a safety problem (smoke, a burning smell, an electric shock) or a payment taken twice, high when a delivery is more than five days late or a refund is overdue, and normal otherwise.\n\nMake them read like the messages we actually get: some two lines long and annoyed, some long and polite, a few with typos or written on a phone, one that asks two things at once, one that gives no order number. Cover every queue at least once.\n"}, "nb_samples": {"number": 10}}}')
 RUN_ID=$(printf '%s' "$START" | jq -r '.pipeline_run_id // empty')
 if [ -z "$RUN_ID" ]; then printf '%s\n' "$START"; else
   until [ "$(curl -s -o results.json -w '%{http_code}' https://api.pipelex.com/v1/runs/$RUN_ID/results \
@@ -333,12 +333,12 @@ fi
 
 </details>
 
-In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.0`: it generates the result's types and writes one typed call.
+In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.1`: it generates the result's types and writes one typed call.
 
 ## Make it an app
 
 ```bash
-npm create @pipelex/method-app@latest test-data-app -- --method github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.0
+npm create @pipelex/method-app@latest test-data-app -- --method github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.1
 make -C test-data-app serve
 ```
 
@@ -349,7 +349,7 @@ The form and the result view come from the method's contract. `make serve` print
 Ask your agent:
 
 ```text
-Copy github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.0 into ./test-data, also return the batch as CSV, one column per field, ready to import into the helpdesk's sandbox, prove it on the sample, and save it to my Pipelex account.
+Copy github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.1 into ./test-data, also return the batch as CSV, one column per field, ready to import into the helpdesk's sandbox, prove it on the sample, and save it to my Pipelex account.
 ```
 
 From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
@@ -359,6 +359,6 @@ From then on every door above takes your method's id (`mt_…`) in place of the 
 With the Pipelex runtime and your own provider keys ([set it up](https://docs.pipelex.com/latest/get-started/run-it-yourself/)):
 
 ```bash
-curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/methods/gen_synthetic_data/inputs.json
-pipelex run method github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.0 --inputs inputs.json
+curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.1/methods/gen_synthetic_data/inputs.json
+pipelex run method github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.1 --inputs inputs.json
 ```
