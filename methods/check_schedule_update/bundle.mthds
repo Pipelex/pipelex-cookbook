@@ -216,15 +216,15 @@ Here is the text an OCR engine read off the same image, out of order, with neigh
 
 Here is how the chart was read, item by item, numbered, each as section | row | item | type, status | start | finish:
 
-{% for i in reading.items %}{{ i.number }}. {{ i.group }} | {{ i.activity }} | {{ i.item }} | {{ i.type }}, {{ i.status }} | {{ i.start or "-" }} | {{ i.finish or "-" }}
+{% for item in reading.items %}{{ item.number }}. {{ item.group }} | {{ item.activity }} | {{ item.item }} | {{ item.type }}, {{ item.status }} | {{ item.start or "-" }} | {{ item.finish or "-" }}
 {% endfor %}
 And its callouts:
-{% for c in reading.callouts or [] %}- "{{ c.text }}", beside {{ c.points_to }}
+{% for callout in reading.callouts or [] %}- "{{ callout.text }}", beside {{ callout.points_to }}
 {% else %}- none
 {% endfor %}
 Here are the milestones of our master schedule baseline, numbered, each with the heading the baseline lists it under:
 
-{% for m in milestones.items %}{{ m.number }}. {{ m.milestone }}{% if m.group %} ({{ m.group }}){% endif %}
+{% for milestone in milestones.items %}{{ milestone.number }}. {{ milestone.milestone }}{% if milestone.group %} ({{ milestone.group }}){% endif %}
 {% endfor %}
 For each of these milestones, in this order:
 - find it on the chart itself: the same event, in the section and on the row where the chart shows it, and not another marker carrying the same name elsewhere; where the chart shows both a milestone of that name and the bar it starts or ends, take the milestone. Say where it is and why it is that one;
@@ -256,8 +256,8 @@ output      = "Comparison"
 [pipe.join_baseline.construct.milestone]
 template = """
 {%- set found = (on_chart.items | unique(attribute='baseline_number') | selectattr('chart_item_number', 'equalto', chart_item.number) | list + [{'baseline_number': 0}]) | first -%}
-{%- set b = (milestones.items | selectattr('number', 'equalto', found.baseline_number) | list + [{'milestone': ''}]) | first -%}
-{{- b.milestone -}}
+{%- set baseline_milestone = (milestones.items | selectattr('number', 'equalto', found.baseline_number) | list + [{'milestone': ''}]) | first -%}
+{{- baseline_milestone.milestone -}}
 """
 
 [pipe.join_baseline.construct.compared_on]
@@ -275,23 +275,23 @@ template = """
 [pipe.join_baseline.construct.baseline]
 template = """
 {%- set found = (on_chart.items | unique(attribute='baseline_number') | selectattr('chart_item_number', 'equalto', chart_item.number) | list + [{'baseline_number': 0, 'month': ''}]) | first -%}
-{%- set b = (milestones.items | selectattr('number', 'equalto', found.baseline_number) | list + [{'due': ''}]) | first -%}
-{{- b.due if found.month else '' -}}
+{%- set baseline_milestone = (milestones.items | selectattr('number', 'equalto', found.baseline_number) | list + [{'due': ''}]) | first -%}
+{{- baseline_milestone.due if found.month else '' -}}
 """
 
 [pipe.join_baseline.construct.slip_months]
 template = """
 {%- set found = (on_chart.items | unique(attribute='baseline_number') | selectattr('chart_item_number', 'equalto', chart_item.number) | list + [{'baseline_number': 0, 'month': ''}]) | first -%}
-{%- set b = (milestones.items | selectattr('number', 'equalto', found.baseline_number) | list + [{'due': ''}]) | first -%}
-{%- set d = found.month or '' -%}
-{{- ((d[:4] | int) * 12 + (d[5:7] | int)) - ((b.due[:4] | int) * 12 + (b.due[5:7] | int)) if d and b.due else 0 -}}
+{%- set baseline_milestone = (milestones.items | selectattr('number', 'equalto', found.baseline_number) | list + [{'due': ''}]) | first -%}
+{%- set chart_month = found.month or '' -%}
+{{- ((chart_month[:4] | int) * 12 + (chart_month[5:7] | int)) - ((baseline_milestone.due[:4] | int) * 12 + (baseline_milestone.due[5:7] | int)) if chart_month and baseline_milestone.due else 0 -}}
 """
 
 [pipe.join_baseline.construct.slip_allowed_months]
 template = """
 {%- set found = (on_chart.items | unique(attribute='baseline_number') | selectattr('chart_item_number', 'equalto', chart_item.number) | list + [{'baseline_number': 0}]) | first -%}
-{%- set b = (milestones.items | selectattr('number', 'equalto', found.baseline_number) | list + [{'slip_allowed_months': 0}]) | first -%}
-{{- b.slip_allowed_months -}}
+{%- set baseline_milestone = (milestones.items | selectattr('number', 'equalto', found.baseline_number) | list + [{'slip_allowed_months': 0}]) | first -%}
+{{- baseline_milestone.slip_allowed_months -}}
 """
 
 [pipe.join_baseline.construct.reason_given]
