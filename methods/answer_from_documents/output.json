@@ -1,0 +1,81 @@
+{
+  "pipe": "document_qa.answer_from_documents",
+  "concept": "document_qa.DocumentAnswer",
+  "run": {
+    "started_at": "2026-09-27T00:36:54Z",
+    "finished_at": "2026-09-27T00:38:12Z",
+    "server": "https://api.pipelex.com",
+    "route": "files",
+    "method_ref": null,
+    "commit_sha": null,
+    "bundle_sha256": "fc73ba032617d6389fe3bee7774e8cc060490b3221e11c2517f273bfcc2094b4",
+    "inputs_sha256": "12563c82f6c35c82458d894b2ad8e7cb3975c148e5d41337efb115e76949b797"
+  },
+  "output": {
+    "status": "answered",
+    "answer": "No",
+    "explanation": "Under the Guidelines, inference is an indispensable element of an AI system, and simpler software that merely executes human-defined operations falls outside the definition. The described tool only matches a ticket to a category and calculates the arithmetic mean of historical resolution times. The Guidelines specifically treat basic average calculations, mean-strategy baseline predictions, and static customer-support estimates of mean resolution time from past data as examples outside the AI-system definition.",
+    "supporting_passages": [
+      {
+        "document_identifier": "Commission Guidelines on the definition of an artificial intelligence system established by Regulation (EU) 2024/1689 (AI Act), C(2025) 5053 final",
+        "page_number": 2,
+        "quote": "'AI system' means a machine-based system that is designed to operate with varying levels of autonomy and that may exhibit adaptiveness after deployment, and that, for explicit or implicit objectives, infers, from the input it receives, how to generate outputs such as predictions, content, recommendations, or decisions that can influence physical or virtual environments;",
+        "relevance_reasoning": "This is the operative definition of an AI system under Article 3(1).",
+        "sub_question_addressed": "What is the definition of an “AI system” under the EU AI Act?"
+      },
+      {
+        "document_identifier": "Commission Guidelines on the definition of an artificial intelligence system established by Regulation (EU) 2024/1689 (AI Act), C(2025) 5053 final",
+        "page_number": 5,
+        "quote": "(26) The fifth element of an AI system is that it must be able to infer, from the input it receives, how to generate outputs. Recital 12 AI Act clarifies that \"[a] key characteristic of AI systems is their capability to infer.\" As further explained in that recital, AI systems should be distinguished from \"simpler traditional software systems or programming approaches and should not cover systems that are based on the rules defined solely by natural persons to automatically execute operations.\" This capability to infer is therefore a key, indispensable condition that distinguishes AI systems from other types of systems.",
+        "relevance_reasoning": "This makes inference indispensable and distinguishes AI systems from software that only executes human-defined rules.",
+        "sub_question_addressed": "Do any AI Act provisions, recitals, guidelines, or exclusions clarify whether basic statistical, rules-based, or deterministic tools fall outside the definition?"
+      },
+      {
+        "document_identifier": "Commission Guidelines on the definition of an artificial intelligence system established by Regulation (EU) 2024/1689 (AI Act), C(2025) 5053 final",
+        "page_number": 9,
+        "quote": "(46) Basic data processing system refers to a system that follows predefined, explicit instructions or operations. These systems are developed and deployed to execute tasks based on manual inputs or rules, without any 'learning, reasoning or modelling' at any stage of the system lifecycle. They operate based on fixed human-programmed rules, without using AI techniques, such as machine learning or logic-based inference, to generate outputs. These basic data processing systems include, for example, database management systems used to sort or filter data based on specific criteria (e.g. 'find all customers who purchased a specific product in the last month'), standard spreadsheet software applications which do not incorporate AI enabled functionalities, and software that calculates a population average from a survey that is later exploited in a general context.",
+        "relevance_reasoning": "This classifies fixed, human-programmed operations and calculation of an average as basic data processing rather than AI functionality.",
+        "sub_question_addressed": "Does a tool that computes a new ticket’s expected resolution time solely as the arithmetic average of past resolution times for tickets in the same category satisfy that definition?"
+      },
+      {
+        "document_identifier": "Commission Guidelines on the definition of an artificial intelligence system established by Regulation (EU) 2024/1689 (AI Act), C(2025) 5053 final",
+        "page_number": 10,
+        "quote": "(49) All machine-based systems whose performance can be achieved via a basic statistical learning rule, while technically may be classified as relying on machine learning approaches fall outside the scope of the AI system definition, due to its performance.",
+        "relevance_reasoning": "This expressly places systems achievable through a basic statistical learning rule outside the definition.",
+        "sub_question_addressed": "Does a tool that computes a new ticket’s expected resolution time solely as the arithmetic average of past resolution times for tickets in the same category satisfy that definition?"
+      },
+      {
+        "document_identifier": "Commission Guidelines on the definition of an artificial intelligence system established by Regulation (EU) 2024/1689 (AI Act), C(2025) 5053 final",
+        "page_number": 10,
+        "quote": "(50) For instance, in financial forecasting (basic benchmarking) such machine-based systems may be used to predict future stock prices by using an estimator with the 'mean' strategy to establish a baseline prediction (e.g., always predicting the historical average price). Such basic benchmarking methods help to assess whether more advanced machine learning models could add value. Another example is using the average temperature of last week for predicting tomorrow's temperature. This baseline system solely estimates averages, but it is not achieving the performance of more complex time-series forecasting systems that would require more sophisticated models.",
+        "relevance_reasoning": "This directly treats prediction by a historical mean as a basic baseline rather than sophisticated AI inference.",
+        "sub_question_addressed": "Does a tool that computes a new ticket’s expected resolution time solely as the arithmetic average of past resolution times for tickets in the same category satisfy that definition?"
+      },
+      {
+        "document_identifier": "Commission Guidelines on the definition of an artificial intelligence system established by Regulation (EU) 2024/1689 (AI Act), C(2025) 5053 final",
+        "page_number": 10,
+        "quote": "(51) Static estimation systems, such as customer support response time system that are based on static estimation to predict the mean resolution time from the past data and trivial predictors such as demand forecasting for a store to predict how many items of a product the store will sell each day are other examples, that help to establish a baseline or a benchmark, e.g. by predicting average or mean.",
+        "relevance_reasoning": "This is an almost exact example of the proposed tool: a static customer-support estimate of mean resolution time from past data.",
+        "sub_question_addressed": "Does a tool that computes a new ticket’s expected resolution time solely as the arithmetic average of past resolution times for tickets in the same category satisfy that definition?"
+      },
+      {
+        "document_identifier": "Commission Guidelines on the definition of an artificial intelligence system established by Regulation (EU) 2024/1689 (AI Act), C(2025) 5053 final",
+        "page_number": 12,
+        "quote": "(61) The definition of an AI system encompasses a wide spectrum of systems. The determination of whether a software system is an AI system should be based on the specific architecture and functionality of a given system and should take into consideration the seven elements of the definition laid down in Article 3(1) AI Act.",
+        "relevance_reasoning": "This requires assessment of the actual implementation, including whether it contains functionality beyond category matching and averaging.",
+        "sub_question_addressed": "Does the tool involve any inference, learning, adaptation, prediction, or output-generation features beyond category matching and averaging that could affect the classification?"
+      },
+      {
+        "document_identifier": "Commission Guidelines on the definition of an artificial intelligence system established by Regulation (EU) 2024/1689 (AI Act), C(2025) 5053 final",
+        "page_number": 1,
+        "quote": "(7) The Guidelines are not binding. Any authoritative interpretation of the AI Act may ultimately only be given by the Court of Justice of the European Union (CJEU).",
+        "relevance_reasoning": "This establishes that the interpretive guidance supporting the conclusion is non-binding.",
+        "sub_question_addressed": "Do any AI Act provisions, recitals, guidelines, or exclusions clarify whether basic statistical, rules-based, or deterministic tools fall outside the definition?"
+      }
+    ],
+    "contradictions_noted": [],
+    "caveats": "This conclusion assumes the tool does nothing beyond fixed category matching and arithmetic averaging. If category assignment or estimation uses machine learning, logic- or knowledge-based inference, sophisticated modelling, or adaptive functionality, the classification may differ. The Commission Guidelines are non-binding, and the specific architecture and functionality must be assessed; authoritative interpretation ultimately belongs to the CJEU.",
+    "confidence": "high"
+  },
+  "files": {}
+}

@@ -1,0 +1,16 @@
+{
+  "documents": {
+    "concept": "native.Document",
+    "content": [
+      {
+        "url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/answer_from_documents/ai_system_definition_guidelines.pdf"
+      }
+    ]
+  },
+  "question": {
+    "concept": "native.Text",
+    "content": {
+      "text": "Our customer support team wants each new ticket to show an expected resolution time, computed as the average resolution time of past tickets in the same category. Is that tool an AI system under the AI Act?"
+    }
+  }
+}

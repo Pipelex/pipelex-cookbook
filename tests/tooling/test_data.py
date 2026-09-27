@@ -158,6 +158,31 @@ MakeCookbook = Callable[..., Path]
 # An output of the right shape for each method under methods/, written by hand from its contract.json, for the shape check's tests. Each is
 # made up and short: the shape check reads the shape, never the content.
 RIGHT_OUTPUTS: dict[str, JsonValue] = {
+    "answer_from_documents": {
+        "status": "answered",
+        "answer": "No",
+        "explanation": "The tool computes the mean resolution time of past tickets, which the guidelines give as a simple prediction system.",
+        "supporting_passages": [
+            {
+                "document_identifier": "Commission Guidelines on the definition of an artificial intelligence system, C(2025) 5053 final",
+                "page_number": 10,
+                "quote": "(51) Static estimation systems, such as customer support response time system that are based on static estimation to "
+                "predict the mean resolution time from the past data [...] are other examples",
+                "relevance_reasoning": "It names a customer support system predicting the mean resolution time from past data.",
+                "sub_question_addressed": "Does a tool computing an average of past resolution times meet the definition?",
+            },
+            {
+                "document_identifier": "Commission Guidelines on the definition of an artificial intelligence system, C(2025) 5053 final",
+                "page_number": 1,
+                "quote": "(7) The Guidelines are not binding.",
+                "relevance_reasoning": "It qualifies the authority of the answer.",
+                "sub_question_addressed": "Which guidance decides the question?",
+            },
+        ],
+        "contradictions_noted": [],
+        "caveats": "The answer holds only for a fixed average; the guidelines are not binding.",
+        "confidence": "high",
+    },
     "discord_newsletter": {
         "text": (
             "<h2>☀️ Weekly Summary</h2>\n<p>Two new members joined, and the finishing thread settled on thinner coats in a cold workshop.</p>"

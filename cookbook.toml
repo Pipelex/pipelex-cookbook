@@ -19,6 +19,30 @@ address = "github.com/Pipelex/methods"
 repository = "Pipelex/methods"
 tag = "v0.1.2"
 
+[methods.answer_from_documents]
+title = "Cited answers for an AI system register"
+pitch = "Read the documents a team answers from and one question about them, and return the answer an AI governance lead sends to the team that asked and files in the register of AI systems: a short answer and why, the passages it rests on quoted word for word with their page, how confident it is, what it does not cover, and a plain status saying when the documents do not settle the question."
+app_dir = "document-answers-app"
+yours_dir = "document-answers"
+yours_change = "add whether the answer goes to counsel for review, yes whenever its status is not answered or its confidence is below high, with a one-line reason"
+
+[methods.answer_from_documents.samples.documents]
+label = "sample guidelines"
+synthetic = false
+source = "https://ai-act-service-desk.ec.europa.eu/sites/default/files/2026-01/guide-definition_en.pdf"
+retrieved = 2026-09-26
+license = "CC-BY-4.0"
+license_url = "https://creativecommons.org/licenses/by/4.0/"
+attribution = "Commission Guidelines on the definition of an artificial intelligence system established by Regulation (EU) 2024/1689 (AI Act), C(2025) 5053 final, © European Union, 2025, https://ai-act-service-desk.ec.europa.eu/sites/default/files/2026-01/guide-definition_en.pdf, licensed under CC BY 4.0."
+changes = "The European Commission's logo removed from the first page, since the Commission's reuse policy excludes logos; the text of every page is unchanged."
+
+[methods.answer_from_documents.samples.question]
+label = "sample question"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
 [methods.discord_newsletter]
 title = "Weekly newsletter for a Discord community"
 pitch = "Read a week of a community's Discord channels and return the members' newsletter in the team's fixed format, as HTML ready for the email tool: the week in a few lines, the new members welcomed, a section for each channel in the server's order with each conversation given as its outcome, and the news of each local hub, in English whatever language a message was written in."
