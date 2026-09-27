@@ -2,10 +2,12 @@
 
 Offline, needing no key: `render`, `check-render`, `check-lockstep`, `check-links` (which only fetches public sample URLs), `check-recipes`, and
 `recipe-trees`, `recipe-scripts`, `recipe-packages` and `recipe-shell-scripts`, which list what the Makefile hands the SDK script, the type
-checkers and shellcheck: the recipes' code, and the page snippets `render` writes under `tests/snippets/`. `refresh-library` and
+checkers and shellcheck: the recipes' code, and the page snippets `render` writes under `tests/snippets/`. `previews` renders the first-page
+preview of every PDF document sample whose source-and-licence record is written, with no key and no network. `refresh-library` and
 `check-library` need no key either: each downloads the method library's tarball at the tag `cookbook.toml` pins, the first to write
 `library.json` and the second to check that it is what that tarball holds.
-Keyed, calling production with `PIPELEX_API_KEY`: `refresh`, `check-methods`, `check-addresses`.
+Keyed, calling production with `PIPELEX_API_KEY`: `refresh`, `check-methods`, `check-addresses`, and `snapshot <name>`, the one command here
+that spends inference credit: it runs a method once on production on its sample and writes its output snapshot.
 """
 
 import argparse
@@ -13,7 +15,16 @@ import sys
 from collections.abc import Callable
 from pathlib import Path
 
-from scripts.checks import check_links, http_status, lockstep_problems, orphan_snippet_dirs, stale_pages
+from scripts.checks import (
+    check_links,
+    http_status,
+    lockstep_problems,
+    orphan_snippet_dirs,
+    sample_problems,
+    snapshot_problems,
+    stale_pages,
+    stale_snapshots,
+)
 from scripts.cookbook import Cookbook, load_cookbook
 from scripts.exceptions import CookbookError
 from scripts.hosted import (
@@ -38,10 +49,12 @@ from scripts.recipes import (
     typescript_packages,
 )
 from scripts.render import build_library_context, render_all, render_pages
+from scripts.snapshot import SNAPSHOT_FILE, document_samples, preview_path, read_snapshot, take_snapshot, unrecorded_documents, write_previews
 from scripts.tutorial import tutorial_bundles
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR_NAME = "templates"
+SNAPSHOT_COMMAND = "snapshot"
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -50,6 +63,7 @@ def main(argv: list[str] | None = None) -> int:
     subparsers = parser.add_subparsers(dest="command", required=True)
     commands: dict[str, Callable[[Cookbook], int]] = {
         "render": _render,
+        "previews": _previews,
         "check-render": _check_render,
         "check-lockstep": _check_lockstep,
         "check-links": _check_links,
@@ -69,9 +83,14 @@ def main(argv: list[str] | None = None) -> int:
             "Write every methods/<name>/README.md from its package and cookbook.toml, its snippet files under tests/snippets/<name>/, "
             "and the front page's two lists, of the methods and of the library's methods"
         ),
+        "previews": (
+            "Render the first-page preview of every PDF document sample kept under assets/ whose source-and-licence record is written, "
+            "beside it as <stem>.preview.png, with no key and no run"
+        ),
         "check-render": (
             "Fail when a committed page, snippet file or either of the front page's lists differs from a fresh render, "
-            "or when a snippet directory belongs to no method"
+            "when a snippet directory belongs to no method, when a sample input has no source-and-licence record or a PDF document sample "
+            "no preview, or when a method's output snapshot is missing or out of step with its contract, its sample or its files"
         ),
         "check-lockstep": "Fail when a manifest's version is not the cookbook's",
         "check-links": "Fetch every sample URL in the packages, and every raw URL on the pages and in the recipes",
@@ -97,6 +116,14 @@ def main(argv: list[str] | None = None) -> int:
     }
     for command_name in commands:
         subparsers.add_parser(command_name, help=helps[command_name])
+    snapshot_parser = subparsers.add_parser(
+        SNAPSHOT_COMMAND,
+        help=(
+            "Run one method once on production on its sample and write its output snapshot, methods/<name>/output.json, "
+            "and the previews of its PDF document samples (needs PIPELEX_API_KEY, and spends inference credit)"
+        ),
+    )
+    snapshot_parser.add_argument("method", help="The method's name, its directory under methods/")
     arguments = parser.parse_args(argv)
     root = Path(arguments.root).resolve()
     try:
@@ -106,6 +133,8 @@ def main(argv: list[str] | None = None) -> int:
             read_contracts=arguments.command not in {"refresh", "refresh-library"},
             read_library=arguments.command != "refresh-library",
         )
+        if arguments.command == SNAPSHOT_COMMAND:
+            return _snapshot(cookbook, name=str(arguments.method))
         return commands[arguments.command](cookbook)
     except CookbookError as exc:
         print(f"✗ {exc}", file=sys.stderr)
@@ -126,7 +155,27 @@ def _render(cookbook: Cookbook) -> int:
         print(f"{'✎ rewrote' if relative in stale else '· unchanged'} {relative}")
     orphans = orphan_snippet_dirs(cookbook)
     _print_orphans(orphans)
+    for package in cookbook.packages:
+        if read_snapshot(package) is None:
+            print(
+                f'· {package.directory.relative_to(cookbook.root)} has no {SNAPSHOT_FILE} yet: its page has no "What you get" '
+                f"until `make snapshot METHOD={package.name}`, and `make check-render` fails on it"
+            )
     return 1 if orphans else 0
+
+
+def _previews(cookbook: Cookbook) -> int:
+    for package in cookbook.packages:
+        written = set(write_previews(cookbook=cookbook, package=package))
+        for document in document_samples(cookbook=cookbook, package=package):
+            preview = preview_path(document).relative_to(cookbook.root)
+            print(f"{'✎ rendered' if preview_path(document) in written else '· unchanged'} {preview}")
+        for document in unrecorded_documents(cookbook=cookbook, package=package):
+            print(
+                f"· {document.relative_to(cookbook.root)} gets no preview: its sample has no source-and-licence record "
+                f"under [methods.{package.name}.samples] in cookbook.toml"
+            )
+    return 0
 
 
 def _check_render(cookbook: Cookbook) -> int:
@@ -138,12 +187,34 @@ def _check_render(cookbook: Cookbook) -> int:
     if stale:
         print("Pages, their snippet files and the front page's lists are generated: run `make render` and commit what it writes, never edit them.")
     _print_orphans(orphans)
-    if stale or orphans:
+    shown = sample_problems(cookbook) + snapshot_problems(cookbook)
+    for problem in shown:
+        print(f"✗ {problem}")
+    for warning in stale_snapshots(cookbook):
+        print(f"! {warning}")
+    if stale or orphans or shown:
         return 1
     print(
         f"✓ {len(cookbook.packages)} method page(s), their snippet files and the front page's lists of methods match a fresh render at "
-        f"{cookbook.tag}, the library's at {cookbook.settings.library.tag}"
+        f"{cookbook.tag}, the library's at {cookbook.settings.library.tag}, and every page's sample and output snapshot are in place"
     )
+    return 0
+
+
+def _snapshot(cookbook: Cookbook, *, name: str) -> int:
+    matches = [package for package in cookbook.packages if package.name == name]
+    if not matches:
+        print(f"✗ no method is named `{name}`: the methods are {', '.join(package.name for package in cookbook.packages)}")
+        return 1
+    [package] = matches
+    taken = take_snapshot(client=client_from_env(), cookbook=cookbook, package=package)
+    for preview in taken.previews:
+        print(f"✎ rendered the preview {preview.relative_to(cookbook.root)}")
+    package_dir = package.directory.relative_to(cookbook.root)
+    print(f"✎ wrote {package_dir}/{SNAPSHOT_FILE} from {taken.run.summary()}")
+    for relative, entry in taken.snapshot.files.items():
+        print(f"✎ copied {package_dir}/{relative}{', downscaled' if entry.resized else ''}")
+    print("Keep the run id, the cost and the duration in the example's working record, never in this repository, then run `make render`.")
     return 0
 
 

@@ -12,10 +12,10 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.19.1",
+            method_ref="github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.0",
             inputs={
                 "document": {
-                    "url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_dpe/dpe_single_page.pdf",
+                    "url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_dpe/synthetic_dpe.pdf",
                 },
             },
         )
@@ -30,9 +30,9 @@ asyncio.run(main())
 # pipe's declared output, so the type checker fails when the page names a concept those types no longer hold.
 from pipelex_sdk.runs import RunResults
 
-from generated.extract_dpe.models import Dpe
+from generated.extract_dpe.models import DpeRecord
 
 
-def read_output(result: RunResults) -> Dpe:
-    """The method returns one `Dpe`."""
-    return Dpe.model_validate(result.main_stuff)
+def read_output(result: RunResults) -> DpeRecord:
+    """The method returns one `DpeRecord`."""
+    return DpeRecord.model_validate(result.main_stuff)

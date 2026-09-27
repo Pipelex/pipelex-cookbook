@@ -4,15 +4,15 @@ import { PipelexApiClient } from "@pipelex/sdk";
 
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.19.1",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/answer_from_documents@v0.20.0",
   inputs: {
     documents: [
       {
-        url: "https://huggingface.co/datasets/yubo2333/MMLongBench-Doc/resolve/main/documents/PH_2016.06.08_Economy-Final.pdf",
+        url: "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/answer_from_documents/ai_system_definition_guidelines.pdf",
       },
     ],
     question: {
-      text: "Among all 12 references in this report, how many are from its own research center?",
+      text: "Our customer support team wants each new ticket to show an expected resolution time, computed as the average resolution time of past tickets in the same category. Is that tool an AI system under the AI Act?",
     },
   },
 });

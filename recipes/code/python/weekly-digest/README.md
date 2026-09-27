@@ -1,6 +1,6 @@
 # A weekly digest: fetch in code, write with a method, post the HTML
 
-A community lives on Discord, and most members never read a week of scrollback. This recipe reads the week's messages from the channels you name, has the cookbook's [Discord newsletter](../../../../methods/discord_newsletter/) method write them up as an HTML newsletter, and posts it wherever your readers are.
+A community lives on Discord, and most members never read a week of scrollback. This recipe reads the week's messages from the channels you name, has the cookbook's [Discord newsletter](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/discord_newsletter) method write them up as an HTML newsletter, and posts it wherever your readers are.
 
 It shows the split that suits a scheduled job:
 

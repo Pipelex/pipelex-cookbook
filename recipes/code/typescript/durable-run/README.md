@@ -1,6 +1,6 @@
 # A run started now and read hours later
 
-Some methods take minutes, and nothing needs to wait for them. This recipe starts the cookbook's [research report](../../../../methods/research_report/) method on the hosted API, prints the run's id and exits; a second command, run whenever you like, reads the report by that id.
+Some methods take minutes, and nothing needs to wait for them. This recipe starts the cookbook's [research report](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/research_report) method on the hosted API, prints the run's id and exits; a second command, run whenever you like, reads the report by that id.
 
 It shows the run lifecycle behind every method call:
 

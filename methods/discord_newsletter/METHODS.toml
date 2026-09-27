@@ -1,9 +1,9 @@
 [package]
 name = "discord_newsletter"
-display_name = "Discord Newsletter"
+display_name = "Community Newsletter from Discord"
 address = "github.com/Pipelex/pipelex-cookbook"
-version = "0.19.1"
-description = "Read a week of Discord channel messages and return an HTML newsletter with a weekly summary, the new members, a section per channel and the geographic hubs."
+version = "0.20.0"
+description = "Write a community's weekly newsletter from a week of its Discord server's messages, in the team's fixed format: the week's summary, the new members, a section for each channel in the server's order and the news of each local hub, as HTML ready for the email tool."
 authors = ["Evotis S.A.S"]
 license = "MIT"
 mthds_version = ">=1.0.0"

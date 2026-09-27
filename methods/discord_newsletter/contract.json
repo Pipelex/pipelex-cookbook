@@ -5,6 +5,7 @@
       "name": "discord_channel_updates",
       "concept": "discord_newsletter.DiscordChannelUpdate",
       "kind": "list",
+      "item_kind": "object",
       "description": null,
       "multiplicity": "variable",
       "item_count": null,
@@ -13,7 +14,7 @@
   ],
   "output": {
     "concept": "discord_newsletter.HtmlNewsletter",
-    "description": "The final newsletter content in html format with organized channel summaries",
+    "description": "The week's newsletter as HTML, ready to paste into an email tool",
     "multiplicity": "single",
     "item_count": null,
     "fields": [

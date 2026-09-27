@@ -1,0 +1,20 @@
+{
+  "briefing": {
+    "concept": "bid_qualification.BriefingDeck",
+    "content": {
+      "url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/qualify_bid/advanced_digital_skills_info_day.pdf"
+    }
+  },
+  "criteria": {
+    "concept": "bid_qualification.BidCriteria",
+    "content": {
+      "text": "Bid criteria: written for a Pipelex example, not any real company's policy.\n\nWho we are. We are a training company established in an EU Member State, with about sixty staff. We design and run technical courses, hackathons and challenge-based competitions in artificial intelligence, data science and virtual worlds, for universities, engineering schools and employers, online and on site, and we run the communication campaigns that bring their participants in. We work with a standing network of universities and training providers in other Member States.\n\nWhen a funder or a buyer briefs bidders, we bid only when every criterion below is met. Each criterion is met, missed, or not stated when the briefing does not say enough to decide it.\n\n1. Eligibility. Met when a company established in an EU Member State may take part, as coordinator or as partner, and the briefing states the consortium the funder requires, which we can form with our network. Missed when companies, or companies from our country, cannot take part. Not stated when the briefing does not say who may apply or what the consortium must be.\n\n2. Deadline. Met when the submission deadline falls at least twelve weeks after the date of the briefing, the time we need to form a consortium and write the proposal. Missed when it falls sooner.\n\n3. Budget. Met when the EU contribution available for the topic is at least EUR 2 million and the funding rate is at least 70% of eligible costs. Missed when either is lower. The briefing should also say how many projects the topic will fund, since one budget shared among several projects may leave each too small: when it does not, the criterion is decided on the topic's budget, and the number of projects becomes a question.\n\n4. Required capabilities. Met when our own staff can carry the core of the work the topic asks for: designing challenges and their rule books, running competitions and events online and on site, running the jury, and the communication campaigns that reach participants, in the fields we cover, which are artificial intelligence, data science and virtual worlds. A field the topic asks for that we do not cover can be taken on by a partner, but the criterion stays missed until that partner is named.\n\n5. Evaluation. Met when the briefing gives the award criteria with their weights or maximum scores and their pass thresholds, and implementation (how the work is organised, with what resources and by whom) counts for at least as much as each other criterion. Missed when implementation counts for less than another criterion. Not stated when the briefing gives no award criteria.\n\nThe recommendation\n\n- Go: every criterion is met.\n- Go if answered: no criterion is missed but some are not stated, or the only criteria missed are ones this list says can be put right before the deadline, such as a field a partner can take on. The questions say what must be settled first.\n- No-go: any other criterion is missed.\n\nThe questions\n\nOne question for each criterion not stated, and one for each gap to close before the deadline, each saying whom to ask: the funder, through the question service the briefing names; a partner; or our own management."
+    }
+  },
+  "briefing_date": {
+    "concept": "native.Date",
+    "content": {
+      "date": "2025-12-01"
+    }
+  }
+}

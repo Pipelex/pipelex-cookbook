@@ -12,13 +12,13 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.19.1",
+            method_ref="github.com/Pipelex/pipelex-cookbook/gen_synthetic_data@v0.20.0",
             inputs={
                 "data_description": {
-                    "text": "# Student Profile: [Student Name]\n\n## Basic Info\n- **Current Performance**: [Struggling / Average / Advanced]\n\n## Learning Style\n- **Learns Best With**: [Visual examples / Step-by-step text / Hands-on practice / Videos]\n- **Pace**: [Needs more time / Normal / Fast learner]\n- **Complexity**: [Prefers simple explanations / Balanced / Likes deep details]\n\n## Background\n- **Strengths**: [subjects or topics they're good at]\n- **Needs Help With**: [areas where they struggle]\n- **Prior Knowledge**: [relevant topics they already know]\n\n## Interests\n- **Hobbies/Interests**: [e.g., soccer, video games, music]\n- **Career Goals**: [if any - e.g., engineer, doctor, undecided]\n\n## Preferences\n- **Example Style**: [Many real-world examples / Abstract concepts / Mix]\n- **Question Format**: [Multiple choice / Short answer / Open discussion]\n",
+                    "text": "Test tickets for our customer service triage. Written for a Pipelex example: the shop is not a real one, and every customer must be invented.\n\nWe are the customer service team of an online shop selling small kitchen appliances (kettles, toasters, coffee machines, blenders and hand mixers) in France, Belgium and Switzerland. Customers write to us by email or through the contact form on the site, in French or in English.\n\nEach ticket gives the channel (email or contact form), the customer's name, the language, the order number when the customer gives one (the letter C and eight digits), the subject line, the message as the customer wrote it, and the queue and the priority our triage should give it.\n\nThe queues are Orders and delivery, Returns and refunds, Product help, Warranty and repairs, Billing, and Other. A ticket is urgent when the customer reports a safety problem (smoke, a burning smell, an electric shock) or a payment taken twice, high when a delivery is more than five days late or a refund is overdue, and normal otherwise.\n\nMake them read like the messages we actually get: some two lines long and annoyed, some long and polite, a few with typos or written on a phone, one that asks two things at once, one that gives no order number. Cover every queue at least once.\n",
                 },
                 "nb_samples": {
-                    "number": 5,
+                    "number": 10,
                 },
             },
         )
@@ -34,16 +34,16 @@ asyncio.run(main())
 from pipelex_sdk.runs import RunResults
 from pydantic import BaseModel, TypeAdapter
 
-from generated.gen_synthetic_data.models import Sample
+from generated.gen_synthetic_data.models import DataRecord
 
 
-class SampleList(BaseModel):
+class DataRecordList(BaseModel):
     """The envelope `{"items": [...]}` the SDK documents for a list output."""
 
-    items: list[Sample]
+    items: list[DataRecord]
 
 
-def read_output(result: RunResults) -> list[Sample]:
-    """The method returns a list of `Sample`, which the SDK documents as the envelope and the hosted API answers as a bare list today."""
-    output = TypeAdapter[list[Sample] | SampleList](list[Sample] | SampleList).validate_python(result.main_stuff)
-    return output.items if isinstance(output, SampleList) else output
+def read_output(result: RunResults) -> list[DataRecord]:
+    """The method returns a list of `DataRecord`, which the SDK documents as the envelope and the hosted API answers as a bare list today."""
+    output = TypeAdapter[list[DataRecord] | DataRecordList](list[DataRecord] | DataRecordList).validate_python(result.main_stuff)
+    return output.items if isinstance(output, DataRecordList) else output

@@ -49,3 +49,6 @@ recipes/**/*.tsbuildinfo
 # The page snippets' installed packages and build output
 tests/snippets/node_modules/
 tests/snippets/*.tsbuildinfo
+
+# The directory `make snapshot` builds a new snapshot in, inside its package, which a writer stopped mid-way would leave behind
+methods/*/.snapshot-*/

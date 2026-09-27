@@ -12,63 +12,87 @@
     }
   ],
   "output": {
-    "concept": "dpe.Dpe",
-    "description": "The key figures of a French energy performance diagnostic (DPE) of a dwelling",
+    "concept": "dpe.DpeRecord",
+    "description": "The record a letting agency files for a DPE: the figures its listing and property software need, and what the class means for letting the dwelling",
     "multiplicity": "single",
     "item_count": null,
     "fields": [
       {
         "name": "address",
         "type": "text",
-        "description": "The address of the dwelling the diagnostic is about, not the owner's address",
-        "required": false
+        "description": "The address of the dwelling the diagnostic is about, on one line, with its postcode and town, and its floor, door and lot number when the DPE gives them",
+        "required": true
+      },
+      {
+        "name": "dpe_number",
+        "type": "text",
+        "description": "The DPE's number in the ADEME register, by which it can be checked",
+        "required": true
       },
       {
         "name": "date_of_issue",
         "type": "date",
-        "description": "The date the DPE was issued (\"Etabli le\")",
-        "required": false
+        "description": "The date the DPE was drawn up",
+        "required": true
       },
       {
         "name": "date_of_expiration",
         "type": "date",
-        "description": "The date the DPE expires (\"Valable jusqu'au\")",
-        "required": false
+        "description": "The date the DPE is valid until",
+        "required": true
       },
       {
         "name": "energy_efficiency_class",
         "type": "text",
-        "description": "The energy performance class, read on the energy consumption scale",
-        "required": false
+        "description": "The dwelling's DPE class, the one the energy and climate label gives it",
+        "required": true
       },
       {
         "name": "per_year_per_m2_consumption",
-        "type": "number",
+        "type": "integer",
         "description": "Primary energy consumption, in kWh per m² per year",
-        "required": false
+        "required": true
       },
       {
         "name": "co2_emission_class",
         "type": "text",
-        "description": "The greenhouse gas emission class, read on the CO₂ emissions scale, which is separate from the energy scale",
-        "required": false
+        "description": "The greenhouse gas emission class, read on the CO₂ emissions scale",
+        "required": true
       },
       {
         "name": "per_year_per_m2_co2_emissions",
-        "type": "number",
-        "description": "Greenhouse gas emissions, in kg of CO₂ per m² per year, not the dwelling's yearly total",
-        "required": false
+        "type": "integer",
+        "description": "Greenhouse gas emissions, in kg of CO₂ per m² per year",
+        "required": true
       },
       {
         "name": "yearly_energy_costs_min",
-        "type": "number",
+        "type": "integer",
         "description": "The low end of the estimated yearly energy costs, in euros",
-        "required": false
+        "required": true
       },
       {
         "name": "yearly_energy_costs_max",
-        "type": "number",
+        "type": "integer",
         "description": "The high end of the estimated yearly energy costs, in euros",
+        "required": true
+      },
+      {
+        "name": "energy_prices_as_of",
+        "type": "date",
+        "description": "The date the energy prices of the cost estimate are indexed to",
+        "required": false
+      },
+      {
+        "name": "letting_status",
+        "type": "text",
+        "description": "What the class means for letting on mainland France's calendar: the standard met, or the date that bars a new or renewed lease and whether the rent is frozen; overseas, the calendar to check",
+        "required": true
+      },
+      {
+        "name": "no_new_lease_from",
+        "type": "date",
+        "description": "The date from which the class bars a lease signed, renewed or tacitly renewed, on mainland France's calendar; empty when no date bars it, or when the dwelling is overseas",
         "required": false
       }
     ]

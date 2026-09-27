@@ -4,10 +4,10 @@ import { PipelexApiClient } from "@pipelex/sdk";
 
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.1",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.20.0",
   inputs: {
-    nb_employees: {
-      number: 2,
+    brief: {
+      text: "Test batch for our expense-audit workflow. Written for a Pipelex example: the company is not a real one, and every employee and merchant in the batch must be invented.\n\nWe are an engineering consultancy of about 300 people based in Lyon, with clients across France. Claims are in euros and dated in September 2026, and receipts are French.\n\nMake the expense reports of two employees: a senior sales engineer who travels to clients, and a project engineer who mostly works from the office. Give each three claims.\n\nOur expense policy, as the audit applies it:\n\n1. A working meal is reimbursed up to 25 euros a person, and a client meal up to 60 euros a person; a meal claim names the client or the project and how many people ate.\n2. A hotel night is reimbursed up to 150 euros in Paris and 110 euros elsewhere, breakfast included.\n3. Train travel is in second class.\n4. Spending on a Saturday or a Sunday needs a manager's prior approval, which the claim mentions.\n5. Alcohol on its own, personal purchases and entertainment are never reimbursed.\n6. Every claim states its business purpose and names the client or the project.\n\nMake half of the claims compliant, and have each of the others break exactly one rule, a different rule each time, the way a real employee's claim would: a client dinner over the limit, a Saturday taxi with no approval mentioned, a purpose that says only \"work\".\n",
     },
   },
 });
@@ -16,7 +16,7 @@ console.log(result.main_stuff);
 // Not on the page: the output read through the types `make refresh` generates from the package's .mthds files into
 // generated/gen_expense_data/, as the concept the page's "Returns" line names, which loading the cookbook holds to the main
 // pipe's declared output, so tsc fails when the page names a concept those types no longer hold.
-import { parseEmployeeExpenseReport } from "./generated/gen_expense_data/binder";
+import { parseExpenseReport } from "./generated/gen_expense_data/binder";
 
 /** The items of a list output: the SDK documents the envelope {"items": [...]}, while the hosted API answers a bare list today. */
 function listItems(mainStuff: unknown): unknown[] {
@@ -29,4 +29,4 @@ function listItems(mainStuff: unknown): unknown[] {
   throw new Error('expected a list output, bare or as {"items": [...]}');
 }
 
-const output = listItems(result.main_stuff).map((item) => parseEmployeeExpenseReport(item));
+const output = listItems(result.main_stuff).map((item) => parseExpenseReport(item));

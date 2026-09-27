@@ -1,19 +1,19 @@
 {
-  "pipe": "expense_data_generation.generate_expense_dataset",
+  "pipe": "expense_data_generation.generate_expense_test_batch",
   "inputs": [
     {
-      "name": "nb_employees",
-      "concept": "expense_data_generation.NbOfEmployees",
-      "kind": "number",
-      "description": "How many employees to generate",
+      "name": "brief",
+      "concept": "expense_data_generation.ExpenseBrief",
+      "kind": "prose",
+      "description": "A brief for a test batch of expense claims: the company, the employees and the claims wanted, the expense policy the audit applies, and the mix of compliant and rule-breaking claims",
       "multiplicity": "single",
       "item_count": null,
       "required": true
     }
   ],
   "output": {
-    "concept": "expense_data_generation.EmployeeExpenseReport",
-    "description": "An employee with their list of expenses, receipts, and HTML report",
+    "concept": "expense_data_generation.ExpenseReport",
+    "description": "One employee's expense report in the test batch: the employee, their claims with the verdict expected on each, and the\nreport as the employee submitted it",
     "multiplicity": "variable",
     "item_count": null,
     "fields": [
@@ -24,15 +24,15 @@
         "required": true
       },
       {
-        "name": "expenses_with_receipts",
-        "type": "list[ExpenseWithReceipt]",
-        "description": "List of expenses with receipts",
+        "name": "claims",
+        "type": "list[ExpenseClaim]",
+        "description": "The employee's claims, each with the photo of its receipt and the verdict the audit should reach",
         "required": true
       },
       {
-        "name": "html_report",
+        "name": "expense_report",
         "type": "HtmlContent",
-        "description": "HTML formatted expense report",
+        "description": "The expense report as the employee submitted it, without the verdicts, which are the audit's to reach",
         "required": true
       }
     ]

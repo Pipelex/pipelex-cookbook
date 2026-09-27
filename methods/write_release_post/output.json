@@ -1,0 +1,82 @@
+{
+  "pipe": "release_post.write_release_post",
+  "concept": "release_post.ReleasePost",
+  "run": {
+    "started_at": "2026-09-26T23:24:00Z",
+    "finished_at": "2026-09-26T23:25:15Z",
+    "server": "https://api.pipelex.com",
+    "route": "files",
+    "method_ref": null,
+    "commit_sha": null,
+    "bundle_sha256": "e51a93352a74533ccd785b174dfb5185c95916a6180614fd140d6ffae2712700",
+    "inputs_sha256": "2a5d0acbda6bfb98045729820d9d70409b2acab54a355fd86847d9e222aa7e15"
+  },
+  "output": {
+    "title": "Pipelex plugin adds catalog method management",
+    "slug": "pipelex-plugin-catalog-method-management",
+    "meta_description": "List, save, and pull your organization’s methods, work by catalog ID, track linked runs, and explain saved methods from source.",
+    "excerpt": "Manage your organization’s saved methods from your coding agent, use catalog IDs across skills, track linked runs, and explain stored source.",
+    "category": "Product updates",
+    "tags": [
+      "Pipelex plugin",
+      "Methods",
+      "Catalog"
+    ],
+    "body": "In Pipelex plugin 0.7.0, you can list, save, and pull your organization’s methods from your coding agent, work with saved methods by catalog ID, track linked runs in method history, and explain saved methods from their source.\n\n## Manage methods in your catalog\n\nUse `/pipelex-catalog` to manage the methods saved by the organization associated with your API key. You can search and page through saved methods, save a bundle directory as a new method or an update, and pull a saved method’s files into `methods/<name>/`.\n\nThe catalog skill validates a bundle before saving it. It does not save an invalid bundle and directs you to `/pipelex-edit` or `/pipelex-design` to correct it. You can save a valid bundle with pending signatures, but it does not run until those signatures are complete.\n\nUpdating a saved method is a deployment. Every caller using that method ID, including a production call site, receives the updated content on its next call. The catalog skill saves only when you request it, and no other skill saves methods to the catalog.\n\nThe skill also protects your work from conflicting changes. It stops a save if the catalog copy has changed since you last saw it and gives you two ways to proceed without choosing for you. When you pull, it stops if you have local work that was never saved or asks before overwriting when the saved method has also changed.\n\nDeletion is not available through the catalog skill. An admin must delete a method in the webapp, and deletion erases every run that method produced. The design and editing skills direct you to the catalog skill when you need to save your work.\n\n## Work with saved methods by catalog ID\n\nThe design and editing skills, along with `/pipelex-organize`, now accept an `mt_…` catalog ID. If the method already has a local directory, the skill works with that copy. Otherwise, it hands the pull to the catalog skill. If two local copies match the same method, the skill asks you to choose instead of selecting one.\n\nThese file-based skills also report when local changes have left the catalog copy behind. The report names the saved method and explains that callers using its ID still run the older catalog content. The skills direct you to the catalog skill to deploy your changes and never save them automatically.\n\nYou cannot change a published address through these file-based skills. Use `/pipelex-explain` instead.\n\n## Track linked runs in method history\n\n`/pipelex-run` now files a run from a linked bundle directory under its saved method in the webapp. The report makes clear that the submitted local files are what ran.\n\nIf the saved method ID is unknown, the run stops before executing anything. This prevents the run from being associated with an invalid method, and you can choose to run the same files without that association.\n\n## Explain saved methods from their source\n\nThe explanation skill now accepts the catalog ID of a method saved by your organization. It reads and explains the stored bundle files, including Python, instead of describing only the method’s contract. It reads the source without writing those files to disk.\n\nIf it cannot read all the stored source, the explanation can be partial. If source reading is unavailable, the skill returns a narrower contract-level explanation instead of stopping.\n\nPublished addresses do not receive source-level explanations through this skill. Their internal source remains in the repository named by the address.\n\n## Also in this release\n\n- The run skill now identifies a missing `PipeFunc` implementation as the cause of a file-based run failure and directs you to the catalog skill so the saved method can run with its `.mthds` and `.py` files.\n\n## Get the update\n\nUpdate the Pipelex plugin in your coding agent to get these changes; the release notes list every change.",
+    "left_out": [
+      {
+        "note": "The link-file test that distinguishes catalog creates from updates",
+        "why": "Rule 3: Leave out the configuration and link files the tools write for the reader."
+      },
+      {
+        "note": "Project-shape internals, generated action and registry entries, method-name path folding, and workshop-relative `output_dir`",
+        "why": "Rule 3: Leave out how we build, configuration files, and reasons behind an implementation choice."
+      },
+      {
+        "note": "The one-call same-bytes validation and storage mechanism",
+        "why": "Rule 3: Leave out reasons behind an implementation choice."
+      },
+      {
+        "note": "Conflict timestamps, hashes, and other link-file mechanics",
+        "why": "Rule 3: Leave out the configuration and link files the tools write for the reader."
+      },
+      {
+        "note": "How the skill discovers Python files and handles an empty `PipeFunc` set or `python: []`",
+        "why": "Rule 3: Leave out configuration details and reasons behind an implementation choice."
+      },
+      {
+        "note": "No retry after a create transport fault and the unavailable idempotency key",
+        "why": "Rule 3: Leave out retry and idempotency logic."
+      },
+      {
+        "note": "Workshop file-writing responsibilities, filesystem permission settings, and manual link-file handling",
+        "why": "Rule 3: Leave out configuration and link files and permission settings."
+      },
+      {
+        "note": "The link-file search used to resolve catalog IDs",
+        "why": "Rule 3: Leave out the configuration and link files the tools write for the reader."
+      },
+      {
+        "note": "The link and request fields used to file runs in method history",
+        "why": "Rule 3: Leave out the configuration and link files the tools write for the reader and reasons behind an implementation choice."
+      },
+      {
+        "note": "The host value read from an invalid method link",
+        "why": "Rule 3: Leave out the configuration and link files the tools write for the reader."
+      },
+      {
+        "note": "The `pipelex-sdk` 0.10.2 installation and dependency-floor alignment",
+        "why": "Rule 3: Leave out the version of a library the plugin installs unless the reader must do something about it; the notes require no action."
+      },
+      {
+        "note": "Starter-project blocking-mode details and the offline drift gate",
+        "why": "Rule 3: Leave out how we build, test and release and reasons behind an implementation choice."
+      },
+      {
+        "note": "Runtime-channel details explaining why file submissions cannot carry a missing Python implementation",
+        "why": "Rule 3: Leave out reasons behind an implementation choice."
+      }
+    ]
+  },
+  "files": {}
+}

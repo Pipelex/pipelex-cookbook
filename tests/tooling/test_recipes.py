@@ -16,9 +16,10 @@ from scripts.recipes import (
 
 ADDRESS = "github.com/Pipelex/methods/invoice_extraction@v0.1.1"
 SCRIPT_HEADER = '# /// script\n# dependencies = ["pipelex-sdk==0.12.0"]\n# ///\n'
-DPE_ADDRESS = "github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.18.0"
-# The files a page snippet's sidecar names, from the repository root: the `.mthds` files of its method's package.
-SNIPPET_FILES = ["methods/extract_gantt/bundle.mthds", "methods/extract_gantt/charts.mthds"]
+BLOG_ADDRESS = "github.com/Pipelex/pipelex-cookbook/blog_article_generator@v0.18.0"
+# The files a page snippet's sidecar names, from the repository root: the `.mthds` files of its method's package, here the fixture
+# cookbook's widget extraction.
+SNIPPET_FILES = ["methods/extract_widgets/bundle.mthds", "methods/extract_widgets/pages.mthds"]
 
 
 def _python_recipe(root: Path, *, address: str = ADDRESS, code_address: str = ADDRESS, header: str = SCRIPT_HEADER) -> Path:
@@ -34,15 +35,15 @@ def _python_recipe(root: Path, *, address: str = ADDRESS, code_address: str = AD
 
 
 def _typescript_recipe(
-    root: Path, *, dependencies: dict[str, str] | None = None, codegen_check: str = "node scripts/codegen-check.mjs generated/extract_gantt"
+    root: Path, *, dependencies: dict[str, str] | None = None, codegen_check: str = "node scripts/codegen-check.mjs generated/invoice_extraction"
 ) -> Path:
     """A TypeScript recipe calling the address its one generated tree names, with its package.json."""
     recipe = root / "recipes" / "code" / "typescript" / "upload"
-    tree = recipe / "generated" / "extract_gantt"
+    tree = recipe / "generated" / "invoice_extraction"
     tree.mkdir(parents=True)
     (tree / "sources.json").write_text(json.dumps({"method": {"method_ref": ADDRESS}, "target": "ts-zod"}), encoding="utf-8")
     (tree / "codegen.lock").write_text("lock_version = 1\n", encoding="utf-8")
-    (tree / "types.ts").write_text("export const GanttChartSchema = {};\n", encoding="utf-8")
+    (tree / "types.ts").write_text("export const InvoiceSchema = {};\n", encoding="utf-8")
     (recipe / "extract.ts").write_text(f'const METHOD_REF = "{ADDRESS}";\n', encoding="utf-8")
     package = {"dependencies": {"@pipelex/sdk": "0.25.1"} if dependencies is None else dependencies, "scripts": {"codegen:check": codegen_check}}
     (recipe / "package.json").write_text(json.dumps(package), encoding="utf-8")
@@ -136,19 +137,19 @@ class TestRecipes:
         assert problem == "recipes/code/typescript/upload/package.json: its dependencies do not name @pipelex/sdk"
 
     def test_a_tree_its_codegen_gate_does_not_check_is_a_problem(self, tmp_path: Path):
-        _typescript_recipe(tmp_path, codegen_check="node scripts/codegen-check.mjs generated/extract_gantt_old")
+        _typescript_recipe(tmp_path, codegen_check="node scripts/codegen-check.mjs generated/invoice_extraction_old")
         [problem] = recipe_problems(tmp_path)
-        assert "its `codegen:check` script does not check generated/extract_gantt" in problem
+        assert "its `codegen:check` script does not check generated/invoice_extraction" in problem
 
     def test_a_codegen_gate_naming_its_tree_by_another_spelling_of_the_path_is_clean(self, tmp_path: Path):
-        _typescript_recipe(tmp_path, codegen_check="node scripts/codegen-check.mjs ./generated/extract_gantt/")
+        _typescript_recipe(tmp_path, codegen_check="node scripts/codegen-check.mjs ./generated/invoice_extraction/")
         assert recipe_problems(tmp_path) == []
 
     def test_a_package_without_a_codegen_gate_is_a_problem_even_with_no_tree(self, tmp_path: Path):
         recipe = _typescript_recipe(tmp_path)
-        for generated_file in (recipe / "generated" / "extract_gantt").iterdir():
+        for generated_file in (recipe / "generated" / "invoice_extraction").iterdir():
             generated_file.unlink()
-        (recipe / "generated" / "extract_gantt").rmdir()
+        (recipe / "generated" / "invoice_extraction").rmdir()
         (recipe / "generated").rmdir()
         (recipe / "package.json").write_text(json.dumps({"dependencies": {"@pipelex/sdk": "0.25.1"}, "scripts": {}}), encoding="utf-8")
         [problem] = recipe_problems(tmp_path)
@@ -198,18 +199,18 @@ def _snippets(root: Path, *, with_trees: bool = False) -> Path:
     declares no SDK, and the package names neither the SDK nor a gate.
     """
     snippets = root / "tests" / "snippets"
-    (snippets / "extract_gantt" / "typescript").mkdir(parents=True)
-    (snippets / "extract_gantt" / "python").mkdir(parents=True)
+    (snippets / "extract_widgets" / "typescript").mkdir(parents=True)
+    (snippets / "extract_widgets" / "python").mkdir(parents=True)
     (snippets / "package.json").write_text(json.dumps({"scripts": {"typecheck": "tsc --noEmit"}}), encoding="utf-8")
-    (snippets / "extract_gantt" / "typescript" / "snippet.ts").write_text('console.log("snippet");\n', encoding="utf-8")
-    (snippets / "extract_gantt" / "python" / "snippet.py").write_text(
+    (snippets / "extract_widgets" / "typescript" / "snippet.ts").write_text('console.log("snippet");\n', encoding="utf-8")
+    (snippets / "extract_widgets" / "python" / "snippet.py").write_text(
         '# /// script\n# dependencies = ["httpx"]\n# ///\nprint("snippet")\n', encoding="utf-8"
     )
     (snippets / "node_modules" / "zod").mkdir(parents=True)
     (snippets / "node_modules" / "zod" / "package.json").write_text("{}", encoding="utf-8")
     if with_trees:
         for language, target in (("typescript", "ts-zod"), ("python", "python-pydantic")):
-            tree = snippets / "extract_gantt" / language / "generated" / "extract_gantt"
+            tree = snippets / "extract_widgets" / language / "generated" / "extract_widgets"
             tree.mkdir(parents=True)
             (tree / "sources.json").write_text(json.dumps({"method": {"files": SNIPPET_FILES}, "target": target}), encoding="utf-8")
     return snippets
@@ -219,15 +220,15 @@ class TestSnippets:
     def test_the_snippet_scripts_and_their_package_are_found_beside_the_recipes(self, tmp_path: Path):
         recipe = _python_recipe(tmp_path)
         snippets = _snippets(tmp_path)
-        assert python_scripts(tmp_path) == [recipe / "batch.py", snippets / "extract_gantt" / "python" / "snippet.py"]
+        assert python_scripts(tmp_path) == [recipe / "batch.py", snippets / "extract_widgets" / "python" / "snippet.py"]
         assert typescript_packages(tmp_path) == [snippets]
 
     def test_the_snippets_trees_are_found_and_a_typescript_tree_belongs_to_the_nearest_package(self, tmp_path: Path):
         snippets = _snippets(tmp_path, with_trees=True)
         trees = {tree.directory.relative_to(snippets).as_posix(): tree for tree in find_trees(tmp_path)}
-        assert sorted(trees) == ["extract_gantt/python/generated/extract_gantt", "extract_gantt/typescript/generated/extract_gantt"]
-        typescript_tree = trees["extract_gantt/typescript/generated/extract_gantt"]
-        assert typescript_tree.recipe_dir == snippets / "extract_gantt" / "typescript"
+        assert sorted(trees) == ["extract_widgets/python/generated/extract_widgets", "extract_widgets/typescript/generated/extract_widgets"]
+        typescript_tree = trees["extract_widgets/typescript/generated/extract_widgets"]
+        assert typescript_tree.recipe_dir == snippets / "extract_widgets" / "typescript"
         assert typescript_tree.package_dir == snippets
 
     def test_a_snippet_trees_sidecar_naming_its_packages_files_is_read(self, tmp_path: Path):
@@ -244,21 +245,21 @@ class TestSnippets:
 
     def test_a_snippet_tree_without_its_sidecar_is_still_a_problem(self, tmp_path: Path):
         snippets = _snippets(tmp_path, with_trees=True)
-        (snippets / "extract_gantt" / "python" / "generated" / "extract_gantt" / "sources.json").unlink()
+        (snippets / "extract_widgets" / "python" / "generated" / "extract_widgets" / "sources.json").unlink()
         [problem] = recipe_problems(tmp_path)
-        assert problem.startswith("tests/snippets/extract_gantt/python/generated/extract_gantt/sources.json: missing")
+        assert problem.startswith("tests/snippets/extract_widgets/python/generated/extract_widgets/sources.json: missing")
 
     def test_a_typescript_snippet_tree_needs_a_package_at_or_above_it(self, tmp_path: Path):
         snippets = _snippets(tmp_path, with_trees=True)
         (snippets / "package.json").unlink()
         [problem] = recipe_problems(tmp_path)
         assert problem == (
-            "tests/snippets/extract_gantt/typescript/generated/extract_gantt: "
-            "target ts-zod needs a package.json in tests/snippets/extract_gantt/typescript or above it"
+            "tests/snippets/extract_widgets/typescript/generated/extract_widgets: "
+            "target ts-zod needs a package.json in tests/snippets/extract_widgets/typescript or above it"
         )
 
     def test_a_recipe_tree_below_its_package_is_gated_by_that_package(self, tmp_path: Path):
-        recipe = _typescript_recipe(tmp_path, codegen_check="node scripts/codegen-check.mjs src/generated/extract_gantt")
+        recipe = _typescript_recipe(tmp_path, codegen_check="node scripts/codegen-check.mjs src/generated/invoice_extraction")
         (recipe / "src").mkdir()
         (recipe / "generated").rename(recipe / "src" / "generated")
         [tree] = find_trees(tmp_path)
@@ -269,7 +270,7 @@ class TestSnippets:
             json.dumps({"dependencies": {"@pipelex/sdk": "0.25.1"}, "scripts": {"codegen:check": "node scripts/codegen-check.mjs"}}), encoding="utf-8"
         )
         [problem] = recipe_problems(tmp_path)
-        assert "its `codegen:check` script does not check src/generated/extract_gantt" in problem
+        assert "its `codegen:check` script does not check src/generated/invoice_extraction" in problem
 
 
 def _run_recipe(root: Path, *, readme: str, script: str | None = None) -> Path:
@@ -284,18 +285,18 @@ def _run_recipe(root: Path, *, readme: str, script: str | None = None) -> Path:
 
 class TestRecipeAddresses:
     def test_addresses_in_a_readme_a_shell_script_and_a_json_file_are_found(self, tmp_path: Path):
-        recipe = _run_recipe(tmp_path, readme=f"Run `{ADDRESS}` on the invoice.\n", script=f'#!/bin/sh\nMETHOD_REF="{DPE_ADDRESS}"\n')
-        (recipe / "request.json").write_text(f'{{"method_ref": "{DPE_ADDRESS}"}}', encoding="utf-8")
+        recipe = _run_recipe(tmp_path, readme=f"Run `{ADDRESS}` on the invoice.\n", script=f'#!/bin/sh\nMETHOD_REF="{BLOG_ADDRESS}"\n')
+        (recipe / "request.json").write_text(f'{{"method_ref": "{BLOG_ADDRESS}"}}', encoding="utf-8")
         assert find_addresses(tmp_path) == [
             RecipeAddress(address=ADDRESS, file=recipe / "README.md"),
-            RecipeAddress(address=DPE_ADDRESS, file=recipe / "request.json"),
-            RecipeAddress(address=DPE_ADDRESS, file=recipe / "run.sh"),
+            RecipeAddress(address=BLOG_ADDRESS, file=recipe / "request.json"),
+            RecipeAddress(address=BLOG_ADDRESS, file=recipe / "run.sh"),
         ]
         assert recipe_problems(tmp_path) == []
 
     def test_an_address_closing_a_sentence_keeps_its_tag_without_the_full_stop(self, tmp_path: Path):
-        _run_recipe(tmp_path, readme=f"It runs {DPE_ADDRESS}.\n")
-        assert [found.address for found in find_addresses(tmp_path)] == [DPE_ADDRESS]
+        _run_recipe(tmp_path, readme=f"It runs {BLOG_ADDRESS}.\n")
+        assert [found.address for found in find_addresses(tmp_path)] == [BLOG_ADDRESS]
         assert recipe_problems(tmp_path) == []
 
     def test_catalog_ids_repository_links_and_other_hosts_are_not_addresses(self, tmp_path: Path):
@@ -311,7 +312,7 @@ class TestRecipeAddresses:
 
     @pytest.mark.parametrize("tag", ["main", "beta", "v0.18", "v0.18.0-rc.1"])
     def test_an_address_without_a_release_tag_is_a_problem(self, tmp_path: Path, tag: str):
-        floating = f"github.com/Pipelex/pipelex-cookbook/extract_dpe@{tag}"
+        floating = f"github.com/Pipelex/pipelex-cookbook/blog_article_generator@{tag}"
         _run_recipe(tmp_path, readme=f"Run `{floating}` on the sample.\n")
         [problem] = recipe_problems(tmp_path)
         assert problem == (
@@ -331,10 +332,10 @@ class TestRecipeAddresses:
 
     def test_the_addresses_to_validate_gather_sidecars_and_files_by_recipe(self, tmp_path: Path):
         _python_recipe(tmp_path)
-        _run_recipe(tmp_path, readme=f"Run `{ADDRESS}`, or `{DPE_ADDRESS}`.\n", script=f'METHOD_REF="{DPE_ADDRESS}"\n')
+        _run_recipe(tmp_path, readme=f"Run `{ADDRESS}`, or `{BLOG_ADDRESS}`.\n", script=f'METHOD_REF="{BLOG_ADDRESS}"\n')
         assert recipe_addresses(tmp_path) == {
             ADDRESS: ["recipes/code/python/batch", "recipes/run/http"],
-            DPE_ADDRESS: ["recipes/run/http"],
+            BLOG_ADDRESS: ["recipes/run/http"],
         }
 
 

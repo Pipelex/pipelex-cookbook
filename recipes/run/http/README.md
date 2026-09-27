@@ -1,6 +1,6 @@
 # A method over HTTP: start, poll, results
 
-Any tool that makes HTTP calls can run a method, with no SDK: one call starts the run and answers at once with its id, a second reads how the run is going, and a third reads its results. This recipe makes those three calls with `curl` in a small shell script, to read a French energy performance diagnostic with the cookbook's [DPE extraction](../../../methods/extract_dpe/) method. The same three calls are how n8n, Zapier or any tool that makes HTTP calls reaches a method.
+Any tool that makes HTTP calls can run a method, with no SDK: one call starts the run and answers at once with its id, a second reads how the run is going, and a third reads its results. This recipe makes those three calls with `curl` in a small shell script, to read a French energy performance diagnostic with the cookbook's [DPE extraction](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/extract_dpe) method. The same three calls are how n8n, Zapier or any tool that makes HTTP calls reaches a method.
 
 It shows the run lifecycle as the hosted API serves it:
 
@@ -62,7 +62,7 @@ run run_… completed
 }
 ```
 
-The method's [answer key](../../../methods/extract_dpe/key.md) says what a right answer on the sample holds: the address at 51 rue du Roi de Sicile, 75004 Paris; issued on 2022-03-29 and valid until 2032-03-28; energy class G at 560 kWh per m² per year; CO₂ class C at 18 kg per m² per year; and yearly energy costs between 1260 and 1750 euros.
+These are the figures printed on the sample diagnostic: the address at 51 rue du Roi de Sicile, 75004 Paris; issued on 2022-03-29 and valid until 2032-03-28; energy class G at 560 kWh per m² per year; CO₂ class C at 18 kg per m² per year; and yearly energy costs between 1260 and 1750 euros.
 
 The exit status says what happened, in the pattern of the [durable run](../../code/typescript/durable-run/) recipe:
 

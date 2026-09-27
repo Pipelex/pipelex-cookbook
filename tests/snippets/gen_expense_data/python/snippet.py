@@ -12,10 +12,10 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.19.1",
+            method_ref="github.com/Pipelex/pipelex-cookbook/gen_expense_data@v0.20.0",
             inputs={
-                "nb_employees": {
-                    "number": 2,
+                "brief": {
+                    "text": "Test batch for our expense-audit workflow. Written for a Pipelex example: the company is not a real one, and every employee and merchant in the batch must be invented.\n\nWe are an engineering consultancy of about 300 people based in Lyon, with clients across France. Claims are in euros and dated in September 2026, and receipts are French.\n\nMake the expense reports of two employees: a senior sales engineer who travels to clients, and a project engineer who mostly works from the office. Give each three claims.\n\nOur expense policy, as the audit applies it:\n\n1. A working meal is reimbursed up to 25 euros a person, and a client meal up to 60 euros a person; a meal claim names the client or the project and how many people ate.\n2. A hotel night is reimbursed up to 150 euros in Paris and 110 euros elsewhere, breakfast included.\n3. Train travel is in second class.\n4. Spending on a Saturday or a Sunday needs a manager's prior approval, which the claim mentions.\n5. Alcohol on its own, personal purchases and entertainment are never reimbursed.\n6. Every claim states its business purpose and names the client or the project.\n\nMake half of the claims compliant, and have each of the others break exactly one rule, a different rule each time, the way a real employee's claim would: a client dinner over the limit, a Saturday taxi with no approval mentioned, a purpose that says only \"work\".\n",
                 },
             },
         )
@@ -31,16 +31,16 @@ asyncio.run(main())
 from pipelex_sdk.runs import RunResults
 from pydantic import BaseModel, TypeAdapter
 
-from generated.gen_expense_data.models import EmployeeExpenseReport
+from generated.gen_expense_data.models import ExpenseReport
 
 
-class EmployeeExpenseReportList(BaseModel):
+class ExpenseReportList(BaseModel):
     """The envelope `{"items": [...]}` the SDK documents for a list output."""
 
-    items: list[EmployeeExpenseReport]
+    items: list[ExpenseReport]
 
 
-def read_output(result: RunResults) -> list[EmployeeExpenseReport]:
-    """The method returns a list of `EmployeeExpenseReport`, which the SDK documents as the envelope and the hosted API answers as a bare list today."""
-    output = TypeAdapter[list[EmployeeExpenseReport] | EmployeeExpenseReportList](list[EmployeeExpenseReport] | EmployeeExpenseReportList).validate_python(result.main_stuff)
-    return output.items if isinstance(output, EmployeeExpenseReportList) else output
+def read_output(result: RunResults) -> list[ExpenseReport]:
+    """The method returns a list of `ExpenseReport`, which the SDK documents as the envelope and the hosted API answers as a bare list today."""
+    output = TypeAdapter[list[ExpenseReport] | ExpenseReportList](list[ExpenseReport] | ExpenseReportList).validate_python(result.main_stuff)
+    return output.items if isinstance(output, ExpenseReportList) else output

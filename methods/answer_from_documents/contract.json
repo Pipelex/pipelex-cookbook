@@ -5,6 +5,7 @@
       "name": "documents",
       "concept": "native.Document",
       "kind": "list",
+      "item_kind": "document",
       "description": null,
       "multiplicity": "variable",
       "item_count": null,

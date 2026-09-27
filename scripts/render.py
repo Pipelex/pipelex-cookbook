@@ -1,9 +1,11 @@
 """Render every method's page, `methods/<name>/README.md`, from its package, its editorial fields and the templates, and the front page's methods.
 
 Everything a page says about its method is derived here, from committed files only: the address from the manifest and the version file, the
-samples and the code snippets' inputs from `inputs.json`, and the "Takes" and "Returns" lines from the contract snapshot; the answer key is
-not shown on the page. The templates under `templates/` hold the wording and the links, one block per door, so a change to a door is made
-once and every page inherits it at the next render.
+samples and the code snippets' inputs from `inputs.json`, each sample's source and licence from its record in `cookbook.toml`, what the method
+returned on its sample from the output snapshot `output.json` (`scripts/snapshot.py`, shown by `scripts/views.py`), and the "Takes" and
+"Returns" lines from the contract snapshot. A method with no output snapshot yet still gets its page, without "What you get", and
+`make check-render` fails on it. The templates under `templates/` hold the wording and the links, one block per door, so a change to a door is
+made once and every page inherits it at the next render.
 
 The page's TypeScript and Python snippets are also written as files, `tests/snippets/<name>/typescript/snippet.ts` and
 `tests/snippets/<name>/python/snippet.py`, from the same templates under `templates/snippets/`, so that what the page shows is what the type
@@ -21,11 +23,13 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 from pydantic import BaseModel, ConfigDict, Field, JsonValue
 
-from scripts.contract import Contract, ContractField, ContractInput, short_concept
-from scripts.cookbook import INPUTS_FILE, METHODS_DIR, SNIPPETS_DIR, Cookbook, MethodPackage
+from scripts.contract import TYPE_BRANCH_SEPARATOR, Contract, ContractField, ContractInput, short_concept, type_branches
+from scripts.cookbook import INPUTS_FILE, METHODS_DIR, RAW_BASE_URL, SNIPPETS_DIR, Cookbook, MethodPackage, file_urls, input_content
 from scripts.exceptions import CookbookLayoutError
 from scripts.library import LIBRARY_METHODS_DIR
 from scripts.recipes import GENERATED_DIR, PYTHON_TARGET, SIDECAR_FILE, TYPESCRIPT_TARGET
+from scripts.snapshot import read_snapshot
+from scripts.views import OutputView, SampleView, output_view, sample_label, sample_views
 
 PAGE_TEMPLATE = "method_page.md.j2"
 # Each file `make render` writes in a method's `tests/snippets/<name>/`, mapped to the template writing it around the page's snippet.
@@ -45,9 +49,10 @@ FRONT_REGION_END = "<!-- END methods -->"
 LIBRARY_REGION_TEMPLATE = "library_region.md.j2"
 LIBRARY_REGION_BEGIN = "<!-- BEGIN library, written by `make render` from library.json: never edit this region by hand -->"
 LIBRARY_REGION_END = "<!-- END library -->"
-RAW_BASE_URL = "https://raw.githubusercontent.com"
 GITHUB_BASE_URL = "https://github.com"
 DEFAULT_CHATBOT_WITH_SAMPLES = "Run {address} on {samples}"
+# When some inputs are files and others are not, the sentence links the files and sends the chatbot to the inputs file for the rest.
+DEFAULT_CHATBOT_WITH_SAMPLES_AND_OTHER_INPUTS = "Run {address} on {samples}, with the other sample inputs in {inputs_url}"
 DEFAULT_CHATBOT_WITHOUT_SAMPLES = "Run {address} with the sample inputs in {inputs_url}"
 DEFAULT_YOURS_CHANGE = "adapt what it does to my case"
 
@@ -56,6 +61,8 @@ _TYPESCRIPT_IDENTIFIER_PATTERN = re.compile(r"^[A-Za-z_$][A-Za-z0-9_$]*$")
 # The input form's kind for each input, as a reader says it. The kind `list` only restates the multiplicity, so a list is phrased from its
 # concept instead.
 _KIND_NOUNS = {"prose": "text", "list": None}
+# A native concept the input form shows as a structure, which a reader knows by what it holds.
+_NATIVE_CONCEPT_NOUNS = {"native.Date": "date"}
 # A concept refining the native `Text` carries a single `text` field, which says nothing the concept's own description does not.
 _TEXT_ONLY_FIELDS = ["text"]
 _NATIVE_PREFIX = "native."
@@ -134,6 +141,8 @@ class PageContext(BaseModel):
     header_links: str
     samples: list[Sample]
     has_file_inputs: bool
+    sample_views: list[SampleView] = Field(description='Each input of the sample, as "The sample" shows it')
+    output: OutputView | None = Field(description="What the method returned on its sample, or None while it has no output snapshot")
     takes: list[str]
     returns: str
     returns_fields: list[str]
@@ -154,8 +163,9 @@ class PageContext(BaseModel):
 
 
 def make_environment(templates_dir: Path) -> Environment:
-    """The Jinja2 environment for Markdown pages: no escaping, strict about undefined names, and trailing newlines kept."""
-    return Environment(
+    """The Jinja2 environment for Markdown pages: no escaping, strict about undefined names, trailing newlines kept, and a `sentence` filter
+    closing a text with a full stop when it ends on a letter or a digit."""
+    environment = Environment(
         loader=FileSystemLoader(templates_dir),
         undefined=StrictUndefined,
         autoescape=False,
@@ -163,6 +173,8 @@ def make_environment(templates_dir: Path) -> Environment:
         trim_blocks=True,
         lstrip_blocks=True,
     )
+    environment.filters["sentence"] = _sentence
+    return environment
 
 
 def render_pages(*, cookbook: Cookbook, templates_dir: Path) -> dict[Path, str]:
@@ -301,13 +313,20 @@ def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageCon
         msg = f"{package.directory} has no contract snapshot yet: run `make refresh` (it needs PIPELEX_API_KEY), then `make render`"
         raise CookbookLayoutError(msg)
     editorial = package.editorial
+    snapshot = read_snapshot(package)
     address = cookbook.address_of(package)
     snippet_inputs = _snippet_inputs(package.inputs)
     samples = _samples(package=package)
     inputs_url = f"{RAW_BASE_URL}/{cookbook.settings.repository}/{cookbook.tag}/{METHODS_DIR}/{package.name}/{INPUTS_FILE}"
     fetches_inputs = len(json.dumps(snippet_inputs, ensure_ascii=False)) > INLINE_INPUTS_LIMIT
 
-    chatbot_template = editorial.chatbot or (DEFAULT_CHATBOT_WITH_SAMPLES if samples else DEFAULT_CHATBOT_WITHOUT_SAMPLES)
+    if not samples:
+        default_chatbot = DEFAULT_CHATBOT_WITHOUT_SAMPLES
+    elif any(not file_urls(content) for content in snippet_inputs.values()):
+        default_chatbot = DEFAULT_CHATBOT_WITH_SAMPLES_AND_OTHER_INPUTS
+    else:
+        default_chatbot = DEFAULT_CHATBOT_WITH_SAMPLES
+    chatbot_template = editorial.chatbot or default_chatbot
     try:
         chatbot = chatbot_template.format(address=address, samples=" and ".join(sample.url for sample in samples), inputs_url=inputs_url)
     except (KeyError, IndexError, AttributeError, ValueError) as exc:
@@ -329,6 +348,8 @@ def build_page_context(*, cookbook: Cookbook, package: MethodPackage) -> PageCon
         ),
         samples=samples,
         has_file_inputs=bool(samples),
+        sample_views=sample_views(cookbook=cookbook, package=package, contract=contract),
+        output=None if snapshot is None else output_view(contract=contract, hints=editorial.output, snapshot=snapshot),
         takes=[_input_line(contract_input) for contract_input in contract.inputs],
         returns=_described(
             _output_phrase(contract), description=None if contract.output.concept.startswith(_NATIVE_PREFIX) else contract.output.description
@@ -415,18 +436,8 @@ def _python_string(text: str) -> str:
 
 
 def _snippet_inputs(inputs: dict[str, JsonValue]) -> dict[str, JsonValue]:
-    """The inputs as code passes them: `inputs.json` may wrap a value as `{"concept": …, "content": …}`, and the code passes the content.
-
-    Only a dict whose keys are exactly `concept` and `content` is that wrapper, as the runtime reads it: a structured input whose concept has a
-    field named `content` is passed whole.
-    """
-    snippet_inputs: dict[str, JsonValue] = {}
-    for input_name, input_value in inputs.items():
-        if isinstance(input_value, dict) and set(input_value) == {"concept", "content"}:
-            snippet_inputs[input_name] = input_value["content"]
-        else:
-            snippet_inputs[input_name] = input_value
-    return snippet_inputs
+    """The inputs as code passes them: `inputs.json` may wrap a value as `{"concept": …, "content": …}`, and the code passes the content."""
+    return {input_name: input_content(input_value) for input_name, input_value in inputs.items()}
 
 
 def _python_sdk_admits(value: JsonValue) -> bool:
@@ -443,26 +454,18 @@ def _samples(*, package: MethodPackage) -> list[Sample]:
     """The files the sample inputs name, one per URL: an input holding a list of files gives each its own numbered label."""
     samples: list[Sample] = []
     for input_name, content in _snippet_inputs(package.inputs).items():
-        urls = _file_urls(content)
-        label = package.editorial.sample_labels.get(input_name) or f"sample {input_name.replace('_', ' ')}"
+        urls = file_urls(content)
+        label = sample_label(package=package, input_name=input_name)
         for index, url in enumerate(urls, start=1):
             samples.append(Sample(label=label if len(urls) == 1 else f"{label} {index}", url=url))
     return samples
 
 
-def _file_urls(content: JsonValue) -> list[str]:
-    """The URLs of a file input, given as one `{"url": …}` object or as a list of them."""
-    if isinstance(content, dict):
-        url = content.get("url")
-        return [url] if isinstance(url, str) else []
-    if isinstance(content, list):
-        return [url for item in content if isinstance(item, dict) and isinstance(url := item.get("url"), str)]
-    return []
-
-
 def _input_line(contract_input: ContractInput) -> str:
     concept = f"`{short_concept(contract_input.concept)}`"
-    kind = _KIND_NOUNS.get(contract_input.kind, contract_input.kind) if contract_input.kind else None
+    kind = _NATIVE_CONCEPT_NOUNS.get(contract_input.concept)
+    if kind is None and contract_input.kind:
+        kind = _KIND_NOUNS.get(contract_input.kind, contract_input.kind)
     what: str
     if kind:
         match contract_input.multiplicity:
@@ -505,17 +508,23 @@ def _described(subject: str, *, description: str | None) -> str:
 
 
 def type_phrase(type_expression: str) -> str:
-    """Phrase a contract type expression for a reader: `list[GanttTaskDetails]` becomes "a list of `GanttTaskDetails`"."""
+    """Phrase a contract type expression for a reader: `list[PositionReview]` becomes "a list of `PositionReview`"."""
+    branches = type_branches(type_expression)
+    if len(branches) > 1:
+        return TYPE_BRANCH_SEPARATOR.join(type_phrase(branch) for branch in branches)
     if type_expression.startswith("list[") and type_expression.endswith("]"):
-        item_type = type_expression.removeprefix("list[").removesuffix("]")
-        scalar = _SCALAR_PHRASES.get(item_type)
-        return f"a list of {scalar[1]}" if scalar else f"a list of `{item_type}`"
+        item_types = type_branches(type_expression.removeprefix("list[").removesuffix("]"))
+        return f"a list of {TYPE_BRANCH_SEPARATOR.join(_plural_phrase(item_type) for item_type in item_types)}"
     scalar = _SCALAR_PHRASES.get(type_expression)
     if scalar:
         return scalar[0]
-    if " or " in type_expression:
-        return " or ".join(type_phrase(branch) for branch in type_expression.split(" or "))
     return _with_article(f"`{type_expression}`")
+
+
+def _plural_phrase(item_type: str) -> str:
+    """Phrase a list's item type as its items are counted: "texts", or the concept's name as it is."""
+    scalar = _SCALAR_PHRASES.get(item_type)
+    return scalar[1] if scalar else f"`{item_type}`"
 
 
 def _with_article(noun: str) -> str:

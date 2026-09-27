@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 
 from scripts.contract import Contract
+from tests.tooling.fake_api import FakeApi
 from tests.tooling.test_data import (
     COOKBOOK_TOML,
     FIXTURE_ADDRESS,
@@ -17,12 +18,12 @@ from tests.tooling.test_data import (
     LIBRARY_SNAPSHOT,
     WIDGETS_BUNDLE,
     WIDGETS_CONTRACT,
-    WIDGETS_KEY,
+    WIDGETS_SAMPLE_PATH,
     WIDGETS_SAMPLE_URL,
     WORDS_BUNDLE,
     WORDS_CONTRACT,
-    WORDS_KEY,
     MakeCookbook,
+    png_bytes,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -52,7 +53,6 @@ def write_package(
     manifest: str,
     bundle: str,
     inputs: dict[str, object],
-    key: str,
     contract: Contract | None,
 ) -> Path:
     package_dir = root / "methods" / name
@@ -60,7 +60,6 @@ def write_package(
     (package_dir / "METHODS.toml").write_text(manifest, encoding="utf-8")
     (package_dir / "bundle.mthds").write_text(bundle, encoding="utf-8")
     (package_dir / "inputs.json").write_text(json.dumps(inputs, indent=2), encoding="utf-8")
-    (package_dir / "key.md").write_text(key, encoding="utf-8")
     if contract is not None:
         (package_dir / "contract.json").write_text(contract.to_json(), encoding="utf-8")
     return package_dir
@@ -72,19 +71,31 @@ def templates_dir() -> Path:
 
 
 @pytest.fixture
+def fake_api() -> FakeApi:
+    """A stand-in for production, with no answer queued yet: its `client` sends every call to it rather than to the network."""
+    return FakeApi()
+
+
+@pytest.fixture
 def make_cookbook(tmp_path: Path) -> MakeCookbook:
-    """A factory writing a two-method cookbook: `extract_widgets`, with an editorial entry and a sample URL, and `count_words`, with neither.
+    """A factory writing a two-method cookbook: `extract_widgets`, with an editorial entry, a sample linked into `assets/` and its record, and
+    `count_words`, with neither an entry nor a file sample.
 
     Its front page holds the two regions listing the methods and the library's methods, still empty, and its `library.json` lists two methods.
+    Neither method has an output snapshot, and the widget sample's file is written under `assets/` only with `with_sample=True`.
     """
 
-    def _make(*, version: str = FIXTURE_VERSION, widgets_version: str | None = None) -> Path:
+    def _make(*, version: str = FIXTURE_VERSION, widgets_version: str | None = None, with_sample: bool = False) -> Path:
         root = tmp_path / "cookbook"
         root.mkdir()
         (root / "pyproject.toml").write_text(f'[project]\nname = "fixture-cookbook"\nversion = "{version}"\n', encoding="utf-8")
         (root / "cookbook.toml").write_text(COOKBOOK_TOML, encoding="utf-8")
         (root / "README.md").write_text(FRONT_PAGE, encoding="utf-8")
         (root / "library.json").write_text(LIBRARY_SNAPSHOT.to_json(), encoding="utf-8")
+        if with_sample:
+            sample_path = root / WIDGETS_SAMPLE_PATH
+            sample_path.parent.mkdir(parents=True)
+            sample_path.write_bytes(png_bytes(width=40, height=30))
         write_package(
             root=root,
             name="extract_widgets",
@@ -97,7 +108,6 @@ def make_cookbook(tmp_path: Path) -> MakeCookbook:
             ),
             bundle=WIDGETS_BUNDLE,
             inputs={"catalogue": {"concept": "widgets.CataloguePage", "content": {"url": WIDGETS_SAMPLE_URL}}},
-            key=WIDGETS_KEY,
             contract=WIDGETS_CONTRACT,
         )
         write_package(
@@ -112,7 +122,6 @@ def make_cookbook(tmp_path: Path) -> MakeCookbook:
             ),
             bundle=WORDS_BUNDLE,
             inputs={"text": "The quick brown fox"},
-            key=WORDS_KEY,
             contract=WORDS_CONTRACT,
         )
         return root

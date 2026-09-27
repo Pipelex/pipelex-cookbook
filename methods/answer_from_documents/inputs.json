@@ -3,14 +3,14 @@
     "concept": "native.Document",
     "content": [
       {
-        "url": "https://huggingface.co/datasets/yubo2333/MMLongBench-Doc/resolve/main/documents/PH_2016.06.08_Economy-Final.pdf"
+        "url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/answer_from_documents/ai_system_definition_guidelines.pdf"
       }
     ]
   },
   "question": {
     "concept": "native.Text",
     "content": {
-      "text": "Among all 12 references in this report, how many are from its own research center?"
+      "text": "Our customer support team wants each new ticket to show an expected resolution time, computed as the average resolution time of past tickets in the same category. Is that tool an AI system under the AI Act?"
     }
   }
 }

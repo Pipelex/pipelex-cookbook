@@ -1,6 +1,6 @@
 # A local file sent to a method through an upload grant
 
-A method reads its documents and images from links the hosted API can fetch, and a file on your machine or in your visitor's browser has none. This recipe sends a local image of a Gantt chart to Pipelex storage through an upload grant, then runs the cookbook's [Gantt chart extraction](../../../../methods/extract_gantt/) on it and prints every task and milestone it reads.
+A method reads its documents and images from links the hosted API can fetch, and a file on your machine or in your visitor's browser has none. This recipe sends a local image of a Gantt chart to Pipelex storage through an upload grant, then runs the cookbook's [Gantt chart extraction](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/extract_gantt) on it and prints every task and milestone it reads.
 
 It shows the steps of an upload:
 

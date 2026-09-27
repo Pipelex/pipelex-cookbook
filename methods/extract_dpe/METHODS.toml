@@ -1,9 +1,9 @@
 [package]
 name = "extract_dpe"
-display_name = "Energy Diagnostic (DPE) Extraction"
+display_name = "DPE Record for a Letting Agency"
 address = "github.com/Pipelex/pipelex-cookbook"
-version = "0.19.1"
-description = "Read a French energy performance diagnostic (DPE) and return the dwelling's address, the issue and expiry dates, the energy and CO₂ classes with their yearly figures per m², and the estimated yearly energy costs."
+version = "0.20.0"
+description = "Read a French energy performance diagnostic (DPE) into the record a letting agency files: the address, the ADEME number, the dates, both classes with their figures, the yearly energy costs with their price date, and what the class means for letting the dwelling under the agency's letting procedure."
 authors = ["Evotis S.A.S"]
 license = "MIT"
 mthds_version = ">=1.0.0"

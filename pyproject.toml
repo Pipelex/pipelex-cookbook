@@ -1,6 +1,6 @@
 [project]
 name = "pipelex-cookbook"
-version = "0.19.1"
+version = "0.20.0"
 description = "Worked examples of AI methods, written in MTHDS and run with Pipelex, to read, run and adapt."
 authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
@@ -13,15 +13,18 @@ dependencies = [
   "httpx>=0.28.1",
   "jinja2>=3.1.6",
   "mthds>=0.8.1",
+  "pillow>=11.0.0",
   "pydantic>=2.13.2",
+  "pypdfium2>=4.30.0",
 ]
 
 [project.optional-dependencies]
 dev = [
   "mypy>=1.11.2",
-  "pipelex-tools>=0.3.2",
+  "pipelex-tools>=0.9.0",
   "pyright>=1.1.411",
   "pytest>=9.0.1",
+  "pytest-mock>=3.14.0",
   "pytest-sugar>=1.0.0",
   "pytest-xdist>= 3.6.1",
   "ruff==0.16.4",
@@ -56,6 +59,11 @@ plugins = ["pydantic.mypy"]
 python_version = "3.11"
 warn_return_any = true
 warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+# pypdfium2, which renders a document sample's preview, ships no type information.
+module = ["pypdfium2"]
+ignore_missing_imports = true
 
 [tool.pyright]
 venvPath = "."
@@ -167,10 +175,12 @@ typeCheckingMode = "strict"
 
 [tool.pytest]
 minversion = "9.0"
-addopts = ["--import-mode=importlib", "-ra"]
+# The smoke check spends inference credit, so it is deselected here and selected only by `make check-smoke`.
+addopts = ["--import-mode=importlib", "-ra", "-m", "not smoke"]
 xfail_strict = true
 markers = [
   "codex_disabled: tests that should not run in Codex, whose sandbox has no network",
+  "smoke: runs a method on production, spending inference credit; deselected unless `make check-smoke` selects it",
 ]
 
 [tool.ruff]

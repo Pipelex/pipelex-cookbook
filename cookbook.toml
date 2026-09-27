@@ -1,6 +1,11 @@
 # The cookbook's editorial fields, read by `make render` to write each method's page, methods/<name>/README.md.
-# Everything else a page says comes from the package itself: its manifest, its inputs.json, its key.md and its contract.json.
-# Every field of a method's entry is optional, and a method with no entry still gets a page from its manifest.
+# Everything else a page says comes from the package itself: its manifest, its inputs.json, its contract.json and its output.json.
+# Every field of a method's entry is optional, and a method with no entry still gets a page from its manifest, except its sample records:
+# each input of the sample has one under [methods.<name>.samples.<input>], with its link text, whether it was made up (`synthetic`), where it
+# was copied from and when (`source` and `retrieved`, for a real input only), its licence (`license`, `license_url`), its credit line
+# (`attribution`) and what was changed from the source (`changes`, optional), and `make check-render` fails on an input without one.
+# [methods.<name>.output] holds the two optional hints on how the page shows the output: `formats`, how a text field reads (markdown, html or
+# text), and `item_label`, the noun naming each item of a list output. docs/README.md says more.
 
 # The address every cookbook manifest carries: the runtime locates a package by this address and the manifest's name.
 address = "github.com/Pipelex/pipelex-cookbook"
@@ -14,94 +19,183 @@ address = "github.com/Pipelex/methods"
 repository = "Pipelex/methods"
 tag = "v0.1.2"
 
-[methods.extract_gantt]
-title = "Gantt chart extraction"
-pitch = "Read a Gantt chart image and return every task with its start and end dates, and every milestone with its date."
-sample_labels = { gantt_chart_image = "sample chart" }
-chatbot = "Run {address} on {samples}"
-app_dir = "gantt-app"
-yours_dir = "gantt"
-yours_change = "add each task's owner to what it extracts"
-
-[methods.extract_dpe]
-title = "Energy diagnostic (DPE) extraction"
-pitch = "Read a French energy performance diagnostic (DPE) and return the dwelling's address, the issue and expiry dates, the energy and CO₂ classes with their figures per m², and the estimated yearly energy costs."
-sample_labels = { document = "sample DPE" }
-chatbot = "Run {address} on {samples}"
-app_dir = "dpe-app"
-yours_dir = "dpe"
-yours_change = "add the living area and the year of construction to what it extracts"
-
 [methods.answer_from_documents]
-title = "Document question answering"
-pitch = "Read a set of documents and a question, and return a short answer with the verbatim passages it rests on, a confidence level, and a status saying whether the documents answer it fully, in part, or not at all."
-sample_labels = { documents = "sample report" }
-chatbot = "Run {address} on {samples} with the question \"Among all 12 references in this report, how many are from its own research center?\""
-app_dir = "qa-app"
-yours_dir = "document-qa"
-yours_change = "have it answer in the language of the question"
+title = "Cited answers for an AI system register"
+pitch = "Read the documents a team answers from and one question about them, and return the answer an AI governance lead sends to the team that asked and files in the register of AI systems: a short answer and why, the passages it rests on quoted word for word with their page, how confident it is, what it does not cover, and a plain status saying when the documents do not settle the question."
+app_dir = "document-answers-app"
+yours_dir = "document-answers"
+yours_change = "add whether the answer goes to counsel for review, yes whenever its status is not answered or its confidence is below high, with a one-line reason"
 
-[methods.extract_slides]
-title = "Slide deck extraction"
-pitch = "Read a slide deck in PDF and return one Markdown text giving each slide its title, its text and a description of its layout and charts."
-sample_labels = { document = "sample deck" }
-chatbot = "Run {address} on {samples}"
-app_dir = "slides-app"
-yours_dir = "slides"
-yours_change = "add the speaker's key message for each slide to what it extracts"
+[methods.answer_from_documents.samples.documents]
+label = "sample guidelines"
+synthetic = false
+source = "https://ai-act-service-desk.ec.europa.eu/sites/default/files/2026-01/guide-definition_en.pdf"
+retrieved = 2026-09-26
+license = "CC-BY-4.0"
+license_url = "https://creativecommons.org/licenses/by/4.0/"
+attribution = "Commission Guidelines on the definition of an artificial intelligence system established by Regulation (EU) 2024/1689 (AI Act), C(2025) 5053 final, © European Union, 2025, https://ai-act-service-desk.ec.europa.eu/sites/default/files/2026-01/guide-definition_en.pdf, licensed under CC BY 4.0."
+changes = "The European Commission's logo removed from the first page, since the Commission's reuse policy excludes logos; the text of every page is unchanged."
 
-[methods.extract_generic]
-title = "Generic document extraction"
-pitch = "Read any document and return each page as Markdown, including the text that only appears inside its images and diagrams."
-sample_labels = { document = "sample article" }
-chatbot = "Run {address} on {samples}"
-app_dir = "extract-app"
-yours_dir = "extract"
-yours_change = "turn the tables it finds into CSV alongside the Markdown"
-
-[methods.advisory_board]
-title = "Advisory board consultation"
-pitch = "Read a business problem told in plain words, consult five to ten expert advisory boards on it, and return one strategic report in Markdown with their consensus, the choices they disagree on, a phased roadmap, risks, resources and success metrics."
-chatbot = "Run {address} on this problem: \"We're a B2B SaaS company with $5M ARR whose annual churn rose from 8% to 15%. How do we get it under 10% within six months on a $500K budget?\""
-app_dir = "advisory-app"
-yours_dir = "advisory-board"
-yours_change = "replace the sixteen boards it can consult with the teams of your own company"
-
-[methods.blog_article_generator]
-title = "Blog article generation"
-pitch = "Read a topic, an audience, a tone and a length, and return an SEO-optimized blog article in Markdown with its SEO title and meta description."
-chatbot = "Run {address} to write a long, casual blog article about capybaras for kids"
-app_dir = "blog-app"
-yours_dir = "blog"
-yours_change = "add a list of target keywords to the request and make the article use them"
-
-[methods.research_report]
-title = "Research report"
-pitch = "Read a research question and return a Markdown report with an executive summary, key findings and open questions, drafted from three angles out of the model's own knowledge without searching any source, so it is a first draft to check rather than verified research."
-chatbot = "Run {address} on the question: what are the most promising approaches to improving battery energy density for electric vehicles?"
-app_dir = "research-app"
-yours_dir = "research"
-yours_change = "research five angles instead of three"
+[methods.answer_from_documents.samples.question]
+label = "sample question"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
 
 [methods.discord_newsletter]
-title = "Discord newsletter"
-pitch = "Read a week of Discord channel messages and return an HTML newsletter with a weekly summary, the new members, a section per channel and the geographic hubs."
+title = "Weekly newsletter for a Discord community"
+pitch = "Read a week of a community's Discord channels and return the members' newsletter in the team's fixed format, as HTML ready for the email tool: the week in a few lines, the new members welcomed, a section for each channel in the server's order with each conversation given as its outcome, and the news of each local hub, in English whatever language a message was written in."
 app_dir = "newsletter-app"
 yours_dir = "newsletter"
-yours_change = "add a section listing the links shared during the week"
+yours_change = "add a Coming up section after the week's summary, listing every event and deadline announced in the channels with its date"
 
-[methods.gen_synthetic_data]
-title = "Synthetic data generation"
-pitch = "Read a description of a record and a count, and return that many varied synthetic records, here student profiles with their performance, learning style, background, interests and preferences."
-chatbot = "Run {address} to generate five varied student profiles"
-app_dir = "synthetic-data-app"
-yours_dir = "synthetic-data"
-yours_change = "make it fill customer profiles instead of student profiles"
+[methods.discord_newsletter.samples.discord_channel_updates]
+label = "sample week of a fictional community"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
+[methods.discord_newsletter.output]
+formats = { text = "html" }
+
+[methods.extract_dpe]
+title = "DPE record for a letting agency"
+pitch = "Read a French energy performance diagnostic (DPE) and return the record a letting agency files for the flat: the ADEME number and the dates, both classes with their figures, the estimated yearly energy costs with the date their prices refer to, and what the class means for letting the flat under the agency's letting rules."
+app_dir = "dpe-app"
+yours_dir = "dpe"
+yours_change = "add a short note to the owner saying what the class means for letting the flat and by when to plan the works"
+
+[methods.extract_dpe.samples.document]
+label = "sample DPE"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
 
 [methods.gen_expense_data]
-title = "Synthetic expense data generation"
-pitch = "Take a number of employees and return, for each, three or four expense claims with a photographed receipt image and a label saying whether the claim is legitimate or a weekend, inflated, mismatched or vague one, plus an HTML expense report."
-chatbot = "Run {address} for two employees"
-app_dir = "expense-data-app"
-yours_dir = "expense-data"
-yours_change = "date the expenses in the current month instead of January 2026"
+title = "Expense audit test batch with receipt photos"
+pitch = "Read a brief giving a company's expense policy and the test batch it wants, and return expense reports for invented employees, each claim with a photo of its receipt and the verdict the audit should reach, compliant or the rule it breaks: here, an invented engineering consultancy in Lyon whose employees, merchants and receipts are all made up and whose receipt photos are generated by an image model, to test a change to an automated expense audit without a single real employee's claim."
+app_dir = "expense-audit-test-app"
+yours_dir = "expense-test-data"
+yours_change = "also return one CSV of every claim, with its receipt's file name and its expected verdict, in the columns the expense tool's import takes"
+
+[methods.gen_expense_data.samples.brief]
+label = "sample brief"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
+[methods.gen_expense_data.output]
+item_label = "Report"
+
+[methods.gen_synthetic_data]
+title = "Synthetic test tickets for a support triage"
+pitch = "Read a description of the records a team needs and return a batch of realistic, varied synthetic records, each with the case it covers and its fields as the description gives them: here, customer service tickets, every one of them invented, with the queue and the priority the triage should give each, to test a change to the routing without a single real customer's message."
+app_dir = "test-data-app"
+yours_dir = "test-data"
+yours_change = "also return the batch as CSV, one column per field, ready to import into the helpdesk's sandbox"
+
+[methods.gen_synthetic_data.samples.data_description]
+label = "sample description"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
+[methods.gen_synthetic_data.samples.nb_samples]
+label = "sample count"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
+[methods.gen_synthetic_data.output]
+item_label = "Ticket"
+
+[methods.qualify_bid]
+title = "Go/no-go sheet from a funder's briefing deck"
+pitch = "Read a funder's or buyer's briefing deck against the company's bid criteria, and return the go/no-go sheet a bid manager takes to the bid/no-bid meeting and files in the bid pipeline: each criterion met, missed or not stated, with what the deck says and the slides it rests on, a recommendation by the company's own rule, and the questions to send to the funder, a partner or management before bidding."
+app_dir = "bid-sheet-app"
+yours_dir = "bid-sheet"
+yours_change = "add the submission deadline as a date, and the topic's budget and funding rate, as fields of their own that the bid pipeline files with the sheet"
+
+[methods.qualify_bid.samples.briefing]
+label = "sample briefing deck"
+synthetic = false
+source = "https://digital-skills-jobs.europa.eu/system/files/2025-12/DIGITAL%20InfoDay%20_MASTER_SLIDE_9THCALL_DECEMBER_2025.pdf"
+retrieved = 2026-09-26
+license = "CC-BY-4.0"
+license_url = "https://creativecommons.org/licenses/by/4.0/"
+attribution = "Digital Europe Programme, Call 9: Advanced Digital Skills, Info Day for potential applicants, 1 December 2025. © European Union, reused under CC BY 4.0."
+changes = "Cut to 12 of its 83 slides: the original slides 17 to 20, 55, 56, 73, 74 and 80 to 83, in that order; the logos painted out of every slide, since the Commission's reuse policy excludes logos from the licence."
+
+[methods.qualify_bid.samples.criteria]
+label = "sample bid criteria"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
+[methods.qualify_bid.samples.briefing_date]
+label = "date of the info day"
+synthetic = false
+source = "https://digital-skills-jobs.europa.eu/system/files/2025-12/DIGITAL%20InfoDay%20_MASTER_SLIDE_9THCALL_DECEMBER_2025.pdf"
+retrieved = 2026-09-26
+license = "CC-BY-4.0"
+license_url = "https://creativecommons.org/licenses/by/4.0/"
+attribution = "Digital Europe Programme, Call 9: Advanced Digital Skills, Info Day for potential applicants, 1 December 2025. © European Union, reused under CC BY 4.0."
+changes = "The date the deck's cover prints, given as a date of its own since the sample leaves the cover out."
+
+[methods.review_nda]
+title = "NDA review against a playbook"
+pitch = "Read a counterparty's NDA and the company's NDA playbook, and return a first-pass review with one row per playbook position, giving the clause that deals with it, whether it is acceptable, to negotiate or to refuse, and the playbook's fallback wording, then a verdict and a short note for the lawyer who signs off."
+app_dir = "nda-review-app"
+yours_dir = "nda-review"
+yours_change = "add a short email to the counterparty asking for the changes the rows to negotiate or refuse call for"
+
+[methods.review_nda.samples.nda]
+label = "sample NDA"
+synthetic = false
+source = "https://github.com/CommonPaper/Mutual-NDA/tree/2a3068b6c0ab6015c440f541d5b215bc3ac2f4cb"
+retrieved = 2026-09-26
+license = "CC-BY-4.0"
+license_url = "https://creativecommons.org/licenses/by/4.0/"
+attribution = "Common Paper Mutual Non-Disclosure Agreement (Version 1.0) free to use under CC BY 4.0."
+changes = "Laid out as a three-page PDF, with the Cover Page completed for this example as a counterparty's draft and left unsigned; the Standard Terms are unchanged."
+
+[methods.review_nda.samples.playbook]
+label = "sample playbook"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
+[methods.write_release_post]
+title = "Release post in the company's voice"
+pitch = "Read a release's engineering notes and the company's style guide for release posts, and return the customer-facing blog post a product marketing manager pastes into the CMS: the title, slug, meta description, excerpt, category and tags, each held to the guide's limits, the body in Markdown written to the guide's rules, and what the post leaves out of the notes, with the rule that leaves it out, to check before publishing."
+app_dir = "release-post-app"
+yours_dir = "release-post"
+yours_change = "add a social post of at most 280 characters announcing the release in the style guide's voice, beside the blog post"
+
+[methods.write_release_post.samples.release_notes]
+label = "sample release notes"
+synthetic = false
+source = "https://github.com/Pipelex/pipelex-plugins/blob/82d4d97eab0b76bd219bee218b442959da46034c/CHANGELOG.md"
+retrieved = 2026-09-26
+license = "Apache-2.0"
+license_url = "https://github.com/Pipelex/pipelex-plugins/blob/82d4d97eab0b76bd219bee218b442959da46034c/LICENSE"
+attribution = "Pipelex plugin release notes, version 0.7.0, from github.com/Pipelex/pipelex-plugins, under the Apache License 2.0."
+changes = "The 0.7.0 entry cut out of the changelog and given as text in the sample inputs; nothing in it was changed."
+
+[methods.write_release_post.samples.style_guide]
+label = "sample style guide"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
+[methods.write_release_post.output]
+formats = { body = "markdown" }

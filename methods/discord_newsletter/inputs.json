@@ -7,36 +7,29 @@
         "position": 4,
         "messages": [
           {
-            "author": "Maria Chen (CyberSynth)",
-            "content": "## [**Maria Chen**](https://www.linkedin.com/in/fakeprofile1) \n\n*Founder & Lead AI Architect @ [CyberSynth](https://cybersynth.dev) · We build secure, decentralized AI systems.*\n\nHi everyone! I've been in the cybersecurity space for over a decade, transitioning into AI security about 3 years ago. I'm a big believer in open-source and building tools that empower developers. In my other life, I'm a competitive rock climber.\n\nSpecial power: Can debug race conditions in my sleep.\n\n📍 San Francisco, CA (PST)",
+            "author": "Aurélie Brunet",
+            "content": "Hi all! I'm Aurélie, I make kitchen and dining furniture in a two-person workshop near Nantes. Twelve years a cabinetmaker, three on my own. Mostly oak and ash, some walnut when a client can afford it. I joined because I'm about to price my first big commission alone and I'd love a second opinion before I send the quote.\n\n📍 Nantes, FR",
             "attachments": [],
             "embeds": [],
             "link": ""
           },
           {
-            "author": "David Lee (DataWeave)",
-            "content": "## [**David Lee**](https://www.linkedin.com/in/fakeprofile2)\n*Head of Data @ [DataWeave](https://dataweave.io) · Making data pipelines intelligent and autonomous.*\n\nHello! I'm David. I've been wrestling with large-scale data systems for my entire career, from Hadoop clusters to modern data lakes. Now I'm focused on applying LLMs to data engineering workflows. I also contribute to Apache Arrow.\n\nSpecial power: I roast my own coffee beans. The perfect pour-over is my art form.\n\n📍 London, UK (GMT)",
+            "author": "Tomasz Wierzbicki",
+            "content": "Hello everyone, Tomasz here. Joiner by trade, I do staircases and window frames for renovation jobs, and I've just started building small tables in the evenings to see if there's a market. Happy to answer anything about stairs, less happy about finishing, which I'm bad at 😅\n\n📍 Bristol, UK",
             "attachments": [],
             "embeds": [],
             "link": ""
           },
           {
-            "author": "Sofia Rodriguez (LogicLoom)",
-            "content": "## [Sofia Rodriguez](https://www.linkedin.com/in/fakeprofile3)\n\n*Co-founder & CEO @ [LogicLoom](https://logicoom.ai) · LogicLoom is a platform for building and verifying complex agentic workflows. Think of it as unit testing for AI agents.*\n\nHey all! I'm a former philosophy professor turned tech entrepreneur. My passion is at the intersection of formal logic and machine learning. LogicLoom is my attempt to bring more rigor and reliability to the AI space.\n\nSpecial power: I can recite the first 200 digits of pi. It's a completely useless but fun party trick.\n\n📍 Berlin, DE (CET)",
+            "author": "Nadia Haddad",
+            "content": "Bonjour! I teach woodworking to adults (evening classes, 8 students at a time) and I build chairs. Steam-bending is my thing. Looking for people to swap offcuts with and for ideas on how to keep beginners safe on the bandsaw.\n\n📍 Montréal, QC",
             "attachments": [],
             "embeds": [],
             "link": ""
           },
           {
-            "author": "Alex Ivanov (CogniCore)",
-            "content": "## [**Alex Ivanov**](https://www.linkedin.com/in/fakeprofile4/)\n*Senior ML Engineer @ [CogniCore](https://cognicore.tech) · We're creating next-gen multimodal models for creative industries.*\n\nHey everyone, I'm Alex. I have a background in computer graphics and generative art. At CogniCore, I work on models that can understand and generate video, audio, and text seamlessly. I'm always down to talk about diffusion models or creative AI.\n\nSpecial power: I built a robot that paints abstract art.\n\n📍 Tokyo, JP (JST)",
-            "attachments": [],
-            "embeds": [],
-            "link": ""
-          },
-          {
-            "author": "Chloe Dubois (Aether AI)",
-            "content": "## [**Chloe Dubois**](https://www.linkedin.com/in/fakeprofile5/)\n*CTO @ [Aether AI](https://aetherai.com) · Building efficient AI for edge devices.*\n\nHi! I'm Chloe. My focus is on model optimization, quantization, and running complex neural networks on resource-constrained hardware. Before Aether, I was at a major chip designer working on their mobile AI accelerators. When I'm not coding, I'm usually hiking in the mountains.\n\n📍 Grenoble, FR (CET)",
+            "author": "Olumide Adeyemi",
+            "content": "Hey! Furniture design student in my last year, doing a placement in a small workshop until December. I'm here to learn how you all price, quote and get clients, because nobody teaches that at school. Also I will post my graduation piece when it's done.\n\n📍 Lyon, FR",
             "attachments": [],
             "embeds": [],
             "link": ""
@@ -44,206 +37,65 @@
         ]
       },
       {
-        "name": "Troll",
-        "position": 55,
-        "messages": [
-          {
-            "author": "Ben Carter (Momentum ML)",
-            "content": "The original 'cloud'.\n\nIn reply to Ben Carter (Momentum ML)'s message:\nThey called it 'The Mainframe'. We've come full circle.",
-            "attachments": [],
-            "embeds": [
-              {
-                "title": "History of the Mainframe Computer",
-                "description": "A look back at the powerful machines that started the computing revolution and how their concepts are still relevant today.",
-                "type": "article"
-              }
-            ],
-            "link": ""
-          },
-          {
-            "author": "Ben Carter (Momentum ML)",
-            "content": "They called it 'The Mainframe'. We've come full circle.",
-            "attachments": [
-              {
-                "name": "ancient_computer.jpg"
-              }
-            ],
-            "embeds": [],
-            "link": ""
-          },
-          {
-            "author": "Kenji Tanaka (NeuroNet)",
-            "content": "My LLM when I ask it to write a single line of CSS.",
-            "attachments": [],
-            "embeds": [
-              {
-                "title": "When AI Overthinks The Problem",
-                "description": "A comedic sketch about an AI assistant that writes a 10-page thesis on the philosophical implications of a button color choice.",
-                "type": "video"
-              }
-            ],
-            "link": ""
-          },
-          {
-            "author": "Isabella Rossi (FluidStack)",
-            "content": "I used QuantumLeap to optimize my fantasy football picks. Thanks for the server credits!",
-            "attachments": [],
-            "embeds": [],
-            "link": ""
-          },
-          {
-            "author": "Liam O'Malley (CoreLogic)",
-            "content": "Haha, exactly! We just thought it sounded cool. And it's an anagram for 'Cool Gil'.",
-            "attachments": [],
-            "embeds": [],
-            "link": ""
-          },
-          {
-            "author": "Kenji Tanaka (NeuroNet)",
-            "content": "You know Liam O'Malley (CoreLogic) is in here, right? They're gonna have questions.",
-            "attachments": [
-              {
-                "name": "corelogic_logo_meme.png"
-              }
-            ],
-            "embeds": [],
-            "link": ""
-          },
-          {
-            "author": "Ben Carter (Momentum ML)",
-            "content": "This company name is a bold choice.",
-            "attachments": [
-              {
-                "name": "screenshot_startup_name.png"
-              }
-            ],
-            "embeds": [],
-            "link": ""
-          }
-        ]
-      },
-      {
-        "name": "🧠-Knowledge",
-        "position": 7,
-        "messages": [
-          {
-            "author": "Fatima Al-Jamil (Synthax)",
-            "content": "Really insightful talk on data synthesis.",
-            "attachments": [],
-            "embeds": [],
-            "link": ""
-          },
-          {
-            "author": "Fatima Al-Jamil (Synthax)",
-            "content": "For anyone interested in the future of synthetic data for training, this talk from the 'AI Engineering' summit was fantastic.",
-            "attachments": [],
-            "embeds": [
-              {
-                "title": "Synthetic Data: The Key to Unlocking AGI? - AI Engineering Summit 2024",
-                "description": "Dr. Eva Rostova explores cutting-edge techniques for generating high-quality synthetic data and its impact on model performance and safety.",
-                "type": "video"
-              }
-            ],
-            "link": ""
-          }
-        ]
-      },
-      {
-        "name": "🎉-Achievements",
+        "name": "show-your-work",
         "position": 10,
         "messages": [
           {
-            "author": "Chloe Dubois (Aether AI)",
-            "content": "We just open-sourced our model quantization toolkit! Would love to get feedback from the community.",
-            "attachments": [],
-            "embeds": [
-              {
-                "title": "Announcing AetherLite: Our Open-Source Quantization Library",
-                "description": "Developers can now use AetherLite to shrink and accelerate their models for deployment on edge devices with minimal performance loss.",
-                "type": "article"
-              }
-            ],
-            "link": ""
-          },
-          {
-            "author": "Kenji Tanaka (NeuroNet)",
-            "content": "Our work on generative graph networks was featured by Google AI's research blog!",
-            "attachments": [],
-            "embeds": [
-              {
-                "title": "NeuroNet's Groundbreaking Research in Graph-based RAG",
-                "description": "Highlighting a new approach that combines Knowledge Graphs with LLMs for more accurate and explainable responses. A collaborative effort with leading academics...",
-                "type": "article"
-              }
-            ],
-            "link": ""
-          },
-          {
-            "author": "Ethan Brown (CodeFlow)",
-            "content": "We've finally released v1.0 of the Plakar backup format! A modern, content-addressable format for data snapshots. No more tarballs!",
-            "attachments": [],
-            "embeds": [
-              {
-                "title": "Plakar v1.0: A New Era for Data Backups",
-                "description": "Moving beyond legacy formats, Plakar offers speed, deduplication, and encryption for modern data protection needs.",
-                "type": "article"
-              }
-            ],
-            "link": ""
-          },
-          {
-            "author": "Ben Carter (Momentum ML)",
-            "content": "Nope, I started by building custom ETL pipelines for scientific research data. Much more chaotic than any CRM! 😂\n\nIn reply to Kenji Tanaka (NeuroNet)'s message:\nI thought you started out as a data warehouse consultant?",
-            "attachments": [],
-            "embeds": [],
-            "link": ""
-          },
-          {
-            "author": "Kenji Tanaka (NeuroNet)",
-            "content": "I thought you started out as a data warehouse consultant?",
-            "attachments": [],
-            "embeds": [],
-            "link": ""
-          }
-        ]
-      },
-      {
-        "name": "🛡-Cyber",
-        "position": 17,
-        "messages": [
-          {
-            "author": "Kenji Tanaka (NeuroNet)",
-            "content": "Wow, I missed this one. That's a nasty bug.",
-            "attachments": [],
-            "embeds": [],
-            "link": ""
-          },
-          {
-            "author": "Kenji Tanaka (NeuroNet)",
-            "content": "Another critical sudo vulnerability just dropped.",
-            "attachments": [],
-            "embeds": [
-              {
-                "title": "New Sudo Vulnerability Allows Any Local User to Gain Root Privileges",
-                "description": "Two new vulnerabilities have been discovered in the ubiquitous Sudo command-line utility, allowing local attackers to escalate their privileges to root on most Linux and macOS systems.",
-                "type": "article"
-              }
-            ],
-            "link": ""
-          },
-          {
-            "author": "Ben Carter (Momentum ML)",
-            "content": "This is a baffling decision. They're deprecating their native desktop apps to focus on a web extension that barely works half the time and violates browser extension best practices. A huge step backwards.\n\nIn reply to Ben Carter (Momentum ML)'s message:\nIf you use Keeper for password management, you might want to consider migrating in the next couple of months. For teams, self-hosted VaultWarden or 1Password are far superior anyway.",
-            "attachments": [],
-            "embeds": [],
-            "link": ""
-          },
-          {
-            "author": "Ben Carter (Momentum ML)",
-            "content": "If you use Keeper for password management, you might want to consider migrating in the next couple of months. For teams, self-hosted VaultWarden or 1Password are far superior anyway.",
+            "author": "Karin Lindqvist",
+            "content": "Finished the walnut sideboard for the couple I mentioned last month. Four doors, sliding dovetail carcass, hand-cut finger pulls. Took 61 hours in the end, 9 more than I quoted, mostly on the doors.",
             "attachments": [
               {
-                "name": "keeper_deprecation_email.png"
+                "name": "walnut_sideboard_front.jpg"
+              },
+              {
+                "name": "walnut_sideboard_detail_pulls.jpg"
+              }
+            ],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Samuel Okafor",
+            "content": "That grain match across the four doors is lovely. Did you resaw one board for all of them?\n\nIn reply to Karin Lindqvist's message:\nFinished the walnut sideboard for the couple I mentioned last month.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Karin Lindqvist",
+            "content": "Yes, one 60 mm board resawn and bookmatched. I bought it two years ago and kept it for the right job.\n\nIn reply to Samuel Okafor's message:\nDid you resaw one board for all of them?",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Hugo Martel",
+            "content": "First commission from the market stall: a set of six oak stools for a bakery café. Simple, but the owner wanted them to stack, which made the leg splay a puzzle.",
+            "attachments": [
+              {
+                "name": "oak_stools_stacked.jpg"
+              }
+            ],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Nadia Haddad",
+            "content": "A student's first chair from my autumn class. Ash, steam-bent back, she did every joint herself. Very proud of her.",
+            "attachments": [
+              {
+                "name": "student_ash_chair.jpg"
+              }
+            ],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Priya Raman",
+            "content": "Work in progress: cherry writing desk, drawer boxes glued up today. Hand-cut half-blind dovetails on the fronts, machine on the backs, and I'm not ashamed of it.",
+            "attachments": [
+              {
+                "name": "cherry_desk_drawers_wip.jpg"
               }
             ],
             "embeds": [],
@@ -252,58 +104,268 @@
         ]
       },
       {
-        "name": "🇺🇸-San-Francisco",
-        "position": 30,
+        "name": "techniques",
+        "position": 12,
         "messages": [
           {
-            "author": "Maria Chen (CyberSynth)",
-            "content": "We're hosting a casual rooftop get-together tomorrow in SF for folks in the AI space. If you're around and want to talk shop over some drinks and snacks, come by! Lucas Müller (ConnectSphere) will be there too!",
+            "author": "Tomasz Wierzbicki",
+            "content": "Question for the table makers: gluing up a 90 cm wide oak top from five boards, how many clamps do you use and do you alternate them top and bottom? My last one cupped a little after a week.",
             "attachments": [],
-            "embeds": [
-              {
-                "title": "The AI Founders Mixer · Luma",
-                "description": "A casual networking event for AI founders, researchers, and builders. Join us on the rooftop for good conversation and great views.",
-                "type": "article"
-              }
-            ],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Karin Lindqvist",
+            "content": "Clamp every 20 to 25 cm, alternating above and below, and cauls across the ends. But a cup after a week is usually moisture, not clamping: were the boards at the same moisture before you glued?\n\nIn reply to Tomasz Wierzbicki's message:\nGluing up a 90 cm wide oak top from five boards, how many clamps do you use?",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Tomasz Wierzbicki",
+            "content": "Honestly I didn't check. They'd been in the workshop for a week, I thought that was enough.\n\nIn reply to Karin Lindqvist's message:\nWere the boards at the same moisture before you glued?",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Samuel Okafor",
+            "content": "A week is not enough in autumn. I leave boards at least three weeks in the workshop, stickered, and I check with a moisture meter: I want them all within 1 percent of each other and between 8 and 10 percent for indoor furniture.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Priya Raman",
+            "content": "Also worth alternating the growth rings if you're not bookmatching for looks. Doesn't stop movement but it keeps a cup from adding up across the top.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Olumide Adeyemi",
+            "content": "Someone at the workshop told me to drawbore the mortise and tenon joints on my graduation bench instead of relying on glue. How far do you offset the peg hole? I've read everything from 1 mm to 3 mm.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Hugo Martel",
+            "content": "About 1.5 mm in oak for a 10 mm peg. More than 2 mm and you risk splitting the tenon cheek or snapping the peg on the way in. Make a test joint first with offcuts of the same board.\n\nIn reply to Olumide Adeyemi's message:\nHow far do you offset the peg hole?",
+            "attachments": [],
+            "embeds": [],
             "link": ""
           }
         ]
       },
       {
-        "name": "🇩🇪-Berlin",
-        "position": 51,
+        "name": "finishing",
+        "position": 13,
         "messages": [
           {
-            "author": "Leo Schmidt (Bio-Nexus)",
-            "content": "Perfect, thank you so much!\n\nIn reply to Sofia Rodriguez (LogicLoom)'s message:\nLeo Schmidt (Bio-Nexus) you can book a free trial day pass here: [link to fake booking site]. For a monthly desk, you'll have to contact them directly, but they're usually pretty flexible.",
+            "author": "Aurélie Brunet",
+            "content": "My workshop is at 12°C these days and hardwax oil is taking forever: three days and still tacky on the underside of a table. Is it the cold or am I putting too much on?",
             "attachments": [],
             "embeds": [],
             "link": ""
           },
           {
-            "author": "Sofia Rodriguez (LogicLoom)",
-            "content": "Leo Schmidt (Bio-Nexus) you can book a free trial day pass here: [link to fake booking site]. For a monthly desk, you'll have to contact them directly, but they're usually pretty flexible.",
+            "author": "Karin Lindqvist",
+            "content": "Both, probably. Oils cure slowly below 15°C. Wipe the excess off hard after 20 minutes, one very thin coat, and bring the piece into a warmer room to cure if you can. Tacky after three days usually means oil left sitting on the surface.\n\nIn reply to Aurélie Brunet's message:\nThree days and still tacky on the underside of a table.",
             "attachments": [],
-            "embeds": [
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Nadia Haddad",
+            "content": "In winter I switch to shellac for small pieces because it doesn't care about the temperature. Not for a dining table though, it hates water and heat.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Aurélie Brunet",
+            "content": "Wiped it back hard and moved it into the house. Dry by the next morning. Thank you!",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          }
+        ]
+      },
+      {
+        "name": "tools-and-sharpening",
+        "position": 14,
+        "messages": [
+          {
+            "author": "Olumide Adeyemi",
+            "content": "What angle do you sharpen bench chisels at? My tutor says 25 degrees, the workshop owner says 30 and they both look at me like the other one is wrong.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Samuel Okafor",
+            "content": "25 primary and a 30 microbevel works for most of us. Go steeper for chopping hardwood mortises, shallower for paring softwood. They're both right, which is why they both look at you like that.\n\nIn reply to Olumide Adeyemi's message:\nWhat angle do you sharpen bench chisels at?",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Hugo Martel",
+            "content": "Anyone else stopped using a honing guide? I did a month ago and my edges are rounder than before. Going back to the guide, pride can wait.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Tomasz Wierzbicki",
+            "content": "Selling my old 250 mm table saw blade collection, eight blades, most of them still sharp, because I've switched to a track saw for sheet goods. Free to anyone in the Bristol hub who can collect.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          }
+        ]
+      },
+      {
+        "name": "commissions-and-pricing",
+        "position": 16,
+        "messages": [
+          {
+            "author": "Aurélie Brunet",
+            "content": "Here's the job I mentioned: a solid oak extending dining table, 180 cm extending to 240 cm, for a family of six. My costs: 1,150 euros of timber and hardware, and I estimate 70 hours. I was going to quote 4,800 euros. Too low? Too high?",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Karin Lindqvist",
+            "content": "Work out your real hourly rate first: workshop rent, insurance, machine wear, unpaid time on quotes and admin. Most of us who did that found we needed 55 to 65 euros an hour to stay in business. At 70 hours that's already above your quote before timber.\n\nIn reply to Aurélie Brunet's message:\nI was going to quote 4,800 euros. Too low? Too high?",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Hugo Martel",
+            "content": "And put the extension mechanism in as its own line. Clients understand that a mechanism costs money; they don't understand hours.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Priya Raman",
+            "content": "I charge design time separately now: two drawings and one revision included, anything after that at the hourly rate. Since I started, clients decide faster and I stopped drawing tables nobody buys.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Aurélie Brunet",
+            "content": "Recalculated with a proper rate: 5,900 euros, with design included and the mechanism on its own line. Sending it tomorrow. Terrifying.\n\nIn reply to Karin Lindqvist's message:\nMost of us who did that found we needed 55 to 65 euros an hour to stay in business.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Olumide Adeyemi",
+            "content": "This thread is exactly why I joined. Saving it.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          }
+        ]
+      },
+      {
+        "name": "sawdust-lounge",
+        "position": 55,
+        "messages": [
+          {
+            "author": "Samuel Okafor",
+            "content": "Found a 1950s hand plane at a car boot sale for 4 pounds. It needs a new iron and a lot of love. My partner says we have enough planes. We do not have enough planes.",
+            "attachments": [
               {
-                "title": "Factory Berlin | Memberships",
-                "description": "Join our community of creators. We offer flexible memberships for individuals and teams, with access to our vibrant workspaces and events.",
-                "type": "article"
+                "name": "old_plane_before_restoration.jpg"
               }
             ],
+            "embeds": [],
             "link": ""
           },
           {
-            "author": "Kenji Tanaka (NeuroNet)",
-            "content": "Maybe Sofia Rodriguez (LogicLoom) knows a good spot!",
+            "author": "Hugo Martel",
+            "content": "There's no such thing as enough planes. There's only not enough wall.\n\nIn reply to Samuel Okafor's message:\nMy partner says we have enough planes.",
             "attachments": [],
             "embeds": [],
             "link": ""
           },
           {
-            "author": "Leo Schmidt (Bio-Nexus)",
-            "content": "@here Hey Berliners! Any recommendations for a good, affordable co-working space? I'm a newly-bootstrapped founder, so my budget is tight. Thanks!",
+            "author": "Priya Raman",
+            "content": "Reminder that the monthly video call is next Thursday at 19:00 Paris time. Topic: how we each handle a client who changes the design after the timber is cut.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          }
+        ]
+      },
+      {
+        "name": "🇫🇷-lyon",
+        "position": 60,
+        "messages": [
+          {
+            "author": "Julien Ferrand",
+            "content": "Rencontre du mois samedi 10 octobre à 10h dans mon atelier à Villeurbanne : démonstration d'affûtage et café. Dites-moi si vous venez, on sera 12 maximum.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Olumide Adeyemi",
+            "content": "I'll be there! My French is still slow, but I can follow a sharpening demo.\n\nIn reply to Julien Ferrand's message:\nRencontre du mois samedi 10 octobre à 10h dans mon atelier à Villeurbanne.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Julien Ferrand",
+            "content": "Commande groupée de chêne : on a atteint les 3 m³, la scierie livre le 21 octobre. Il reste de la place pour environ 0,5 m³ si quelqu'un veut se joindre.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          }
+        ]
+      },
+      {
+        "name": "🇬🇧-bristol",
+        "position": 61,
+        "messages": [
+          {
+            "author": "Tomasz Wierzbicki",
+            "content": "Four of us are sharing a van to the timber yard on the 17th. Room for one more person's order if it fits in a 3-metre bed.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Samuel Okafor",
+            "content": "I'm in, just a few boards of ash for chair legs. Can bring coffee.\n\nIn reply to Tomasz Wierzbicki's message:\nRoom for one more person's order if it fits in a 3-metre bed.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          }
+        ]
+      },
+      {
+        "name": "🇨🇦-montreal",
+        "position": 62,
+        "messages": [
+          {
+            "author": "Nadia Haddad",
+            "content": "Mon cours du soir de janvier est complet, mais j'ouvre une liste d'attente. Et si quelqu'un a des chutes de frêne de plus de 60 cm, je les prends pour les exercices de cintrage.",
+            "attachments": [],
+            "embeds": [],
+            "link": ""
+          },
+          {
+            "author": "Émile Tremblay",
+            "content": "J'ai une dizaine de chutes de frêne de 70 cm, je te les dépose jeudi.\n\nIn reply to Nadia Haddad's message:\nSi quelqu'un a des chutes de frêne de plus de 60 cm, je les prends.",
             "attachments": [],
             "embeds": [],
             "link": ""

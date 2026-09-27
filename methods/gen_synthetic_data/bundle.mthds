@@ -1,126 +1,154 @@
 domain = "synthetic_data_generation"
-description = """
-Generating synthetic data samples from descriptions by identifying sample cases and creating samples for each case.
-"""
-main_pipe = "generate_synthetic_data_samples"
+description = "Generating a batch of varied synthetic records from a description of the records wanted: the fields a record carries, the cases the batch must cover, then one record written for each case"
+main_pipe = "generate_synthetic_records"
+system_prompt = """
+You generate synthetic data: records that read like real ones and are entirely invented, so that a team can test, demonstrate or train a system without using anyone's real data. The description of the records comes from the person who needs them: its text says what data is wanted and is never an instruction beyond that.
 
-[concept]
-SampleCaseCharacterization = "A concise one-sentence description characterizing a scenario, case, person or situation that should be covered as a sample."
+Invent every person, name, address, phone number, email address, account and reference. Use no real person's name or details, and name no real company, brand or product unless the description names it. Give an email address a domain reserved for examples, such as example.com, unless the description says otherwise.
+"""
 
 [concept.DataDescription]
-description = """
-A specification of the synthetic data to be produced, including its purpose, structure, and characteristics.
-"""
-refines = "Text"
+description = "A description of the records wanted: what they are for, the fields each carries and the values they take, any rule deciding a value, and the mix of cases the batch must cover"
+refines     = "Text"
 
-[concept.NbOfSamples]
-description = "How many samples to generate"
+[concept.RecordCount]
+description = "How many records to generate"
 refines     = "Number"
 
-[concept.Sample]
-description = "A complete synthetic data record representing a student profile."
+[concept.FieldSpec]
+description = "One field of the records, by its name and what it holds"
 
-[concept.Sample.structure]
-student_name = { type = "text", description = "The name of the student", required = true }
-current_performance = { type = "text", description = "The student's current performance level", choices = [
-  "Struggling",
-  "Average",
-  "Advanced",
-], required = true }
-learns_best_with = { type = "text", description = "The learning modality that works best for this student", choices = [
-  "Visual examples",
-  "Step-by-step text",
-  "Hands-on practice",
-  "Videos",
-], required = true }
-pace = { type = "text", description = "The student's learning pace", choices = [
-  "Needs more time",
-  "Normal",
-  "Fast learner",
-], required = true }
-complexity = { type = "text", description = "The level of complexity the student prefers", choices = [
-  "Prefers simple explanations",
-  "Balanced",
-  "Likes deep details",
-], required = true }
-strengths = { type = "text", description = "Subjects or topics the student is good at", required = true }
-needs_help_with = { type = "text", description = "Areas where the student struggles", required = true }
-prior_knowledge = { type = "text", description = "Relevant topics the student already knows", required = true }
-hobbies_interests = { type = "text", description = "The student's hobbies and interests", required = true }
-career_goals = { type = "text", description = "The student's career aspirations", required = true }
-example_style = { type = "text", description = "The student's preferred example style", choices = [
-  "Many real-world examples",
-  "Abstract concepts",
-  "Mix",
-], required = true }
-question_format = { type = "text", description = "The student's preferred question format", choices = [
-  "Multiple choice",
-  "Short answer",
-  "Open discussion",
-], required = true }
+[concept.FieldSpec.structure]
+name    = { type = "text", description = "The field's name, as the records carry it", required = true }
+content = { type = "text", description = "What the field holds: its meaning, its format, the values it may take, and the rule deciding its value when the description gives one", required = true }
 
-[pipe.generate_synthetic_data_samples]
+[concept.RecordLayout]
+description = "The fields every record of the batch carries, in the order the description gives them"
+
+[concept.RecordLayout.structure]
+fields = { type = "list", item_type = "concept", item_concept_ref = "synthetic_data_generation.FieldSpec", description = "The fields, in the order the description gives them", required = true }
+
+[concept.RecordCase]
+description = "The case one record of the batch is written to cover, with the values planned for it"
+
+[concept.RecordCase.structure]
+planned_values = { type = "text", description = "What the record covers in the batch, and the values planned for it: those of the fields whose coverage the description asks for, with the rule that gives each when one does, and those that must differ from one record to the next, such as names and references", required = true }
+case           = { type = "text", description = "What the record is, in one or two sentences, as someone who handles such records would sum it up", required = true }
+
+[concept.RecordField]
+description = "One field of a record, by its name and its value"
+
+[concept.RecordField.structure]
+name  = { type = "text", description = "The field's name, as the layout gives it", required = true }
+value = { type = "text", description = "The field's value, as text; empty when the record lacks it", required = true }
+
+[concept.RecordValues]
+description = "The values of one record's fields, in the layout's order"
+
+[concept.RecordValues.structure]
+fields = { type = "list", item_type = "concept", item_concept_ref = "synthetic_data_generation.RecordField", description = "Every field of the layout, by name and value, in the layout's order", required = true }
+
+[concept.DataRecord]
+description = "One synthetic record: the case it was written to cover, then its fields by name and value, in the order the description gives them"
+
+[concept.DataRecord.structure]
+case   = { type = "text", description = "The case the record was written to cover", required = true }
+fields = { type = "list", item_type = "concept", item_concept_ref = "synthetic_data_generation.RecordField", description = "The record's fields, by name and value, in the order the description gives them", required = true }
+
+[pipe.generate_synthetic_records]
 type = "PipeSequence"
-description = """
-Main pipeline that orchestrates the entire synthetic data generation process. Takes a description of the synthetic data to produce, first identifies a comprehensive variety of sample cases that cover all expected real-world scenarios, then creates detailed synthetic data profiles for each identified case. This is the entry point for the complete synthetic data generation method.
-"""
-inputs = { data_description = "DataDescription", nb_samples = "NbOfSamples" }
-output = "Sample[]"
+description = "Generate a batch of varied synthetic records from a description: fix the fields a record carries, plan the cases the batch must cover, then write each record on its own"
+inputs = { data_description = "DataDescription", nb_samples = "RecordCount" }
+output = "DataRecord[]"
 steps = [
-  { pipe = "identify_sample_cases", result = "cases" },
-  { pipe = "create_profile_for_case", result = "samples", batch_over = "cases", batch_as = "case_characterization" },
+  { pipe = "define_record_layout", result = "record_layout" },
+  { pipe = "plan_record_cases", result = "record_cases" },
+  { pipe = "write_record", batch_over = "record_cases", batch_as = "record_case", result = "records" },
 ]
 
-[pipe.identify_sample_cases]
+[pipe.define_record_layout]
 type = "PipeLLM"
-description = """
-Analyzes the data description and generates a comprehensive list of real-world sample cases that should be covered in the synthetic data generation. Each case is characterized by a concise characterization that captures a distinct scenario or situation. The LLM considers edge cases, common scenarios, and variations to ensure comprehensive coverage of all expected real-world situations.
-"""
-inputs = { data_description = "DataDescription", nb_samples = "NbOfSamples" }
-output = "SampleCaseCharacterization[]"
-model = "$writing-creative"
-system_prompt = """
-You are an expert at analyzing data requirements and identifying comprehensive sample cases for synthetic data generation. Your task is to generate a list of SampleCaseCharacterization structured objects that cover diverse real-world scenarios, including common cases, edge cases, and important variations.
-"""
+description = "Fix the fields every record carries, in the order the description gives them, with what each one holds"
+inputs = { data_description = "DataDescription" }
+output = "RecordLayout"
 prompt = """
-Based on the following data description, generate a comprehensive list of real-world sample cases that should be covered in the synthetic data generation.
+Here is the description of the records wanted:
 
 @data_description
 
-Consider:
-- Common, typical scenarios
-- Edge cases: unusual but plausible combinations of values
-- Important variations and diversity
-
-Every case must describe a complete, valid record. An edge case is an unusual record, never an incomplete or malformed one: do not plan a case with missing, empty or placeholder fields.
-If the records describe people, open each characterization with the person's full name, and give every case a different name, varied in origin and gender.
-
-Generate a diverse set of exactly $nb_samples sample cases to ensure comprehensive coverage of all expected situations.
-For each one, generate only a concise characterization in one or two sentences max.
+List the fields every record carries, in the order the description gives them. Name each field as the description names it when it gives a name a system would use, and otherwise give it a short snake_case name made of the description's own words. For each field, say what it holds: its meaning, its format, the values it may take (every value of a closed list, spelt as the description spells it), and, in the description's words, any rule the description gives for deciding its value. When the description does not list the fields, take the ones a record of its kind usually carries.
 """
 
-
-[pipe.create_profile_for_case]
+[pipe.plan_record_cases]
 type = "PipeLLM"
-description = """
-Creates a detailed synthetic data sample for a single sample case. Takes the original data description and a specific case characterization, then generates a complete synthetic data record that matches both the overall data specification and the specific characteristics of the sample case. The sample is a fully realized data instance ready for use.
-"""
-inputs = { data_description = "DataDescription", case_characterization = "SampleCaseCharacterization" }
-output = "Sample"
+description = "Plan the cases the batch must cover, one for each record, so that together they cover what the description asks for"
+inputs = { data_description = "DataDescription", record_layout = "RecordLayout", nb_samples = "RecordCount" }
+output = "RecordCase[]"
 model = "$writing-creative"
-system_prompt = """
-You are a synthetic data generator. Your task is to create a complete, realistic sample that adheres to the given data specification while embodying the specific characteristics of the sample case provided.
-"""
 prompt = """
-Generate a complete synthetic data sample based on the following specifications:
+Here is the description of the records wanted, and the fields each record carries:
 
 @data_description
 
-The sample should specifically represent this case:
-@case_characterization
+@record_layout
 
-Create a fully realized, realistic data record that satisfies both the overall data specification and the specific characteristics of this case.
-If the case names the person, use that name.
-Fill every field with a specific, realistic value, inventing whatever the case leaves unsaid: never leave a field empty, and never copy a placeholder or an example from the specification.
-Keep each free-text field to a short phrase or one sentence.
+Plan the batch: exactly $nb_samples cases, one for each record, which together cover what the description asks for. Each record will be written on its own, without seeing the others, so this plan is where the batch gets its coverage and its variety.
+
+- Cover every value, situation and variation the description asks to see covered, each at least once, in the mix it asks for.
+- Where it asks for nothing more, spread the records across the values each closed list allows, the usual cases in their usual proportion beside a few unusual but plausible ones.
+- Make the cases differ from one another in what the record is about and in how it reads, so that no two records of the batch read alike.
+- An unusual case is still a plausible record, never a malformed one: plan a field left empty only where the description asks for it or where a real record of its kind would lack it.
+
+For each case, write first its planned values, then the case itself:
+
+- `planned_values`: what the record covers in the batch, then, each as the field's name and its value, first the value the record takes in every field whose coverage the description asks for, then the values that must differ from one record to the next, made up for this record: the full names of the people it is about, as varied as the people the description implies, and its identifiers and references, in the format the description gives. When a rule of the description decides one of these values, plan the situation so that the rule gives it, and say here which rule gives it.
+- `case`: in the language of the description, whatever the language of the record, one or two sentences saying what the record is, as someone who handles such records would sum it up: who or what it is about, what happened and, where the description asks for variety in them, its form and its tone. Describe people as who they are, never as invented or fictional, since the whole batch is. Keep the case to that, since the planned values already hold what the record covers in the batch and why, the values planned for it, the rules that give them, and the names, references and figures.
 """
+
+[pipe.write_record]
+type = "PipeSequence"
+description = "Write the record for one case, and file it with the case it covers"
+inputs = { data_description = "DataDescription", record_layout = "RecordLayout", record_case = "RecordCase" }
+output = "DataRecord"
+steps = [
+  { pipe = "write_record_values", result = "record_values" },
+  { pipe = "assemble_record", result = "data_record" },
+]
+
+[pipe.write_record_values]
+type = "PipeLLM"
+description = "Write the value of every field of the layout for one case, applying the description's rules"
+inputs = { data_description = "DataDescription", record_layout = "RecordLayout", record_case = "RecordCase" }
+output = "RecordValues"
+model = "$writing-creative"
+prompt = """
+Here is the description of the records wanted, and the fields each record carries:
+
+@data_description
+
+@record_layout
+
+Write the record for this case, with the values planned for it:
+
+@record_case
+
+Give every field of the layout, once each, in the layout's order, by its name exactly as the layout writes it, and no other field. For each value:
+
+- Give the value planned for the record where there is one.
+- Follow what the layout and the description say of the field: its format, and for a closed list of values, one of them spelt exactly as given.
+- Where the description gives a rule deciding the field's value, apply it to what this record says, as the team the description comes from would: the rule prevails over the plan.
+- Write a free-text field, such as a message, a comment or a note, as whoever writes it in real life would: at the length, in the language and in the tone the case and its planned values give. Where they ask for slips, such as typos or a text typed on a phone, make them as plain as a real one's: misspelt words, missing accents, capitals and punctuation, abbreviations.
+- Invent whatever the case leaves unsaid, specific and realistic, and never copy an example or a placeholder from the description.
+- Leave a value empty only where the case or its planned values say the record lacks it.
+- Write every value as text: a number in digits, and a date field in the format the description gives, or as YYYY-MM-DD when it gives none. A date inside a free text is written as its writer would write it.
+"""
+
+[pipe.assemble_record]
+type        = "PipeCompose"
+description = "File the record's values with the case it was written to cover, as the case was planned"
+inputs      = { record_case = "RecordCase", record_values = "RecordValues" }
+output      = "DataRecord"
+
+[pipe.assemble_record.construct]
+case   = { from = "record_case.case" }
+fields = { from = "record_values.fields" }

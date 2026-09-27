@@ -1,13 +1,13 @@
 [package]
 name = "gen_expense_data"
-display_name = "Synthetic Expense Data Generation"
+display_name = "Expense Audit Test Batch"
 address = "github.com/Pipelex/pipelex-cookbook"
-version = "0.19.1"
-description = "Generate employees with expense claims, each backed by a photographed receipt image and labelled as legitimate or as one of four fraud patterns, plus an HTML expense report per employee."
+version = "0.20.0"
+description = "Turn a brief giving a company's expense policy and the test batch wanted into invented employees' expense reports, each claim with a generated photo of its receipt and the verdict the audit should reach: compliant, or the rule it breaks."
 authors = ["Evotis S.A.S"]
 license = "MIT"
 mthds_version = ">=1.0.0"
-main_pipe = "generate_expense_dataset"
+main_pipe = "generate_expense_test_batch"
 
 [exports.expense_data_generation]
-pipes = ["generate_expense_dataset", "generate_employee_report"]
+pipes = ["generate_expense_test_batch"]
