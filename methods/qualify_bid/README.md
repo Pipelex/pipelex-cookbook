@@ -54,7 +54,7 @@ Read a funder's or buyer's briefing deck against the company's bid criteria, and
 
 ## What you get
 
-Run on production on 27 September 2026, from the package's files, in 59 seconds. This is what it returned:
+Run on production on 27 September 2026, from the package's files, in 55 seconds. This is what it returned:
 
 | Field | Value |
 |---|---|
@@ -64,26 +64,25 @@ Run on production on 27 September 2026, from the package's files, in 59 seconds.
 
 **`summary`**
 
-Deadline, Budget and Evaluation are met; Eligibility is not stated, and Required capabilities is missed because no partner coverage is named for quantum, semiconductors and Destination Earth and the additional competition area is not yet chosen. Before committing, confirm company eligibility and the required consortium with the funder, ask how many projects the topic will fund, name partners for the uncovered fields, and choose an additional area within our coverage or name a partner for it.
+The deadline, budget and evaluation criteria are met; eligibility is not stated, and the required capabilities criterion is missed because no partner is named for quantum, semiconductors and Destination Earth. Before committing, confirm company eligibility and the required applicant consortium, establish how many projects the topic will fund, and name partner(s) to cover those three fields before the deadline.
 
 **`criteria`**
 
 | `criterion` | `verdict` | `what_the_deck_says` | `slides` | `note` |
 |---|---|---|---|---|
-| Eligibility | not stated | The recommended consortium composition includes “industry partners.” However, “Consortium composition compliance is a must” and applicants are told to read Section 6 of the call document and the topic’s Targeted Stakeholders. | 4, 9 | The deck neither confirms that an EU Member State company may participate as coordinator or partner nor states the consortium requirements. |
-| Deadline | met | Deadline for submission: 03 March 2026 @17:00 CET (Brussels). | 6 | The deadline is 92 days after the 1 December 2025 briefing, exceeding the required twelve weeks by 8 days. |
-| Budget | met | For DIGITAL-2026-SKILLS-09-COMPETITIONS — European Advanced Digital Skills Competitions, the table gives a 100% funding rate and an available budget of EUR 7 000 000. It does not state how many projects the topic will fund. | 5 | The topic has EUR 7 000 000 available at a 100% funding rate, both above the required thresholds. |
-| Required capabilities | missed | Six competitions: AI, Virtual Worlds, quantum, semiconductors, Destination Earth initiative, an additional area chosen by the consortium. Deliverables include well defined challenges, a rule book for participants and jury, and implementation and roll-out of the six competitions; evaluators will also look at people reached through communication campaigns and events organised online and physically. | 2, 3, 4 | Quantum, semiconductors and Destination Earth fall outside the company’s stated fields, and no partner is named to cover them; the additional area is also not yet chosen. |
-| Evaluation | met | Relevance, Implementation and Impact each have a minimum pass score of 3 and a maximum score of 5; a proposal must obtain at least 3 in all three criteria and an overall score of or above 10. | 7, 8 | Implementation has the same maximum score of 5 as Relevance and Impact, with a pass threshold of 3 for each and 10 overall. |
+| Eligibility | not stated | The deck gives a “Recommended consortium composition” that includes “industry partners.” It says “Consortium composition compliance is a must” but tells applicants to read Section 6 of the call document and the Targeted Stakeholders section for the topic. | 4, 9 | The briefing neither confirms that an EU-established company may apply as coordinator or partner nor states the mandatory applicant consortium. |
+| Deadline | met | Deadline for submission: 03 March 2026 @17:00 CET (Brussels). | 6 | The deadline is 13 weeks and 1 day after the 1 December 2025 briefing date, exceeding the required twelve weeks. |
+| Budget | met | For DIGITAL-2026-SKILLS-09-COMPETITIONS — European Advanced Digital Skills Competitions, the table gives a 100% funding rate and an available budget of EUR 7 000 000. It does not state how many projects the topic will fund. | 5 | The topic has EUR 7,000,000 available at a 100% funding rate, both above the required thresholds, while the unstated project count becomes a question. |
+| Required capabilities | missed | Six competitions: AI, Virtual Worlds, quantum, semiconductors, Destination Earth initiative, an additional area chosen by the consortium. Deliverables include relevant challenges, a competition rule book for participants and jury, and implementation and roll-out of the six competitions; evaluators will also look at people reached through communication campaigns and events organised online and physical. | 2, 3, 4 | Quantum, semiconductors and Destination Earth fall outside our stated fields, and no partner is named to take them on. |
+| Evaluation | met | Relevance, Implementation and Impact each have a maximum score of 5 and a minimum pass score of 3; a proposal must also obtain an overall score of at least 10. | 7, 8 | Implementation has the same maximum score of 5 as Relevance and Impact, and the deck gives both the per-criterion threshold of 3 and overall threshold of 10. |
 
 **`questions`**
 
 | `question` | `criterion` | `ask` |
 |---|---|---|
-| May a company established in an EU Member State participate as coordinator or partner, and what consortium composition does this topic require? | Eligibility | The funder, through the F&T Portal “Write to us” form |
-| How many projects will this topic fund? | Budget | The funder, through the F&T Portal “Write to us” form |
-| Can you cover the quantum, semiconductors and Destination Earth competition areas, and, if the consortium’s additional area is outside artificial intelligence, data science or virtual worlds, can you cover that area as well? | Required capabilities | A partner |
-| Will the consortium choose artificial intelligence, data science or virtual worlds as the additional competition area, or secure a partner to cover another chosen area? | Required capabilities | Our own management |
+| May a company established in an EU Member State apply as coordinator or partner, and what applicant consortium is required for DIGITAL-2026-SKILLS-09-COMPETITIONS? | Eligibility | The funder, through the F&T Portal “Write to us” form |
+| How many projects will DIGITAL-2026-SKILLS-09-COMPETITIONS fund? | Budget | The funder, through the F&T Portal “Write to us” form |
+| Will you join the consortium and cover quantum, semiconductors and Destination Earth? | Required capabilities | A partner |
 
 **Takes**
 

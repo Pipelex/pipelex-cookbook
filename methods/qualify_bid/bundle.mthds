@@ -275,13 +275,15 @@ Assess the deck against this one criterion:
 # The recommendation is worked out from the criteria's own rule in two parts: the stronger model reads the rule for each criterion's
 # verdict and gives its bearing, and this condition takes the worst of them, so that the sheet's recommendation never rests on one
 # model call's reading of every criterion at once. A criterion that rules out the bid makes it a No-go, a point to settle first
-# makes it a Go if answered, and otherwise it is a Go.
+# makes it a Go if answered, and otherwise it is a Go. With no criterion assessed, as when the criteria are written as prose that
+# lists none, the method fails rather than recommends: the expression renders `no_criteria`, which no outcome maps, so the default
+# outcome, `fail`, stops the run instead of letting a go/no-go gate say Go with nothing behind it.
 [pipe.decide_recommendation]
 type                = "PipeCondition"
-description         = "Work out the recommendation from each criterion's bearing under the company's rule: No-go when one rules out the bid, Go if answered when one must be settled first, otherwise Go"
+description         = "Work out the recommendation from each criterion's bearing under the company's rule: No-go when one rules out the bid, Go if answered when one must be settled first, otherwise Go; with no criterion assessed, the method fails rather than recommends"
 inputs              = { assessments = "CriterionAssessment[]" }
 output              = "Recommendation"
-expression_template = "{% if (assessments.items | default([])) | selectattr('bearing', 'equalto', 'rules out the bid') | list %}no_go{% elif (assessments.items | default([])) | selectattr('bearing', 'equalto', 'to settle first') | list %}go_if_answered{% else %}go{% endif %}"
+expression_template = "{% if not (assessments.items | default([])) %}no_criteria{% elif (assessments.items | default([])) | selectattr('bearing', 'equalto', 'rules out the bid') | list %}no_go{% elif (assessments.items | default([])) | selectattr('bearing', 'equalto', 'to settle first') | list %}go_if_answered{% else %}go{% endif %}"
 default_outcome     = "fail"
 
 [pipe.decide_recommendation.outcomes]
