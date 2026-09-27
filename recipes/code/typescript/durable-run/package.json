@@ -8,7 +8,7 @@
   "scripts": {
     "start-run": "tsx start.ts",
     "result": "tsx result.ts",
-    "codegen:check": "node scripts/codegen-check.mjs generated/research_report",
+    "codegen:check": "node scripts/codegen-check.mjs generated/write_release_post",
     "typecheck": "tsc --noEmit",
     "check": "npm run codegen:check && npm run typecheck"
   },

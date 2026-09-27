@@ -16,7 +16,7 @@
 
 set -u
 
-METHOD_REF="github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.18.0"
+METHOD_REF="github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.0"
 API_URL="https://api.pipelex.com"
 WAIT_SECONDS="${WAIT_SECONDS:-1200}"
 POLL_SECONDS=5

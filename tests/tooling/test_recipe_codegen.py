@@ -25,7 +25,7 @@ SCRIPT = REPO_ROOT / "scripts" / "sdk" / "recipe_codegen.py"
 # The committed recipe trees whose stamped files and lock stand in for what codegen answers, by target.
 ANSWER_TREES = {
     "python-pydantic": REPO_ROOT / "recipes" / "code" / "python" / "csv-batch" / "generated" / "invoice_extraction",
-    "ts-zod": REPO_ROOT / "recipes" / "code" / "typescript" / "nextjs-server-action" / "generated" / "blog_article_generator",
+    "ts-zod": REPO_ROOT / "recipes" / "code" / "typescript" / "nextjs-server-action" / "generated" / "gen_synthetic_data",
 }
 BUNDLES = {"methods/extract_widgets/bundle.mthds": 'domain = "widgets"\n', "methods/extract_widgets/pages.mthds": 'domain = "pages"\n'}
 ADDRESS = "github.com/Pipelex/methods/invoice_extraction@v0.1.1"

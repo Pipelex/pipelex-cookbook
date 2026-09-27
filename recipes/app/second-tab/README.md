@@ -5,7 +5,7 @@ An app made from one method grows by a command. `make add-method` takes a second
 It shows how an app on published methods changes:
 
 - **A method is one command and one commit.** `make add-method` writes nothing until it has fetched and derived everything, then writes one slice per method and a single registry entry, and refuses rather than overwrite a method already there.
-- **Each tab keeps its own address and tag.** The second method is pinned to `github.com/Pipelex/methods/invoice_extraction@v0.1.1`, the method library's release, independently of the first, which stays at the cookbook's `v0.18.0`.
+- **Each tab keeps its own address and tag.** The second method is pinned to `github.com/Pipelex/methods/invoice_extraction@v0.1.1`, the method library's release, independently of the first, which stays at the cookbook's `v0.20.0`.
 - **Moving to another release is one edit.** Change the tag in the method's `method.json` and run `npm run codegen`: the regenerated types show what the new release changed, and `make check` fails until they are regenerated.
 
 ## What it needs
@@ -23,7 +23,7 @@ make all
 make serve
 ```
 
-`make add-method` writes the method's slice and says what it wrote, `make all` checks, tests and builds the app with it and needs no key, and `make serve` prints the page's URL. Open the "Invoice extraction" tab, drop the [sample invoice](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.18.0/assets/extract_proof_of_purchase/restaurant_invoice.pdf) on its form and run it.
+`make add-method` writes the method's slice and says what it wrote, `make all` checks, tests and builds the app with it and needs no key, and `make serve` prints the page's URL. Open the "Invoice extraction" tab, drop the [sample invoice](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/assets/extract_proof_of_purchase/restaurant_invoice.pdf) on its form and run it.
 
 `DRY_RUN=1` prints the plan and writes nothing, `LABEL=…` names the tab, and `NAME=…` chooses the slug every file is named after.
 
