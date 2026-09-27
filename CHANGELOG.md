@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [v0.20.0] - 2026-09-27
 
 ### Added
 
@@ -18,7 +18,6 @@
 - **The reworked methods (Breaking)**: `answer_from_documents`, `discord_newsletter`, `extract_dpe`, `gen_expense_data` and `gen_synthetic_data` come back to the cookbook, each rebuilt around a deliverable a person files or sends, on a new sample that its page shows with a production run's output. `extract_dpe` now returns a letting agency's record, `DpeRecord`, with the ADEME number and what the class means for letting the flat on mainland France's calendar, each status naming its date so that it holds on any day, and a flat overseas pointed to its own calendar; `gen_synthetic_data` returns `DataRecord` items in place of `Sample`, each naming the case it covers, from the description of any records, and takes its count as `RecordCount` in place of `NbOfSamples`; `gen_expense_data` takes an `ExpenseBrief` giving the company's expense policy in place of `NbOfEmployees`, and returns `ExpenseReport` items in place of `EmployeeExpenseReport`, each claim with a generated photo of its receipt and the verdict the audit should reach; `answer_from_documents` and `discord_newsletter` take and return what they did. Their addresses at `v0.19.1` and earlier tags still run the old methods, which the recipes built on them keep running at `v0.18.0`.
 - **A list of documents is shown document by document**: a sample that is a list of documents shows each document on the page by its own first-page preview, as a single document is shown, and `contract.json` gives the kind of a list input's items as `item_kind`.
 - **The MTHDS linter is `plxt` 0.9.0**: the development dependency `pipelex-tools` moves to 0.9.0, whose schema accepts `size` on a `PipeImgGen`.
-
 - **Every sample input has a source-and-licence record (Breaking)**: `[methods.<name>.samples.<input>]` in `cookbook.toml` replaces `sample_labels`, giving the sample's link text, whether it was made up, where a real one was copied from and when, its licence, its credit line and what was changed. A real sample that is a file must be copied under `assets/<name>/`, a recorded document sample kept there needs a first-page preview beside it, and `make check-render` fails on an input without a record.
 - **`docs/adding-a-method.md` walks the example-making process**: adding a method now runs from the pitch, a person's recurring job and the deliverable they get checked against the bar an example must meet, through a real input under a licence that allows redistribution or a synthetic one marked fictional, the deliverable sketched before building, and the build with the Pipelex plugin on that sample, to the one production run, `make snapshot`, whose output the page shows, then the page and the pull request. It asks for no answer key, and leaves `make check-smoke` optional for a new method, since the snapshot run already proves its output has its contract's shape.
 
