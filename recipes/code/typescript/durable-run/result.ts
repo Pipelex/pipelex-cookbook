@@ -50,7 +50,7 @@ function mayClearUp(error: unknown): boolean {
   return error instanceof ApiUnreachableError || (error instanceof ApiResponseError && (error.status === 429 || error.status >= 500));
 }
 
-/** Print the report, or say why there is none, and answer the exit status. An error reading the run is thrown. */
+/** Print the post, or say why there is none, and answer the exit status. An error reading the run is thrown. */
 async function readRun(client: PipelexApiClient, runId: string, wait: boolean): Promise<number> {
   if (wait) {
     try {
@@ -92,7 +92,7 @@ try {
   process.exitCode = await readRun(new PipelexApiClient(), runId, flags.includes("--wait"));
 } catch (error) {
   // The run could not be read. An API out of reach says nothing about the run, which asking again may find going or done;
-  // an unknown id, a refused key or a report the types reject gives the same answer every time.
+  // an unknown id, a refused key or a post the types reject gives the same answer every time.
   console.error(`could not read run ${runId}: ${error instanceof Error ? error.message : String(error)}`);
   process.exitCode = mayClearUp(error) ? LOOKUP_FAILED : UNREADABLE;
 }
