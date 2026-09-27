@@ -115,6 +115,40 @@ attribution = "Evotis S.A.S"
 [methods.gen_synthetic_data.output]
 item_label = "Ticket"
 
+[methods.qualify_bid]
+title = "Go/no-go sheet from a funder's briefing deck"
+pitch = "Read a funder's or buyer's briefing deck against the company's bid criteria, and return the go/no-go sheet a bid manager takes to the bid/no-bid meeting and files in the bid pipeline: each criterion met, missed or not stated, with what the deck says and the slides it rests on, a recommendation by the company's own rule, and the questions to send to the funder, a partner or management before bidding."
+app_dir = "bid-sheet-app"
+yours_dir = "bid-sheet"
+yours_change = "add the submission deadline as a date, and the topic's budget and funding rate, as fields of their own that the bid pipeline files with the sheet"
+
+[methods.qualify_bid.samples.briefing]
+label = "sample briefing deck"
+synthetic = false
+source = "https://digital-skills-jobs.europa.eu/system/files/2025-12/DIGITAL%20InfoDay%20_MASTER_SLIDE_9THCALL_DECEMBER_2025.pdf"
+retrieved = 2026-09-26
+license = "CC-BY-4.0"
+license_url = "https://creativecommons.org/licenses/by/4.0/"
+attribution = "Digital Europe Programme, Call 9: Advanced Digital Skills, Info Day for potential applicants, 1 December 2025. © European Union, reused under CC BY 4.0."
+changes = "Cut to 12 of its 83 slides: the original slides 17 to 20, 55, 56, 73, 74 and 80 to 83, in that order; the logos painted out of every slide, since the Commission's reuse policy excludes logos from the licence."
+
+[methods.qualify_bid.samples.criteria]
+label = "sample bid criteria"
+synthetic = true
+license = "MIT"
+license_url = "https://github.com/Pipelex/pipelex-cookbook/blob/main/LICENSE"
+attribution = "Evotis S.A.S"
+
+[methods.qualify_bid.samples.briefing_date]
+label = "date of the info day"
+synthetic = false
+source = "https://digital-skills-jobs.europa.eu/system/files/2025-12/DIGITAL%20InfoDay%20_MASTER_SLIDE_9THCALL_DECEMBER_2025.pdf"
+retrieved = 2026-09-26
+license = "CC-BY-4.0"
+license_url = "https://creativecommons.org/licenses/by/4.0/"
+attribution = "Digital Europe Programme, Call 9: Advanced Digital Skills, Info Day for potential applicants, 1 December 2025. © European Union, reused under CC BY 4.0."
+changes = "The date the deck's cover prints, given as a date of its own since the sample leaves the cover out."
+
 [methods.review_nda]
 title = "NDA review against a playbook"
 pitch = "Read a counterparty's NDA and the company's NDA playbook, and return a first-pass review with one row per playbook position, giving the clause that deals with it, whether it is acceptable, to negotiate or to refuse, and the playbook's fallback wording, then a verdict and a short note for the lawyer who signs off."

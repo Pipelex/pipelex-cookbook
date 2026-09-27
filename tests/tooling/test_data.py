@@ -264,6 +264,35 @@ RIGHT_OUTPUTS: dict[str, JsonValue] = {
             },
         ],
     },
+    "qualify_bid": {
+        "opportunity": "Digital Call 9 — DIGITAL-2026-SKILLS-09-COMPETITIONS — European Advanced Digital Skills Competitions",
+        "briefing_date": "2025-12-01",
+        "recommendation": "Go if answered",
+        "summary": "The deadline and the budget are met, and the deck leaves eligibility to the call document. Ask who may apply before committing.",
+        "criteria": [
+            {
+                "criterion": "Eligibility",
+                "verdict": "not stated",
+                "what_the_deck_says": "Consortium composition compliance is a must, read Section 6 of the call document.",
+                "slides": [4, 9],
+                "note": "The deck does not say whether a company may take part as coordinator or partner.",
+            },
+            {
+                "criterion": "Deadline",
+                "verdict": "met",
+                "what_the_deck_says": "Deadline for submission: 03 March 2026 @17:00 CET (Brussels).",
+                "slides": [6],
+                "note": "The deadline is 92 days after the briefing, beyond the twelve weeks required.",
+            },
+        ],
+        "questions": [
+            {
+                "question": "May a company established in an EU Member State take part as coordinator or partner?",
+                "criterion": "Eligibility",
+                "ask": "The funder, through its question form",
+            },
+        ],
+    },
     "review_nda": {
         "verdict": "Sign after negotiating",
         "note_for_counsel": "A mutual NDA on a published standard; the confidentiality period needs our fallback wording.",

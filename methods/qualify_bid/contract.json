@@ -1,0 +1,76 @@
+{
+  "pipe": "bid_qualification.qualify_bid",
+  "inputs": [
+    {
+      "name": "briefing",
+      "concept": "bid_qualification.BriefingDeck",
+      "kind": "document",
+      "description": "A funder's or buyer's briefing deck for a call for funding or a tender, as a PDF",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    },
+    {
+      "name": "criteria",
+      "concept": "bid_qualification.BidCriteria",
+      "kind": "prose",
+      "description": "The company's bid criteria: who it is, each criterion and what meets it, and its rules for the recommendation and the questions",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": true
+    },
+    {
+      "name": "briefing_date",
+      "concept": "native.Date",
+      "kind": "object",
+      "description": "A calendar date, optionally with a time of day — as precise as its source states.",
+      "multiplicity": "single",
+      "item_count": null,
+      "required": false
+    }
+  ],
+  "output": {
+    "concept": "bid_qualification.BidSheet",
+    "description": "A go/no-go sheet for a briefing: the opportunity, a recommendation by the company's rule, a row per criterion, and the questions",
+    "multiplicity": "single",
+    "item_count": null,
+    "fields": [
+      {
+        "name": "opportunity",
+        "type": "text",
+        "description": "The call or topic assessed, as the deck names it",
+        "required": true
+      },
+      {
+        "name": "briefing_date",
+        "type": "date",
+        "description": "The date of the briefing",
+        "required": false
+      },
+      {
+        "name": "recommendation",
+        "type": "text",
+        "description": "Whether to bid, by the company's rule",
+        "required": true
+      },
+      {
+        "name": "summary",
+        "type": "text",
+        "description": "The criteria met, the gap that decides the bid, and what must be settled before committing",
+        "required": true
+      },
+      {
+        "name": "criteria",
+        "type": "list[CriterionRow]",
+        "description": "One row per bid criterion, in the criteria's order",
+        "required": true
+      },
+      {
+        "name": "questions",
+        "type": "list[BidQuestion]",
+        "description": "The questions to settle before bidding, each with whom to ask",
+        "required": true
+      }
+    ]
+  }
+}
