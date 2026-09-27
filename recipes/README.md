@@ -8,7 +8,7 @@ These recipes run a method with nothing to build: from your coding agent, or wit
 
 | Recipe | What it shows | Method |
 |---|---|---|
-| [A run in your coding agent, followed later by its id](run/coding-agent/) | `/pipelex-run` in Claude Code or Codex starting a run by its address, then following it from another session by its id alone and saving it to `runs/<run_id>/` | [Research report](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/research_report), at the cookbook's `v0.18.0` release |
+| [A run in your coding agent, followed later by its id](run/coding-agent/) | `/pipelex-run` in Claude Code or Codex starting a run by its address, then following it from another session by its id alone and saving it to `runs/<run_id>/` | [Document question answering](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.0/methods/answer_from_documents), at the cookbook's `v0.20.0` release |
 | [A method over HTTP: start, poll, results](run/http/) | The three calls that run a method from a shell script with `curl`, each outcome with its own exit status, and how n8n, Zapier or any tool that makes HTTP calls makes the same calls | [DPE record for a letting agency](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.0/methods/extract_dpe), at the cookbook's `v0.20.0` release |
 
 ## Put a method in your code
