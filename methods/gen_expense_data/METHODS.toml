@@ -1,0 +1,13 @@
+[package]
+name = "gen_expense_data"
+display_name = "Expense Audit Test Batch"
+address = "github.com/Pipelex/pipelex-cookbook"
+version = "0.19.1"
+description = "Turn a brief giving a company's expense policy and the test batch wanted into invented employees' expense reports, each claim with a generated photo of its receipt and the verdict the audit should reach: compliant, or the rule it breaks."
+authors = ["Evotis S.A.S"]
+license = "MIT"
+mthds_version = ">=1.0.0"
+main_pipe = "generate_expense_test_batch"
+
+[exports.expense_data_generation]
+pipes = ["generate_expense_test_batch"]

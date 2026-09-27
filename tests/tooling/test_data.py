@@ -206,6 +206,38 @@ RIGHT_OUTPUTS: dict[str, JsonValue] = {
         "letting_status": "Can be let",
         "no_new_lease_from": "2034-01-01",
     },
+    "gen_expense_data": {
+        "items": [
+            {
+                "employee": {
+                    "employee_id": "EMP-26041",
+                    "full_name": "Ada Example",
+                    "email": "ada.example@example.com",
+                    "department": "Business Development",
+                    "job_title": "Senior Sales Engineer",
+                },
+                "claims": [
+                    {
+                        "claim_id": "EXP-20260912-66851",
+                        "expense_date": "2026-09-12",
+                        "merchant": "Taxi Rhône Azur, Villeurbanne",
+                        "category": "Taxi",
+                        "amount": "EUR 46.80",
+                        "business_purpose": "Commissioning review at the client's site, return to Lyon Part-Dieu",
+                        "receipt": {"url": "output/0-claims-1-receipt.png", "mime_type": "image/png", "width": 640, "height": 1024},
+                        "expected_verdict": "Breaks rule 4: Saturday taxi with no manager's prior approval mentioned",
+                    },
+                ],
+                "expense_report": {
+                    "inner_html": (
+                        "<h1>Expense report</h1>\n<p><strong>Ada Example</strong>, Senior Sales Engineer, Business Development</p>"
+                        "<table><tr><td>EXP-20260912-66851</td><td>2026-09-12</td><td>EUR 46.80</td></tr></table>"
+                    ),
+                    "css_class": None,
+                },
+            },
+        ],
+    },
     "gen_synthetic_data": {
         "items": [
             {

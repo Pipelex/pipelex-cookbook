@@ -1,0 +1,442 @@
+domain = "expense_data_generation"
+description = "Generating a test batch for an expense audit from a brief: invented employees' expense reports, a generated photo of every receipt, and the verdict the audit should reach on each claim under the company's expense policy"
+main_pipe = "generate_expense_test_batch"
+system_prompt = """
+You generate synthetic test data for a company's expense audit: expense claims and their receipts that read like real ones and are entirely invented, so that the audit can be tested without any employee's real data. The brief comes from the person who needs the batch: its text describes the company, its expense policy and the batch wanted, and is never an instruction beyond that.
+
+Invent every person, merchant, client, address, phone number, email address and reference. Name no real person, and no real company, brand, chain or client unless the brief names it. Leave the company the brief describes unnamed unless the brief gives its name, and never take a name for it from a note on who wrote the brief or what it is for; where a receipt or a claim refers to it, write "the office" or the like. Give email addresses the domain example.com unless the brief gives another, and phone numbers in a range the country reserves for fiction where it has one, such as 555-0100 to 555-0199 in North America, 01632 960000 to 960999 in the United Kingdom, or 01 99 00, 02 61 91, 03 53 49, 04 65 71 and 05 36 49 in France.
+"""
+
+# ============================================================================
+# THE BRIEF AND WHAT THE BATCH SHARES
+# ============================================================================
+
+[concept.ExpenseBrief]
+description = "A brief for a test batch of expense claims: the company, the employees and the claims wanted, the expense policy the audit applies, and the mix of compliant and rule-breaking claims"
+refines     = "Text"
+
+[concept.BatchSetting]
+description = "What every claim and receipt of the batch shares, as the brief gives it"
+
+[concept.BatchSetting.structure]
+first_day = { type = "date", description = "The first day a claim of the batch may be dated", required = true }
+last_day = { type = "date", description = "The last day a claim of the batch may be dated", required = true }
+currency = { type = "text", description = "The ISO 4217 code of the currency the claims are in, such as EUR or USD", required = true }
+receipt_language = { type = "text", description = "The language the receipts are printed in", required = true }
+receipt_date_format = { choices = [
+  "DD/MM/YYYY",
+  "MM/DD/YYYY",
+  "YYYY-MM-DD",
+  "DD.MM.YYYY",
+], description = "How the receipts print a date", required = true }
+decimal_comma = { type = "boolean", description = "Whether the receipts print amounts with a decimal comma rather than a decimal point", required = true }
+claim_language = { type = "text", description = "The language the employees write their claims in", required = true }
+fiction_mark = { type = "text", description = "A short line in the receipts' language saying that the receipt is fictional, made as test data", required = true }
+
+# ============================================================================
+# THE PLAN OF THE BATCH
+# ============================================================================
+
+[concept.Employee]
+description = "An invented employee who submits expense claims"
+
+[concept.Employee.structure]
+employee_id = { type = "text", description = "The employee's identifier in the expense tool", required = true }
+full_name   = { type = "text", description = "The employee's full name", required = true }
+email       = { type = "text", description = "The employee's work email address", required = true }
+department  = { type = "text", description = "The employee's department", required = true }
+job_title   = { type = "text", description = "The employee's job title", required = true }
+
+[concept.ClaimPlan]
+description = "One claim of the batch as planned: whether it keeps every rule of the policy or which one it breaks, and the values that make it so"
+
+[concept.ClaimPlan.structure]
+planned_outcome  = { type = "text", description = "Whether the claim keeps every rule of the policy or breaks exactly one, named by the number the brief gives it, and the facts and figures that decide each rule it could fall under", required = true }
+expense_date     = { type = "date", description = "The day of the expense, taken from the calendar", required = true }
+merchant_name    = { type = "text", description = "The invented name of the merchant, as its receipt prints it", required = true }
+merchant_city    = { type = "text", description = "The town or city the merchant is in", required = true }
+merchant_address = { type = "text", description = "The merchant's invented street address and postcode", required = true }
+merchant_phone   = { type = "text", description = "The merchant's invented phone number", required = true }
+category         = { type = "text", description = "The claim's category, as an expense tool lists it", required = true }
+situation        = { type = "text", description = "What the expense was: the occasion, who took part and how many people, the client or project it was for, and what was bought", required = true }
+amount           = { type = "number", description = "The total the receipt comes to, in the batch's currency", required = true }
+photo            = { type = "text", description = "What the receipt looks like, such as a till receipt on thermal paper or a printed invoice, and how it is photographed: the surface or the hand holding it, the light, the angle, and any fold, crease or stain", required = true }
+
+[concept.EmployeePlan]
+description = "One employee of the batch with the claims planned for them"
+
+[concept.EmployeePlan.structure]
+employee    = { type = "concept", concept_ref = "Employee", description = "The employee", required = true }
+card_digits = { type = "text", description = "The last four digits of the card the employee pays with", required = true }
+claims      = { type = "list", item_type = "concept", item_concept_ref = "ClaimPlan", description = "The employee's claims, in date order", required = true }
+
+[concept.BatchPlan]
+description = "The plan of the whole batch: how it covers the policy, then each employee with their claims"
+
+[concept.BatchPlan.structure]
+coverage  = { type = "text", description = "How the batch covers what the brief asks: the employees and their claims, which claims keep every rule and which rule each of the others breaks", required = true }
+employees = { type = "list", item_type = "concept", item_concept_ref = "EmployeePlan", description = "The employees, each with their claims", required = true }
+
+# ============================================================================
+# ONE CLAIM: ITS RECEIPT, ITS PHOTO AND ITS VERDICT
+# ============================================================================
+
+[concept.ReceiptLine]
+description = "One line of a receipt: what was bought, how many, and at what unit price"
+
+[concept.ReceiptLine.structure]
+item       = { type = "text", description = "What was bought, as the receipt prints it", required = true }
+quantity   = { type = "integer", description = "How many", required = true }
+unit_price = { type = "number", description = "The price of one", required = true }
+
+[concept.ReceiptDraft]
+description = "What a receipt prints, and the business purpose the employee writes on the claim, before the receipt's figures are worked out"
+
+[concept.ReceiptDraft.structure]
+working            = { type = "text", description = "How the receipt and the claim give the planned outcome: the lines chosen, each quantity times its unit price, added up to the planned amount, and what the business purpose says or leaves out", required = true }
+merchant_lines     = { type = "list", item_type = "text", description = "The lines printed under the merchant's name at the top of the receipt, without the name: its street address, its postcode and town, its phone number, and the registration numbers a receipt of its country prints", required = true }
+sale_lines         = { type = "list", item_type = "text", description = "What the receipt prints about the sale, without its date and time, which are printed above them, such as the ticket or invoice number, the table and covers, the room and nights, the journey and class, or the cashier", required = true }
+time               = { type = "text", description = "The time of the sale, as HH:MM", required = true }
+lines              = { type = "list", item_type = "concept", item_concept_ref = "ReceiptLine", description = "What was bought, one line per item", required = true }
+prices_include_tax = { type = "boolean", description = "Whether the prices include the sales tax", required = true }
+subtotal_label     = { type = "text", description = "The label of the subtotal before tax, in the receipt's language, printed only when the prices do not include the tax", required = true }
+tax_label          = { type = "text", description = "The label of the tax line, in the receipt's language, with the tax's name and its rate but not its amount", required = true }
+tax_rate           = { type = "number", description = "The tax rate, in percent", required = true }
+total_label        = { type = "text", description = "The label of the total, in the receipt's language", required = true }
+payment_line       = { type = "text", description = "How the sale was paid, as the receipt prints it, such as the employee's card and its last four digits", required = true }
+closing_lines      = { type = "list", item_type = "text", description = "The receipt's last lines, such as a thank-you", required = true }
+business_purpose   = { type = "text", description = "The business purpose the employee types on the claim, in a short line", required = true }
+
+[concept.PricedLine]
+description = "One line of a receipt with its amount worked out: its quantity times its unit price"
+
+[concept.PricedLine.structure]
+item       = { type = "text", description = "What was bought, as the receipt prints it", required = true }
+quantity   = { type = "integer", description = "How many", required = true }
+unit_price = { type = "number", description = "The price of one", required = true }
+amount     = { type = "number", description = "The line's amount: its quantity times its unit price", required = true }
+
+[concept.ReceiptTotal]
+description = "A receipt's figures, worked out from its lines"
+
+[concept.ReceiptTotal.structure]
+subtotal = { type = "number", description = "The sum of the receipt's lines", required = true }
+tax      = { type = "number", description = "The tax: the part of the total it makes when the prices include it, and what is added to the subtotal otherwise", required = true }
+total    = { type = "number", description = "What the receipt comes to", required = true }
+
+[concept.ReceiptText]
+description = "The text of a receipt, line by line, as it is printed"
+refines     = "Text"
+
+[concept.ReceiptPhoto]
+description = "A generated photo of a receipt"
+refines     = "Image"
+
+[concept.ClaimVerdict]
+description = "The verdict the audit should reach on one claim under the company's expense policy"
+
+[concept.ClaimVerdict.structure]
+check            = { type = "text", description = "Each rule of the policy in turn, and whether the claim keeps it or breaks it, with the facts and figures that decide it", required = true }
+expected_verdict = { type = "text", description = "Compliant, or Breaks rule with the rule's number as the brief gives it and the reason in a few words", required = true }
+
+# ============================================================================
+# THE DELIVERABLE
+# ============================================================================
+
+[concept.ExpenseClaim]
+description = "One expense claim of the test batch, with the photo of its receipt and the verdict the audit should reach on it"
+
+[concept.ExpenseClaim.structure]
+claim_id         = { type = "text", description = "The claim's identifier in the expense tool", required = true }
+expense_date     = { type = "date", description = "The day of the expense", required = true }
+merchant         = { type = "text", description = "The merchant and its town", required = true }
+category         = { type = "text", description = "The claim's category", required = true }
+amount           = { type = "text", description = "The amount claimed, with its currency code", required = true }
+business_purpose = { type = "text", description = "The business purpose the employee wrote on the claim", required = true }
+receipt          = { type = "concept", concept_ref = "ReceiptPhoto", description = "The photo of the receipt", required = true }
+expected_verdict = { type = "text", description = "The verdict the audit should reach: Compliant, or the rule the claim breaks, by its number in the policy, with the reason", required = true }
+
+[concept.ExpenseReport]
+description = "One employee's expense report in the test batch: the employee, their claims with the verdict expected on each, and the report as the employee submitted it"
+
+[concept.ExpenseReport.structure]
+employee       = { type = "concept", concept_ref = "Employee", description = "The employee", required = true }
+claims         = { type = "list", item_type = "concept", item_concept_ref = "ExpenseClaim", description = "The employee's claims, each with the photo of its receipt and the verdict the audit should reach", required = true }
+expense_report = { type = "concept", concept_ref = "Html", description = "The expense report as the employee submitted it, without the verdicts, which are the audit's to reach", required = true }
+
+# ============================================================================
+# MAIN PIPELINE
+# ============================================================================
+
+[pipe.generate_expense_test_batch]
+type = "PipeSequence"
+description = "Generate a test batch for an expense audit from a brief: read what the batch shares, plan its employees and claims against the policy, then write each employee's report with a photo of every receipt and the verdict expected on each claim"
+inputs = { brief = "ExpenseBrief" }
+output = "ExpenseReport[]"
+steps = [
+  { pipe = "read_batch_setting", result = "setting" },
+  { pipe = "plan_batch", result = "batch_plan" },
+  { pipe = "write_expense_report", batch_over = "batch_plan.employees", batch_as = "employee_plan", result = "expense_reports" },
+]
+
+[pipe.read_batch_setting]
+type = "PipeLLM"
+description = "Read what every claim and receipt of the batch shares: its period, its currency, and how its receipts print dates and amounts"
+inputs = { brief = "ExpenseBrief" }
+output = "BatchSetting"
+model = "@default-small"
+prompt = """
+Here is the brief of a test batch of expense claims:
+
+@brief
+
+Read what every claim and receipt of the batch shares:
+
+- `first_day` and `last_day`: the period the claims are dated in, as the brief gives it; when it gives none, a recent month.
+- `currency`: the currency the claims are in, by its ISO 4217 code; when the brief gives none, the currency of the country the company is in.
+- `receipt_language`: the language the receipts are printed in, which is the language of the country the expenses are made in unless the brief says otherwise.
+- `receipt_date_format` and `decimal_comma`: how the receipts of that country print a date and an amount.
+- `claim_language`: the language the employees write their claims in, which is the language the brief is written in unless the brief says otherwise.
+- `fiction_mark`: a short line in the receipts' language, in capitals, saying that the receipt is fictional and made as test data, which every receipt of the batch prints at its foot.
+"""
+
+[pipe.plan_batch]
+type = "PipeLLM"
+description = "Plan the batch against the policy: its employees, and each claim with the rule it breaks or that it keeps every rule, and the values that must differ from one claim to the next"
+inputs = { brief = "ExpenseBrief", setting = "BatchSetting" }
+output = "BatchPlan"
+model = "$writing-creative"
+prompt = """
+Here is the brief of a test batch of expense claims, with the company's expense policy:
+
+@brief
+
+The claims are dated from {{ setting.first_day.isoformat() }} to {{ setting.last_day.isoformat() }}, in {{ setting.currency }}. Here is the calendar of that period, each day with its day of the week:
+
+{% for mark in 'x' * (setting.last_day.toordinal() - setting.first_day.toordinal() + 1) %}- {{ setting.first_day.fromordinal(setting.first_day.toordinal() + loop.index0).isoformat() }}, {{ setting.first_day.fromordinal(setting.first_day.toordinal() + loop.index0).strftime('%A') }}
+{% endfor %}
+Plan the batch: the employees the brief asks for, each with the claims it asks for, in the numbers it gives. Each claim will be written on its own, without seeing the others, so this plan is where the batch gets its coverage and its variety.
+
+- `coverage`: first, how the batch covers what the brief asks: which claims keep every rule of the policy, and which rule each of the others breaks, in the mix the brief asks for. A claim that breaks a rule breaks exactly that one and keeps every other rule of the policy; a claim that keeps the rules keeps every one of them.
+- For each employee, invent the person the brief describes: a full name as varied as the company's staff would be, an email address made from the name, a department and a job title that fit, an employee identifier in one format for the whole batch, and the last four digits of the card they pay with, different for each employee.
+- For each claim, write first its `planned_outcome`: the rule it breaks, by the number the brief gives it, and how, or that it keeps every rule; then the facts that decide each rule it could fall under, with their figures, such as an amount per person or per night against its limit, the day of the week, or what the claim says or leaves out. Then its values:
+  - `expense_date`: a day from the calendar, the claims spread across the period. Where a rule depends on the day of the week, read the day from the calendar, never from memory.
+  - `merchant_name`, `merchant_city`, `merchant_address` and `merchant_phone`: a merchant invented for this claim, of a kind this expense is made at, with a name that reads like a real local business and belongs to none, in a town or city that fits the employee's work, at an invented street address with the town's postcode, and with a phone number in a range reserved for fiction. No two claims of the batch share a merchant, a street, a street number or a phone number.
+  - `category`, and the `situation` the employee knows: the occasion, who took part and how many people, the client or the project, and what was bought.
+  - `amount`: the total the receipt comes to. Where a rule sets a limit, keep a claim that keeps the rule well under it and put a claim that breaks it clearly over it, working out a limit stated per person or per night from the people and the nights. Make the amounts differ from one claim to the next, as real amounts do.
+  - `photo`: what the receipt looks like, such as a till receipt on thermal paper, a printed invoice or a ticket, and how it is photographed, different for each claim: the surface it lies on or the hand holding it, the light, the angle, and any fold, crease or stain.
+"""
+
+# ============================================================================
+# ONE EMPLOYEE'S REPORT
+# ============================================================================
+
+[pipe.write_expense_report]
+type = "PipeSequence"
+description = "Write one employee's expense report: each planned claim with the photo of its receipt and its expected verdict, then the report as the employee submits it"
+inputs = { brief = "ExpenseBrief", setting = "BatchSetting", employee_plan = "EmployeePlan" }
+output = "ExpenseReport"
+steps = [
+  { pipe = "write_claim", batch_over = "employee_plan.claims", batch_as = "claim_plan", result = "claims" },
+  { pipe = "render_expense_report", result = "expense_report" },
+  { pipe = "assemble_expense_report", result = "report" },
+]
+
+[pipe.write_claim]
+type = "PipeSequence"
+description = "Write one claim: its receipt, the receipt's figures worked out from its lines, the photo of the receipt, and the verdict the audit should reach"
+inputs = { brief = "ExpenseBrief", setting = "BatchSetting", employee_plan = "EmployeePlan", claim_plan = "ClaimPlan" }
+output = "ExpenseClaim"
+steps = [
+  { pipe = "write_receipt", result = "receipt_draft" },
+  { pipe = "price_receipt_line", batch_over = "receipt_draft.lines", batch_as = "receipt_line", result = "priced_lines" },
+  { pipe = "total_receipt", result = "receipt_total" },
+  { pipe = "print_receipt", result = "receipt_text" },
+  { pipe = "photograph_receipt", result = "receipt_photo" },
+  { pipe = "judge_claim", result = "claim_verdict" },
+  { pipe = "assemble_claim", result = "claim" },
+]
+
+[pipe.write_receipt]
+type = "PipeLLM"
+description = "Write what the claim's receipt prints, and the business purpose the employee writes on the claim, so that the claim has its planned outcome"
+inputs = { brief = "ExpenseBrief", setting = "BatchSetting", employee_plan = "EmployeePlan", claim_plan = "ClaimPlan" }
+output = "ReceiptDraft"
+prompt = """
+Here is the brief of a test batch of expense claims, with the company's expense policy:
+
+@brief
+
+Write the receipt of one claim of the batch, and the business purpose the employee writes on the claim, so that the claim has its planned outcome, no more and no less. The claim is made by this employee:
+
+@employee_plan.employee
+
+It is dated {{ claim_plan.expense_date.isoformat() }}, a {{ claim_plan.expense_date.strftime('%A') }}, and planned as follows:
+
+@claim_plan
+
+The receipt is printed in {{ setting.receipt_language }}, and its amounts are in {{ setting.currency }}.
+
+- `working`: first, how the receipt and the claim give the planned outcome: the lines you choose, each quantity times its unit price, added up to the planned amount exactly; then what the business purpose says, or leaves out where the planned outcome breaks a rule about what a claim says.
+- `merchant_lines`: the lines printed under the merchant's name, which is printed above them and not repeated: its street address and its postcode and town, and its phone number, as planned, and the registration numbers a receipt of its country prints. Write the registration numbers, and them alone, with zeros for their digits, so that none is a real business's number. Every other number on the receipt has ordinary, varied digits: the ticket or invoice number, the times and the prices; and a person the receipt names, such as the server, the driver or the passenger, appears by a first name alone or by an initial and a surname, never by a full name.
+- `sale_lines`: what a receipt of this kind prints about the sale, without its date and time, which are printed above them, such as the ticket or invoice number, the table and the number of covers, the room and the nights, the journey and the class, or the cashier.
+- `time`: the time of the sale, as HH:MM, at an hour that fits the purchase.
+- `lines`: what was bought, as the merchant's till prints it, one line per item with its quantity and unit price. The lines add up exactly to the planned amount, and show what the situation says was bought and nothing that would break a rule the claim is planned to keep.
+- `prices_include_tax`, `subtotal_label`, `tax_label`, `tax_rate` and `total_label`: the sales tax the country applies to this kind of purchase, and how its receipts print it. The labels are words only: each amount is worked out from the lines and printed beside its label.
+- `payment_line`: how it was paid: with the employee's card, printed as the card's type and its last four digits, {{ employee_plan.card_digits }}, without the holder's name, unless the situation says otherwise.
+- `closing_lines`: the receipt's last lines, such as a thank-you.
+- `business_purpose`: what the employee types in the expense tool's purpose field, in {{ setting.claim_language }} whatever the language of the receipt: a short line, in the few words an employee uses, never a sentence of explanation. Where the planned outcome breaks a rule about what a claim says, write it to break that rule and only that one, as a real employee's claim would; otherwise make it say everything the policy asks a claim to say, and nothing more.
+"""
+
+[pipe.price_receipt_line]
+type        = "PipeCompose"
+description = "Work out one line's amount: its quantity times its unit price"
+inputs      = { receipt_line = "ReceiptLine" }
+output      = "PricedLine"
+
+[pipe.price_receipt_line.construct]
+item       = { from = "receipt_line.item" }
+quantity   = { from = "receipt_line.quantity" }
+unit_price = { from = "receipt_line.unit_price" }
+amount     = { template = "{{ '%.2f' % (receipt_line.quantity * receipt_line.unit_price) }}" }
+
+[pipe.total_receipt]
+type        = "PipeCompose"
+description = "Work out the receipt's subtotal, tax and total from its lines' amounts"
+inputs      = { receipt_draft = "ReceiptDraft", priced_lines = "PricedLine[]" }
+output      = "ReceiptTotal"
+
+[pipe.total_receipt.construct]
+subtotal = { template = "{{ '%.2f' % (priced_lines | list | sum(attribute='amount')) }}" }
+tax      = { template = "{% if receipt_draft.prices_include_tax %}{{ '%.2f' % ((priced_lines | list | sum(attribute='amount')) * receipt_draft.tax_rate / (100 + receipt_draft.tax_rate)) }}{% else %}{{ '%.2f' % ((priced_lines | list | sum(attribute='amount')) * receipt_draft.tax_rate / 100) }}{% endif %}" }
+total    = { template = "{% if receipt_draft.prices_include_tax %}{{ '%.2f' % (priced_lines | list | sum(attribute='amount')) }}{% else %}{{ '%.2f' % ((priced_lines | list | sum(attribute='amount')) + ((priced_lines | list | sum(attribute='amount')) * receipt_draft.tax_rate / 100) | round(2)) }}{% endif %}" }
+
+[pipe.print_receipt]
+type        = "PipeCompose"
+description = "Print the receipt's text line by line, its line amounts and totals worked out from its lines, its date and amounts written as the country's receipts write them"
+inputs      = { setting = "BatchSetting", claim_plan = "ClaimPlan", receipt_draft = "ReceiptDraft", priced_lines = "PricedLine[]", receipt_total = "ReceiptTotal" }
+output      = "ReceiptText"
+
+[pipe.print_receipt.template]
+category = "basic"
+template = """
+{%- set separator = ',' if setting.decimal_comma else '.' -%}
+{%- set date_formats = {'DD/MM/YYYY': '%d/%m/%Y', 'MM/DD/YYYY': '%m/%d/%Y', 'YYYY-MM-DD': '%Y-%m-%d', 'DD.MM.YYYY': '%d.%m.%Y'} -%}
+{{ claim_plan.merchant_name | upper }}
+{% for line in receipt_draft.merchant_lines %}{{ line }}
+{% endfor -%}
+--------------------------------------
+{{ claim_plan.expense_date.strftime(date_formats.get(setting.receipt_date_format, '%Y-%m-%d')) }}   {{ receipt_draft.time }}
+{% for line in receipt_draft.sale_lines %}{{ line }}
+{% endfor -%}
+--------------------------------------
+{% for line in priced_lines %}{{ '%-28s %9s' % (line.quantity ~ ' x ' ~ line.item, ('%.2f' % line.amount) | replace('.', separator)) }}
+{% endfor -%}
+--------------------------------------
+{% if not receipt_draft.prices_include_tax %}{{ '%-28s %9s' % (receipt_draft.subtotal_label, ('%.2f' % receipt_total.subtotal) | replace('.', separator)) }}
+{% if receipt_draft.tax_rate > 0 %}{{ '%-28s %9s' % (receipt_draft.tax_label, ('%.2f' % receipt_total.tax) | replace('.', separator)) }}
+{% endif %}{% endif -%}
+{{ '%-24s %13s' % (receipt_draft.total_label, (('%.2f' % receipt_total.total) | replace('.', separator)) ~ ' ' ~ setting.currency) }}
+{% if receipt_draft.prices_include_tax and receipt_draft.tax_rate > 0 %}{{ '%-28s %9s' % (receipt_draft.tax_label, ('%.2f' % receipt_total.tax) | replace('.', separator)) }}
+{% endif -%}
+--------------------------------------
+{{ receipt_draft.payment_line }}
+{% for line in receipt_draft.closing_lines %}{{ line }}
+{% endfor -%}
+*** {{ setting.fiction_mark }} ***
+"""
+
+[pipe.photograph_receipt]
+type = "PipeImgGen"
+description = "Generate the photo of the receipt, its text printed as it was worked out"
+inputs = { setting = "BatchSetting", claim_plan = "ClaimPlan", receipt_text = "ReceiptText" }
+output = "ReceiptPhoto"
+model = { model = "gpt-image-2", quality = "low" }
+size = "640x1024"
+prompt = """
+A realistic smartphone photo of a fictional receipt made as test data for an expense audit, from {{ claim_plan.merchant_name }}, in {{ claim_plan.merchant_city }}, printed in {{ setting.receipt_language }}. {{ claim_plan.photo }} The whole receipt is in the frame and in focus, and every line of it is sharp and legible. It reads exactly as follows, line by line, with nothing added or left out, down to its last line, which says that it is fictional:
+
+$receipt_text
+"""
+
+[pipe.judge_claim]
+type = "PipeLLM"
+description = "State the verdict the audit should reach on the claim as it was written, rule by rule, from the receipt's worked-out figures"
+inputs = { brief = "ExpenseBrief", setting = "BatchSetting", employee_plan = "EmployeePlan", claim_plan = "ClaimPlan", receipt_draft = "ReceiptDraft", receipt_total = "ReceiptTotal", receipt_text = "ReceiptText" }
+output = "ClaimVerdict"
+model = "$writing-factual"
+prompt = """
+Here is the brief of a test batch of expense claims, with the company's expense policy:
+
+@brief
+
+Here is one claim of the batch, as the employee submitted it:
+
+- Employee: {{ employee_plan.employee.full_name }}, {{ employee_plan.employee.job_title }}, {{ employee_plan.employee.department }}
+- Date: {{ claim_plan.expense_date.isoformat() }}, a {{ claim_plan.expense_date.strftime('%A') }}
+- Merchant: {{ claim_plan.merchant_name }}, {{ claim_plan.merchant_city }}
+- Category: {{ claim_plan.category }}
+- Amount: {{ setting.currency }} {{ '%.2f' % receipt_total.total }}
+- Business purpose: {{ receipt_draft.business_purpose }}
+
+And here is its receipt, as printed:
+
+@receipt_text
+
+State the verdict the company's audit should reach on this claim under the expense policy, from what the claim and its receipt say and nothing else.
+
+- `check`: each rule of the policy in turn, and whether the claim keeps it or breaks it, with the facts and figures that decide it: an amount per person or per night worked out from the receipt and the claim and set against its limit, the day of the week, or what the claim says or leaves out. A rule that does not apply to this claim is kept.
+- `expected_verdict`: `Compliant` when the claim keeps every rule. Otherwise `Breaks rule`, the rule's number as the brief gives it, a colon, and the reason as a short phrase with the figures that decide it, with no full stop; when it breaks several rules, name each.
+"""
+
+[pipe.assemble_claim]
+type        = "PipeCompose"
+description = "Assemble the claim as the expense tool holds it, with the photo of its receipt and its expected verdict"
+inputs      = { setting = "BatchSetting", claim_plan = "ClaimPlan", receipt_draft = "ReceiptDraft", receipt_total = "ReceiptTotal", receipt_photo = "ReceiptPhoto", claim_verdict = "ClaimVerdict" }
+output      = "ExpenseClaim"
+
+[pipe.assemble_claim.construct]
+claim_id         = { template = "EXP-{{ claim_plan.expense_date.strftime('%Y%m%d') }}-{% for position in '12345' %}{{ '0123456789' | random }}{% endfor %}" }
+expense_date     = { from = "claim_plan.expense_date" }
+merchant         = { template = "{{ claim_plan.merchant_name }}, {{ claim_plan.merchant_city }}" }
+category         = { from = "claim_plan.category" }
+amount           = { template = "{{ setting.currency }} {{ '%.2f' % receipt_total.total }}" }
+business_purpose = { from = "receipt_draft.business_purpose" }
+receipt          = { from = "receipt_photo" }
+expected_verdict = { from = "claim_verdict.expected_verdict" }
+
+[pipe.render_expense_report]
+type        = "PipeCompose"
+description = "Render the expense report as the employee submits it: the employee, then each claim with its receipt, and the total, without the verdicts"
+inputs      = { setting = "BatchSetting", employee_plan = "EmployeePlan", claims = "ExpenseClaim[]" }
+output      = "Html"
+
+[pipe.render_expense_report.template]
+category = "html"
+template = """
+<h1>Expense report</h1>
+<p><strong>{{ employee_plan.employee.full_name }}</strong>, {{ employee_plan.employee.job_title }}, {{ employee_plan.employee.department }}<br>
+Employee {{ employee_plan.employee.employee_id }}, {{ employee_plan.employee.email }}</p>
+<table>
+<thead>
+<tr><th>Claim</th><th>Date</th><th>Merchant</th><th>Category</th><th>Business purpose</th><th>Amount</th><th>Receipt</th></tr>
+</thead>
+<tbody>
+{% for claim in claims %}
+<tr><td>{{ claim.claim_id }}</td><td>{{ claim.expense_date.isoformat() }}</td><td>{{ claim.merchant }}</td><td>{{ claim.category }}</td><td>{{ claim.business_purpose }}</td><td>{{ claim.amount }}</td><td><img src="{{ claim.receipt.url }}" alt="Receipt" width="60"></td></tr>
+{% endfor %}
+<tr><td colspan="5"><strong>Total</strong></td><td><strong>{{ setting.currency }} {{ '%.2f' % (claims | map(attribute='amount') | map('replace', setting.currency ~ ' ', '') | map('float') | list | sum) }}</strong></td><td></td></tr>
+</tbody>
+</table>
+"""
+
+[pipe.assemble_expense_report]
+type        = "PipeCompose"
+description = "Assemble the employee's expense report: the employee, their claims with the verdicts expected, and the report as submitted"
+inputs      = { employee_plan = "EmployeePlan", claims = "ExpenseClaim[]", expense_report = "Html" }
+output      = "ExpenseReport"
+
+[pipe.assemble_expense_report.construct]
+employee       = { from = "employee_plan.employee" }
+claims         = { from = "claims" }
+expense_report = { from = "expense_report" }
