@@ -9,7 +9,7 @@ These recipes run a method with nothing to build: from your coding agent, or wit
 | Recipe | What it shows | Method |
 |---|---|---|
 | [A run in your coding agent, followed later by its id](run/coding-agent/) | `/pipelex-run` in Claude Code or Codex starting a run by its address, then following it from another session by its id alone and saving it to `runs/<run_id>/` | [Research report](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/research_report), at the cookbook's `v0.18.0` release |
-| [A method over HTTP: start, poll, results](run/http/) | The three calls that run a method from a shell script with `curl`, each outcome with its own exit status, and how n8n, Zapier or any tool that makes HTTP calls makes the same calls | [Energy diagnostic (DPE) extraction](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/extract_dpe), at the cookbook's `v0.18.0` release |
+| [A method over HTTP: start, poll, results](run/http/) | The three calls that run a method from a shell script with `curl`, each outcome with its own exit status, and how n8n, Zapier or any tool that makes HTTP calls makes the same calls | [DPE record for a letting agency](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.0/methods/extract_dpe), at the cookbook's `v0.20.0` release |
 
 ## Put a method in your code
 
@@ -19,10 +19,10 @@ Each recipe is one script that declares its dependencies inline, so `uv run` ins
 
 | Recipe | What it shows | Method |
 |---|---|---|
-| [A FastAPI endpoint](code/python/fastapi-endpoint/) | An API answering questions from documents, whose responses are typed by the method's generated models | [Document question answering](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/answer_from_documents), at the cookbook's `v0.18.0` release |
+| [A FastAPI endpoint](code/python/fastapi-endpoint/) | An API answering questions from documents, whose responses are typed by the method's generated models | [Document question answering](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.0/methods/answer_from_documents), at the cookbook's `v0.20.0` release |
 | [A method over every row of a CSV](code/python/csv-batch/) | A spreadsheet of invoice links turned into a spreadsheet of totals, a few runs at a time | [Invoice extraction](https://github.com/Pipelex/methods/tree/v0.1.1/methods/invoice_extraction), from the method library |
-| [A method as a CrewAI agent's tool](code/python/crewai-tool/) | A crew whose analyst drafts a research brief through the method and whose editor turns it into a memo | [Research report](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/research_report), at the cookbook's `v0.18.0` release |
-| [A weekly digest](code/python/weekly-digest/) | A week of Discord messages fetched in code, written up by the method, and posted as HTML | [Discord newsletter](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/discord_newsletter), at the cookbook's `v0.18.0` release |
+| [A method as a CrewAI agent's tool](code/python/crewai-tool/) | A crew whose reviewer checks a counterparty's NDA against the company's playbook through the method and whose editor turns the review into a memo | [NDA review against a playbook](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.0/methods/review_nda), at the cookbook's `v0.20.0` release |
+| [A weekly digest](code/python/weekly-digest/) | A week of Discord messages fetched in code, written up by the method, and posted as HTML | [Community newsletter from Discord](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.0/methods/discord_newsletter), at the cookbook's `v0.20.0` release |
 
 ### TypeScript
 
@@ -30,9 +30,9 @@ Each recipe is a small package calling the method through [`@pipelex/sdk`](https
 
 | Recipe | What it shows | Method |
 |---|---|---|
-| [A Next.js form whose server action runs a method](code/typescript/nextjs-server-action/) | A page whose form is validated against the method's input type and whose server action renders its typed output, with the key kept on the server | [Blog article generator](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/blog_article_generator), at the cookbook's `v0.18.0` release |
-| [A run started now and read hours later](code/typescript/durable-run/) | One command that starts a run and exits with its id, and another that reads the result by that id whenever it is ready | [Research report](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/research_report), at the cookbook's `v0.18.0` release |
-| [A local file sent through an upload grant](code/typescript/upload-grant/) | An image from this machine sent to storage with a one-time grant, then read by the method by its storage uri | [Gantt chart extraction](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/extract_gantt), at the cookbook's `v0.18.0` release |
+| [A Next.js form whose server action runs a method](code/typescript/nextjs-server-action/) | A page whose form sends a description and a record count to a server action that runs the method and renders its typed records as a table, with the key kept on the server | [Synthetic data from a description](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.0/methods/gen_synthetic_data), at the cookbook's `v0.20.0` release |
+| [A run started now and read hours later](code/typescript/durable-run/) | One command that starts a run and exits with its id, and another that reads the result by that id whenever it is ready | [Release post in the company's voice](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.0/methods/write_release_post), at the cookbook's `v0.20.0` release |
+| [A local file sent through an upload grant](code/typescript/upload-grant/) | A PDF from this machine sent to storage with a one-time grant, then read by the method by its storage uri | [DPE record for a letting agency](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.0/methods/extract_dpe), at the cookbook's `v0.20.0` release |
 
 ## Make it an app
 
@@ -40,7 +40,7 @@ These recipes turn a method into a web app whose form and result view come from 
 
 | Recipe | What it shows | Method |
 |---|---|---|
-| [From an address to a web app you deploy](app/deployed-app/) | One command from an address to a running app, its production build, and what a deployment needs: the key as a server secret and an access control in front | [Energy diagnostic (DPE) extraction](https://github.com/Pipelex/pipelex-cookbook/tree/v0.18.0/methods/extract_dpe), at the cookbook's `v0.18.0` release |
+| [From an address to a web app you deploy](app/deployed-app/) | One command from an address to a running app, its production build, and what a deployment needs: the key as a server secret and an access control in front | [DPE record for a letting agency](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.0/methods/extract_dpe), at the cookbook's `v0.20.0` release |
 | [A second method as a second tab](app/second-tab/) | `make add-method` adding a method by its address to that app, which becomes one tab per method, and moving a method to another release | [Invoice extraction](https://github.com/Pipelex/methods/tree/v0.1.1/methods/invoice_extraction), from the method library |
 
 ## Make it yours
