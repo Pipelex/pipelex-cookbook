@@ -12,7 +12,7 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.1",
+            method_ref="github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.2",
             inputs={
                 "document": {
                     "url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_dpe/synthetic_dpe.pdf",
