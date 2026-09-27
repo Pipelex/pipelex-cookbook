@@ -61,6 +61,8 @@ _TYPESCRIPT_IDENTIFIER_PATTERN = re.compile(r"^[A-Za-z_$][A-Za-z0-9_$]*$")
 # The input form's kind for each input, as a reader says it. The kind `list` only restates the multiplicity, so a list is phrased from its
 # concept instead.
 _KIND_NOUNS = {"prose": "text", "list": None}
+# A native concept the input form shows as a structure, which a reader knows by what it holds.
+_NATIVE_CONCEPT_NOUNS = {"native.Date": "date"}
 # A concept refining the native `Text` carries a single `text` field, which says nothing the concept's own description does not.
 _TEXT_ONLY_FIELDS = ["text"]
 _NATIVE_PREFIX = "native."
@@ -461,7 +463,9 @@ def _samples(*, package: MethodPackage) -> list[Sample]:
 
 def _input_line(contract_input: ContractInput) -> str:
     concept = f"`{short_concept(contract_input.concept)}`"
-    kind = _KIND_NOUNS.get(contract_input.kind, contract_input.kind) if contract_input.kind else None
+    kind = _NATIVE_CONCEPT_NOUNS.get(contract_input.concept)
+    if kind is None and contract_input.kind:
+        kind = _KIND_NOUNS.get(contract_input.kind, contract_input.kind)
     what: str
     if kind:
         match contract_input.multiplicity:

@@ -1,0 +1,387 @@
+{
+  "pipe": "synthetic_data_generation.generate_synthetic_records",
+  "concept": "synthetic_data_generation.DataRecord",
+  "run": {
+    "started_at": "2026-09-26T22:59:22Z",
+    "finished_at": "2026-09-26T22:59:53Z",
+    "server": "https://api.pipelex.com",
+    "route": "files",
+    "method_ref": null,
+    "commit_sha": null,
+    "bundle_sha256": "cc31ad4f5e10dc6c9eeb189007b75a8c4e6cb9a06c3fd3d3da8eb019fbf4d26a",
+    "inputs_sha256": "7aed97a47b10b173179ee63a22b5d9a1d95505c1527541cd8ac2c9c55eb242b5"
+  },
+  "output": [
+    {
+      "case": "Élodie Varnet complains tersely that her kettle has still not arrived eight days after the promised date. The email is two lines long and plainly annoyed.",
+      "fields": [
+        {
+          "name": "channel",
+          "value": "email"
+        },
+        {
+          "name": "customer_name",
+          "value": "Élodie Varnet"
+        },
+        {
+          "name": "language",
+          "value": "French"
+        },
+        {
+          "name": "order_number",
+          "value": "C18472635"
+        },
+        {
+          "name": "subject_line",
+          "value": "Colis toujours pas arrivé"
+        },
+        {
+          "name": "message",
+          "value": "Ma bouilloire devait arriver il y a 8 jours et je n’ai toujours rien.\nC’est vraiment pénible, merci de me dire où est mon colis."
+        },
+        {
+          "name": "queue",
+          "value": "Orders and delivery"
+        },
+        {
+          "name": "priority",
+          "value": "high"
+        }
+      ]
+    },
+    {
+      "case": "Thomas Rivelin politely gives a detailed timeline for a toaster return whose refund remains missing 18 days after receipt was confirmed. He asks when the money will reach his account.",
+      "fields": [
+        {
+          "name": "channel",
+          "value": "contact form"
+        },
+        {
+          "name": "customer_name",
+          "value": "Thomas Rivelin"
+        },
+        {
+          "name": "language",
+          "value": "French"
+        },
+        {
+          "name": "order_number",
+          "value": "C63091842"
+        },
+        {
+          "name": "subject_line",
+          "value": "Suivi de mon remboursement"
+        },
+        {
+          "name": "message",
+          "value": "Bonjour,\n\nJe me permets de vous contacter au sujet du remboursement de ma commande C63091842. J’ai retourné le grille-pain, et votre service m’a confirmé sa bonne réception il y a maintenant 18 jours. Il m’avait alors été indiqué que le remboursement serait effectué rapidement, mais à ce jour, aucun montant n’apparaît encore sur mon compte.\n\nPourriez-vous, s’il vous plaît, vérifier où en est le traitement de ce retour et me préciser à quelle date le remboursement devrait parvenir sur mon compte bancaire ?\n\nJe vous remercie par avance pour votre aide et reste à votre disposition si vous avez besoin d’informations complémentaires.\n\nCordialement,\nThomas Rivelin"
+        },
+        {
+          "name": "queue",
+          "value": "Returns and refunds"
+        },
+        {
+          "name": "priority",
+          "value": "high"
+        }
+      ]
+    },
+    {
+      "case": "Mireille Dovaux reports from her phone, with abbreviations and typos, that her blender started smoking and that she unplugged it. She asks what to do with the appliance.",
+      "fields": [
+        {
+          "name": "channel",
+          "value": "contact form"
+        },
+        {
+          "name": "customer_name",
+          "value": "Mireille Dovaux"
+        },
+        {
+          "name": "language",
+          "value": "French"
+        },
+        {
+          "name": "order_number",
+          "value": "C50736194"
+        },
+        {
+          "name": "subject_line",
+          "value": "Blender fumée"
+        },
+        {
+          "name": "message",
+          "value": "Bonjour, mon blender s'est mis a fumer pendant que je l'utilisais. je l'ai debranché tt de suite. Je fais quoi avec l'appareil svp ?\nEnvoyé de mon tel"
+        },
+        {
+          "name": "queue",
+          "value": "Warranty and repairs"
+        },
+        {
+          "name": "priority",
+          "value": "urgent"
+        }
+      ]
+    },
+    {
+      "case": "Nolan Ashcombe sends a concise but firm email after seeing two identical card charges for one coffee machine. He asks for the duplicate charge to be reversed quickly.",
+      "fields": [
+        {
+          "name": "channel",
+          "value": "email"
+        },
+        {
+          "name": "customer_name",
+          "value": "Nolan Ashcombe"
+        },
+        {
+          "name": "language",
+          "value": "English"
+        },
+        {
+          "name": "order_number",
+          "value": "C29584017"
+        },
+        {
+          "name": "subject_line",
+          "value": "Charged twice for one order"
+        },
+        {
+          "name": "message",
+          "value": "Hello,\n\nI can see two identical card charges for the coffee machine in order C29584017. I only placed one order. Please reverse the duplicate charge as quickly as possible and confirm when this has been done.\n\nRegards,\nNolan Ashcombe"
+        },
+        {
+          "name": "queue",
+          "value": "Billing"
+        },
+        {
+          "name": "priority",
+          "value": "urgent"
+        }
+      ]
+    },
+    {
+      "case": "Sabine Cleroux asks politely whether a setting or preheating step could explain why her new coffee machine makes lukewarm coffee. Her message is clear and moderately detailed.",
+      "fields": [
+        {
+          "name": "channel",
+          "value": "contact form"
+        },
+        {
+          "name": "customer_name",
+          "value": "Sabine Cleroux"
+        },
+        {
+          "name": "language",
+          "value": "French"
+        },
+        {
+          "name": "order_number",
+          "value": "C74209516"
+        },
+        {
+          "name": "subject_line",
+          "value": "Café trop froid"
+        },
+        {
+          "name": "message",
+          "value": "Bonjour,\n\nJe viens de recevoir ma nouvelle machine à café et je trouve que le café sort seulement tiède, même lorsque je prépare une tasse juste après l’allumage. Existe-t-il un réglage pour augmenter la température ? Faut-il laisser préchauffer la machine pendant quelques minutes ou chauffer la tasse avant utilisation ?\n\nMerci d’avance pour votre aide.\n\nCordialement,\nSabine Cleroux"
+        },
+        {
+          "name": "queue",
+          "value": "Product help"
+        },
+        {
+          "name": "priority",
+          "value": "normal"
+        }
+      ]
+    },
+    {
+      "case": "Alistair Fenwick asks both to correct the flat number on his delivery address and to check a hand mixer that is two days late. The email is courteous and practical.",
+      "fields": [
+        {
+          "name": "channel",
+          "value": "email"
+        },
+        {
+          "name": "customer_name",
+          "value": "Alistair Fenwick"
+        },
+        {
+          "name": "language",
+          "value": "English"
+        },
+        {
+          "name": "order_number",
+          "value": "C81643720"
+        },
+        {
+          "name": "subject_line",
+          "value": "Address change and missing parcel"
+        },
+        {
+          "name": "message",
+          "value": "Hello,\n\nI’ve just noticed that the delivery address on my order has the wrong flat number. It should be Flat 14, not Flat 41. Is it still possible to correct this?\n\nAlso, the hand mixer was estimated to arrive two days ago, but I haven’t received it yet. Could you please check where the parcel is and let me know when I should expect it?\n\nMany thanks,\nAlistair Fenwick"
+        },
+        {
+          "name": "queue",
+          "value": "Orders and delivery"
+        },
+        {
+          "name": "priority",
+          "value": "normal"
+        }
+      ]
+    },
+    {
+      "case": "Anaïs Belcourt, who has not yet ordered, asks whether spare whisk attachments will remain available if she buys a hand mixer. The contact-form message is brief and friendly.",
+      "fields": [
+        {
+          "name": "channel",
+          "value": "contact form"
+        },
+        {
+          "name": "customer_name",
+          "value": "Anaïs Belcourt"
+        },
+        {
+          "name": "language",
+          "value": "French"
+        },
+        {
+          "name": "order_number",
+          "value": ""
+        },
+        {
+          "name": "subject_line",
+          "value": "Pièces détachées avant achat"
+        },
+        {
+          "name": "message",
+          "value": "Bonjour, je n’ai pas encore commandé. Avant de choisir un batteur à main, je voudrais savoir s’il sera possible d’acheter des fouets de remplacement séparément par la suite. Merci !"
+        },
+        {
+          "name": "queue",
+          "value": "Other"
+        },
+        {
+          "name": "priority",
+          "value": "normal"
+        }
+      ]
+    },
+    {
+      "case": "Camille Zorvan says the wrong toaster model was ordered and remains unopened, then asks for the return procedure. The email is short and matter-of-fact.",
+      "fields": [
+        {
+          "name": "channel",
+          "value": "email"
+        },
+        {
+          "name": "customer_name",
+          "value": "Camille Zorvan"
+        },
+        {
+          "name": "language",
+          "value": "French"
+        },
+        {
+          "name": "order_number",
+          "value": "C36157208"
+        },
+        {
+          "name": "subject_line",
+          "value": "Retour grille-pain"
+        },
+        {
+          "name": "message",
+          "value": "Bonjour,\nJ’ai commandé le mauvais modèle de grille-pain. Il est encore fermé et je souhaite le retourner. Pouvez-vous m’indiquer la procédure à suivre ?\nMerci."
+        },
+        {
+          "name": "queue",
+          "value": "Returns and refunds"
+        },
+        {
+          "name": "priority",
+          "value": "normal"
+        }
+      ]
+    },
+    {
+      "case": "Priya Elmsford gives a careful account of a three-month-old kettle that switches on but no longer heats, including the socket and descaling checks she tried. She politely asks whether it can be repaired or replaced under warranty.",
+      "fields": [
+        {
+          "name": "channel",
+          "value": "contact form"
+        },
+        {
+          "name": "customer_name",
+          "value": "Priya Elmsford"
+        },
+        {
+          "name": "language",
+          "value": "English"
+        },
+        {
+          "name": "order_number",
+          "value": "C95410386"
+        },
+        {
+          "name": "subject_line",
+          "value": "Kettle stopped heating after three months"
+        },
+        {
+          "name": "message",
+          "value": "Hello,\n\nI purchased a kettle from your online shop about three months ago, and it has unfortunately stopped heating. The power light still comes on when I press the switch, but the water remains cold and the kettle does not switch itself off.\n\nI have tried plugging it into a different socket, which works normally with another appliance. I also emptied and descaled the kettle, then allowed it to dry before trying again, but this made no difference. The base and kettle appear to be seated correctly, and there is no visible damage.\n\nCould you please let me know whether the kettle can be repaired or replaced under warranty? My order number is C95410386. I would be happy to provide photographs or any other information you need.\n\nThank you for your help.\n\nKind regards,\nPriya Elmsford"
+        },
+        {
+          "name": "queue",
+          "value": "Warranty and repairs"
+        },
+        {
+          "name": "priority",
+          "value": "normal"
+        }
+      ]
+    },
+    {
+      "case": "Lucien Marroway writes a quick phone-style email asking where to download the VAT invoice for his blender, with a minor typo. The request is routine and non-urgent.",
+      "fields": [
+        {
+          "name": "channel",
+          "value": "email"
+        },
+        {
+          "name": "customer_name",
+          "value": "Lucien Marroway"
+        },
+        {
+          "name": "language",
+          "value": "English"
+        },
+        {
+          "name": "order_number",
+          "value": "C42861973"
+        },
+        {
+          "name": "subject_line",
+          "value": "Need VAT invoice"
+        },
+        {
+          "name": "message",
+          "value": "Hi, where can I download the VAT invoice for my blender? Cant find it in the confirmation email. Thx"
+        },
+        {
+          "name": "queue",
+          "value": "Billing"
+        },
+        {
+          "name": "priority",
+          "value": "normal"
+        }
+      ]
+    }
+  ],
+  "files": {}
+}

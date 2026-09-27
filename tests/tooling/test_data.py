@@ -36,6 +36,8 @@ WIDGETS_SAMPLE_PATH = "assets/extract_widgets/catalogue.png"
 WIDGETS_WORD_SAMPLE_URL = "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_widgets/catalogue.docx"
 WIDGETS_WORD_SAMPLE_PATH = "assets/extract_widgets/catalogue.docx"
 WIDGETS_SOURCE = "https://widgets.example.org/catalogue.png"
+# The same sample as a list of two PDF documents, each of which gets its own preview.
+WIDGETS_PDF_SAMPLE_PATHS = ["assets/extract_widgets/catalogue-1.pdf", "assets/extract_widgets/catalogue-2.pdf"]
 
 COOKBOOK_TOML = f"""address = "{FIXTURE_ADDRESS}"
 repository = "Pipelex/pipelex-cookbook"
@@ -156,10 +158,140 @@ MakeCookbook = Callable[..., Path]
 # An output of the right shape for each method under methods/, written by hand from its contract.json, for the shape check's tests. Each is
 # made up and short: the shape check reads the shape, never the content.
 RIGHT_OUTPUTS: dict[str, JsonValue] = {
-    "blog_article_generator": {
-        "seo_title": "Capybaras, the calmest animals on the riverbank",
-        "meta_description": "Why capybaras get along with everyone.",
-        "content": "# Capybaras\n\nCapybaras are the largest rodents in the world.",
+    "answer_from_documents": {
+        "status": "answered",
+        "answer": "No",
+        "explanation": "The tool computes the mean resolution time of past tickets, which the guidelines give as a simple prediction system.",
+        "supporting_passages": [
+            {
+                "document_identifier": "Commission Guidelines on the definition of an artificial intelligence system, C(2025) 5053 final",
+                "page_number": 10,
+                "quote": "(51) Static estimation systems, such as customer support response time system that are based on static estimation to "
+                "predict the mean resolution time from the past data [...] are other examples",
+                "relevance_reasoning": "It names a customer support system predicting the mean resolution time from past data.",
+                "sub_question_addressed": "Does a tool computing an average of past resolution times meet the definition?",
+            },
+            {
+                "document_identifier": "Commission Guidelines on the definition of an artificial intelligence system, C(2025) 5053 final",
+                "page_number": 1,
+                "quote": "(7) The Guidelines are not binding.",
+                "relevance_reasoning": "It qualifies the authority of the answer.",
+                "sub_question_addressed": "Which guidance decides the question?",
+            },
+        ],
+        "contradictions_noted": [],
+        "caveats": "The answer holds only for a fixed average; the guidelines are not binding.",
+        "confidence": "high",
+    },
+    "discord_newsletter": {
+        "text": (
+            "<h2>☀️ Weekly Summary</h2>\n<p>Two new members joined, and the finishing thread settled on thinner coats in a cold workshop.</p>"
+            "<h2>🙌 New members</h2>\n<ul><li>Ada Example is a cabinetmaker near Nantes who joined to talk about pricing.</li></ul>"
+            "<h2>finishing</h2><p>Ben Example asked why his oil stayed tacky; the answer was one thin coat, wiped back hard.</p>"
+            "<h2>🌎 Geographic hubs</h2><h3>🇫🇷-lyon</h3><p>The monthly meetup is on Saturday 10 October at 10am.</p>"
+        ),
+    },
+    "extract_dpe": {
+        "address": "7 rue des Illustrations, 69007 Lyon, 2nd floor, lot 12",
+        "dpe_number": "2669E0000000Y",
+        "date_of_issue": "2026-03-02",
+        "date_of_expiration": "2036-03-01",
+        "energy_efficiency_class": "E",
+        "per_year_per_m2_consumption": 287,
+        "co2_emission_class": "D",
+        "per_year_per_m2_co2_emissions": 44,
+        "yearly_energy_costs_min": 1120,
+        "yearly_energy_costs_max": 1540,
+        "energy_prices_as_of": "2025-01-01",
+        "letting_status": "No new or renewed lease from 1 January 2034",
+        "no_new_lease_from": "2034-01-01",
+    },
+    "gen_expense_data": {
+        "items": [
+            {
+                "employee": {
+                    "employee_id": "EMP-26041",
+                    "full_name": "Ada Example",
+                    "email": "ada.example@example.com",
+                    "department": "Business Development",
+                    "job_title": "Senior Sales Engineer",
+                },
+                "claims": [
+                    {
+                        "claim_id": "EXP-20260912-66851",
+                        "expense_date": "2026-09-12",
+                        "merchant": "Taxi Rhône Azur, Villeurbanne",
+                        "category": "Taxi",
+                        "amount": "EUR 46.80",
+                        "business_purpose": "Commissioning review at the client's site, return to Lyon Part-Dieu",
+                        "receipt": {"url": "output/0-claims-1-receipt.png", "mime_type": "image/png", "width": 640, "height": 1024},
+                        "expected_verdict": "Breaks rule 4: Saturday taxi with no manager's prior approval mentioned",
+                    },
+                ],
+                "expense_report": {
+                    "inner_html": (
+                        "<h1>Expense report</h1>\n<p><strong>Ada Example</strong>, Senior Sales Engineer, Business Development</p>"
+                        "<table><tr><td>EXP-20260912-66851</td><td>2026-09-12</td><td>EUR 46.80</td></tr></table>"
+                    ),
+                    "css_class": None,
+                },
+            },
+        ],
+    },
+    "gen_synthetic_data": {
+        "items": [
+            {
+                "case": "A customer whose new kettle gave off a burning smell the first time it was used asks whether it is safe to keep using it.",
+                "fields": [
+                    {"name": "channel", "value": "contact form"},
+                    {"name": "customer_name", "value": "Ada Example"},
+                    {"name": "order_number", "value": "C40718263"},
+                    {"name": "message", "value": "My new kettle smelled of burning the first time I used it. Is it safe?"},
+                    {"name": "queue", "value": "Warranty and repairs"},
+                    {"name": "priority", "value": "urgent"},
+                ],
+            },
+            {
+                "case": "A customer writing from a phone, annoyed, whose order is a week late and who gives no order number.",
+                "fields": [
+                    {"name": "channel", "value": "email"},
+                    {"name": "customer_name", "value": "Ben Example"},
+                    {"name": "order_number", "value": ""},
+                    {"name": "message", "value": "ordered a toaster 8 days ago still nothing, where is it"},
+                    {"name": "queue", "value": "Orders and delivery"},
+                    {"name": "priority", "value": "high"},
+                ],
+            },
+        ],
+    },
+    "qualify_bid": {
+        "opportunity": "Digital Call 9 — DIGITAL-2026-SKILLS-09-COMPETITIONS — European Advanced Digital Skills Competitions",
+        "briefing_date": "2025-12-01",
+        "recommendation": "Go if answered",
+        "summary": "The deadline and the budget are met, and the deck leaves eligibility to the call document. Ask who may apply before committing.",
+        "criteria": [
+            {
+                "criterion": "Eligibility",
+                "verdict": "not stated",
+                "what_the_deck_says": "Consortium composition compliance is a must, read Section 6 of the call document.",
+                "slides": [4, 9],
+                "note": "The deck does not say whether a company may take part as coordinator or partner.",
+            },
+            {
+                "criterion": "Deadline",
+                "verdict": "met",
+                "what_the_deck_says": "Deadline for submission: 03 March 2026 @17:00 CET (Brussels).",
+                "slides": [6],
+                "note": "The deadline is 92 days after the briefing, beyond the twelve weeks required.",
+            },
+        ],
+        "questions": [
+            {
+                "question": "May a company established in an EU Member State take part as coordinator or partner?",
+                "criterion": "Eligibility",
+                "ask": "The funder, through its question form",
+            },
+        ],
     },
     "review_nda": {
         "verdict": "Sign after negotiating",
@@ -179,6 +311,23 @@ RIGHT_OUTPUTS: dict[str, JsonValue] = {
                 "assessment": "negotiate",
                 "fallback": "Five years from the Effective Date.",
             },
+        ],
+    },
+    "write_release_post": {
+        "title": "Save your methods to your Pipelex catalog",
+        "slug": "save-methods-pipelex-catalog",
+        "meta_description": "Save a method from your coding agent to your organization's catalog, and pull it back to edit it.",
+        "excerpt": "The Pipelex plugin now saves your methods to your organization's catalog and pulls them back.",
+        "category": "Product updates",
+        "tags": ["Pipelex plugin", "Catalog", "Methods"],
+        "body": (
+            "Pipelex plugin 0.7.0 lets you save the method you are working on to your organization's catalog.\n\n"
+            "## Save a method to your catalog\n\nWe save only when you ask.\n\n"
+            "## Get the update\n\nUpdate the Pipelex plugin in your coding agent to get these changes."
+        ),
+        "left_out": [
+            {"note": "The file that links a directory to its saved method", "why": "Rule 3: the link files the tools write for the reader"},
+            {"note": "The retry behavior of a save after a network fault", "why": "Rule 3: retry and idempotency logic"},
         ],
     },
 }
@@ -254,6 +403,26 @@ def make_word_document_sample(root: Path) -> None:
     inputs = {"catalogue": {"concept": "widgets.CataloguePage", "content": {"url": WIDGETS_WORD_SAMPLE_URL}}}
     (root / "methods" / "extract_widgets" / "inputs.json").write_text(json.dumps(inputs, indent=2), encoding="utf-8")
     make_widgets_sample_a_document(root)
+
+
+def make_widgets_sample_a_list_of_documents(root: Path) -> list[Path]:
+    """Make the fixture's widget sample a list of two PDF documents kept under `assets/`, which its contract calls a list whose items are
+    documents, and return their paths."""
+    paths: list[Path] = []
+    content: list[JsonValue] = []
+    for sample in WIDGETS_PDF_SAMPLE_PATHS:
+        path = root / sample
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(pdf_bytes(width=300, height=200))
+        paths.append(path)
+        content.append({"url": f"https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/{sample}"})
+    inputs = {"catalogue": {"concept": "native.Document", "content": content}}
+    (root / "methods" / "extract_widgets" / "inputs.json").write_text(json.dumps(inputs, indent=2), encoding="utf-8")
+    contract = WIDGETS_CONTRACT.model_copy(
+        update={"inputs": [ContractInput(name="catalogue", concept="native.Document", kind="list", item_kind="document", multiplicity="variable")]}
+    )
+    (root / "methods" / "extract_widgets" / "contract.json").write_text(contract.to_json(), encoding="utf-8")
+    return paths
 
 
 def add_words_synthetic_record(root: Path) -> None:

@@ -9,8 +9,9 @@ A file the output holds, such as a generated image, is copied into `methods/<nam
 and the output's references to it, the durable `pipelex-storage://` URI and the presigned link beside it, become the copy's path relative to the
 package. The run id, the cost and every storage URI stay out of the repository: the writer prints them instead.
 
-A PDF document sample kept under `assets/` gets a first-page preview beside it, `<stem>.preview.png`, which the page shows linking to the file;
-a document that is not a PDF, such as an image or a Word file, cannot be rendered, so the page links it and nothing asks for its preview.
+A PDF document sample kept under `assets/`, alone or in a list of documents, gets a first-page preview beside it, `<stem>.preview.png`, which
+the page shows linking to the file; a document that is not a PDF, such as an image or a Word file, cannot be rendered, so the page links it and
+nothing asks for its preview.
 """
 
 import hashlib
@@ -264,11 +265,12 @@ def unrecorded_documents(*, cookbook: Cookbook, package: MethodPackage) -> list[
 
 
 def _local_documents(*, cookbook: Cookbook, package: MethodPackage) -> list[tuple[str, Path]]:
-    """Each input the contract calls a document with the local file of its sample, for every PDF it names in this repository."""
+    """Each input the contract calls a document, or a list of documents, with the local file of its sample, for every PDF it names in this
+    repository."""
     contract = package.contract
     if contract is None:
         return []
-    kinds = {contract_input.name: contract_input.kind for contract_input in contract.inputs}
+    kinds = {contract_input.name: contract_input.sample_kind for contract_input in contract.inputs}
     found: list[tuple[str, Path]] = []
     for input_name, value in package.inputs.items():
         if kinds.get(input_name) != DOCUMENT_KIND:

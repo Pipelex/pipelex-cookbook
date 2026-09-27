@@ -1,8 +1,9 @@
 """A method's contract: what its main pipe takes and what it returns, as production reports it.
 
 The contract comes from the validation verdict of `POST /v1/validate`: its `pipe_io_contracts` carries each pipe's inputs and output with their
-JSON schemas, and its `input_form` view carries each input's kind (an image, a document, a text). `make refresh` projects the main pipe's entry into
-the small, stable shape below and commits it as `contract.json` beside the package, so the renderer reads committed files and never the network.
+JSON schemas, and its `input_form` view carries each input's kind (an image, a document, a text), and for a list the kind of its items. `make
+refresh` projects the main pipe's entry into the small, stable shape below and commits it as `contract.json` beside the package, so the renderer
+reads committed files and never the network.
 """
 
 import json
@@ -19,6 +20,8 @@ CONTRACT_FILE = "contract.json"
 TYPE_BRANCH_SEPARATOR = " or "
 # How a JSON schema refers to one of its own definitions.
 _DEFS_PREFIX = "#/$defs/"
+# The input form's kind for a list, whose items carry their own kind.
+LIST_KIND = "list"
 
 
 class ContractInput(BaseModel):
@@ -29,10 +32,19 @@ class ContractInput(BaseModel):
     name: str
     concept: str = Field(description="The concept the input expects, domain-qualified, such as `nda_review.NdaPlaybook`")
     kind: str | None = Field(default=None, description="The input form's kind for the input, such as `image`, when the form names one")
+    item_kind: str | None = Field(
+        default=None, description="The input form's kind for each item of a list input, such as `document`, when the form names one"
+    )
     description: str | None = None
     multiplicity: str = Field(description="`single`, `variable` or `fixed`")
     item_count: int | None = None
     required: bool = True
+
+    @property
+    def sample_kind(self) -> str | None:
+        """The kind each value of the input's sample is shown as: the input's own kind, or its items' for a list, so that each document of a
+        list of documents is shown as a single document is."""
+        return self.item_kind if self.kind == LIST_KIND else self.kind
 
 
 class ContractField(BaseModel):
@@ -68,7 +80,9 @@ class Contract(BaseModel):
     output: ContractOutput
 
     def to_json(self) -> str:
-        return json.dumps(self.model_dump(mode="json"), indent=2, ensure_ascii=False) + "\n"
+        # Only a list input has items, so an input without an item kind is written without the key.
+        without_item_kind = {index: {"item_kind"} for index, contract_input in enumerate(self.inputs) if contract_input.item_kind is None}
+        return json.dumps(self.model_dump(mode="json", exclude={"inputs": without_item_kind}), indent=2, ensure_ascii=False) + "\n"
 
 
 def load_contract(path: Path) -> Contract:
@@ -121,10 +135,14 @@ def project_contract(*, verdict: Mapping[str, Any], main_pipe: str) -> Contract:
     input_forms = cast("dict[str, Any]", verdict.get("input_form") or {})
     form_fields = cast("list[dict[str, Any]]", cast("dict[str, Any]", input_forms.get(pipe_ref) or {}).get("fields") or [])
     kinds_by_name: dict[str, str] = {}
+    item_kinds_by_name: dict[str, str] = {}
     for form_field in form_fields:
         field_kind = form_field.get("kind")
         if isinstance(field_kind, str):
             kinds_by_name[str(form_field["name"])] = field_kind
+        item_kind = cast("dict[str, Any]", form_field.get("item") or {}).get("kind")
+        if field_kind == LIST_KIND and isinstance(item_kind, str):
+            item_kinds_by_name[str(form_field["name"])] = item_kind
 
     inputs: list[ContractInput] = []
     for input_name, input_contract in cast("dict[str, dict[str, Any]]", io_contract.get("inputs") or {}).items():
@@ -134,6 +152,7 @@ def project_contract(*, verdict: Mapping[str, Any], main_pipe: str) -> Contract:
                 name=input_name,
                 concept=str(input_contract["concept_ref"]),
                 kind=kinds_by_name.get(input_name),
+                item_kind=item_kinds_by_name.get(input_name),
                 description=_optional_str(input_schema.get("description")),
                 multiplicity=str(input_contract.get("multiplicity") or "single"),
                 item_count=_optional_int(input_contract.get("item_count")),
