@@ -6,6 +6,10 @@
 
 - **`check_schedule_update`, a schedule update checked against the baseline**: reads a contractor's schedule update, the chart its scheduling tool exports, against the company's master schedule baseline and slip tolerance, and returns what a project controls analyst loads into the master schedule and sends to the project manager: every task and milestone of the chart as a row with its status and its dates to the month, each baseline milestone compared with the update and flagged under the tolerance with the reason the update gives, and a two-sentence note on what slipped. It replaces the retired `extract_gantt`, and its sample is a fictional satellite manufacturer's schedule update made for the example, beside a baseline and tolerance written for it.
 
+### Changed
+
+- **The copy-and-change recipe copies `answer_from_documents` at `v0.20.0`**: the agent takes the package at `v0.20.0`, has it answer in the language of the question, proves the change on the AI Act sample with the question asked in French, and runs the saved method by its id on the sample as it stands. The recipe's transcript comes from fresh production runs, each answer is checked against the guidelines themselves, and its add-method dry run is the real one against the saved id.
+
 ## [v0.20.1] - 2026-09-27
 
 ### Changed
