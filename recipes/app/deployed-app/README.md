@@ -1,6 +1,6 @@
 # From an address to a web app you deploy
 
-An address is a whole method, and one command turns it into a web app. The initializer of [`pipelex-method-apps`](https://github.com/Pipelex/pipelex-method-apps) writes a Next.js app whose form and result view both come from the method's contract, so you write no form field and no result markup, and the app calls the method by its address with your key kept on the server. This recipe makes the app for the cookbook's [energy diagnostic (DPE) extraction](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.0/methods/extract_dpe) method, which reads a French energy performance diagnostic into the record a letting agency files: its form takes a PDF, which the browser sends straight to Pipelex storage through a one-time upload grant.
+An address is a whole method, and one command turns it into a web app. The initializer of the [method apps](https://github.com/Pipelex/pipelex-sdk/tree/main/method-apps) in `pipelex-sdk` writes a Next.js app whose form and result view both come from the method's contract, so you write no form field and no result markup, and the app calls the method by its address with your key kept on the server. This recipe makes the app for the cookbook's [energy diagnostic (DPE) extraction](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.0/methods/extract_dpe) method, which reads a French energy performance diagnostic into the record a letting agency files: its form takes a PDF, which the browser sends straight to Pipelex storage through a one-time upload grant.
 
 It shows what an app on a published method is made of:
 
@@ -40,22 +40,22 @@ make -C dpe-app start
 The app is a standard Next.js app, so any host that runs `npm run build` and `npm run start` serves it; follow your host's own guide for a Next.js app. Two things are yours to set there:
 
 - **The key**, as `PIPELEX_API_KEY` in the host's environment for the server, marked secret where the host has a notion of one. It is read at run time, so it never needs to be present at build time.
-- **An access control in front of the app**, such as your host's password protection or single sign-on. The template's section [Where the app listens](https://github.com/Pipelex/pipelex-method-apps/tree/main/webapp-js#where-the-app-listens) says why: "nothing authenticates the browser that calls them, so anyone who can reach the server runs methods billed to your key". An app that more than one person uses also has to decide who may read which run's files, which its [input form guide](https://github.com/Pipelex/pipelex-method-apps/blob/main/webapp-js/docs/input-form.md) explains.
+- **An access control in front of the app**, such as your host's password protection or single sign-on. The template's section [Where the app listens](https://github.com/Pipelex/pipelex-sdk/tree/main/method-apps/webapp-js#where-the-app-listens) says why: "nothing authenticates the browser that calls them, so anyone who can reach the server runs methods billed to your key". An app that more than one person uses also has to decide who may read which run's files, which its [input form guide](https://github.com/Pipelex/pipelex-sdk/blob/main/method-apps/webapp-js/docs/input-form.md) explains.
 
 ## What you get
 
 Creating the app streams the output of `make create`, which scaffolds the method, installs the packages, and checks, tests and builds the app, then ends on one verdict line, after a warning about the license's copyright line, which `--license-holder` claims. With `--quiet`, the output of `make create` goes to a log instead. Its beginning and its end:
 
 ```text
-create-method-app: writing webapp-js 0.5.5 (67c67d5f3f768152a2412f74f205e14c14fa361b) into …/dpe-app
-create-method-app: wrote 143 files
+create-method-app: writing webapp-js 0.29.1 (647c4ff9192d480d7fd2ed25b7573244f8a4bcf5) into …/dpe-app
+create-method-app: wrote 147 files
 create-method-app: running make create in …/dpe-app
 …
 create: done — Extract DPE (extract-dpe) runs method_ref github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.0.
 …
 warnings from make create:
   warning: LICENSE copyright line left untouched — pass --license-holder to claim it.
-git: made a repository on main and committed the template as 03da3a467c2f, "Start from Pipelex/pipelex-method-apps/webapp-js 0.5.5 (67c67d5f3f768152a2412f74f205e14c14fa361b)".
+git: made a repository on main and committed the template as af45703cb01d, "Start from Pipelex/pipelex-sdk/method-apps/webapp-js 0.29.1 (647c4ff9192d480d7fd2ed25b7573244f8a4bcf5)".
 created …/dpe-app; next: cd …/dpe-app && make serve
 ```
 
@@ -88,9 +88,9 @@ Above it, a Download button and a "JSON" view beside the result view; below it, 
 
 ## How it is built
 
-The recipe is two commands and the app they write, so it carries no code of its own: the [initializer](https://github.com/Pipelex/pipelex-method-apps/tree/main/initializers/js#readme) and the [`webapp-js`](https://github.com/Pipelex/pipelex-method-apps/tree/main/webapp-js#readme) template do the work.
+The recipe is two commands and the app they write, so it carries no code of its own: the [initializer](https://github.com/Pipelex/pipelex-sdk/tree/main/method-apps/initializers/js#readme) and the [`webapp-js`](https://github.com/Pipelex/pipelex-sdk/tree/main/method-apps/webapp-js#readme) template do the work.
 
 - **The method's slice.** `make create`, which the initializer runs, writes `methods/extract-dpe/method.json` naming the address, the types generated from the method in `src/generated/extract-dpe/` with their lock, a typed reader of the output in `src/types/`, the Server Actions that run the method in `src/actions/`, and the form in `src/components/ExtractDpeForm.tsx`, then registers it in `src/methods.ts`. It names the app after the method, in `package.json` and in `src/site.ts`, which holds the page's title and description; pass `--name`, `--title` and `--description` to choose them yourself.
 - **The run.** The form stores the PDF as soon as it is dropped, through an upload grant the Server Action asks for, and the action checks the inputs against the method's contract before it starts the run, since a Server Action is a public endpoint. The app runs the method durably by default: it starts the run and polls it, so a method that takes minutes does not hit the hosted API's limit on a synchronous call.
-- **The types stay the method's.** `make check`, within `make all`, fails when the generated types no longer match `method.json`, and `npm run codegen:verify` asks the API whether they still match the method at its tag. [Codegen](https://github.com/Pipelex/pipelex-method-apps/blob/main/webapp-js/docs/codegen.md) explains both.
+- **The types stay the method's.** `make check`, within `make all`, fails when the generated types no longer match `method.json`, and `npm run codegen:verify` asks the API whether they still match the method at its tag. [Codegen](https://github.com/Pipelex/pipelex-sdk/blob/main/method-apps/webapp-js/docs/codegen.md) explains both.
 - **A second method becomes a second tab**, as the [second-tab recipe](../second-tab/) shows.
