@@ -47,15 +47,15 @@ The app is a standard Next.js app, so any host that runs `npm run build` and `np
 Creating the app streams the output of `make create`, which scaffolds the method, installs the packages, and checks, tests and builds the app, then ends on one verdict line, after a warning about the license's copyright line, which `--license-holder` claims. With `--quiet`, the output of `make create` goes to a log instead. Its beginning and its end:
 
 ```text
-create-method-app: writing webapp-js 0.5.5 (67c67d5f3f768152a2412f74f205e14c14fa361b) into …/dpe-app
-create-method-app: wrote 143 files
+create-method-app: writing webapp-js 0.29.1 (647c4ff9192d480d7fd2ed25b7573244f8a4bcf5) into …/dpe-app
+create-method-app: wrote 147 files
 create-method-app: running make create in …/dpe-app
 …
 create: done — Extract DPE (extract-dpe) runs method_ref github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.0.
 …
 warnings from make create:
   warning: LICENSE copyright line left untouched — pass --license-holder to claim it.
-git: made a repository on main and committed the template as 03da3a467c2f, "Start from Pipelex/pipelex-method-apps/webapp-js 0.5.5 (67c67d5f3f768152a2412f74f205e14c14fa361b)".
+git: made a repository on main and committed the template as af45703cb01d, "Start from Pipelex/pipelex-sdk/method-apps/webapp-js 0.29.1 (647c4ff9192d480d7fd2ed25b7573244f8a4bcf5)".
 created …/dpe-app; next: cd …/dpe-app && make serve
 ```
 
