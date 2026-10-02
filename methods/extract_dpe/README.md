@@ -4,7 +4,7 @@
 
 Read a French energy performance diagnostic (DPE) and return the record a letting agency files for the flat: the ADEME number and the dates, both classes with their figures, the estimated yearly energy costs with the date their prices refer to, and what the class means for letting the flat under the agency's letting rules.
 
-`github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.2` · [bundle.mthds](bundle.mthds) · [sample DPE](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_dpe/synthetic_dpe.pdf)
+`github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.3` · [bundle.mthds](bundle.mthds) · [sample DPE](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_dpe/synthetic_dpe.pdf)
 
 ## The sample
 
@@ -55,7 +55,7 @@ Run on production on 27 September 2026, from the package's files, in 24 seconds.
 With the Pipelex MCP in ChatGPT or Claude ([add it once](https://github.com/Pipelex/pipelex-mcp)), ask:
 
 ```text
-Run github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.2 on https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_dpe/synthetic_dpe.pdf
+Run github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.3 on https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_dpe/synthetic_dpe.pdf
 ```
 
 In ChatGPT you can attach your own file instead of the link; Claude takes a link. In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pipelex-plugins), the same sentence runs through `/pipelex-run`.
@@ -76,7 +76,7 @@ import { PipelexApiClient } from "@pipelex/sdk";
 
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.2",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.3",
   inputs: {
     document: {
       url: "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_dpe/synthetic_dpe.pdf",
@@ -104,7 +104,7 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.2",
+            method_ref="github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.3",
             inputs={
                 "document": {
                     "url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_dpe/synthetic_dpe.pdf",
@@ -127,7 +127,7 @@ The start call answers at once with the run's id, or with the reason it refused 
 ```bash
 START=$(curl -s https://api.pipelex.com/v1/start \
   -H "Authorization: Bearer $PIPELEX_API_KEY" -H "Content-Type: application/json" \
-  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.2", "inputs": {"document": {"url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_dpe/synthetic_dpe.pdf"}}}')
+  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.3", "inputs": {"document": {"url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_dpe/synthetic_dpe.pdf"}}}')
 RUN_ID=$(printf '%s' "$START" | jq -r '.pipeline_run_id // empty')
 if [ -z "$RUN_ID" ]; then printf '%s\n' "$START"; else
   until [ "$(curl -s -o results.json -w '%{http_code}' https://api.pipelex.com/v1/runs/$RUN_ID/results \
@@ -138,12 +138,12 @@ fi
 
 </details>
 
-In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.2`: it generates the result's types and writes one typed call.
+In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.3`: it generates the result's types and writes one typed call.
 
 ## Make it an app
 
 ```bash
-npm create @pipelex/method-app@latest dpe-app -- --method github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.2
+npm create @pipelex/method-app@latest dpe-app -- --method github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.3
 make -C dpe-app serve
 ```
 
@@ -154,7 +154,7 @@ The form and the result view come from the method's contract. `make serve` print
 Ask your agent:
 
 ```text
-Copy github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.2 into ./dpe, add a short note to the owner saying what the class means for letting the flat and by when to plan the works, prove it on the sample, and save it to my Pipelex account.
+Copy github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.3 into ./dpe, add a short note to the owner saying what the class means for letting the flat and by when to plan the works, prove it on the sample, and save it to my Pipelex account.
 ```
 
 From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
@@ -164,6 +164,6 @@ From then on every door above takes your method's id (`mt_…`) in place of the 
 With the Pipelex runtime and your own provider keys ([set it up](https://docs.pipelex.com/latest/get-started/run-it-yourself/)):
 
 ```bash
-curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.2/methods/extract_dpe/inputs.json
-pipelex run method github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.2 --inputs inputs.json
+curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.3/methods/extract_dpe/inputs.json
+pipelex run method github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.3 --inputs inputs.json
 ```

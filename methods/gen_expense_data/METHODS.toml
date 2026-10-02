@@ -2,7 +2,7 @@
 name = "gen_expense_data"
 display_name = "Expense Audit Test Batch"
 address = "github.com/Pipelex/pipelex-cookbook"
-version = "0.20.2"
+version = "0.20.3"
 description = "Turn a brief giving a company's expense policy and the test batch wanted into invented employees' expense reports, each claim with a generated photo of its receipt and the verdict the audit should reach: compliant, or the rule it breaks."
 authors = ["Evotis S.A.S"]
 license = "MIT"

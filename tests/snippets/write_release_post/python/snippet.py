@@ -11,10 +11,10 @@ from pipelex_sdk.client import PipelexAPIClient
 
 
 async def main() -> None:
-    inputs = httpx.get("https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.2/methods/write_release_post/inputs.json").json()
+    inputs = httpx.get("https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.3/methods/write_release_post/inputs.json").json()
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.2",
+            method_ref="github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.3",
             inputs=inputs,
         )
         print(result.main_stuff)
