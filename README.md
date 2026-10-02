@@ -93,7 +93,7 @@ Each method's page shows the TypeScript, Python and HTTP calls that run it on it
 
 ### As an app
 
-Ask your agent for a webapp around the method, and `/pipelex-scaffold` creates a new app from the [method-app template](https://github.com/Pipelex/pipelex-method-apps) and leaves it running on your machine.
+Ask your agent for a webapp around the method, and `/pipelex-scaffold` creates a new app from the [method-app template](https://github.com/Pipelex/pipelex-sdk/tree/main/method-apps) and leaves it running on your machine.
 
 Each method's page carries the one command, `npm create @pipelex/method-app`, that makes the app for that method.
 

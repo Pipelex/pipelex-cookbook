@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- **The method-app links point at `Pipelex/pipelex-sdk`**: the front page and the app recipes link the method-app template, its initializer and their guides in the `method-apps/` directory of `Pipelex/pipelex-sdk`, where they now live, instead of the frozen `Pipelex/pipelex-method-apps`. The commands are unchanged, since `@pipelex/create-method-app` keeps its name.
+
 ## [v0.20.2] - 2026-09-27
 
 ### Added
