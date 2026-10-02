@@ -213,7 +213,7 @@ Here is the brief of a test batch of expense claims, with the company's expense 
 
 The claims are dated from {{ setting.first_day.isoformat() }} to {{ setting.last_day.isoformat() }}, in {{ setting.currency }}. Here is the calendar of that period, each day with its day of the week:
 
-{% for mark in 'x' * (setting.last_day.toordinal() - setting.first_day.toordinal() + 1) %}- {{ setting.first_day.fromordinal(setting.first_day.toordinal() + loop.index0).isoformat() }}, {{ setting.first_day.fromordinal(setting.first_day.toordinal() + loop.index0).strftime('%A') }}
+{# One day as a timedelta, since the template sandbox refuses date.fromordinal: every month has a 1st and a 2nd. #}{% set one_day = setting.first_day.replace(day=2) - setting.first_day.replace(day=1) %}{% for offset in range((setting.last_day - setting.first_day).days + 1) %}- {{ (setting.first_day + one_day * offset).isoformat() }}, {{ (setting.first_day + one_day * offset).strftime('%A') }}
 {% endfor %}
 Plan the batch: the employees the brief asks for, each with the claims it asks for, in the numbers it gives. Each claim will be written on its own, without seeing the others, so this plan is where the batch gets its coverage and its variety.
 
