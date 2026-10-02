@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.20.3] - 2026-10-02
+
+### Changed
+
+- **The method-app links point at `Pipelex/pipelex-sdk`**: the front page and the app recipes link the method-app template, its initializer and their guides in the `method-apps/` directory of `Pipelex/pipelex-sdk`, where they now live, instead of the frozen `Pipelex/pipelex-method-apps`. The commands are unchanged, since `@pipelex/create-method-app` keeps its name, and the deployed-app recipe shows the output of a fresh run of its 0.29.1 release.
+
+### Fixed
+
+- **`gen_expense_data` validates and runs on production again**: its batch plan builds the calendar of the claims' period from date arithmetic the template sandbox allows instead of `date.fromordinal`, which the sandbox refuses, and the calendar the model reads is unchanged.
+
 ## [v0.20.2] - 2026-09-27
 
 ### Added

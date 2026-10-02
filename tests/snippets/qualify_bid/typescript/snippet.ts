@@ -4,7 +4,7 @@ import { PipelexApiClient } from "@pipelex/sdk";
 
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.2",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.3",
   inputs: {
     briefing: {
       url: "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/qualify_bid/advanced_digital_skills_info_day.pdf",

@@ -10,7 +10,7 @@ It shows how an app on published methods changes:
 
 ## What it needs
 
-- The app from the [deployed-app recipe](../deployed-app/), or any app made from the [`webapp-js`](https://github.com/Pipelex/pipelex-method-apps/tree/main/webapp-js#readme) template. Commit what it holds first, so the new method arrives as a diff of its own.
+- The app from the [deployed-app recipe](../deployed-app/), or any app made from the [`webapp-js`](https://github.com/Pipelex/pipelex-sdk/tree/main/method-apps/webapp-js#readme) template. Commit what it holds first, so the new method arrives as a diff of its own.
 - A Pipelex API key, from [app.pipelex.com](https://app.pipelex.com), in `PIPELEX_API_KEY` or in the app's `.env.local`: adding a method reads its contract from the API, which spends no credit.
 - Credit on your Pipelex account for each run from the form.
 
@@ -59,7 +59,7 @@ Below the table come the run's id, `run_…`, and its "Usage and cost" disclosur
 
 ## How it is built
 
-The recipe is one command of the [`webapp-js`](https://github.com/Pipelex/pipelex-method-apps/tree/main/webapp-js#readme) template, so it carries no code of its own. The template's [`make add-method` guide](https://github.com/Pipelex/pipelex-method-apps/blob/main/webapp-js/docs/add-method.md) is the reference.
+The recipe is one command of the [`webapp-js`](https://github.com/Pipelex/pipelex-sdk/tree/main/method-apps/webapp-js#readme) template, so it carries no code of its own. The template's [`make add-method` guide](https://github.com/Pipelex/pipelex-sdk/blob/main/method-apps/webapp-js/docs/add-method.md) is the reference.
 
 - **The slice.** `methods/invoice-extraction/method.json` names the address, and `src/generated/invoice-extraction/` holds the types generated from the method at that tag, with the lock that vouches for them. `src/types/` narrows the output to those types, `src/actions/` holds the Server Actions that start the run and poll it, with a test, and `src/components/InvoiceExtractionForm.tsx` is the form and the result view, both rendered from the method's contract. It is also where you replace either with your own.
 - **The registry.** `src/methods.ts` gains one import and one entry, and the page renders one tab per entry. Nothing else in the app names a method, so removing one is deleting its slice and its entry in one commit, as the guide's "Removing a method" lists them.

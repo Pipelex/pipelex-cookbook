@@ -2,7 +2,7 @@
 name = "qualify_bid"
 display_name = "Go/No-Go Sheet from a Briefing Deck"
 address = "github.com/Pipelex/pipelex-cookbook"
-version = "0.20.2"
+version = "0.20.3"
 description = "Read a funder's or buyer's briefing deck slide by slide against the company's bid criteria and return a go/no-go sheet: each criterion met, missed or not stated with the slides it rests on, a recommendation by the company's rule, and the questions to settle before bidding."
 authors = ["Evotis S.A.S"]
 license = "MIT"

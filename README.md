@@ -29,7 +29,7 @@
 
 <!--
 Adapted from the onboarding source's front-door and api-key assemblies, last re-read against the rendered files at
-Pipelex/.github@75123c4 (onboarding/rendered/front-door.md and onboarding/rendered/api-key.md). Every command, and every
+Pipelex/.github@262c71f (onboarding/rendered/front-door.md and onboarding/rendered/api-key.md). Every command, and every
 sentence on setting up a door, is a block's own words, so a change lands in the blocks first and is then carried here; where
 a sentence of the blocks says "it" for the agent of the sentence before, which this page does not carry, the agent is named.
 This page's own are the headings, the sentences sending a reader to a method's page, the two lists `make render` writes between
@@ -93,7 +93,7 @@ Each method's page shows the TypeScript, Python and HTTP calls that run it on it
 
 ### As an app
 
-Ask your agent for a webapp around the method, and `/pipelex-scaffold` creates a new app from the [method-app template](https://github.com/Pipelex/pipelex-method-apps) and leaves it running on your machine.
+Ask your agent for a webapp around the method, and `/pipelex-scaffold` creates a new app from the [method-app template](https://github.com/Pipelex/pipelex-sdk/tree/main/method-apps) and leaves it running on your machine.
 
 Each method's page carries the one command, `npm create @pipelex/method-app`, that makes the app for that method.
 

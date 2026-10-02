@@ -36,7 +36,7 @@ Each recipe is a small package calling the method through [`@pipelex/sdk`](https
 
 ## Make it an app
 
-These recipes turn a method into a web app whose form and result view come from the method's contract, with the [`webapp-js`](https://github.com/Pipelex/pipelex-method-apps/tree/main/webapp-js#readme) template of `pipelex-method-apps`. Each needs Node.js 22.12 or later and a Pipelex API key, and each run from the app spends credit on your Pipelex account.
+These recipes turn a method into a web app whose form and result view come from the method's contract, with the [`webapp-js`](https://github.com/Pipelex/pipelex-sdk/tree/main/method-apps/webapp-js#readme) template of `pipelex-sdk`. Each needs Node.js 22.12 or later and a Pipelex API key, and each run from the app spends credit on your Pipelex account.
 
 | Recipe | What it shows | Method |
 |---|---|---|

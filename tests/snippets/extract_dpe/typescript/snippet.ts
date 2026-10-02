@@ -4,7 +4,7 @@ import { PipelexApiClient } from "@pipelex/sdk";
 
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.2",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.3",
   inputs: {
     document: {
       url: "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/extract_dpe/synthetic_dpe.pdf",
