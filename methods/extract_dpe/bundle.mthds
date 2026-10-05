@@ -122,7 +122,7 @@ page_views_dpi  = 150
 [pipe.transcribe_page]
 type = "PipeLLM"
 description = "Transcribe one page of the DPE into Markdown from its image and its text layer, when it has one, writing out in words what its class scales and boxed figures show"
-inputs = { "page.page_view" = "Image", page = "Page" }
+inputs = { page = "Page" }
 output = "PageTranscript"
 model = "$vision"
 prompt = """
