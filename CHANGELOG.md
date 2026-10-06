@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- **`extract_dpe` and `qualify_bid` declare their page inputs by name only**: the pipe that transcribes a page or a slide declares `page = "Page"` alone, without the redundant dotted key `"page.page_view" = "Image"` beside it, and its prompt still reads the page's image as `$page.page_view` through that input. What each method does is unchanged, and the bundles no longer carry a dotted input name, a form the next Pipelex release refuses.
+
 ## [v0.20.3] - 2026-10-02
 
 ### Changed

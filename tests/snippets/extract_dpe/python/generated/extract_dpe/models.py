@@ -1,5 +1,5 @@
 # >>> pipelex-codegen-stamp >>>
-# crate_fingerprint: fb0233744b9dab1c59d218ead8f09d57c5f75d831cff12381aabfe118bea4c1d
+# crate_fingerprint: a08e030fcd1f47cc30602a5bb18f3261257a29aa054bb4abcfe9cc6d2eb43981
 # engine_version: 0.71.0
 # projection: types / python-pydantic
 # options: {}
