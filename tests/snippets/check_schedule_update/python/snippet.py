@@ -12,7 +12,7 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.3",
+            method_ref="github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.4",
             inputs={
                 "schedule_update": {
                     "url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/check_schedule_update/summary_schedule_update.png",

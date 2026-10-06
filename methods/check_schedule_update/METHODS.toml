@@ -2,7 +2,7 @@
 name = "check_schedule_update"
 display_name = "Schedule Update Checked Against the Baseline"
 address = "github.com/Pipelex/pipelex-cookbook"
-version = "0.20.3"
+version = "0.20.4"
 description = "Read a contractor's schedule update, a chart exported from its scheduling tool, into rows for the master schedule: every task and milestone with its dates to the month, each baseline milestone compared with the update under the project office's tolerance, every slip beyond it flagged with the reason the update gives, and a note for the project manager."
 authors = ["Evotis S.A.S"]
 license = "MIT"

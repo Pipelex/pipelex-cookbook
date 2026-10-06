@@ -4,7 +4,7 @@
 
 Read a funder's or buyer's briefing deck against the company's bid criteria, and return the go/no-go sheet a bid manager takes to the bid/no-bid meeting and files in the bid pipeline: each criterion met, missed or not stated, with what the deck says and the slides it rests on, a recommendation by the company's own rule, and the questions to send to the funder, a partner or management before bidding.
 
-`github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.3` · [bundle.mthds](bundle.mthds) · [sample briefing deck](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/qualify_bid/advanced_digital_skills_info_day.pdf)
+`github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.4` · [bundle.mthds](bundle.mthds) · [sample briefing deck](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/qualify_bid/advanced_digital_skills_info_day.pdf)
 
 ## The sample
 
@@ -104,7 +104,7 @@ The deadline, budget and evaluation criteria are met; eligibility is not stated,
 With the Pipelex MCP in ChatGPT or Claude ([add it once](https://github.com/Pipelex/pipelex-mcp)), ask:
 
 ```text
-Run github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.3 on https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/qualify_bid/advanced_digital_skills_info_day.pdf, with the other sample inputs in https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.3/methods/qualify_bid/inputs.json
+Run github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.4 on https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/qualify_bid/advanced_digital_skills_info_day.pdf, with the other sample inputs in https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.4/methods/qualify_bid/inputs.json
 ```
 
 In ChatGPT you can attach your own file instead of the link; Claude takes a link. In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pipelex-plugins), the same sentence runs through `/pipelex-run`.
@@ -125,7 +125,7 @@ import { PipelexApiClient } from "@pipelex/sdk";
 
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.3",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.4",
   inputs: {
     briefing: {
       url: "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/qualify_bid/advanced_digital_skills_info_day.pdf",
@@ -159,7 +159,7 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.3",
+            method_ref="github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.4",
             inputs={
                 "briefing": {
                     "url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/qualify_bid/advanced_digital_skills_info_day.pdf",
@@ -188,7 +188,7 @@ The start call answers at once with the run's id, or with the reason it refused 
 ```bash
 START=$(curl -s https://api.pipelex.com/v1/start \
   -H "Authorization: Bearer $PIPELEX_API_KEY" -H "Content-Type: application/json" \
-  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.3", "inputs": {"briefing": {"url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/qualify_bid/advanced_digital_skills_info_day.pdf"}, "criteria": {"text": "Bid criteria: written for a Pipelex example, not any real company'\''s policy.\n\nWho we are. We are a training company established in an EU Member State, with about sixty staff. We design and run technical courses, hackathons and challenge-based competitions in artificial intelligence, data science and virtual worlds, for universities, engineering schools and employers, online and on site, and we run the communication campaigns that bring their participants in. We work with a standing network of universities and training providers in other Member States.\n\nWhen a funder or a buyer briefs bidders, we bid only when every criterion below is met. Each criterion is met, missed, or not stated when the briefing does not say enough to decide it.\n\n1. Eligibility. Met when a company established in an EU Member State may take part, as coordinator or as partner, and the briefing states the consortium the funder requires, which we can form with our network. Missed when companies, or companies from our country, cannot take part. Not stated when the briefing does not say who may apply or what the consortium must be.\n\n2. Deadline. Met when the submission deadline falls at least twelve weeks after the date of the briefing, the time we need to form a consortium and write the proposal. Missed when it falls sooner.\n\n3. Budget. Met when the EU contribution available for the topic is at least EUR 2 million and the funding rate is at least 70% of eligible costs. Missed when either is lower. The briefing should also say how many projects the topic will fund, since one budget shared among several projects may leave each too small: when it does not, the criterion is decided on the topic'\''s budget, and the number of projects becomes a question.\n\n4. Required capabilities. Met when our own staff can carry the core of the work the topic asks for: designing challenges and their rule books, running competitions and events online and on site, running the jury, and the communication campaigns that reach participants, in the fields we cover, which are artificial intelligence, data science and virtual worlds. A field the topic asks for that we do not cover can be taken on by a partner, but the criterion stays missed until that partner is named.\n\n5. Evaluation. Met when the briefing gives the award criteria with their weights or maximum scores and their pass thresholds, and implementation (how the work is organised, with what resources and by whom) counts for at least as much as each other criterion. Missed when implementation counts for less than another criterion. Not stated when the briefing gives no award criteria.\n\nThe recommendation\n\n- Go: every criterion is met.\n- Go if answered: no criterion is missed but some are not stated, or the only criteria missed are ones this list says can be put right before the deadline, such as a field a partner can take on. The questions say what must be settled first.\n- No-go: any other criterion is missed.\n\nThe questions\n\nOne question for each criterion not stated, and one for each gap to close before the deadline, each saying whom to ask: the funder, through the question service the briefing names; a partner; or our own management."}, "briefing_date": {"date": "2025-12-01"}}}')
+  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.4", "inputs": {"briefing": {"url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/qualify_bid/advanced_digital_skills_info_day.pdf"}, "criteria": {"text": "Bid criteria: written for a Pipelex example, not any real company'\''s policy.\n\nWho we are. We are a training company established in an EU Member State, with about sixty staff. We design and run technical courses, hackathons and challenge-based competitions in artificial intelligence, data science and virtual worlds, for universities, engineering schools and employers, online and on site, and we run the communication campaigns that bring their participants in. We work with a standing network of universities and training providers in other Member States.\n\nWhen a funder or a buyer briefs bidders, we bid only when every criterion below is met. Each criterion is met, missed, or not stated when the briefing does not say enough to decide it.\n\n1. Eligibility. Met when a company established in an EU Member State may take part, as coordinator or as partner, and the briefing states the consortium the funder requires, which we can form with our network. Missed when companies, or companies from our country, cannot take part. Not stated when the briefing does not say who may apply or what the consortium must be.\n\n2. Deadline. Met when the submission deadline falls at least twelve weeks after the date of the briefing, the time we need to form a consortium and write the proposal. Missed when it falls sooner.\n\n3. Budget. Met when the EU contribution available for the topic is at least EUR 2 million and the funding rate is at least 70% of eligible costs. Missed when either is lower. The briefing should also say how many projects the topic will fund, since one budget shared among several projects may leave each too small: when it does not, the criterion is decided on the topic'\''s budget, and the number of projects becomes a question.\n\n4. Required capabilities. Met when our own staff can carry the core of the work the topic asks for: designing challenges and their rule books, running competitions and events online and on site, running the jury, and the communication campaigns that reach participants, in the fields we cover, which are artificial intelligence, data science and virtual worlds. A field the topic asks for that we do not cover can be taken on by a partner, but the criterion stays missed until that partner is named.\n\n5. Evaluation. Met when the briefing gives the award criteria with their weights or maximum scores and their pass thresholds, and implementation (how the work is organised, with what resources and by whom) counts for at least as much as each other criterion. Missed when implementation counts for less than another criterion. Not stated when the briefing gives no award criteria.\n\nThe recommendation\n\n- Go: every criterion is met.\n- Go if answered: no criterion is missed but some are not stated, or the only criteria missed are ones this list says can be put right before the deadline, such as a field a partner can take on. The questions say what must be settled first.\n- No-go: any other criterion is missed.\n\nThe questions\n\nOne question for each criterion not stated, and one for each gap to close before the deadline, each saying whom to ask: the funder, through the question service the briefing names; a partner; or our own management."}, "briefing_date": {"date": "2025-12-01"}}}')
 RUN_ID=$(printf '%s' "$START" | jq -r '.pipeline_run_id // empty')
 if [ -z "$RUN_ID" ]; then printf '%s\n' "$START"; else
   until [ "$(curl -s -o results.json -w '%{http_code}' https://api.pipelex.com/v1/runs/$RUN_ID/results \
@@ -199,12 +199,12 @@ fi
 
 </details>
 
-In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.3`: it generates the result's types and writes one typed call.
+In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.4`: it generates the result's types and writes one typed call.
 
 ## Make it an app
 
 ```bash
-npm create @pipelex/method-app@latest bid-sheet-app -- --method github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.3
+npm create @pipelex/method-app@latest bid-sheet-app -- --method github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.4
 make -C bid-sheet-app serve
 ```
 
@@ -215,7 +215,7 @@ The form and the result view come from the method's contract. `make serve` print
 Ask your agent:
 
 ```text
-Copy github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.3 into ./bid-sheet, add the submission deadline as a date, and the topic's budget and funding rate, as fields of their own that the bid pipeline files with the sheet, prove it on the sample, and save it to my Pipelex account.
+Copy github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.4 into ./bid-sheet, add the submission deadline as a date, and the topic's budget and funding rate, as fields of their own that the bid pipeline files with the sheet, prove it on the sample, and save it to my Pipelex account.
 ```
 
 From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
@@ -225,6 +225,6 @@ From then on every door above takes your method's id (`mt_…`) in place of the 
 With the Pipelex runtime and your own provider keys ([set it up](https://docs.pipelex.com/latest/get-started/run-it-yourself/)):
 
 ```bash
-curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.3/methods/qualify_bid/inputs.json
-pipelex run method github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.3 --inputs inputs.json
+curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.4/methods/qualify_bid/inputs.json
+pipelex run method github.com/Pipelex/pipelex-cookbook/qualify_bid@v0.20.4 --inputs inputs.json
 ```

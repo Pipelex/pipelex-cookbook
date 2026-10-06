@@ -4,7 +4,7 @@
 
 Read a contractor's schedule update, the chart its scheduling tool exports, against the company's master schedule baseline and slip tolerance, and return what a project controls analyst loads into the master schedule and sends to the project manager: every task and milestone of the chart as a row with its status and its dates to the month, each baseline milestone compared with the update and flagged under the tolerance with the reason the update gives, and a two-sentence note on what slipped.
 
-`github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.3` · [bundle.mthds](bundle.mthds) · [sample schedule update](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/check_schedule_update/summary_schedule_update.png)
+`github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.4` · [bundle.mthds](bundle.mthds) · [sample schedule update](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/check_schedule_update/summary_schedule_update.png)
 
 ## The sample
 
@@ -121,7 +121,7 @@ None.
 With the Pipelex MCP in ChatGPT or Claude ([add it once](https://github.com/Pipelex/pipelex-mcp)), ask:
 
 ```text
-Run github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.3 on https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/check_schedule_update/summary_schedule_update.png, with the other sample inputs in https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.3/methods/check_schedule_update/inputs.json
+Run github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.4 on https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/check_schedule_update/summary_schedule_update.png, with the other sample inputs in https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.4/methods/check_schedule_update/inputs.json
 ```
 
 In ChatGPT you can attach your own file instead of the link; Claude takes a link. In Claude Code or Codex with the [Pipelex plugin](https://github.com/Pipelex/pipelex-plugins), the same sentence runs through `/pipelex-run`.
@@ -142,7 +142,7 @@ import { PipelexApiClient } from "@pipelex/sdk";
 
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.3",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.4",
   inputs: {
     schedule_update: {
       url: "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/check_schedule_update/summary_schedule_update.png",
@@ -173,7 +173,7 @@ from pipelex_sdk.client import PipelexAPIClient
 async def main() -> None:
     async with PipelexAPIClient() as client:
         result = await client.start_and_wait(
-            method_ref="github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.3",
+            method_ref="github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.4",
             inputs={
                 "schedule_update": {
                     "url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/check_schedule_update/summary_schedule_update.png",
@@ -199,7 +199,7 @@ The start call answers at once with the run's id, or with the reason it refused 
 ```bash
 START=$(curl -s https://api.pipelex.com/v1/start \
   -H "Authorization: Bearer $PIPELEX_API_KEY" -H "Content-Type: application/json" \
-  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.3", "inputs": {"schedule_update": {"url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/check_schedule_update/summary_schedule_update.png"}, "baseline": {"text": "Master schedule baseline and slip tolerance: written for a Pipelex example, not any real company'\''s. The programme, its manufacturer and every date are fictional.\n\nWe hold one master schedule for the SERIN-2 satellite programme. The manufacturer'\''s monthly summary schedule update is read against the baseline below, the one agreed at the last rebaseline, and every slip beyond our tolerance goes to the project manager the same day.\n\nBaseline\n\nThe month each milestone is due in the master schedule, named as the manufacturer'\''s summary schedule names it.\n\nProgramme milestones\n- PDR: March 2025\n- CDR: September 2025\n- PSR: July 2027\n- Ship: August 2027\n- Launch: September 2027\n- IOA: November 2027\n\nPayload\n- Reflectors delivered: April 2026\n- Transponders delivered: September 2026\n- Payload module complete: October 2026\n\nSpacecraft bus\n- Structure delivered: January 2026\n- Propulsion integrated: May 2026\n- FSW v2.0: November 2026\n\nAssembly, integration and test\n- Payload mated to bus: November 2026\n- Start environmental test: March 2027\n\nTolerance\n\n1. Dates are compared to the month, as the summary schedule prints them: \"6/26\" is June 2026. A slip is the number of whole months between the baseline month and the month the update gives.\n2. A milestone the update shows as complete is compared on the month it was completed; any other milestone on the month the update now forecasts.\n3. Flag a milestone that slips by more than one month.\n4. Flag any slip of Ship or Launch, even of one month.\n5. A milestone forecast earlier than its baseline is early, and is not flagged.\n6. Flag a baseline milestone the update no longer shows, as missing from the update.\n7. Every other task and milestone the update shows is carried into the master schedule as it stands, with no baseline to compare it with.\n8. Where the update gives a reason for a slip, as a callout on the chart, quote it with the flag.\n"}}}')
+  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.4", "inputs": {"schedule_update": {"url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/check_schedule_update/summary_schedule_update.png"}, "baseline": {"text": "Master schedule baseline and slip tolerance: written for a Pipelex example, not any real company'\''s. The programme, its manufacturer and every date are fictional.\n\nWe hold one master schedule for the SERIN-2 satellite programme. The manufacturer'\''s monthly summary schedule update is read against the baseline below, the one agreed at the last rebaseline, and every slip beyond our tolerance goes to the project manager the same day.\n\nBaseline\n\nThe month each milestone is due in the master schedule, named as the manufacturer'\''s summary schedule names it.\n\nProgramme milestones\n- PDR: March 2025\n- CDR: September 2025\n- PSR: July 2027\n- Ship: August 2027\n- Launch: September 2027\n- IOA: November 2027\n\nPayload\n- Reflectors delivered: April 2026\n- Transponders delivered: September 2026\n- Payload module complete: October 2026\n\nSpacecraft bus\n- Structure delivered: January 2026\n- Propulsion integrated: May 2026\n- FSW v2.0: November 2026\n\nAssembly, integration and test\n- Payload mated to bus: November 2026\n- Start environmental test: March 2027\n\nTolerance\n\n1. Dates are compared to the month, as the summary schedule prints them: \"6/26\" is June 2026. A slip is the number of whole months between the baseline month and the month the update gives.\n2. A milestone the update shows as complete is compared on the month it was completed; any other milestone on the month the update now forecasts.\n3. Flag a milestone that slips by more than one month.\n4. Flag any slip of Ship or Launch, even of one month.\n5. A milestone forecast earlier than its baseline is early, and is not flagged.\n6. Flag a baseline milestone the update no longer shows, as missing from the update.\n7. Every other task and milestone the update shows is carried into the master schedule as it stands, with no baseline to compare it with.\n8. Where the update gives a reason for a slip, as a callout on the chart, quote it with the flag.\n"}}}')
 RUN_ID=$(printf '%s' "$START" | jq -r '.pipeline_run_id // empty')
 if [ -z "$RUN_ID" ]; then printf '%s\n' "$START"; else
   until [ "$(curl -s -o results.json -w '%{http_code}' https://api.pipelex.com/v1/runs/$RUN_ID/results \
@@ -210,12 +210,12 @@ fi
 
 </details>
 
-In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.3`: it generates the result's types and writes one typed call.
+In a project you already have, ask your agent for `/pipelex-integrate github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.4`: it generates the result's types and writes one typed call.
 
 ## Make it an app
 
 ```bash
-npm create @pipelex/method-app@latest schedule-check-app -- --method github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.3
+npm create @pipelex/method-app@latest schedule-check-app -- --method github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.4
 make -C schedule-check-app serve
 ```
 
@@ -226,7 +226,7 @@ The form and the result view come from the method's contract. `make serve` print
 Ask your agent:
 
 ```text
-Copy github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.3 into ./schedule-check, also return the rows as CSV in the columns the master schedule's scheduling tool imports, prove it on the sample, and save it to my Pipelex account.
+Copy github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.4 into ./schedule-check, also return the rows as CSV in the columns the master schedule's scheduling tool imports, prove it on the sample, and save it to my Pipelex account.
 ```
 
 From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
@@ -236,6 +236,6 @@ From then on every door above takes your method's id (`mt_…`) in place of the 
 With the Pipelex runtime and your own provider keys ([set it up](https://docs.pipelex.com/latest/get-started/run-it-yourself/)):
 
 ```bash
-curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.3/methods/check_schedule_update/inputs.json
-pipelex run method github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.3 --inputs inputs.json
+curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.4/methods/check_schedule_update/inputs.json
+pipelex run method github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.4 --inputs inputs.json
 ```

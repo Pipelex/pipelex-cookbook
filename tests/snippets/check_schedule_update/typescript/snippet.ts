@@ -4,7 +4,7 @@ import { PipelexApiClient } from "@pipelex/sdk";
 
 const client = new PipelexApiClient({ apiKey: process.env.PIPELEX_API_KEY });
 const result = await client.startAndWaitForResult({
-  method_ref: "github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.3",
+  method_ref: "github.com/Pipelex/pipelex-cookbook/check_schedule_update@v0.20.4",
   inputs: {
     schedule_update: {
       url: "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/main/assets/check_schedule_update/summary_schedule_update.png",
