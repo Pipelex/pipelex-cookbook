@@ -1,0 +1,19 @@
+.claude/skills/release/SKILL.md
+  s_26d4068d7c7d12::t_c8db3be908a114 67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "08b1449791b08f95b65d7d005117bd3320e9cb83",
+  "prompts": {},
+  "sessions": {
+    "s_26d4068d7c7d12": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "273ce13b-3e96-4c0f-812d-f7e7a835795f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "thomashebrard <thomas@pipelex.com>"
+    }
+  }
+}
