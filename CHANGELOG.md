@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- **Running a method from your terminal leads with the hosted API**: the front page's closing section and every method page's last door, now "Run it from your terminal", install the runtime with `uv tool install "pipelex[cli]"`, sign in with `pipelex login` and run the method's address with `--hosted`, which needs no provider key, while `--local`, given the inputs file's full path, still runs it on your own machine. The tutorial's setup describes the question `pipelex init` asks about where runs execute, its model lesson says that your own model deck applies only to runs on your machine, the recipes point at the terminal command, and the coding-agent recipe no longer asks you to turn off the Pipelex MCP in Claude Code, since it defers to the plugin's tools.
+
 ## [v0.20.4] - 2026-10-06
 
 ### Changed
