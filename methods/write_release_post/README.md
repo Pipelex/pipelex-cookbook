@@ -281,11 +281,13 @@ Copy github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.4 into ./relea
 
 From then on every door above takes your method's id (`mt_…`) in place of the address, and your chatbot lists it among your methods.
 
-## Run it on your own machine
+## Run it from your terminal
 
-With the Pipelex runtime and your own provider keys ([set it up](https://docs.pipelex.com/latest/get-started/run-it-yourself/)):
+With the Pipelex runtime installed and signed in with `pipelex login` ([set it up](https://docs.pipelex.com/latest/get-started/run-it-yourself/)), this runs the method on the hosted Pipelex API, with no provider key of your own:
 
 ```bash
 curl -sLo inputs.json https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.4/methods/write_release_post/inputs.json
-pipelex run method github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.4 --inputs inputs.json
+pipelex run method github.com/Pipelex/pipelex-cookbook/write_release_post@v0.20.4 --hosted --inputs inputs.json
 ```
+
+To run it on your own machine with your own provider keys instead, pass `--local` and give the inputs file by its full path, `--inputs "$PWD/inputs.json"`: a local run of an address reads a relative path from inside the method it fetched.

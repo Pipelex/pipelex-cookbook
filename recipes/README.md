@@ -4,7 +4,7 @@ Each method page shows every way to use its method in a few lines. A recipe goes
 
 ## Run a method
 
-These recipes run a method with nothing to build: from your coding agent, or with any tool that makes HTTP calls. Each run spends credit on your Pipelex account.
+These recipes run a method with nothing to build: from your coding agent, or with any tool that makes HTTP calls. Each run spends credit on your Pipelex account. From your terminal, `pipelex run method <address> --hosted` runs a method by its address as well, once `pipelex login` has signed you in: the cookbook's [front page](../README.md#run-a-method-from-your-terminal) sets it up, and each method's page gives the command for its method.
 
 | Recipe | What it shows | Method |
 |---|---|---|
