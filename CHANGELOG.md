@@ -8,7 +8,7 @@
 
 ### Security
 
-- **Locked `anyio` and `source-map-js` versions**: the cookbook's environment, which `make install` builds from `uv.lock`, now installs `anyio` 4.15.1, and the Next.js server-action recipe installs `source-map-js` 1.2.2 from its lockfile, both past their published security advisories.
+- **Locked `anyio`, `next`, `sharp` and `source-map-js` versions**: the cookbook's environment, which `make install` builds from `uv.lock`, now installs `anyio` 4.15.1, and the Next.js server-action recipe installs `next` 16.4.0, `sharp` 0.35.5 and `source-map-js` 1.2.2 from its lockfile, all past their published security advisories.
 
 ## [v0.20.4] - 2026-10-06
 
