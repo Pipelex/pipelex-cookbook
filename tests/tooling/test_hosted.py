@@ -50,7 +50,7 @@ class TestHosted:
 
     def test_the_key_is_sent_as_the_bearer_token(self, fake_api: FakeApi):
         fake_api.answer("POST", VALIDATE, httpx.Response(200, json=VALID))
-        fake_api.client.validate_address(method_ref="github.com/Pipelex/methods/invoice_extraction@v0.1.1")
+        fake_api.client.validate_address(method_ref="github.com/Pipelex/methods/invoice_extraction@v0.1.7")
         assert fake_api.requests[0].headers["Authorization"] == f"Bearer {FAKE_API_KEY}"
 
     def test_an_address_is_validated_at_the_page_tag(self, fake_api: FakeApi, make_cookbook: MakeCookbook):
@@ -62,7 +62,7 @@ class TestHosted:
 
     def test_a_recipe_address_is_validated_as_pinned_and_named_after_its_recipe(self, fake_api: FakeApi):
         fake_api.answer("POST", VALIDATE, httpx.Response(200, json=VALID))
-        address = "github.com/Pipelex/methods/invoice_extraction@v0.1.1"
+        address = "github.com/Pipelex/methods/invoice_extraction@v0.1.7"
         verdict = check_method_ref(client=fake_api.client, name="recipes/code/python/csv-batch", address=address)
         assert (verdict.name, verdict.address, verdict.state) == ("recipes/code/python/csv-batch", address, AddressState.VALID)
         assert fake_api.bodies("POST", VALIDATE)[0]["method_ref"] == address
