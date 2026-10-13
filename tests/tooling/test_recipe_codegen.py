@@ -28,7 +28,7 @@ ANSWER_TREES = {
     "ts-zod": REPO_ROOT / "recipes" / "code" / "typescript" / "nextjs-server-action" / "generated" / "gen_synthetic_data",
 }
 BUNDLES = {"methods/extract_widgets/bundle.mthds": 'domain = "widgets"\n', "methods/extract_widgets/pages.mthds": 'domain = "pages"\n'}
-ADDRESS = "github.com/Pipelex/methods/invoice_extraction@v0.1.1"
+ADDRESS = "github.com/Pipelex/methods/invoice_extraction@v0.1.7"
 OTHER_FINGERPRINT = "0" * 64
 
 pytestmark = [

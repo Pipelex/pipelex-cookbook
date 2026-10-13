@@ -8,7 +8,7 @@ Take your Pipelex skills to the next level.
 
 Control which LLM to use and how it behaves.
 
-**To change default models and presets**, edit `~/.pipelex/inference/deck/x_custom_llm_deck.toml`, in the configuration `pipelex init` writes. See [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/) and the [Inference Backend Configuration](https://docs.pipelex.com/latest/configuration/config-technical/inference-backend-config/) documentation for details.
+**To change default models and presets** for the runs that execute on your own machine, edit `~/.pipelex/inference/deck/x_custom_llm_deck.toml`, in the configuration `pipelex init` writes. A hosted run reads no inference configuration from your machine: it uses the hosted API's own model deck, which defines the alias and the preset this lesson uses, so editing your deck changes only the runs on your machine, such as those you start with `--local`. See [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/) and the [Inference Backend Configuration](https://docs.pipelex.com/latest/configuration/config-technical/inference-backend-config/) documentation for details.
 
 **File: `1_model_config.mthds`**
 
@@ -82,7 +82,7 @@ $preset_result
 **What you need to know:**
 - `model = "@alias_name"` - Use a model by its alias from your deck
 - `model = "$preset_name"` - Use a predefined preset from your deck: learn more in [LLM Presets](https://docs.pipelex.com/latest/configuration/config-technical/inference-backend-config/)
-- Presets and aliases are defined in your `~/.pipelex/inference/deck/`
+- Presets and aliases are defined in a model deck: on your own machine, the one in your `~/.pipelex/inference/deck/`; on the hosted API, the hosted API's own
 
 **Run it:**
 ```bash

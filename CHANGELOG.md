@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.20.5] - 2026-10-13
+
+### Changed
+
+- **Running a method from your terminal leads with the hosted API**: the front page's closing section and every method page's last door, now "Run it from your terminal", install the runtime with `uv tool install "pipelex[cli]"`, sign in with `pipelex login` and run the method's address with `--hosted`, which needs no provider key, while `--local`, given the inputs file's full path, still runs it on your own machine. The tutorial's setup describes the question `pipelex init` asks about where runs execute, its model lesson says that your own model deck applies only to runs on your machine, the recipes point at the terminal command, and the coding-agent recipe no longer asks you to turn off the Pipelex MCP in Claude Code, since it defers to the plugin's tools.
+
+### Fixed
+
+- **Every address the recipes and the front page name validates on production again**: the front page lists the method library at its `v0.1.7` release instead of `v0.1.2`, which adds Image Card and Image Generation Fast, the invoice extraction recipes, the second-tab app and the CSV batch, call `github.com/Pipelex/methods/invoice_extraction@v0.1.7`, and the DPE extraction recipes, the deployed app, the upload grant and the HTTP calls, call `github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.4`. The earlier tags declared a dotted input name, which Pipelex 0.75.0 refuses, and each method behaves as before at its new tag.
+
 ## [v0.20.4] - 2026-10-06
 
 ### Changed

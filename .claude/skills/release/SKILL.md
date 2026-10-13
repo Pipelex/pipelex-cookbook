@@ -64,7 +64,7 @@ Run in the worktree, in this order, before the commit:
 - `lint-check.yml` (every pull request) — the ruff format, ruff lint, pyright and mypy merge checks on 3.11, 3.12 and 3.13, each leg installing with `make install`; the aggregator job `Lint (all versions)` rolls them up. `dev`'s ruleset requires every leg by name, `Lint (3.11)` to `Lint (3.13)` and `Tests check (3.11)` to `Tests check (3.13)`, so a leg dropped from a matrix never posts its context and every pull request into `dev` is refused until the ruleset changes.
 - `tests-check.yml` (every pull request) — `make gha-tests`, the tooling's tests, on the same Python matrix.
 - `methods-check.yml` (every pull request) — `make check-cookbook`: the pages and their snippet files match a fresh render, every manifest carries the version, and every sample link answers. A method page's own links at the new tag answer only once the tag exists, and the check reports them as not published rather than failing.
-- `cla.yml` — the CLA assistant on `pull_request_target`, allowlisted for maintainers.
+- The CLA Assistant — the CLA Assistant is not a workflow of this repository: the organization ruleset `cla` (github-manager's `config/organization.yaml`) runs Pipelex/.github's `cla.yml` on every pull request into `dev`, and on none into `main`.
 
 Nothing in CI checks that `uv.lock` agrees with `pyproject.toml` — no `uv lock --locked` runs anywhere, and `make install` re-locks silently rather than failing — so the lock step above is the only thing keeping the two in step.
 

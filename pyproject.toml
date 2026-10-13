@@ -1,6 +1,6 @@
 [project]
 name = "pipelex-cookbook"
-version = "0.20.4"
+version = "0.20.5"
 description = "Worked examples of AI methods, written in MTHDS and run with Pipelex, to read, run and adapt."
 authors = [{ name = "Evotis S.A.S.", email = "evotis@pipelex.com" }]
 maintainers = [{ name = "Pipelex staff", email = "oss@pipelex.com" }]
@@ -22,7 +22,7 @@ dependencies = [
 dev = [
   "mypy>=1.11.2",
   "pipelex-tools>=0.9.0",
-  "pyright>=1.1.411",
+  "pyright>=1.1.414",
   "pytest>=9.0.1",
   "pytest-mock>=3.14.0",
   "pytest-sugar>=1.0.0",

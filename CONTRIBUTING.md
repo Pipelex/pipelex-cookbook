@@ -31,7 +31,7 @@ The runtime itself lives in [Pipelex/pipelex](https://github.com/Pipelex/pipelex
 
 ## Open the pull request
 
-Open it against `dev`, from a branch named `feature/…`, `fix/…`, `docs/…`, `refactor/…`, `chore/…` or `ci-cd/…`; CI refuses any other name. A pull request from a fork cannot change `.github/workflows/`. The first time you open one, the CLA assistant asks you to sign the [Contributor License Agreement](CLA.md).
+Open it against `dev`, from a branch named `feature/…`, `fix/…`, `docs/…`, `refactor/…`, `chore/…` or `ci-cd/…`; CI refuses any other name. A pull request from a fork cannot change `.github/workflows/`. The first time you open one, the CLA Assistant asks you to sign the [Contributor License Agreement](https://github.com/Pipelex/.github/blob/main/CLA.md), one agreement for every Pipelex repository, in a comment; the check reads your signature the next time it runs, so once you have commented, push a new commit or ask a maintainer to re-run it.
 
 If you are unsure whether an idea fits, open a GitHub Discussion first.
 

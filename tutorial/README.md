@@ -2,7 +2,7 @@
 
 Welcome to the Pipelex tutorials! Learn how to build AI pipelines step by step.
 
-> **Note**: The easiest way to make a method is to ask your coding agent, with the Pipelex plugin, as the cookbook's [front page](../README.md#try-a-method-in-a-minute) shows. These tutorials teach you to write one by hand, and to run it on your own machine.
+> **Note**: The easiest way to make a method is to ask your coding agent, with the Pipelex plugin, as the cookbook's [front page](../README.md#try-a-method-in-a-minute) shows. These tutorials teach you to write one by hand, and to run it from your terminal, on the hosted Pipelex API or on your own machine.
 
 ## Tutorials
 
@@ -22,16 +22,21 @@ Welcome to the Pipelex tutorials! Learn how to build AI pipelines step by step.
 **1. Install Pipelex**
 
 ```bash
-uv tool install pipelex
+uv tool install "pipelex[cli]"
 pipelex init
 pipelex doctor
 ```
 
-`pipelex init` writes your `~/.pipelex` configuration and offers to install the editor extension; `pipelex doctor` reports what is configured and what is missing. Some providers and features need an extra, such as the document extraction of the `3_document_qa` lesson: [Run It Yourself](https://docs.pipelex.com/latest/get-started/run-it-yourself/) lists them.
+`pipelex init` writes your `~/.pipelex` configuration, offers to install the editor extension, and asks where your runs execute:
 
-**2. Give the runtime access to models**
+- **On the hosted Pipelex API**, the default that Enter takes: `pipelex init` signs you in through your browser and saves a Pipelex API key to `~/.pipelex/.env`, and no provider key is needed. Each run spends credit on your Pipelex account. `pipelex login` signs you in again on its own whenever you need it.
+- **On this machine, with your own provider keys**: step 2 sets up the models your runs use.
 
-Bring your own provider keys, or run models locally: [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/) says how.
+`pipelex doctor` reports what is configured and what is missing. Whichever you choose, a single run can go the other way: `--hosted` sends it to the hosted API, and `--local` keeps it on this machine.
+
+**2. On this machine, give the runtime access to models**
+
+If your runs execute on the hosted API, skip this step. To run them on this machine, bring your own provider keys, or run models locally: [Configure AI Providers](https://docs.pipelex.com/latest/get-started/configure-ai-providers/) says how. Some providers and features also need an extra, such as the document extraction of the `3_document_qa` lesson: [Run It Yourself](https://docs.pipelex.com/latest/get-started/run-it-yourself/) lists them.
 
 **3. Get the tutorials**
 

@@ -10,7 +10,7 @@ It shows what the agent does with a published method:
 
 ## What it needs
 
-- Claude Code or Codex with the Pipelex plugin and your Pipelex API key, set up as the plugin's [quick start](https://github.com/Pipelex/pipelex-plugins#quick-start) says. If the Pipelex MCP is also on your Claude account, turn it off in Claude Code with `/mcp`, as the quick start explains.
+- Claude Code or Codex with the Pipelex plugin and your Pipelex API key, set up as the plugin's [quick start](https://github.com/Pipelex/pipelex-plugins#quick-start) says. Claude Code also loads what you have added to your Claude account, so if you added the Pipelex MCP to Claude, Claude Code has it too. An agent with the plugin does not need the Pipelex MCP, and there is nothing to turn off: when both are present, the Pipelex MCP defers to the plugin's tools.
 - Credit on your Pipelex account: the answer is one run on the hosted API and spends credit, while following it, reading its results and saving them spend none.
 
 ## Run it

@@ -33,8 +33,8 @@ Pipelex/.github@262c71f (onboarding/rendered/front-door.md and onboarding/render
 sentence on setting up a door, is a block's own words, so a change lands in the blocks first and is then carried here; where
 a sentence of the blocks says "it" for the agent of the sentence before, which this page does not carry, the agent is named.
 This page's own are the headings, the sentences sending a reader to a method's page, the two lists `make render` writes between
-their BEGIN and END markers, the recipes and tutorial sections, and the closing section on running a method yourself, since
-the assembly's last block describes the runtime repository that carries it.
+their BEGIN and END markers, the recipes and tutorial sections, and the closing section on running a method from your
+terminal, since the assembly's last block describes the runtime repository that carries it.
 -->
 
 ## Try a method in a minute
@@ -121,17 +121,19 @@ Each of these methods runs on the hosted Pipelex API by its address, through eve
 
 ## Methods from the library
 
-More methods are published in the [Pipelex method library](https://github.com/Pipelex/methods/tree/v0.1.2), and each runs by its address the same way, through every door above. They are listed here as released at v0.1.2.
+More methods are published in the [Pipelex method library](https://github.com/Pipelex/methods/tree/v0.1.7), and each runs by its address the same way, through every door above. They are listed here as released at v0.1.7.
 
-- **[CV Analyzer](https://github.com/Pipelex/methods/tree/v0.1.2/methods/cv_analyzer)** · `github.com/Pipelex/methods/cv_analyzer@v0.1.2`: End-to-end candidate screening: extract a CV and a job offer, analyze the match, then either generate tailored interview questions or draft a courteous refusal email.
-- **[Document Summarizer](https://github.com/Pipelex/methods/tree/v0.1.2/methods/doc_summarizer)** · `github.com/Pipelex/methods/doc_summarizer@v0.1.2`: Deep document summarization: profile the document and extract importance-ranked key points in parallel, then synthesize a structured summary with themes and open questions.
-- **[Documents](https://github.com/Pipelex/methods/tree/v0.1.2/methods/documents)** · `github.com/Pipelex/methods/documents@v0.1.2`: Document extraction methods for text, images, and page views.
-- **[Image Generation](https://github.com/Pipelex/methods/tree/v0.1.2/methods/image_generation)** · `github.com/Pipelex/methods/image_generation@v0.1.2`: Image generation methods: render a description directly, or refine it into an optimized image prompt first.
-- **[Invoice Extraction](https://github.com/Pipelex/methods/tree/v0.1.2/methods/invoice_extraction)** · `github.com/Pipelex/methods/invoice_extraction@v0.1.2`: Extract structured invoice data from a document: classify each page as bill or receipt, then extract amounts, VAT, vendor and buyer details using both the OCR text and the page view.
-- **[Slide Designer](https://github.com/Pipelex/methods/tree/v0.1.2/methods/slide_designer)** · `github.com/Pipelex/methods/slide_designer@v0.1.2`: Turn a rough slide-deck brief into design proposals: polish the brief, generate multiple visual themes, render a mockup image for each, and compose an HTML report presenting them all.
-- **[Table Extraction](https://github.com/Pipelex/methods/tree/v0.1.2/methods/table_extraction)** · `github.com/Pipelex/methods/table_extraction@v0.1.2`: Extract a data table from a screenshot into faithful HTML, then review the result against the image to correct text and formatting.
-- **[Text Stats](https://github.com/Pipelex/methods/tree/v0.1.2/methods/text_stats)** · `github.com/Pipelex/methods/text_stats@v0.1.2`: Deterministic text statistics computed in pure Python: character, word, sentence and paragraph counts, vocabulary richness, most frequent words, and estimated reading and speaking times, reported as Markdown.
-- **[Tweet Optimizer](https://github.com/Pipelex/methods/tree/v0.1.2/methods/tweet_optimizer)** · `github.com/Pipelex/methods/tweet_optimizer@v0.1.2`: Optimize a tech tweet: score the draft for fluffiness, cringiness, humblebragging and vagueness, then rewrite it in your own writing style following Twitter/X best practices.
+- **[CV Analyzer](https://github.com/Pipelex/methods/tree/v0.1.7/methods/cv_analyzer)** · `github.com/Pipelex/methods/cv_analyzer@v0.1.7`: End-to-end candidate screening: extract a CV and a job offer, analyze the match, then either generate tailored interview questions or draft a courteous refusal email.
+- **[Document Summarizer](https://github.com/Pipelex/methods/tree/v0.1.7/methods/doc_summarizer)** · `github.com/Pipelex/methods/doc_summarizer@v0.1.7`: Deep document summarization: profile the document and extract importance-ranked key points in parallel, then synthesize a structured summary with themes and open questions.
+- **[Documents](https://github.com/Pipelex/methods/tree/v0.1.7/methods/documents)** · `github.com/Pipelex/methods/documents@v0.1.7`: Document extraction methods for text, images, and page views.
+- **[Image Card](https://github.com/Pipelex/methods/tree/v0.1.7/methods/image_card)** · `github.com/Pipelex/methods/image_card@v0.1.7`: Generate an image from a text description with a small, fast image model, and present the image and its description side by side in an HTML page.
+- **[Image Generation](https://github.com/Pipelex/methods/tree/v0.1.7/methods/image_generation)** · `github.com/Pipelex/methods/image_generation@v0.1.7`: Image generation methods: render a description directly, or refine it into an optimized image prompt first.
+- **[Image Generation Fast](https://github.com/Pipelex/methods/tree/v0.1.7/methods/image_generation_fast)** · `github.com/Pipelex/methods/image_generation_fast@v0.1.7`: Fast image generation: render a text description directly with a small image generation model.
+- **[Invoice Extraction](https://github.com/Pipelex/methods/tree/v0.1.7/methods/invoice_extraction)** · `github.com/Pipelex/methods/invoice_extraction@v0.1.7`: Extract structured invoice data from a document: classify each page as bill or receipt, then extract amounts, VAT, vendor and buyer details using both the OCR text and the page view.
+- **[Slide Designer](https://github.com/Pipelex/methods/tree/v0.1.7/methods/slide_designer)** · `github.com/Pipelex/methods/slide_designer@v0.1.7`: Turn a rough slide-deck brief into design proposals: polish the brief, generate multiple visual themes, render a mockup image for each, and compose an HTML report presenting them all.
+- **[Table Extraction](https://github.com/Pipelex/methods/tree/v0.1.7/methods/table_extraction)** · `github.com/Pipelex/methods/table_extraction@v0.1.7`: Extract a data table from a screenshot into faithful HTML, then review the result against the image to correct text and formatting.
+- **[Text Stats](https://github.com/Pipelex/methods/tree/v0.1.7/methods/text_stats)** · `github.com/Pipelex/methods/text_stats@v0.1.7`: Deterministic text statistics computed in pure Python: character, word, sentence and paragraph counts, vocabulary richness, most frequent words, and estimated reading and speaking times, reported as Markdown.
+- **[Tweet Optimizer](https://github.com/Pipelex/methods/tree/v0.1.7/methods/tweet_optimizer)** · `github.com/Pipelex/methods/tweet_optimizer@v0.1.7`: Optimize a tech tweet: score the draft for fluffiness, cringiness, humblebragging and vagueness, then rewrite it in your own writing style following Twitter/X best practices.
 
 <!-- END library -->
 
@@ -139,7 +141,7 @@ More methods are published in the [Pipelex method library](https://github.com/Pi
 
 A [recipe](recipes/) takes one way of using a method further, on a real case, calling it by an address pinned to a release tag.
 
-- **[Run a method](recipes/README.md#run-a-method)**: from your coding agent, then followed later by its run id, or with the three HTTP calls any tool can make.
+- **[Run a method](recipes/README.md#run-a-method)**: from your coding agent, then followed later by its run id, or with the three HTTP calls any tool can make. From your terminal, the `pipelex` command runs one by its address too, as [shown below](#run-a-method-from-your-terminal).
 - **[Put a method in your code](recipes/README.md#put-a-method-in-your-code)**: in Python, a FastAPI endpoint, a method over every row of a CSV, a CrewAI agent's tool and a weekly digest; in TypeScript, a Next.js server action, a run read hours after it started, and a local file sent through an upload grant.
 - **[Make it an app](recipes/README.md#make-it-an-app)**: from an address to a web app you deploy, and a second method as a second tab of that app.
 - **[Make it yours](recipes/README.md#make-it-yours)**: a published method copied, changed and saved to your account, and a new method designed from a sentence and proven by a lab.
@@ -150,14 +152,23 @@ Your coding agent writes methods for you, but you can write one yourself: the [t
 
 The Pipelex extension highlights `.mthds` files and draws their flowcharts: install it from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=pipelex.pipelex), or from the [Open VSX Registry](https://open-vsx.org/extension/Pipelex/pipelex) for Cursor, Windsurf and other VS Code forks.
 
-## Run a method on your own machine
+## Run a method from your terminal
 
-With the Pipelex runtime and your own provider keys ([set it up](https://docs.pipelex.com/latest/get-started/run-it-yourself/)), download the sample inputs a method's page links, then run the method by the address its page names:
+The Pipelex runtime runs a method by its address from your terminal, on the hosted Pipelex API, with your Pipelex account and no provider key of your own. Install it and sign in once:
+
+```bash
+uv tool install "pipelex[cli]"
+pipelex login
+```
+
+`pipelex login` signs you in through your browser and saves a Pipelex API key to `~/.pipelex/.env`, where the runtime reads it; `pipelex init`, answered with Enter, does the same while it sets Pipelex up. Then download the sample inputs a method's page links, and run the method by the address its page names. Each run spends credit on your Pipelex account.
 
 ```bash
 curl -sLo inputs.json <the inputs.json link on the method's page>
-pipelex run method <the method's address> --inputs inputs.json
+pipelex run method <the method's address> --hosted --inputs inputs.json
 ```
+
+To run it on your own machine instead, with your own provider keys, pass `--local` and give the inputs file by its full path, `--inputs "$PWD/inputs.json"`: a local run of an address reads a relative path from inside the method it fetched. [Run It Yourself](https://docs.pipelex.com/latest/get-started/run-it-yourself/) sets up both.
 
 ## Contributing
 

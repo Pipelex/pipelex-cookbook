@@ -85,7 +85,7 @@ class TestRender:
         page = render_pages(cookbook=load_cookbook(root), templates_dir=templates_dir)[root / "methods" / "extract_widgets" / "README.md"]
 
         order = ["# Widget extraction", "`github.com/Pipelex/pipelex-cookbook/extract_widgets@v0.9.0`", "## The sample", "## What you get"]
-        order += ["**Takes**", "**Returns**", "## Try it in your chatbot", "## Put it in your code", "## Run it on your own machine"]
+        order += ["**Takes**", "**Returns**", "## Try it in your chatbot", "## Put it in your code", "## Run it from your terminal"]
         positions = [page.index(marker) for marker in order]
         assert positions == sorted(positions)
         assert (
@@ -166,6 +166,8 @@ class TestRender:
         assert f"npm create @pipelex/method-app@latest count-words-app -- --method {address}" in page
         assert f"Copy {address} into ./count_words, adapt what it does to my case, prove it" in page
         assert f"curl -sLo inputs.json {inputs_url}" in page
+        # A hosted run of an address reads a relative --inputs path from the working directory, where curl saved the file.
+        assert f"pipelex run method {address} --hosted --inputs inputs.json" in page
         assert 'inputs={\n                "text": "The quick brown fox",\n            },' in page
 
     def test_the_front_page_lists_every_method_and_keeps_its_own_lines(self, make_cookbook: MakeCookbook, templates_dir: Path):

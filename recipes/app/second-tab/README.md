@@ -1,11 +1,11 @@
 # A second method as a second tab
 
-An app made from one method grows by a command. `make add-method` takes a second method by its address and writes everything the app needs around it, its form, its Server Actions and its generated types, then registers it, and the page turns into tabs, one per method. This recipe adds the [invoice extraction](https://github.com/Pipelex/methods/tree/v0.1.1/methods/invoice_extraction) method of the Pipelex method library to the DPE app the [deployed-app recipe](../deployed-app/) makes, so one app reads both an energy diagnostic and an invoice.
+An app made from one method grows by a command. `make add-method` takes a second method by its address and writes everything the app needs around it, its form, its Server Actions and its generated types, then registers it, and the page turns into tabs, one per method. This recipe adds the [invoice extraction](https://github.com/Pipelex/methods/tree/v0.1.7/methods/invoice_extraction) method of the Pipelex method library to the DPE app the [deployed-app recipe](../deployed-app/) makes, so one app reads both an energy diagnostic and an invoice.
 
 It shows how an app on published methods changes:
 
 - **A method is one command and one commit.** `make add-method` writes nothing until it has fetched and derived everything, then writes one slice per method and a single registry entry, and refuses rather than overwrite a method already there.
-- **Each tab keeps its own address and tag.** The second method is pinned to `github.com/Pipelex/methods/invoice_extraction@v0.1.1`, the method library's release, independently of the first, which stays at the cookbook's `v0.20.0`.
+- **Each tab keeps its own address and tag.** The second method is pinned to `github.com/Pipelex/methods/invoice_extraction@v0.1.7`, the method library's release, independently of the first, which stays at the cookbook's `v0.20.4`.
 - **Moving to another release is one edit.** Change the tag in the method's `method.json` and run `npm run codegen`: the regenerated types show what the new release changed, and `make check` fails until they are regenerated.
 
 ## What it needs
@@ -18,7 +18,7 @@ It shows how an app on published methods changes:
 
 ```bash
 cd dpe-app
-make add-method METHOD=github.com/Pipelex/methods/invoice_extraction@v0.1.1
+make add-method METHOD=github.com/Pipelex/methods/invoice_extraction@v0.1.7
 make all
 make serve
 ```
@@ -32,7 +32,7 @@ make serve
 `make add-method` says which pipe it wires, what the method returns and what it wrote:
 
 ```text
-add-method: method_ref github.com/Pipelex/methods/invoice_extraction@v0.1.1, via https://api.pipelex.com
+add-method: method_ref github.com/Pipelex/methods/invoice_extraction@v0.1.7, via https://api.pipelex.com
   pipe:   invoice_extraction.process_invoice
   output: invoice_extraction.Invoice (plural — a list of the concept)
   files:  document
