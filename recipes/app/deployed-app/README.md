@@ -1,10 +1,10 @@
 # From an address to a web app you deploy
 
-An address is a whole method, and one command turns it into a web app. The initializer of the [method apps](https://github.com/Pipelex/pipelex-sdk/tree/main/method-apps) in `pipelex-sdk` writes a Next.js app whose form and result view both come from the method's contract, so you write no form field and no result markup, and the app calls the method by its address with your key kept on the server. This recipe makes the app for the cookbook's [energy diagnostic (DPE) extraction](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.0/methods/extract_dpe) method, which reads a French energy performance diagnostic into the record a letting agency files: its form takes a PDF, which the browser sends straight to Pipelex storage through a one-time upload grant.
+An address is a whole method, and one command turns it into a web app. The initializer of the [method apps](https://github.com/Pipelex/pipelex-sdk/tree/main/method-apps) in `pipelex-sdk` writes a Next.js app whose form and result view both come from the method's contract, so you write no form field and no result markup, and the app calls the method by its address with your key kept on the server. This recipe makes the app for the cookbook's [energy diagnostic (DPE) extraction](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.4/methods/extract_dpe) method, which reads a French energy performance diagnostic into the record a letting agency files: its form takes a PDF, which the browser sends straight to Pipelex storage through a one-time upload grant.
 
 It shows what an app on a published method is made of:
 
-- **The address is the method.** Nothing is copied into the app but a `method.json` naming `github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.0`, and the types generated from it. The tag pins the method, so the app runs it as it was at that release until you move the tag.
+- **The address is the method.** Nothing is copied into the app but a `method.json` naming `github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.4`, and the types generated from it. The tag pins the method, so the app runs it as it was at that release until you move the tag.
 - **The key is a server secret.** The app's Server Actions call the Pipelex API with `PIPELEX_API_KEY` from the server's environment, and the browser never sees it: `.env.local` on your machine, a secret in your host's environment once deployed, and never a `NEXT_PUBLIC_` variable, which Next.js would ship to every browser.
 - **Nothing checks who is calling.** Anyone who can reach the app runs the method on your key, so the app listens only on this machine until you say otherwise, and a deployment belongs behind an access control of its own.
 
@@ -18,11 +18,11 @@ It shows what an app on a published method is made of:
 
 ```bash
 export PIPELEX_API_KEY=…                               # from app.pipelex.com
-npm create @pipelex/method-app@latest dpe-app -- --method github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.0
+npm create @pipelex/method-app@latest dpe-app -- --method github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.4
 make -C dpe-app serve
 ```
 
-The first command writes the app into `dpe-app/`, commits the template as it came, and then generates the method's part of it, which it leaves uncommitted for you to read before you commit it. The second starts the development server in the background and prints its URL once the page answers. Open it, drop the [sample DPE](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/assets/extract_dpe/synthetic_dpe.pdf), a fictional one made for the example, on the form and run it. `make -C dpe-app stop` stops the server.
+The first command writes the app into `dpe-app/`, commits the template as it came, and then generates the method's part of it, which it leaves uncommitted for you to read before you commit it. The second starts the development server in the background and prints its URL once the page answers. Open it, drop the [sample DPE](https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.4/assets/extract_dpe/synthetic_dpe.pdf), a fictional one made for the example, on the form and run it. `make -C dpe-app stop` stops the server.
 
 Your agent does the same with `/pipelex-scaffold` from the Pipelex plugin: ask it to make an app for the address.
 
@@ -51,7 +51,7 @@ create-method-app: writing webapp-js 0.29.1 (647c4ff9192d480d7fd2ed25b7573244f8a
 create-method-app: wrote 147 files
 create-method-app: running make create in …/dpe-app
 …
-create: done — Extract DPE (extract-dpe) runs method_ref github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.0.
+create: done — Extract DPE (extract-dpe) runs method_ref github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.4.
 …
 warnings from make create:
   warning: LICENSE copyright line left untouched — pass --license-holder to claim it.

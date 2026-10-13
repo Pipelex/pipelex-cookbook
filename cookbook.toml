@@ -17,7 +17,7 @@ repository = "Pipelex/pipelex-cookbook"
 [library]
 address = "github.com/Pipelex/methods"
 repository = "Pipelex/methods"
-tag = "v0.1.2"
+tag = "v0.1.7"
 
 [methods.answer_from_documents]
 title = "Cited answers for an AI system register"

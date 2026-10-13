@@ -1,6 +1,6 @@
 # A local file sent to a method through an upload grant
 
-A method reads its documents and images from links the hosted API can fetch, and a file on your machine or in your visitor's browser has none. This recipe sends a French energy performance diagnostic (DPE) from your disk to Pipelex storage through an upload grant, then runs the cookbook's [DPE extraction](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.0/methods/extract_dpe) on it and prints the record it reads.
+A method reads its documents and images from links the hosted API can fetch, and a file on your machine or in your visitor's browser has none. This recipe sends a French energy performance diagnostic (DPE) from your disk to Pipelex storage through an upload grant, then runs the cookbook's [DPE extraction](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.4/methods/extract_dpe) on it and prints the record it reads.
 
 It shows the steps of an upload:
 
@@ -41,6 +41,6 @@ These are the figures printed on the sample diagnostic, whose dwelling and peopl
 
 ## How it is built
 
-- `extract.ts` calls the method by its address, `github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.0`, pinned to a release tag so the method never changes under the types, and reads the record through `parseDpeRecord`, generated from the method's output.
+- `extract.ts` calls the method by its address, `github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.4`, pinned to a release tag so the method never changes under the types, and reads the record through `parseDpeRecord`, generated from the method's output.
 - `generated/extract_dpe/` holds the method's types: `types.ts` and `binder.ts`, generated from the method at that tag, and `codegen.lock`, which vouches for them. `sources.json` records the address and the target they come from. Never edit them by hand: in the cookbook, `make refresh` regenerates them, and in your own project `/pipelex-integrate` does. `npm run codegen:check` checks them against their lock offline, with `scripts/codegen-check.mjs`, copied as it is from the `pipelex-integrate` skill.
 - When the file is already where the key is, `client.uploadFile(path)` uploads it in one call. The grant is for a file that is somewhere else than the key, such as in a visitor's browser, which is why the recipe spells out its steps. The grant itself is a short-lived bearer capability for one upload, so the script never prints it.

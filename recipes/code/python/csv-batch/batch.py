@@ -28,7 +28,7 @@ from pydantic import BaseModel, TypeAdapter, ValidationError
 
 from generated.invoice_extraction.models import Invoice
 
-METHOD_REF = "github.com/Pipelex/methods/invoice_extraction@v0.1.1"
+METHOD_REF = "github.com/Pipelex/methods/invoice_extraction@v0.1.7"
 URL_COLUMN = "invoice_url"
 OUTPUT_COLUMNS = ["invoice_url", "vendor", "invoice_number", "issue_date", "amount_excl_tax", "vat_amount", "amount_incl_tax", "run_id", "error"]
 # What a spreadsheet may read as the start of a formula, per OWASP's guidance on CSV injection.

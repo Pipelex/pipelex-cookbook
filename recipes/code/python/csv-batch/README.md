@@ -1,6 +1,6 @@
 # A method over every row of a CSV
 
-A spreadsheet lists invoices by link, and you want one row per invoice with its vendor, date, totals and VAT. This recipe runs the [invoice extraction method](https://github.com/Pipelex/methods/tree/v0.1.1/methods/invoice_extraction) of the Pipelex method library on every row, a few runs at a time, and writes what each invoice says to a results CSV.
+A spreadsheet lists invoices by link, and you want one row per invoice with its vendor, date, totals and VAT. This recipe runs the [invoice extraction method](https://github.com/Pipelex/methods/tree/v0.1.7/methods/invoice_extraction) of the Pipelex method library on every row, a few runs at a time, and writes what each invoice says to a results CSV.
 
 It shows three things you need as soon as a method runs on more than one input:
 
@@ -48,6 +48,6 @@ Progress goes to the terminal as each run starts and ends, and the last line cou
 
 ## How it is built
 
-- `batch.py` calls the method by its address, `github.com/Pipelex/methods/invoice_extraction@v0.1.1`, pinned to a release tag so the method never changes under the types.
+- `batch.py` calls the method by its address, `github.com/Pipelex/methods/invoice_extraction@v0.1.7`, pinned to a release tag so the method never changes under the types.
 - `generated/invoice_extraction/` holds those types: `models.py`, generated from the method at that tag, and `codegen.lock`, which vouches for it. `sources.json` records the address and the target they come from. Never edit them by hand: in the cookbook, `make refresh` regenerates them, and in your own project `/pipelex-integrate` does.
 - To run another method over a CSV, change the address, generate its types, and change the columns the script reads and writes.
