@@ -1,7 +1,7 @@
 {
   "address": "github.com/Pipelex/methods",
   "repository": "Pipelex/methods",
-  "tag": "v0.1.2",
+  "tag": "v0.1.7",
   "methods": [
     {
       "name": "cv_analyzer",
@@ -22,10 +22,22 @@
       "main_pipe": "extract_document_markdown"
     },
     {
+      "name": "image_card",
+      "display_name": "Image Card",
+      "description": "Generate an image from a text description with a small, fast image model, and present the image and its description side by side in an HTML page.",
+      "main_pipe": "generate_image_card"
+    },
+    {
       "name": "image_generation",
       "display_name": "Image Generation",
       "description": "Image generation methods: render a description directly, or refine it into an optimized image prompt first.",
       "main_pipe": "illustrate"
+    },
+    {
+      "name": "image_generation_fast",
+      "display_name": "Image Generation Fast",
+      "description": "Fast image generation: render a text description directly with a small image generation model.",
+      "main_pipe": "generate_image"
     },
     {
       "name": "invoice_extraction",

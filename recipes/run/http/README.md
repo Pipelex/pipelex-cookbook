@@ -1,6 +1,6 @@
 # A method over HTTP: start, poll, results
 
-Any tool that makes HTTP calls can run a method, with no SDK: one call starts the run and answers at once with its id, a second reads how the run is going, and a third reads its results. This recipe makes those three calls with `curl` in a small shell script, to read a French energy performance diagnostic with the cookbook's [DPE extraction](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.0/methods/extract_dpe) method, which returns the record a letting agency files for it. The same three calls are how n8n, Zapier or any tool that makes HTTP calls reaches a method.
+Any tool that makes HTTP calls can run a method, with no SDK: one call starts the run and answers at once with its id, a second reads how the run is going, and a third reads its results. This recipe makes those three calls with `curl` in a small shell script, to read a French energy performance diagnostic with the cookbook's [DPE extraction](https://github.com/Pipelex/pipelex-cookbook/tree/v0.20.4/methods/extract_dpe) method, which returns the record a letting agency files for it. The same three calls are how n8n, Zapier or any tool that makes HTTP calls reaches a method.
 
 It shows the run lifecycle as the hosted API serves it:
 
@@ -17,15 +17,15 @@ It shows the run lifecycle as the hosted API serves it:
 
 ```bash
 export PIPELEX_API_KEY=…
-sh run.sh https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/assets/extract_dpe/synthetic_dpe.pdf > dpe.json
+sh run.sh https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.4/assets/extract_dpe/synthetic_dpe.pdf > dpe.json
 ```
 
-The document is the cookbook's sample DPE, a fictional one made for the example, linked at the release tag `v0.20.0`. Any DPE works, as long as its URL is one the hosted API can fetch, such as a public link, a presigned URL or a `pipelex-storage://` uri from an [upload grant](../../code/typescript/upload-grant/). The script prints its progress to the terminal and the method's output to `dpe.json`.
+The document is the cookbook's sample DPE, a fictional one made for the example, linked at the release tag `v0.20.4`. Any DPE works, as long as its URL is one the hosted API can fetch, such as a public link, a presigned URL or a `pipelex-storage://` uri from an [upload grant](../../code/typescript/upload-grant/). The script prints its progress to the terminal and the method's output to `dpe.json`.
 
 A run can also be started now and read later, by its id alone:
 
 ```bash
-WAIT_SECONDS=0 sh run.sh https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/assets/extract_dpe/synthetic_dpe.pdf   # prints the run's id and exits with status 3
+WAIT_SECONDS=0 sh run.sh https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.4/assets/extract_dpe/synthetic_dpe.pdf   # prints the run's id and exits with status 3
 sh run.sh --run run_… > dpe.json   # whenever you like: waits for the run to end, then prints its output
 ```
 
@@ -37,7 +37,7 @@ The terminal shows the run's id as soon as the start answers, with the commit th
 
 ```text
 started run_…
-method github.com/Pipelex/pipelex-cookbook/extract_dpe at v0.20.0, commit aeee4835f56ace0eada10dc4b2ed8780b0473111
+method github.com/Pipelex/pipelex-cookbook/extract_dpe at v0.20.4, commit 3f2aad4b04a6a986c6b356f033274d59cddc2688
 … RUNNING after 0s
 … RUNNING after 6s
 … RUNNING after 12s
@@ -88,8 +88,8 @@ The exit status says what happened, in the pattern of the [durable run](../../co
 curl -s https://api.pipelex.com/v1/start \
   -H "Authorization: Bearer $PIPELEX_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.0", "inputs": {"document": {"url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.0/assets/extract_dpe/synthetic_dpe.pdf"}}}'
-# 202 → {"pipeline_run_id": "run_…", "method_provenance": {"address": "…", "tag": "v0.20.0", "commit_sha": "…"}}
+  -d '{"method_ref": "github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.4", "inputs": {"document": {"url": "https://raw.githubusercontent.com/Pipelex/pipelex-cookbook/v0.20.4/assets/extract_dpe/synthetic_dpe.pdf"}}}'
+# 202 → {"pipeline_run_id": "run_…", "method_provenance": {"address": "…", "tag": "v0.20.4", "commit_sha": "…"}}
 ```
 
 The answer comes before the method runs, with the run's id and, for a run by address, its provenance: the address, the tag, and the commit the tag resolved to. A request the API refuses gets a `4xx` status whose body says why.

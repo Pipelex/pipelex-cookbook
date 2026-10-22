@@ -13,7 +13,7 @@ import { PipelexApiClient, uploadWithGrant } from "@pipelex/sdk";
 
 import { parseDpeRecord } from "./generated/extract_dpe/binder";
 
-const METHOD_REF = "github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.0";
+const METHOD_REF = "github.com/Pipelex/pipelex-cookbook/extract_dpe@v0.20.4";
 const CONTENT_TYPE = "application/pdf";
 
 const documentPath = process.argv[2];

@@ -14,7 +14,7 @@ from scripts.recipes import (
     typescript_packages,
 )
 
-ADDRESS = "github.com/Pipelex/methods/invoice_extraction@v0.1.1"
+ADDRESS = "github.com/Pipelex/methods/invoice_extraction@v0.1.7"
 SCRIPT_HEADER = '# /// script\n# dependencies = ["pipelex-sdk==0.12.0"]\n# ///\n'
 BLOG_ADDRESS = "github.com/Pipelex/pipelex-cookbook/blog_article_generator@v0.18.0"
 # The files a page snippet's sidecar names, from the repository root: the `.mthds` files of its method's package, here the fixture
@@ -303,7 +303,7 @@ class TestRecipeAddresses:
         readme = (
             "Point every door at `mt_…`, or at mt_ca0aa9d3-61ac-4db1-8b46-fb0cc75787df.\n"
             "Install [the plugin](https://github.com/Pipelex/pipelex-plugins), read "
-            "https://github.com/Pipelex/methods/tree/v0.1.1/methods/invoice_extraction, and mail noreply@github.com.\n"
+            "https://github.com/Pipelex/methods/tree/v0.1.7/methods/invoice_extraction, and mail noreply@github.com.\n"
             "https://api.github.com/repos/Pipelex/methods@main is the API, not an address.\n"
         )
         _run_recipe(tmp_path, readme=readme)
