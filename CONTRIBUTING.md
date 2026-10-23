@@ -10,7 +10,7 @@ The runtime itself lives in [Pipelex/pipelex](https://github.com/Pipelex/pipelex
 
 ## Set up
 
-1. Fork and clone this repository, then run `make install`, which installs the cookbook's tooling with `uv`. `make check-cookbook` also needs Node.js 22 with npm, and shellcheck, to type-check the recipes.
+1. Fork and clone this repository, then run `make install`, which installs the cookbook's tooling with `uv`, on the Python version `.python-version` names; [`docs/README.md`](docs/README.md#the-python-interpreter) says how to try another. `make check-cookbook` also needs Node.js 22 with npm, and shellcheck, to type-check the recipes.
 2. Copy `.env.example` to `.env` and put a `PIPELEX_API_KEY` in it, created in your console at [app.pipelex.com](https://app.pipelex.com). The checks that validate on production read it, and none of them spends inference; `make snapshot`, which runs a method once to take the output its page shows, and `make check-smoke`, which runs every method once on its sample, read it too and spend credit.
 3. To build a method, install the Pipelex plugin in your coding agent, as [pipelex-plugins](https://github.com/Pipelex/pipelex-plugins) says.
 

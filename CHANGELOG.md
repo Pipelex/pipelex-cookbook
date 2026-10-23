@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- **The development Python is pinned in `.python-version`**: the Makefile, uv and CI read the version from that file, so `make install` builds `.venv` on it and the recipes' and page snippets' script environments run on it too, and each job of the lint and test matrices now fails unless its environment ran the version the job names. `PYTHON_VERSION=<version> make install`, or `UV_PYTHON`, builds `.venv` on another supported version, and now also rebuilds an existing `.venv` that runs another Python, which it used to leave as it was.
+
 ### Security
 
 - **Locked `anyio`, `follow-redirects`, `next`, `sharp` and `source-map-js` versions**: the cookbook's environment, which `make install` builds from `uv.lock`, now installs `anyio` 4.15.1, the Next.js server-action recipe installs `next` 16.4.0, `sharp` 0.35.5 and `source-map-js` 1.2.2 from its lockfile, and every TypeScript recipe and the method pages' TypeScript snippets install `follow-redirects` 1.16.1, all past their published security advisories.
