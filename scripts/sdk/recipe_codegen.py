@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["pipelex-sdk==0.12.0", "mthds>=0.15", "pydantic>=2.10.6"]
+# dependencies = ["pipelex-sdk==0.59.0", "mthds>=0.15", "pydantic>=2.10.6"]
 # ///
 """Generate and check the typed trees the code recipes and the page snippets carry.
 
@@ -35,7 +35,7 @@ from mthds.protocol.exceptions import PipelineRequestError
 from pipelex_sdk.client import PipelexAPIClient
 from pipelex_sdk.codegen_check import run_codegen_check
 from pipelex_sdk.codegen_writer import write_codegen_tree
-from pipelex_sdk.crate_models import CodegenRequest, CodegenTarget, CodegenValidReport, CrateInvalidReport, MthdsFileItem
+from pipelex_sdk.crate_models import CodegenRequest, CodegenTarget, CodegenValidReport, CrateInvalidReport
 from pipelex_sdk.errors import CodegenError, CodegenLockError
 from pydantic import BaseModel, ValidationError
 
@@ -78,15 +78,15 @@ class Sidecar(BaseModel):
         return self.method_ref or " and ".join(self.files or [])
 
     def codegen_request(self) -> CodegenRequest:
-        """The `POST /v1/codegen` request for the tree: its address, or the contents of its files, each labelled with its path.
+        """The `POST /v1/codegen` request for the tree: its address, or the method's tree, each file's text under its path.
 
         Raises:
             OSError: A file cannot be read.
             UnicodeDecodeError: A file is not UTF-8.
         """
         if self.files is not None:
-            files = [MthdsFileItem(content=Path(file).read_text(encoding="utf-8"), source=file) for file in self.files]
-            return CodegenRequest(files=files, kind="types", target=self.target)
+            contents: dict[str, bytes | str] = {file: Path(file).read_text(encoding="utf-8") for file in self.files}
+            return CodegenRequest(contents=contents, kind="types", target=self.target)
         return CodegenRequest(method_ref=self.method_ref, kind="types", target=self.target)
 
 
@@ -184,7 +184,7 @@ async def codegen_for(client: PipelexAPIClient, *, tree: Path, sidecar: Sidecar)
         sys.stderr.write(f"✗ {tree}: {sidecar.origin} could not be resolved: {exc}\n")
         return None
     if isinstance(response, CrateInvalidReport):
-        errors = "; ".join(item.message for item in response.validation_errors)
+        errors = "; ".join(item.detail for item in response.errors) or response.message
         sys.stderr.write(f"✗ {tree}: {sidecar.origin} does not validate: {errors}\n")
         return None
     return response

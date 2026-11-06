@@ -64,6 +64,7 @@ class FakeCodegen:
     def __init__(self) -> None:
         self.requests: list[dict[str, Any]] = []
         self.crate_fingerprint: str | None = None
+        self.invalid_report: dict[str, Any] | None = None
         fake = self
 
         class Handler(BaseHTTPRequestHandler):
@@ -72,6 +73,9 @@ class FakeCodegen:
                 fake.requests.append(body)
                 if self.path != "/v1/codegen":
                     self._answer(404, {"detail": f"no route {self.path}"})
+                    return
+                if fake.invalid_report is not None:
+                    self._answer(200, fake.invalid_report)
                     return
                 answer = _answer(str(body["target"]))
                 if fake.crate_fingerprint is not None:
@@ -154,7 +158,7 @@ class TestFilesForm:
         assert generated.returncode == 0, generated.stderr
         assert fake_codegen.requests == [
             {
-                "files": [{"content": content, "source": relative_path} for relative_path, content in BUNDLES.items()],
+                "files": BUNDLES,
                 "kind": "types",
                 "target": "python-pydantic",
             }
@@ -174,7 +178,7 @@ class TestFilesForm:
         generated = _run(root, "generate", _relative(root, tree), base_url=fake_codegen.base_url)
         assert generated.returncode == 0, generated.stderr
         [request] = fake_codegen.requests
-        assert request["files"] == [{"content": BUNDLES["methods/extract_widgets/bundle.mthds"], "source": "methods/extract_widgets/bundle.mthds"}]
+        assert request["files"] == {"methods/extract_widgets/bundle.mthds": BUNDLES["methods/extract_widgets/bundle.mthds"]}
         assert "method_ref" not in request
         assert sorted(path.name for path in tree.iterdir()) == ["binder.ts", "codegen.lock", "sources.json", "types.ts"]
 
@@ -193,6 +197,37 @@ class TestFilesForm:
         assert f"while codegen makes crate {OTHER_FINGERPRINT} of methods/extract_widgets/bundle.mthds and" in edited.stderr
         assert "run `make refresh`" in edited.stderr
         assert all("files" in request and "method_ref" not in request for request in fake_codegen.requests)
+
+    @pytest.mark.parametrize(
+        ("report", "expected"),
+        [
+            (
+                {
+                    "is_valid": False,
+                    "errors": [
+                        {"code": "method.syntax", "detail": "The bundle does not parse"},
+                        {"code": "method.not_runnable", "detail": "No main pipe"},
+                    ],
+                    "message": "The method is invalid",
+                },
+                "does not validate: The bundle does not parse; No main pipe",
+            ),
+            ({"is_valid": False, "message": "The method is invalid"}, "does not validate: The method is invalid"),
+        ],
+        ids=["its-faults", "its-message-when-it-lists-none"],
+    )
+    def test_a_method_that_does_not_validate_is_reported_and_writes_nothing(
+        self, tmp_path: Path, fake_codegen: FakeCodegen, report: dict[str, Any], expected: str
+    ):
+        root = _cookbook(tmp_path)
+        tree = _tree(root, language="python", method={"files": list(BUNDLES)}, target="python-pydantic")
+        fake_codegen.invalid_report = report
+
+        generated = _run(root, "generate", _relative(root, tree), base_url=fake_codegen.base_url)
+
+        assert generated.returncode == 1
+        assert expected in generated.stderr
+        assert sorted(path.name for path in tree.iterdir()) == ["sources.json"]
 
 
 class TestAddressForm:
