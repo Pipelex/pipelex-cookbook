@@ -12,9 +12,8 @@ class CookbookLayoutError(CookbookError):
 class HostedApiError(CookbookError):
     """The hosted Pipelex API could not be reached, refused a call, or answered in a way the tooling cannot read.
 
-    When it answered, `status_code` is the HTTP status, `problem` the problem details its body carried (`type`, `title`, `detail`,
-    `error_type`), empty when the body was not one, and `retry_after_seconds` the wait its `Retry-After` header asked for, None when it named
-    none.
+    When it answered, `status_code` is the HTTP status, `problem` the problem details its body carried (`type`, `title`, `detail`, `code`),
+    empty when the body was not one, and `retry_after_seconds` the wait its `Retry-After` header asked for, None when it named none.
     """
 
     def __init__(

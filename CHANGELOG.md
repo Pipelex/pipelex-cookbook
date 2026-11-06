@@ -6,6 +6,10 @@
 
 - **The development Python is pinned in `.python-version`**: the Makefile, uv and CI read the version from that file, so `make install` builds `.venv` on it and the recipes' and page snippets' script environments run on it too, and each job of the lint and test matrices now fails unless its environment ran the version the job names. `PYTHON_VERSION=<version> make install`, or `UV_PYTHON`, builds `.venv` on another supported version, and now also rebuilds an existing `.venv` that runs another Python, which it used to leave as it was.
 
+### Fixed
+
+- **`make check-addresses` reads an unpublished address as not released again**: production now answers a tag not pushed yet, or a method the tag does not carry, with a 404 whose problem code is `method.not_found`, which the check did not recognise, so every page failed before a release's merge and the hosted gate could not pass. A repository that could not be fetched, an address production refuses and every other answer still fail.
+
 ### Security
 
 - **Locked `anyio`, `certifi`, `follow-redirects`, `next`, `sharp`, `source-map-js`, `undici` and `zod` versions**: the cookbook's environment, which `make install` builds from `uv.lock`, now installs `anyio` 4.15.1 and `certifi` 2026.10.23, the Next.js server-action recipe installs `next` 16.4.5, `sharp` 0.35.5 and `source-map-js` 1.2.2 from its lockfile, and every TypeScript recipe and the method pages' TypeScript snippets install `follow-redirects` 1.16.2, `undici` 7.30.2 and `zod` 4.6.7, all past their published security advisories.
