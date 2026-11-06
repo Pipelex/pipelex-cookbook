@@ -9,8 +9,8 @@
 ### Fixed
 
 - **`make check-addresses` reads an unpublished address as not released again**: production now answers a tag not pushed yet, or a method the tag does not carry, with a 404 whose problem code is `method.not_found`, which the check did not recognise, so every page failed before a release's merge and the hosted gate could not pass. A repository that could not be fetched, an address production refuses and every other answer still fail.
-
 - **`make check-codegen-live` and `make refresh` reach the page snippets' types again**: `scripts/sdk/recipe_codegen.py` runs on `pipelex-sdk` 0.59.0 and sends a page snippet's `.mthds` files as the map from path to text that `POST /v1/codegen` now takes, which production refused in the list `pipelex-sdk` 0.12.0 sent, with a 422 on every page snippet. Every generated tree is as it was, and the recipes and the page snippets themselves stay on their own pins.
+- **The front page lists the method library at `v0.2.0`**: Text Stats names its function by its import path at that release, where production refuses the flat name it carries at `v0.1.7`, and every other library method behaves as before. The invoice extraction recipes and the second-tab app keep their own `v0.1.7` address, which still validates.
 
 ### Security
 
