@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.20.7] - 2026-11-06
+
+### Security
+
+- **Locked `pillow` version**: the cookbook's environment, which `make install` builds from `uv.lock`, now installs Pillow 13.0.0, past every open Pillow security advisory. Only the cookbook's own tooling uses Pillow, where it renders the PDF samples' previews, downscales an output snapshot's images and builds the tests' fixtures, so no method, recipe or page snippet changes, and every preview renders as before.
+
 ## [v0.20.6] - 2026-11-06
 
 ### Changed
