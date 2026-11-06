@@ -10,27 +10,43 @@ from tests.tooling.fake_api import FAKE_API_KEY, FakeApi
 from tests.tooling.test_data import MakeCookbook
 
 VALIDATE = "/v1/validate"
-# The problem details production answered on 2026-09-25, cut down to what the address check reads.
+# The problem details production answered on 2026-11-06, cut down to what the address check reads.
 PACKAGE_NOT_FOUND: dict[str, object] = {
-    "type": "https://docs.pipelex.com/latest/errors/method-package-not-found-error/",
-    "title": "Method package not found",
+    "type": "https://mthds.ai/errors/method.not_found",
+    "title": "No method at this address",
     "status": 404,
-    "detail": "No package at address 'github.com/Pipelex/pipelex-cookbook/count_words' in the fetched repository.",
-    "error_type": "MethodPackageNotFoundError",
+    "detail": "No method is found at 'github.com/Pipelex/pipelex-cookbook/count_words'.",
+    "code": "method.not_found",
 }
 NO_SUCH_TAG: dict[str, object] = {
-    "type": "https://docs.pipelex.com/latest/errors/method-fetch-error/",
-    "title": "Method fetch",
-    "status": 422,
-    "detail": "'v0.9.0' in method reference 'github.com/Pipelex/pipelex-cookbook/count_words@v0.9.0' does not name a git tag on the repository.",
-    "error_type": "MethodFetchError",
+    "type": "https://mthds.ai/errors/method.not_found",
+    "title": "No method at this address",
+    "status": 404,
+    "detail": "No method is found at 'github.com/Pipelex/pipelex-cookbook/count_words@v0.9.0'.",
+    "code": "method.not_found",
 }
 REPOSITORY_UNREACHABLE: dict[str, object] = {
-    "type": "https://docs.pipelex.com/latest/errors/method-fetch-error/",
-    "title": "Method fetch",
+    "type": "https://mthds.ai/errors/method.fetch_failed",
+    "title": "The method could not be fetched",
+    "status": 502,
+    "detail": "The method 'github.com/Pipelex/no-such-repo/count_words@v0.9.0', or one of its dependencies, could not be fetched.",
+    "code": "method.fetch_failed",
+}
+ADDRESS_REFUSED: dict[str, object] = {
+    "type": "https://mthds.ai/errors/request.unsupported",
+    "title": "The request uses a form this runtime does not accept",
     "status": 422,
-    "detail": "The repository could not be cloned.",
-    "error_type": "MethodFetchError",
+    "detail": "This runtime does not accept the form the request's field 'method_ref' uses (reason: address_not_on_github).",
+    "code": "request.unsupported",
+}
+# Not a method missing at its tag: the status alone says nothing, a 404 from a route that is gone reads the same, so a code decides.
+ROUTE_NOT_FOUND: dict[str, object] = {"detail": "Not Found"}
+ANOTHER_CODE_NOT_FOUND: dict[str, object] = {
+    "type": "https://mthds.ai/errors/run.not_found",
+    "title": "No such run",
+    "status": 404,
+    "detail": "No run has this id.",
+    "code": "run.not_found",
 }
 VALID: dict[str, object] = {"is_valid": True, "message": "MTHDS content validated successfully"}
 
@@ -46,7 +62,7 @@ class TestHosted:
         with pytest.raises(HostedApiError) as raised:
             fake_api.client.validate_address(method_ref="github.com/Pipelex/pipelex-cookbook/count_words@v0.9.0")
         assert raised.value.status_code == 404
-        assert raised.value.problem["error_type"] == "MethodPackageNotFoundError"
+        assert raised.value.problem["code"] == "method.not_found"
 
     def test_the_key_is_sent_as_the_bearer_token(self, fake_api: FakeApi):
         fake_api.answer("POST", VALIDATE, httpx.Response(200, json=VALID))
@@ -67,7 +83,7 @@ class TestHosted:
         assert (verdict.name, verdict.address, verdict.state) == ("recipes/code/python/csv-batch", address, AddressState.VALID)
         assert fake_api.bodies("POST", VALIDATE)[0]["method_ref"] == address
 
-    @pytest.mark.parametrize(("status", "body"), [(404, PACKAGE_NOT_FOUND), (422, NO_SUCH_TAG)], ids=["package-not-at-the-tag", "no-such-tag"])
+    @pytest.mark.parametrize(("status", "body"), [(404, PACKAGE_NOT_FOUND), (404, NO_SUCH_TAG)], ids=["package-not-at-the-tag", "no-such-tag"])
     def test_a_recipe_address_that_does_not_resolve_fails_rather_than_waiting_for_a_release(
         self, fake_api: FakeApi, status: int, body: dict[str, object]
     ):
@@ -81,12 +97,24 @@ class TestHosted:
         ("status", "body", "expected"),
         [
             (404, PACKAGE_NOT_FOUND, AddressState.UNRELEASED),
-            (422, NO_SUCH_TAG, AddressState.UNRELEASED),
-            (422, REPOSITORY_UNREACHABLE, AddressState.FAILED),
+            (404, NO_SUCH_TAG, AddressState.UNRELEASED),
+            (502, REPOSITORY_UNREACHABLE, AddressState.FAILED),
+            (422, ADDRESS_REFUSED, AddressState.FAILED),
+            (404, ROUTE_NOT_FOUND, AddressState.FAILED),
+            (404, ANOTHER_CODE_NOT_FOUND, AddressState.FAILED),
             (500, {"title": "Internal Server Error"}, AddressState.FAILED),
             (200, {"is_valid": False, "message": "The bundle does not parse"}, AddressState.FAILED),
         ],
-        ids=["package-not-at-the-tag", "tag-not-pushed", "other-fetch-error", "server-error", "invalid-verdict"],
+        ids=[
+            "package-not-at-the-tag",
+            "tag-not-pushed",
+            "fetch-failed",
+            "address-refused",
+            "route-not-found",
+            "another-not-found-code",
+            "server-error",
+            "invalid-verdict",
+        ],
     )
     def test_only_a_method_missing_at_its_tag_is_unreleased(
         self, fake_api: FakeApi, make_cookbook: MakeCookbook, status: int, body: dict[str, object], expected: AddressState

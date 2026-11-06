@@ -15,6 +15,7 @@ jobs:
       contents: read
     env:
       VIRTUAL_ENV: ${{ github.workspace }}/.venv
+      UV_PYTHON: ${{ matrix.python-version }}
     steps:
       - uses: actions/checkout@v4
 
@@ -30,7 +31,10 @@ jobs:
         run: uv --version
 
       - name: Install dependencies
-        run: PYTHON_VERSION=${{ matrix.python-version }} make install
+        run: make install
 
       - name: Run tests
         run: make gha-tests
+
+      - name: The interpreter is the one this job names
+        run: .venv/bin/python -c 'import sys; want = "${{ matrix.python-version }}"; got = "%d.%d" % sys.version_info[:2]; assert got == want, f"ran {got}, expected {want}"'

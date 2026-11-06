@@ -30,7 +30,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.13"
+          python-version-file: .python-version
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -41,7 +41,7 @@ jobs:
         run: make check-uv
 
       - name: Install dependencies
-        run: PYTHON_VERSION=3.13 make install
+        run: make install
 
       - name: Check the method pages, the manifests, the sample links and the recipes
         run: make check-cookbook

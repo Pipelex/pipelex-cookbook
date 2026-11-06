@@ -443,11 +443,11 @@ class AddressVerdict(BaseModel):
     report: str
 
 
-# What production answers for an address that is not published yet: a tag that carries no package at the address (404, the package is not
-# found), or a tag that does not exist yet (422, a fetch error whose detail says the tag names no git tag). Anything else is a failure.
-_PACKAGE_NOT_FOUND_TYPE = "method-package-not-found-error"
-_FETCH_ERROR_TYPE = "MethodFetchError"
-_NO_SUCH_TAG_DETAIL = "does not name a git tag"
+# What production answers for an address that is not published yet, a tag that carries no package at the address or a tag that does not exist
+# yet: a 404 whose code is `method.not_found`, in the MTHDS error registry. Anything else is a failure, a repository that could not be fetched
+# (a 502 `method.fetch_failed`) and an address production does not accept (a 422) among them.
+_METHOD_NOT_FOUND_STATUS = 404
+_METHOD_NOT_FOUND_CODE = "method.not_found"
 
 
 def check_address(*, client: HostedClient, cookbook: Cookbook, package: MethodPackage) -> AddressVerdict:
@@ -484,11 +484,7 @@ def check_pinned_method_ref(*, client: HostedClient, name: str, address: str) ->
 
 
 def _is_unreleased(error: HostedApiError) -> bool:
-    problem_type = str(error.problem.get("type") or "")
-    if error.status_code == 404 and _PACKAGE_NOT_FOUND_TYPE in problem_type:
-        return True
-    detail = str(error.problem.get("detail") or "")
-    return error.status_code == 422 and error.problem.get("error_type") == _FETCH_ERROR_TYPE and _NO_SUCH_TAG_DETAIL in detail
+    return error.status_code == _METHOD_NOT_FOUND_STATUS and error.problem.get("code") == _METHOD_NOT_FOUND_CODE
 
 
 def run_package(*, client: HostedClient, cookbook: Cookbook, package: MethodPackage, timeout_seconds: float = RUN_TIMEOUT_SECONDS) -> HostedRun:
